@@ -1,6 +1,6 @@
 {
-  "index": "index.html",
-  "cpguide-hub": "cp-guide.html",
+  "index": "question-bank.html",
+  "cpguide-hub": "index.html",
   "concepts-hub": "concepts.html",
   "arrays-strings": "cp-arrays-strings.html",
   "sorting-searching": "cp-sorting-searching.html",

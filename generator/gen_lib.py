@@ -236,9 +236,9 @@ HEAD_CSS = """
 
 def site_nav(urls, current):
     items = [
-        ("index", "Interview Q&A + MCQ Bank", urls.get("index", "#")),
         ("cpguide", "CP / DSA Guide", urls.get("cpguide", "#")),
         ("concepts", "C++ Concepts", urls.get("concepts", "#")),
+        ("index", "Interview Q&A + MCQ Bank", urls.get("index", "#")),
     ]
     links = []
     for key, label, url in items:
