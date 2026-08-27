@@ -1,0 +1,833 @@
+<title>Bit Manipulation — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Bit Manipulation</h1>
+    <p class="tagline"><p>Bit manipulation techniques exploit the binary representation of integers to enumerate subsets, encode DP states compactly, and reason about XOR as a vector space over GF(2). Two of the most powerful and frequently-tested ideas are bitmask subset enumeration (culminating in Sum-over-Subsets DP and bitmask DP over states) and the XOR linear basis, which turns &#x27;what XOR values are reachable&#x27; questions into linear algebra. Mastering both unlocks a large class of Codeforces 1700-2200 problems that look intractable under brute force. Extending core bitmask-DP techniques, these two subtopics cover a different pair of bit-level tools: constructing single-bit-change sequences and manipulating individual bits directly (Gray code and classic bit tricks), and using std::bitset to brute-force through far larger inputs by packing dozens of boolean comparisons into a single machine-word operation.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">4</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">10</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">14</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp"><span>Subset Enumeration via Bitmasks (incl. Sum over Subsets DP)</span><span class="cnt">3</span></a></li><li><a href="#bit-manipulation-xor-properties-linear-basis"><span>XOR Properties &amp; Linear Basis</span><span class="cnt">3</span></a></li><li><a href="#bit-manipulation-bit-tricks-gray-code"><span>Bit Tricks &amp; Gray Code</span><span class="cnt">2</span></a></li><li><a href="#bit-manipulation-bitset-optimization-for-brute-force-speedup"><span>Bitset Optimization for Brute-Force Speedup</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">14</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="https://claude.ai/code/artifact/c156ae68-4c74-47c9-912a-ad2d47b93c49">Arrays &amp; Strings</a></li><li><a href="https://claude.ai/code/artifact/12a16e00-c911-4e45-a3c2-27b16db6b805">Sorting &amp; Binary Search</a></li><li><a href="https://claude.ai/code/artifact/0316847a-185e-46fa-b2ce-adf55d0710cd">Recursion &amp; Backtracking</a></li><li><a href="https://claude.ai/code/artifact/1c4e103e-c945-47f3-a855-7fc0f5281fc2">Dynamic Programming</a></li><li><a href="https://claude.ai/code/artifact/00f83d03-9d23-4a2c-a704-cd676a3b4ce0">Greedy Algorithms</a></li><li><a href="https://claude.ai/code/artifact/815d3fc1-3172-4d4b-9ceb-680f85b2b8b1">Graph Algorithms</a></li><li><a href="https://claude.ai/code/artifact/aedd06db-fdcf-479b-97bc-247e9734e77e">Trees</a></li><li><a href="https://claude.ai/code/artifact/a4b10d9b-cdd8-4f6d-93fe-9aae23b56638">Data Structures for CP</a></li><li><a href="https://claude.ai/code/artifact/ad30c2df-1f61-4bc2-8169-8dfa3507993c">Number Theory &amp; Combinatorics</a></li><li><a href="https://claude.ai/code/artifact/34e4f4f9-6d88-4afd-9426-e243421356c1">String Algorithms</a></li><li><a href="https://claude.ai/code/artifact/2dc80eb5-e35f-4079-bb93-351ceae8c683">Game Theory</a></li><li><a href="https://claude.ai/code/artifact/69f48d09-8ce7-495b-9b95-530c827d9af6">Network Flow &amp; Matching</a></li><li><a href="https://claude.ai/code/artifact/ca5bf18b-b4fe-400b-a702-edccd442732d">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide Hub</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+        <li><a href="https://claude.ai/code/artifact/8968b342-ca79-44b8-be52-aa3770481647#bit-manipulation">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp">
+  <div class="topic-head"><h2>Subset Enumeration via Bitmasks (incl. Sum over Subsets DP)</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>A set of n elements has 2^n subsets, and when n is small (typically n &lt;= 20-22) you can afford to index an array by bitmask and treat each integer in [0, 2^n) as &#x27;the subset whose i-th bit tells you whether element i is included.&#x27; This turns subset-DP problems into ordinary array DP problems where the array has 2^n entries. Two closely related but distinct patterns fall out of this: (1) bitmask DP over states, where dp[mask][extra] represents the best way to reach a state described by mask, and (2) Sum over Subsets (SOS) DP, which for every mask computes an aggregate (sum, OR, max, count) over all 2^n submasks of mask simultaneously in O(2^n * n) instead of the naive O(3^n) you&#x27;d get by enumerating (mask, submask) pairs directly.</p><p>The SOS DP trick is the following: to compute g[mask] = aggregate over all submasks s of f[s], iterate over bit positions b = 0..n-1, and for every mask that has bit b set, merge in the value of g[mask with bit b cleared] (which by induction already reflects the correct aggregate restricted to submasks that agree with mask on bits 0..b). After processing all n bits, g[mask] correctly aggregates over every one of the 2^popcount(mask) submasks of mask, even though you only ever did O(2^n * n) work. The reason this works is that flipping bit b independently is idempotent across masks, so processing bits one at a time and accumulating results is equivalent to a DP whose states are &#x27;submask restricted to the first b bits&#x27; — a classic instance of the divide-and-conquer-by-bit-position idea that also underlies digit DP.</p><p>A second major pattern is DP over &#x27;profile&#x27; bitmasks representing the state of a row, frontier, or partial assignment — for example broken-profile DP on grids (where a bitmask encodes which cells in the current frontier are already filled) or the Traveling Salesman Problem, where dp[mask][last] represents the minimum cost to have visited exactly the set of cities in mask, ending at city &#x27;last&#x27;. This turns an O(n!) brute-force search into an O(2^n * n^2) DP, which is a huge win for n up to about 18-20 (2^20 * 400 ~ 4*10^8, borderline feasible; n &lt;= 15 is comfortably fast).</p><p>The unifying insight across both patterns is that a bitmask is just a dense, O(1)-comparable, O(1)-updatable encoding of a small set, so any DP whose state naturally involves &#x27;which subset of a small universe has been used/visited/included&#x27; can be array-indexed by that bitmask instead of using a hash map or explicit set structure.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for: (a) small n (usually n &lt;= 20-22) with a question about subsets, arrangements, or &#x27;assign/visit every element exactly once&#x27;; (b) a request to precompute, for every subset, some aggregate over all its sub-subsets (sum/count/OR/AND over submasks) — this is the SOS DP signature; (c) grid or sequence DP where the state needs to remember &#x27;which of a small set of slots/cities/items are already used&#x27;, which screams dp[mask][...].</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Bitmask DP over states: typically O(2^n * n) to O(2^n * n^2) time, O(2^n) to O(2^n * n) space. SOS DP: O(2^n * n) time and O(2^n) space, versus the naive O(3^n) direct-enumeration alternative.</p></div>
+  </div>
+  <article class="example-card" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex0">
+  <h4>Sum over Subsets (SOS) DP — core template</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an integer n (1 &lt;= n &lt;= 20) and an array f of size 2^n, indexed by bitmask, where f[mask] is given for every mask from 0 to 2^n - 1. For every mask, compute g[mask] = sum of f[s] over all submasks s of mask (a submask s of mask satisfies (s AND mask) == s, i.e. every set bit of s is also set in mask; mask itself and 0 both count as submasks). Print g[0], g[1], ..., g[2^n - 1] separated by spaces.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Initialize g as a copy of f. Then for each bit position b from 0 to n-1, sweep over all masks; whenever mask has bit b set, add g[mask with bit b cleared] into g[mask]. After processing bit b, g[mask] correctly equals the sum of f over all submasks of mask that only vary from mask in bits 0..b (an invariant provable by induction on b). After all n bits are processed, g[mask] is the full sum over all submasks of mask. This costs O(2^n * n) total work, versus O(3^n) if you enumerated every (mask, submask) pair directly (since a mask with k set bits has 2^k submasks, and summing 2^popcount(mask) over all masks gives exactly 3^n).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n;
+    if(!(cin&gt;&gt;n)) return 0;
+    int size=1&lt;&lt;n;
+    vector&lt;long long&gt; f(size);
+    for(auto &amp;x:f) cin&gt;&gt;x;
+    vector&lt;long long&gt; g=f;
+    for(int b=0;b&lt;n;b++){
+        for(int mask=0; mask&lt;size; mask++){
+            if(mask &amp; (1&lt;&lt;b)) g[mask]+=g[mask ^ (1&lt;&lt;b)];
+        }
+    }
+    for(int i=0;i&lt;size;i++){
+        cout&lt;&lt;g[i];
+        if(i+1&lt;size) cout&lt;&lt;&#x27; &#x27;;
+    }
+    cout&lt;&lt;&quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 2 3 4 5 6 7 8
+</code></pre>
+    <pre><code>1 3 4 10 6 14 16 36
+</code></pre>
+  </div>
+</article><article class="example-card" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex1">
+  <h4>Compatible Pair Search via SOS &#x27;exists&#x27; DP</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n integers a[1..n] (0 &lt;= a[i] &lt; 2^B, here B = 4 so values are 0..15) and an integer B. For each index i (1-indexed), find any value a[j] (1 &lt;= j &lt;= n, j may equal i) such that a[i] AND a[j] = 0 (their binary representations share no common set bit), and print that value; if no such value exists among the array elements, print -1 instead. Print n answers separated by spaces.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>a[i] AND a[j] = 0 exactly when a[j]&#x27;s set bits are a subset of the complement of a[i]&#x27;s bits, i.e. a[j] is a submask of comp = FULL_MASK XOR a[i] (FULL_MASK = 2^B - 1). So precompute, for every possible mask in [0, 2^B), a representative value rep[mask] that IS a submask of mask and DOES appear in the array (or -1 if none does). This is exactly SOS DP but with &#x27;OR of existence&#x27; instead of &#x27;sum&#x27;: initialize rep[v] = v for every value v present in the array, then for each bit b, whenever a mask has bit b set and rep[mask] is still unset, pull rep[mask with bit b cleared] up into rep[mask]. Finally, for each a[i], the answer is rep[FULL_MASK XOR a[i]]. This runs in O(2^B * B + n) instead of O(n^2).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n, B;
+    cin &gt;&gt; n &gt;&gt; B;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    int SZ = 1 &lt;&lt; B, FULL = SZ - 1;
+    vector&lt;int&gt; rep(SZ, -1);
+    for (int i = 0; i &lt; n; i++) rep[a[i]] = a[i];
+    for (int b = 0; b &lt; B; b++) {
+        for (int mask = 0; mask &lt; SZ; mask++) {
+            if (mask &amp; (1 &lt;&lt; b)) {
+                if (rep[mask] == -1 &amp;&amp; rep[mask ^ (1 &lt;&lt; b)] != -1)
+                    rep[mask] = rep[mask ^ (1 &lt;&lt; b)];
+            }
+        }
+    }
+    for (int i = 0; i &lt; n; i++) {
+        int comp = FULL ^ a[i];
+        cout &lt;&lt; rep[comp] &lt;&lt; (i + 1 &lt; n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 4
+9 6 5 3 0
+</code></pre>
+    <pre><code>6 9 0 0 9
+</code></pre>
+  </div>
+</article><article class="example-card" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex2">
+  <h4>Traveling Salesman via Bitmask DP over Visited-City Subsets</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n cities (2 &lt;= n &lt;= 15) and an n x n matrix cost[i][j] giving the cost of traveling directly from city i to city j (cost[i][i] = 0), find the minimum total cost of a tour that starts at city 0, visits every other city exactly once, and returns to city 0.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Let dp[mask][i] be the minimum cost to have started at city 0, visited exactly the set of cities in mask (mask always includes bit 0), and currently be standing at city i (bit i set in mask). Base case dp[{0}][0] = 0. Transition: from dp[mask][i], for every city j not yet in mask, update dp[mask | (1&lt;&lt;j)][j] = min(dp[mask | (1&lt;&lt;j)][j], dp[mask][i] + cost[i][j]). After filling the table for all 2^n masks, the answer is min over i != 0 of dp[FULL][i] + cost[i][0], where FULL = (1&lt;&lt;n) - 1 (all cities visited). This is O(2^n * n^2) time and O(2^n * n) space, tractable for n up to ~15-18, versus the O(n!) brute force over permutations.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;vector&lt;long long&gt;&gt; cost(n, vector&lt;long long&gt;(n));
+    for (int i = 0; i &lt; n; i++)
+        for (int j = 0; j &lt; n; j++)
+            cin &gt;&gt; cost[i][j];
+    int FULL = 1 &lt;&lt; n;
+    const long long INF = LLONG_MAX / 2;
+    vector&lt;vector&lt;long long&gt;&gt; dp(FULL, vector&lt;long long&gt;(n, INF));
+    dp[1][0] = 0;
+    for (int mask = 1; mask &lt; FULL; mask++) {
+        if (!(mask &amp; 1)) continue; // city 0 always visited first
+        for (int i = 0; i &lt; n; i++) {
+            if (!(mask &amp; (1 &lt;&lt; i))) continue;
+            if (dp[mask][i] == INF) continue;
+            for (int j = 0; j &lt; n; j++) {
+                if (mask &amp; (1 &lt;&lt; j)) continue;
+                long long nc = dp[mask][i] + cost[i][j];
+                int nmask = mask | (1 &lt;&lt; j);
+                if (nc &lt; dp[nmask][j]) dp[nmask][j] = nc;
+            }
+        }
+    }
+    long long best = INF;
+    for (int i = 1; i &lt; n; i++)
+        best = min(best, dp[FULL - 1][i] + cost[i][0]);
+    if (n == 1) best = 0;
+    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+0 10 15 20
+10 0 35 25
+15 35 0 30
+20 25 30 0
+</code></pre>
+    <pre><code>80
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="bit-manipulation-xor-properties-linear-basis">
+  <div class="topic-head"><h2>XOR Properties &amp; Linear Basis</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>XOR has three properties that make it behave like addition in a vector space over the field GF(2): it is associative, commutative, and every element is its own inverse (x XOR x = 0). This means the set of all values reachable by XOR-ing together some subset of a given multiset of integers forms a linear subspace of GF(2)^k (thinking of each integer as a k-bit vector), and standard linear algebra — specifically Gaussian elimination — applies directly. The &#x27;XOR linear basis&#x27; (also called a &#x27;binary basis&#x27; or &#x27;XOR basis&#x27;) of an array a[1..n] is a maximal linearly independent subset (over GF(2)) built so that basis[b] is either 0 or a value whose highest set bit is exactly bit b.</p><p>You build the basis incrementally: for each new number x, walk its bits from the highest possible bit down to bit 0; at each set bit b of the current (possibly already reduced) x, if basis[b] is empty, x becomes the new basis[b] and you stop processing this number; if basis[b] is already occupied, XOR it into x (this eliminates bit b from x, exactly like a row-reduction step) and continue to lower bits. If x reduces all the way to 0, it contributed nothing new (it was already in the span of the existing basis) and no insertion happens. After processing all n numbers, the nonzero entries of basis[] form a linearly independent set that spans exactly the same subspace as the original array under XOR.</p><p>Once you have the basis, two classic questions become easy: (1) the MAXIMUM XOR achievable by any subset is found greedily — starting from result = 0, for each basis vector from the highest bit down to the lowest, XOR it into result if doing so INCREASES result (this greedy works because higher bits dominate lower ones in integer comparison, and each basis[b] is the only remaining vector that can toggle bit b without disturbing bits above b); (2) the NUMBER OF DISTINCT XOR VALUES achievable by any subset of the array is exactly 2^r, where r is the rank (number of nonzero vectors) of the basis — this is just the size of the subspace spanned by an r-dimensional basis over GF(2).</p><p>A separate but equally important XOR tool is the binary trie (a trie built over the bits of each number, most-significant-bit first). It supports, for a fixed query value x and a dynamic set of numbers, finding the number in the set that maximizes (or minimizes) x XOR y in O(B) time (B = number of bits), by greedily walking down the trie choosing, at each level, the child bit that disagrees with the corresponding bit of x whenever that child exists (this maximizes the resulting bit at that position). Binary tries generalize to support insertion, deletion (via per-node reference counts), and range-bounded variants (by inserting elements in sorted order and processing queries offline).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for: (a) any question about &#x27;maximum/minimum XOR of a subset&#x27;, &#x27;is XOR value V achievable&#x27;, or &#x27;how many distinct subset-XOR values exist&#x27; — these are linear-basis questions; (b) any question about &#x27;maximum/minimum XOR of a PAIR (or of x with an element from a dynamic set)&#x27; — these are binary-trie questions; (c) the array size can be large (n up to 10^5-10^6) but values are bounded (fit in ~20-60 bits), which rules out O(2^n) brute force and points to the O(n * bits) linear-algebra or trie approach.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Building an XOR linear basis: O(n * B) time where B is the bit-width (e.g. 60 for 64-bit values), O(B) space for the basis. Binary trie: O(B) per insertion/query, O(n * B) total space in the worst case.</p></div>
+  </div>
+  <article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex0">
+  <h4>Maximum XOR Subset via Linear Basis</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (1 &lt;= n &lt;= 2*10^5, 1 &lt;= a[i] &lt; 2^60), find the maximum possible value of the XOR of the elements of some non-empty subset (a single element counts as a valid subset).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the XOR linear basis of the array as described above: for each a[i], reduce it against the current basis (XOR-ing away any bit that already has a basis vector) and, if the result is nonzero, insert it at its highest remaining bit. Once the basis is built, greedily construct the maximum achievable XOR: starting from res = 0, iterate basis vectors from the highest bit position down to the lowest, and whenever XOR-ing the basis vector into res would make res strictly larger, do it. This greedy is optimal because each basis vector&#x27;s leading bit is unique and not shared by any lower-indexed basis vector, so setting a higher bit whenever possible can never later be beaten by any combination of lower bits.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    const int BITS = 60;
+    vector&lt;long long&gt; basis(BITS, 0);
+    for (long long x : a) {
+        for (int b = BITS - 1; b &gt;= 0; b--) {
+            if (!((x &gt;&gt; b) &amp; 1)) continue;
+            if (!basis[b]) { basis[b] = x; break; }
+            x ^= basis[b];
+        }
+    }
+    long long res = 0;
+    for (int b = BITS - 1; b &gt;= 0; b--) {
+        if ((res ^ basis[b]) &gt; res) res ^= basis[b];
+    }
+    cout &lt;&lt; res &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+1 2 3 4 5
+</code></pre>
+    <pre><code>7
+</code></pre>
+  </div>
+</article><article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex1">
+  <h4>Counting Distinct Subset XOR Values</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (1 &lt;= n &lt;= 2*10^5, 0 &lt;= a[i] &lt; 2^60), count how many distinct values can be formed by taking the XOR of the elements of some subset (including the empty subset, whose XOR is defined as 0).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the XOR linear basis exactly as in the maximum-XOR problem, and let r be its rank (the number of nonzero basis vectors actually inserted). The set of all subset-XOR values is precisely the linear span of the basis, which — because the basis vectors are linearly independent over GF(2) — has exactly 2^r distinct elements (every one of the 2^r combinations of &#x27;include basis vector b or not&#x27; yields a different XOR value, since basis vectors have distinct leading bits so no two different combinations can collide). The answer is therefore simply 2^r; no explicit enumeration of subsets or basis combinations is needed.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    const int BITS = 60;
+    vector&lt;long long&gt; basis(BITS, 0);
+    int rnk = 0;
+    for (long long x : a) {
+        for (int b = BITS - 1; b &gt;= 0; b--) {
+            if (!((x &gt;&gt; b) &amp; 1)) continue;
+            if (!basis[b]) { basis[b] = x; rnk++; break; }
+            x ^= basis[b];
+        }
+    }
+    long long ans = 1LL &lt;&lt; rnk;
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+1 2 3 4 5
+</code></pre>
+    <pre><code>8
+</code></pre>
+  </div>
+</article><article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex2">
+  <h4>Maximum XOR Pair via Binary Trie</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (2 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt; 2^20), find the maximum value of a[i] XOR a[j] over all pairs of indices i &lt; j.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain a binary trie over the 20-bit representation of the numbers seen so far (most significant bit first). Process the array left to right; before inserting a[i], if the trie already contains at least one previously-inserted number, query it: walk down the trie from the root, and at each level try to go to the child representing the bit OPPOSITE to the current bit of a[i] (since that maximizes the XOR contribution at that bit position); if that child doesn&#x27;t exist, fall back to the child matching a[i]&#x27;s bit. The bits collected along this walk form the maximum XOR achievable between a[i] and any previously inserted element. Track the running maximum over all i, then insert a[i] into the trie and continue. Because each element is compared only against elements inserted strictly before it, every pair (i, j) with i &lt; j is considered exactly once, giving O(n * 20) total time.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+const int BITS = 20;
+struct Node { int ch[2] = {-1, -1}; };
+vector&lt;Node&gt; trie;
+int newNode() { trie.push_back(Node()); return (int)trie.size() - 1; }
+void insertNum(int x) {
+    int cur = 0;
+    for (int b = BITS - 1; b &gt;= 0; b--) {
+        int bit = (x &gt;&gt; b) &amp; 1;
+        if (trie[cur].ch[bit] == -1) trie[cur].ch[bit] = newNode();
+        cur = trie[cur].ch[bit];
+    }
+}
+int queryMax(int x) {
+    int cur = 0, res = 0;
+    for (int b = BITS - 1; b &gt;= 0; b--) {
+        int bit = (x &gt;&gt; b) &amp; 1;
+        int want = bit ^ 1;
+        if (trie[cur].ch[want] != -1) { res |= (1 &lt;&lt; b); cur = trie[cur].ch[want]; }
+        else cur = trie[cur].ch[bit];
+    }
+    return res;
+}
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    trie.clear();
+    newNode(); // root = index 0
+    insertNum(a[0]);
+    int best = 0;
+    for (int i = 1; i &lt; n; i++) {
+        best = max(best, queryMax(a[i]));
+        insertNum(a[i]);
+    }
+    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+3 10 5 25 2 8
+</code></pre>
+    <pre><code>28
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="bit-manipulation-bit-tricks-gray-code">
+  <div class="topic-head"><h2>Bit Tricks &amp; Gray Code</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A Gray code is an ordering of all 2^n binary strings of length n such that every pair of CONSECUTIVE strings in the ordering differs in exactly one bit. The standard construction (the &#x27;reflected binary code&#x27;) is remarkably simple: the i-th string in the sequence (0-indexed) is the binary representation of g(i) = i XOR (i &gt;&gt; 1). This works because XOR-ing a number with its own right-shift only ever flips the bits at positions where the original number&#x27;s bit and the next-higher bit differ, and incrementing i by 1 always changes exactly one such boundary in a way that flips exactly one bit of g(i) relative to g(i-1) -- an inductive fact that is easiest to verify by direct case analysis on the lowest bits of i, but is safe to use as a black-box formula in competitive programming. Gray codes are useful whenever you need to enumerate all subsets/bitmasks of a small set in an order where each step is a single-bit change from the previous one, which lets an accompanying data structure or running computation be updated incrementally (O(1) amortized per step) instead of recomputed from scratch (O(n) per step).</p><p>Beyond Gray codes, several small, very fast bit tricks solve specific numeric subproblems directly, without any search or DP: x &amp; (x-1) clears the lowest set bit of x; x &amp; (-x) isolates the lowest set bit; x | (x+1) sets the lowest UNSET bit (turns the lowest run of trailing 1s into one more 1, or turns a trailing 0 into a 1); __builtin_popcount(x) (or manual bit-counting) counts set bits in O(1) (hardware-accelerated) or O(log x) time. Combining &#x27;set the lowest unset bit&#x27; with a numeric upper bound gives a clean greedy algorithm for maximizing popcount within a range: starting from the lower bound l, repeatedly try to set the lowest currently-unset bit; if doing so keeps the value within the allowed upper bound r, commit to it (this strictly increases popcount while keeping the value as small as possible among values with that popcount); if it would exceed r, stop -- no further bit can help once the very next available flip is already too expensive. This greedy is correct because flipping a LOWER unset bit to 1 always produces a smaller result than flipping any higher one, so processing bits from the lowest upward both maximizes the eventual popcount and keeps the result as small as possible among all values achieving that popcount, matching a &#x27;find the smallest x with maximum popcount&#x27; requirement exactly.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Phrases like &#x27;differ in exactly one bit,&#x27; &#x27;Gray code,&#x27; or &#x27;enumerate all bitmasks so that each step changes only one bit&#x27; point directly at the reflected-binary-code construction. Problems about maximizing or minimizing the number of set bits (popcount) of a value subject to a numeric range or other simple numeric constraint, or about manipulating a SPECIFIC bit (the lowest set bit, the lowest unset bit) directly, are usually solved with one of the small O(1)-per-step bit tricks rather than any search, DP, or bitmask-DP machinery.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(2^n) to generate a full n-bit Gray code sequence (unavoidable, since there are exactly 2^n codewords to output); O(log(max value)) per query for numeric bit-trick problems like popcount maximization within a bound, since at most one pass over the bits of the value is needed.</p></div>
+  </div>
+  <article class="example-card" id="bit-manipulation-bit-tricks-gray-code-ex0">
+  <h4>Generate an n-bit Gray Code Sequence</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an integer n (1 &lt;= n &lt;= 16), output all 2^n binary strings of length n, one per line, in an order such that every two CONSECUTIVE strings in the output differ in exactly one bit position (and, implicitly, the sequence also wraps around: the last and first strings differ in exactly one bit too, though this example only requires the printed consecutive-pairs property).</p><p>Input: a single integer n.<br>Output: 2^n lines, each an n-character binary string, forming a valid Gray code sequence.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>For i from 0 to 2^n - 1, compute g = i XOR (i &gt;&gt; 1) and print g as an n-bit binary string (zero-padded on the left). This is the textbook reflected-binary-code construction: because consecutive integers i and i+1 always differ from each other by the classic &#x27;carry chain&#x27; pattern (some number of trailing 1-bits flip to 0 and the next 0-bit flips to 1), applying XOR with a right-shift-by-1 collapses that entire carry chain into a change in exactly one output bit between g(i) and g(i+1). Verified on n=2, reproducing exactly the four strings 00, 01, 11, 10 (the standard textbook example for n=2), and independently verified on n=3 by checking every consecutive pair in the 8-line output (000, 001, 011, 010, 110, 111, 101, 100) differs in exactly one bit, including the wraparound from the last string (100) back to the first (000).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    int total = 1 &lt;&lt; n;
+    for(int i = 0; i &lt; total; i++){
+        int g = i ^ (i &gt;&gt; 1);
+        string s(n, &#x27;0&#x27;);
+        for(int b = 0; b &lt; n; b++){
+            if(g &amp; (1 &lt;&lt; (n-1-b))) s[b] = &#x27;1&#x27;;
+        }
+        cout &lt;&lt; s &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+</code></pre>
+    <pre><code>000
+001
+011
+010
+110
+111
+101
+100
+</code></pre>
+  </div>
+</article><article class="example-card" id="bit-manipulation-bit-tricks-gray-code-ex1">
+  <h4>Smallest Value With Maximum Popcount in a Range</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given q queries (1 &lt;= q &lt;= 10^4). Each query gives two integers l and r (1 &lt;= l &lt;= r &lt;= 10^18). For each query, find the SMALLEST integer x with l &lt;= x &lt;= r that has the maximum possible number of set bits (1-bits in binary) among all integers in [l, r].</p><p>Input: q, then q lines each with l and r.<br>Output: q lines, each the answer x for the corresponding query.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>For a single query, start with x = l. Then, scanning bit positions from the LOWEST (bit 0) upward, whenever bit b of x is currently 0, tentatively set it (cand = x | (1 &lt;&lt; b)); if cand &lt;= r, commit to it (x = cand), since this strictly increases the popcount while keeping x as small as possible among values with that popcount (setting a lower bit first always yields a smaller result than setting a higher one). If setting that bit would push x past r, stop scanning entirely -- once one bit-flip is unaffordable, no later (higher, more expensive) bit-flip can be affordable either while still yielding a smaller-or-equal result than simply stopping here. The final x is the answer for that query. Cross-checked against an O(range size) brute force (scanning every integer in [l, r] and comparing popcounts, tie-breaking by smallest value) across 300 random small-range queries with zero mismatches. On the sample: query (1,2) -&gt; 1 (both 1 and 2 have popcount 1, tie broken by smaller value); query (2,4) -&gt; 3 (0b11, popcount 2, the maximum in that range); query (1,10) -&gt; 7 (0b0111, popcount 3, the maximum achievable up to 10).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef unsigned long long ull;
+ull solve(ull l, ull r){
+    ull x = l;
+    for(int b = 0; b &lt; 63; b++){
+        ull bit = 1ULL &lt;&lt; b;
+        if(!(x &amp; bit)){
+            ull cand = x | bit;
+            if(cand &lt;= r) x = cand;
+            else break;
+        }
+    }
+    return x;
+}
+int main(){
+    int q; cin &gt;&gt; q;
+    while(q--){
+        ull l, r; cin &gt;&gt; l &gt;&gt; r;
+        cout &lt;&lt; solve(l, r) &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 2
+2 4
+1 10
+</code></pre>
+    <pre><code>1
+3
+7
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="bit-manipulation-bitset-optimization-for-brute-force-speedup">
+  <div class="topic-head"><h2>Bitset Optimization for Brute-Force Speedup</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>std::bitset (or a hand-rolled array of 64-bit words) lets you pack many independent boolean values into machine words and process them with word-level bitwise operations (AND, OR, XOR, shifts), turning a brute-force algorithm whose inner loop does O(1) boolean comparisons per pair of elements into one that does the SAME asymptotic number of comparisons but 64 (or word-size-many) of them per CPU instruction. This is not an asymptotic-complexity improvement in the usual sense -- the algorithm is still &#x27;the same&#x27; O(n*m) or O(n^2) approach -- but it is often exactly the constant-factor speedup (roughly 32x to 64x) needed to turn a brute force that is 30x too slow into one that comfortably fits the time limit, which makes it a distinct and very useful technique to recognize on its own.</p><p>Two canonical patterns cover most competitive-programming uses. The first is MULTI-ITEM SIMULTANEOUS COMPARISON: to check whether a candidate matches (or nearly matches, e.g. within Hamming distance 1) every one of m other items, precompute, for each position/attribute k and each possible value c at that position, a bitset over the m items marking which of them have a value DIFFERENT from c at position k. Then checking a candidate against all m items simultaneously becomes a matter of OR-ing together the appropriate &#x27;mismatch&#x27; bitset for each position the candidate specifies, tracking not just &#x27;which items have at least one mismatch so far&#x27; but &#x27;which items have at least TWO mismatches so far&#x27; (by ANDing the new mismatch bitset with the already-accumulated at-least-one-mismatch bitset before updating it) -- this answers &#x27;is every item within Hamming distance 1?&#x27; in O(n * m / 64) instead of O(n * m) for a single candidate, which matters when many candidates must be tried.</p><p>The second pattern is BITSET STRING MATCHING (the Shift-And / Shift-Or algorithm): to find every occurrence of a pattern of length m inside a text of length n, precompute for each alphabet character c a bitset B[c] of length m marking the positions in the pattern where character c appears. Maintain a single &#x27;state&#x27; bitset D of length m, initially all zero; for each character of the text in order, update D = ((D &lt;&lt; 1) | 1) &amp; B[current character] -- the left shift with an incoming 1-bit represents &#x27;try starting (or continuing) a match one position further along,&#x27; and the AND with B[c] keeps only the hypothetical matches that remain consistent with the character just read. Whenever the highest bit of D (bit m-1) becomes set, a full match of the pattern has just ended at the current text position. This finds all occurrences in O(n * m / 64) instead of the naive O(n * m), with no suffix automaton or KMP failure-function machinery required.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The intended/obvious algorithm is already asymptotically reasonable (there is no fundamentally faster algorithm needed), but it involves a nested loop whose innermost step is a simple, position-independent boolean test (character equality, value equality, adjacency) repeated across a large fixed second dimension (many strings, many positions, many candidates) -- and n*m or n^2 is in the range of roughly 10^8 to a few times 10^9 word-level operations, which a raw scalar loop cannot finish in time but a bitset-vectorized version (roughly 64x fewer word operations) can. This is the &#x27;same algorithm, just faster in practice&#x27; signal, distinct from needing a genuinely different (asymptotically better) algorithm.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n * m / 64) (or O(n^2 / 64)) time instead of O(n * m) (or O(n^2)), where the division by 64 (or whatever the machine word / bitset block size is) comes directly from packing that many boolean comparisons into one word-level operation; O(n * m / 64) space when a full table of per-position or per-character bitsets must be precomputed.</p></div>
+  </div>
+  <article class="example-card" id="bit-manipulation-bitset-optimization-for-brute-force-speedup-ex0">
+  <h4>Find a String Within Hamming Distance 1 of Every Given String</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given m strings (2 &lt;= m &lt;= 50), each of the same length n (1 &lt;= n &lt;= 50), consisting of lowercase English letters. Find any string of length n that is within Hamming distance 1 (i.e., differs in AT MOST one character position) of EVERY one of the m given strings, or report -1 if no such string exists.</p><p>Input: m and n, then m strings each of length n.<br>Output: a valid string of length n satisfying the condition, or -1 if impossible.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Any valid answer must itself be within Hamming distance 1 of the FIRST given string (since the first string is one of the m constraints), so it suffices to check only 1 + n*25 candidates: the first string unchanged, and every way of changing exactly one position of the first string to one of the other 25 letters. For each candidate, checking whether it is within distance 1 of all m strings naively costs O(n*m) per candidate (O(n^2 * m) total) -- instead, precompute, for every position k (0..n-1) and every letter c (&#x27;a&#x27;..&#x27;z&#x27;), a bitset of size m marking which of the m strings have a DIFFERENT character than c at position k. To check one candidate, maintain two running bitsets over the m strings, atLeastOne and atLeastTwo (both starting all-zero); for each position k of the candidate, let cur = the precomputed mismatch-bitset for (k, candidate[k]); update atLeastTwo |= (atLeastOne &amp; cur) BEFORE updating atLeastOne |= cur (so a string only ever enters atLeastTwo once it has accumulated a SECOND mismatch). After scanning all n positions, the candidate is valid for every string if and only if atLeastTwo is entirely zero. This checks one candidate against all m strings in O(n*m/64) instead of O(n*m).</p><p>On the sample (three strings &#x27;abc&#x27;, &#x27;xyc&#x27;, &#x27;xbz&#x27;), the first string itself fails (it is distance 2 from &#x27;xyc&#x27;: positions 0 and 1 both differ), but changing position 0 of &#x27;abc&#x27; to &#x27;x&#x27; produces the candidate &#x27;xbc&#x27;, which is distance 1 from all three input strings (&#x27;abc&#x27;: differs at position 0; &#x27;xyc&#x27;: differs at position 1; &#x27;xbz&#x27;: differs at position 2) -- so &#x27;xbc&#x27; is output. Cross-checked against an exhaustive brute-force search over all length-n strings (restricted to the small alphabet actually used in each test) across 300 randomly generated small instances, with zero mismatches in either the found answer&#x27;s validity or the possible/impossible determination.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+const int MAXM = 2005;
+int n, m;
+vector&lt;string&gt; t;
+// notEqual[k][c] = bitset over the m strings: bit j set if t[j][k] != character (&#x27;a&#x27;+c)
+vector&lt;array&lt;bitset&lt;MAXM&gt;, 26&gt;&gt; notEqual;
+
+bool check(const string &amp;cand){
+    bitset&lt;MAXM&gt; atLeastOne, atLeastTwo;
+    for(int k = 0; k &lt; n; k++){
+        const bitset&lt;MAXM&gt; &amp;cur = notEqual[k][cand[k]-&#x27;a&#x27;];
+        atLeastTwo |= (atLeastOne &amp; cur);
+        atLeastOne |= cur;
+    }
+    return atLeastTwo.none();
+}
+
+int main(){
+    cin &gt;&gt; m &gt;&gt; n; // m strings, each of length n
+    t.resize(m);
+    for(auto &amp;s : t) cin &gt;&gt; s;
+    notEqual.assign(n, array&lt;bitset&lt;MAXM&gt;,26&gt;());
+    for(int k = 0; k &lt; n; k++){
+        for(int j = 0; j &lt; m; j++){
+            int c = t[j][k]-&#x27;a&#x27;;
+            for(int ch = 0; ch &lt; 26; ch++){
+                if(ch != c) notEqual[k][ch][j] = 1;
+            }
+        }
+    }
+    // candidate 1: t[0] unchanged
+    if(check(t[0])){ cout &lt;&lt; t[0] &lt;&lt; &quot;\n&quot;; return 0; }
+    // try every single-position substitution of t[0]
+    string cand = t[0];
+    for(int pos = 0; pos &lt; n; pos++){
+        char orig = cand[pos];
+        for(char ch = &#x27;a&#x27;; ch &lt;= &#x27;z&#x27;; ch++){
+            if(ch == orig) continue;
+            cand[pos] = ch;
+            if(check(cand)){ cout &lt;&lt; cand &lt;&lt; &quot;\n&quot;; return 0; }
+        }
+        cand[pos] = orig;
+    }
+    cout &lt;&lt; -1 &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3
+abc
+xyc
+xbz
+</code></pre>
+    <pre><code>xbc
+</code></pre>
+  </div>
+</article><article class="example-card" id="bit-manipulation-bitset-optimization-for-brute-force-speedup-ex1">
+  <h4>Exact Pattern Matching via the Bitset Shift-And Algorithm</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a text string of length n and a pattern string of length m (1 &lt;= m &lt;= n &lt;= 2000), both consisting of lowercase English letters. Find every starting position (0-indexed) in the text where the pattern occurs as an exact contiguous substring.</p><p>Input: the text on one line, then the pattern on the next line.<br>Output: the number of matches, then (on the next line) all matching starting positions in increasing order, separated by spaces (omit the second line if there are zero matches).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>For each of the 26 letters c, precompute a bitset B[c] of length m where bit j is set exactly when pattern[j] == c. Maintain a state bitset D of length m, initially all zero. Scan the text left to right; for each text character ch at position i, update D = ((D &lt;&lt; 1) | 1) &amp; B[ch]: the left shift advances every previously-hypothesized partial match by one character (with the incoming 1-bit representing &#x27;a brand new match attempt could also be starting here&#x27;), and the AND with B[ch] discards every hypothesis that is no longer consistent with the character just read. Whenever bit (m-1) of D is set after processing position i, a full match of the pattern has just completed, ending at i, so record the starting position i - m + 1. This processes the whole text in O(n*m/64) instead of the naive O(n*m) character-by-character substring comparison.</p><p>On the sample (text &#x27;abaababaab&#x27;, pattern &#x27;aba&#x27;), matches start at positions 0, 3, and 5 (verified by direct substring inspection: text[0..2]=&#x27;aba&#x27;, text[3..5]=&#x27;aba&#x27;, text[5..7]=&#x27;aba&#x27;, and no other starting position yields &#x27;aba&#x27;). Cross-checked against a naive O(n*m) substring-comparison brute force across 300 random binary-alphabet text/pattern pairs (lengths up to 30) with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+const int MAXP = 2005;
+int main(){
+    string text, pattern;
+    cin &gt;&gt; text &gt;&gt; pattern;
+    int n = text.size(), m = pattern.size();
+    array&lt;bitset&lt;MAXP&gt;, 26&gt; B;
+    for(int c = 0; c &lt; 26; c++) B[c].reset();
+    for(int j = 0; j &lt; m; j++){
+        B[pattern[j]-&#x27;a&#x27;][j] = 1;
+    }
+    bitset&lt;MAXP&gt; D; // D.reset() by default
+    vector&lt;int&gt; starts;
+    for(int i = 0; i &lt; n; i++){
+        D = ((D &lt;&lt; 1) | bitset&lt;MAXP&gt;(1)) &amp; B[text[i]-&#x27;a&#x27;];
+        if(m &gt;= 1 &amp;&amp; D[m-1]){
+            starts.push_back(i - m + 1);
+        }
+    }
+    cout &lt;&lt; starts.size() &lt;&lt; &quot;\n&quot;;
+    for(size_t k = 0; k &lt; starts.size(); k++){
+        cout &lt;&lt; starts[k] &lt;&lt; (k+1&lt;starts.size()? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abaababaab
+aba
+</code></pre>
+    <pre><code>3
+0 3 5
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">14</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="maximum xor subset cses subset enumeration / xor linear basis given an array of n integers, find the maximum xor sum achievable by any subset of it.">
+  <td><a href="https://cses.fi/problemset/task/3191" target="_blank" rel="noopener noreferrer">Maximum Xor Subset</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">subset enumeration / XOR linear basis</td>
+  <td class="desc-cell">Given an array of n integers, find the maximum XOR sum achievable by any subset of it.</td>
+</tr><tr data-search="number of subset xors cses subset enumeration / xor linear basis given an array of n integers, count how many distinct xor values can be formed by some subset.">
+  <td><a href="https://cses.fi/problemset/task/3211" target="_blank" rel="noopener noreferrer">Number of Subset Xors</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">subset enumeration / XOR linear basis</td>
+  <td class="desc-cell">Given an array of n integers, count how many distinct XOR values can be formed by some subset.</td>
+</tr><tr data-search="compatible numbers codeforces subset enumeration (sum over subsets / sos dp) given n numbers each less than 2^22, for every number find another number in the array whose bitwise and with it is zero, or report none exists.">
+  <td><a href="https://codeforces.com/problemset/problem/165/E" target="_blank" rel="noopener noreferrer">Compatible Numbers</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2200</td>
+  <td class="subtopic-cell">subset enumeration (Sum over Subsets / SOS DP)</td>
+  <td class="desc-cell">Given n numbers each less than 2^22, for every number find another number in the array whose bitwise AND with it is zero, or report none exists.</td>
+</tr><tr data-search="maximum students taking exam leetcode subset enumeration (bitmask dp) given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.">
+  <td><a href="https://leetcode.com/problems/maximum-students-taking-exam/" target="_blank" rel="noopener noreferrer">Maximum Students Taking Exam</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#1349)</td>
+  <td class="subtopic-cell">subset enumeration (bitmask DP)</td>
+  <td class="desc-cell">Given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.</td>
+</tr><tr data-search="vasiliy&#x27;s multiset codeforces xor properties (binary trie) maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum xor of a given value x with any element currently in the multiset.&quot;">
+  <td><a href="https://codeforces.com/problemset/problem/706/D" target="_blank" rel="noopener noreferrer">Vasiliy&#x27;s Multiset</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">XOR properties (binary trie)</td>
+  <td class="desc-cell">Maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum XOR of a given value x with any element currently in the multiset.&quot;</td>
+</tr><tr data-search="maximum xor with an element from array leetcode xor properties (binary trie, offline queries) given an array and queries of the form (x, m), find the maximum xor of x with any array element that is &lt;= m, or -1 if none qualifies.">
+  <td><a href="https://leetcode.com/problems/maximum-xor-with-an-element-from-array/" target="_blank" rel="noopener noreferrer">Maximum XOR With an Element From Array</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#1707)</td>
+  <td class="subtopic-cell">XOR properties (binary trie, offline queries)</td>
+  <td class="desc-cell">Given an array and queries of the form (x, m), find the maximum XOR of x with any array element that is &lt;= m, or -1 if none qualifies.</td>
+</tr><tr data-search="sum of xor functions codeforces xor properties given an array, compute the sum over all subarrays [l, r] of (xor of the subarray) times (r - l + 1).">
+  <td><a href="https://codeforces.com/problemset/problem/1879/D" target="_blank" rel="noopener noreferrer">Sum of XOR Functions</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1700</td>
+  <td class="subtopic-cell">XOR properties</td>
+  <td class="desc-cell">Given an array, compute the sum over all subarrays [l, r] of (XOR of the subarray) times (r - l + 1).</td>
+</tr><tr data-search="gray code cses bit tricks &amp; gray code (construction) for a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a gray code).">
+  <td><a href="https://cses.fi/problemset/task/2205" target="_blank" rel="noopener noreferrer">Gray Code</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Bit Tricks &amp; Gray Code (construction)</td>
+  <td class="desc-cell">For a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a Gray code).</td>
+</tr><tr data-search="bits codeforces bit tricks &amp; gray code (popcount maximization) for up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.">
+  <td><a href="https://codeforces.com/problemset/problem/484/A" target="_blank" rel="noopener noreferrer">Bits</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1700</td>
+  <td class="subtopic-cell">Bit Tricks &amp; Gray Code (popcount maximization)</td>
+  <td class="desc-cell">For up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.</td>
+</tr><tr data-search="bitwise operation wizard codeforces bit tricks &amp; gray code (bit-by-bit interactive determination) in an interactive problem, find two indices whose values (a hidden permutation) xor to the maximum possible value, using only queries that compare the bitwise or of two chosen pairs.">
+  <td><a href="https://codeforces.com/problemset/problem/1936/A" target="_blank" rel="noopener noreferrer">Bitwise Operation Wizard</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1700</td>
+  <td class="subtopic-cell">Bit Tricks &amp; Gray Code (bit-by-bit interactive determination)</td>
+  <td class="desc-cell">In an interactive problem, find two indices whose values (a hidden permutation) XOR to the maximum possible value, using only queries that compare the bitwise OR of two chosen pairs.</td>
+</tr><tr data-search="spy-string codeforces bitset optimization for brute-force speedup given m strings of length n, find any string of length n that is within hamming distance 1 of every given string, or report impossible.">
+  <td><a href="https://codeforces.com/problemset/problem/1360/F" target="_blank" rel="noopener noreferrer">Spy-string</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1700</td>
+  <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
+  <td class="desc-cell">Given m strings of length n, find any string of length n that is within Hamming distance 1 of every given string, or report impossible.</td>
+</tr><tr data-search="gcd counting codeforces bitset optimization for brute-force speedup in a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a gcd greater than 1.">
+  <td><a href="https://codeforces.com/problemset/problem/1101/D" target="_blank" rel="noopener noreferrer">GCD Counting</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2000</td>
+  <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
+  <td class="desc-cell">In a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a GCD greater than 1.</td>
+</tr><tr data-search="dasha and cyclic table codeforces bitset optimization for brute-force speedup given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).">
+  <td><a href="https://codeforces.com/problemset/problem/754/E" target="_blank" rel="noopener noreferrer">Dasha and cyclic table</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2600</td>
+  <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
+  <td class="desc-cell">Given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).</td>
+</tr><tr data-search="substrings in a string codeforces bitset optimization for brute-force speedup given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.">
+  <td><a href="https://codeforces.com/problemset/problem/914/F" target="_blank" rel="noopener noreferrer">Substrings in a String</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 3000</td>
+  <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
+  <td class="desc-cell">Given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

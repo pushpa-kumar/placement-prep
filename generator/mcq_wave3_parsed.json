@@ -1,0 +1,3622 @@
+[
+ {
+  "question": "What is the output of the following C++ program?",
+  "code": "#include <iostream>\nusing namespace std;\n\nvoid Q(int x) {\n    try {\n        if (x < 0)\n            throw x + 5;\n        else\n            throw x;\n    } catch (int x) {\n        cout << \" A \" << x;\n    }\n}\n\nint main() {\n    Q(-2);\n    cout << \" C \";\n    return 0;\n}",
+  "options": [
+   "`A -3 C`",
+   "`A 3 C`",
+   "`A -4 C`",
+   "`A 4 C`"
+  ],
+  "correctIndex": 1,
+  "explanation": "`Q(-2)` throws `x + 5 = -2 + 5 = 3`, caught by `catch(int x)`, printing \" A 3\". Control returns to main which prints \" C \", giving \"A 3 C\".",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "Deloitte (campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/deloitee.md"
+ },
+ {
+  "question": "What will be the output of the C program given below? (used in the same C/C++ MCQ block of the OA)",
+  "code": "main() {\n    auto int p = 4 - 2;\n    p++;\n    static int s;\n    s = (p = ++s) + p;\n    printf(\"%d\", s++);\n}",
+  "options": [
+   "3",
+   "4",
+   "2",
+   "1"
+  ],
+  "correctIndex": 2,
+  "explanation": "`p` starts at 2, `p++` makes it 3 (unused after). `static int s` defaults to 0; `++s` makes it 1; `p = ++s` sets p=1; `s = p + p = 2`; `printf` prints current `s` (2) then post-increments to 3.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "Deloitte (campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/deloitee.md"
+ },
+ {
+  "question": "What is the output of the following C program?",
+  "code": "#include <stdio.h>\nint main() {\n    char arr[] = \"abcd\";\n    char *p = arr;\n    printf(\"%c\\t\", ++*p);\n    printf(\"%c\\t\", *p++);\n    printf(\"%c\\t\", (*p)++);\n    printf(\"%c\\n\", *p);\n    return 0;\n}",
+  "options": [
+   "b b b c",
+   "b c c d",
+   "b b c c",
+   "b c c c"
+  ],
+  "correctIndex": 0,
+  "explanation": "`++*p` increments 'a'->'b' and prints 'b'. `*p++` prints current char 'b' then advances pointer to arr[1]. `(*p)++` prints old value 'b' (arr[1] was 'b') then increments it to 'c'. Final `*p` prints 'c' (post-increment already applied). Result: \"b b b c\".",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "Oracle (campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/Oracle.md"
+ },
+ {
+  "question": "What is the output of the following C program?",
+  "code": "#include <stdio.h>\n#define MAX(a,b) ((a) > (b) ? (a) : (b))\nint main() {\n    int x = 5, y = 10;\n    printf(\"%d %d %d\\n\", MAX(x++, y++), x, y);\n    return 0;\n}",
+  "options": [
+   "11 6 12",
+   "12 6 12",
+   "11 7 12",
+   "12 7 12"
+  ],
+  "correctIndex": 0,
+  "explanation": "Classic macro double-evaluation trap. `MAX(x++, y++)` expands to `((x++) > (y++) ? (x++) : (y++))`; the comparison evaluates `x++` and `y++` once each (x becomes 6, y becomes 11), 5>10 is false, so the false branch `(y++)` is evaluated again, returning 11 and incrementing y to 12. Final x=6, y=12, printed value 11.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "Oracle (campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/Oracle.md"
+ },
+ {
+  "question": "Which one of the following statements is correct about C preprocessor macros?",
+  "code": null,
+  "options": [
+   "A macro must be defined in capital letters.",
+   "Once preprocessing is over and the program is sent for compilation, the macros are removed from the expanded source code.",
+   "Macros have a local scope.",
+   "In a macro call, the control is passed to the macro."
+  ],
+  "correctIndex": 1,
+  "explanation": "The preprocessor textually expands macros before compilation; the compiler never sees the macro names, only expanded text.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "IBM (Diversity Hiring Pool Campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/IBM%20Diversity%20Hiring%20Pool%20Campus.md"
+ },
+ {
+  "question": "The `malloc()` or `realloc()` function in C/C++ allocates memory at which time/location?",
+  "code": null,
+  "options": [
+   "Compilation time on stack",
+   "Linking time on stack",
+   "Load time on heap",
+   "Execution time on heap E) Execution time on stack"
+  ],
+  "correctIndex": 3,
+  "explanation": "`malloc`/`realloc`/`new` allocate on the heap at runtime (execution time), not compile time or stack.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "IBM (Diversity Hiring Pool Campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/IBM%20Diversity%20Hiring%20Pool%20Campus.md"
+ },
+ {
+  "question": "A circular linked list can be used to implement:",
+  "code": null,
+  "options": [
+   "A queue",
+   "A stack",
+   "Both a queue and a stack",
+   "Neither"
+  ],
+  "correctIndex": 2,
+  "explanation": "With a tail pointer, both push/pop (stack) and enqueue/dequeue (queue) can be done in O(1) on a circular linked list. --- ## LinkedIn C++ Skill Assessment questions (real assessment bank; crowd-sourced with verified correct answers, widely used as an interview/screening prep source)",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "IBM (Diversity Hiring Pool Campus OA, IIT Kharagpur)",
+  "source": "GitHub (dsainvg001/OA_QUES_PREV_YR_KGP)",
+  "url": "https://raw.githubusercontent.com/dsainvg001/OA_QUES_PREV_YR_KGP/main/IBM%20Diversity%20Hiring%20Pool%20Campus.md"
+ },
+ {
+  "question": "What is the output of this code?",
+  "code": "vector<int> v(22);\nbool b = (v[6]);\nprintf(\"%d\", !b);",
+  "options": [
+   "False",
+   "0",
+   "1",
+   "This code has an error."
+  ],
+  "correctIndex": 2,
+  "explanation": "`vector<int> v(22)` value-initializes all 22 ints to 0, so `v[6]` is 0, `b` is false, `!b` is true \u2192 prints 1.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes)",
+  "url": "https://raw.githubusercontent.com/Ebazhanov/linkedin-skill-assessments-quizzes/main/c%2B%2B/c%2B%2B-quiz.md"
+ },
+ {
+  "question": "Which of the following is a reason why using this line is considered a bad practice?",
+  "code": "using namespace std;",
+  "options": [
+   "The compiled code is always bigger because of all of the imported symbols.",
+   "If the code uses a function defined in two different libraries with the same prototype but possibly with different implementations, there will be a compilation error due to ambiguity.",
+   "It automatically includes all header files in the standard library.",
+   "It causes the compiler to enforce exclusive inclusion of standard-library headers."
+  ],
+  "correctIndex": 1,
+  "explanation": "`using namespace std;` pulls the entire std namespace into scope, risking name collisions/ambiguity with user or third-party symbols of the same name.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes)",
+  "url": ""
+ },
+ {
+  "question": "What is the output of the code given below?",
+  "code": "#include <iostream>\n\nint main(){\n    int x=10, y=20;\n    std::cout << \"x = \" << x++ << \" and y = \" << --y << std::endl;\n    std::cout << \"x = \" << x-- << \" and y = \" << ++y << std::endl;\n    return(0);\n}",
+  "options": [
+   "`x=10,y=20` then `x=11,y=19`",
+   "`x=11,y=19` then `x=10,y=20`",
+   "`x=10,y=19` then `x=11,y=20`",
+   "`x=11,y=20` then `x=10,y=19`"
+  ],
+  "correctIndex": 2,
+  "explanation": "`x++` prints 10 then x becomes 11; `--y` decrements first to 19 then prints 19. Second line: `x--` prints 11 then x becomes 10; `++y` increments first to 20 then prints 20.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q15)",
+  "url": ""
+ },
+ {
+  "question": "What is the output of the code given below?",
+  "code": "int8_t a=200;\nuint8_t b=100;\nif(a>b)\n    std::cout<<\"greater\";\nelse\n    std::cout<<\"less\";",
+  "options": [
+   "Exception on comparison",
+   "greater",
+   "less",
+   "Compiler error"
+  ],
+  "correctIndex": 2,
+  "explanation": "`int8_t a = 200` overflows the signed 8-bit range and becomes -56 (implementation-defined but typical two's-complement wraparound). -56 > 100 is false, so \"less\" is printed.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q17)",
+  "url": ""
+ },
+ {
+  "question": "What is the output of this block of code?",
+  "code": "int8_t a=200;\nuint8_t b=100;\nstd::cout<<\"a=\"<<(int)a;\nstd::cout<<\", b=\"<<(int)b;",
+  "options": [
+   "a=-56, b=100",
+   "a=-55, b=100",
+   "a=200, b=-156",
+   "a=200, b=100"
+  ],
+  "correctIndex": 0,
+  "explanation": "Implicit conversion of `int` literal 200 to `int8_t` (signed char) wraps around to -56; `uint8_t` holds 100 fine.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q18)",
+  "url": ""
+ },
+ {
+  "question": "What is the output after executing this code snippet?",
+  "code": "int x=5, y=2;\nif(x & y) {\n    /* part A */\n}\nelse {\n    /* part B */\n}",
+  "options": [
+   "Part A (logical AND true)",
+   "Part B, because (x & y) is 0",
+   "Part A, because (x & y) is nonzero",
+   "Part B, invalid statement"
+  ],
+  "correctIndex": 1,
+  "explanation": "`&` is bitwise AND. 5 = 0b101, 2 = 0b010; bitwise AND = 0b000 = 0, so the else branch (Part B) executes.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q19)",
+  "url": ""
+ },
+ {
+  "question": "Which choice is the most reasonable implementation of `std::mutex::lock()` using `std::mutex::try_lock()`?",
+  "code": "// Option A\nvoid std::mutex::lock(){\n    while(!this->try_lock());\n}",
+  "options": [
+   "`while(!this->try_lock());`",
+   "`return (this->try_lock());`",
+   "`while(1) this->try_lock();`",
+   "`while(this->try_lock());`"
+  ],
+  "correctIndex": 0,
+  "explanation": "`lock()` should spin (busy-wait) until `try_lock()` succeeds (returns true), i.e. loop `while (!try_lock())`. Option D loops while it succeeds, which is backwards.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q60)",
+  "url": ""
+ },
+ {
+  "question": "What is the main difference between `std::mutex::lock()` and `std::mutex::try_lock()`?",
+  "code": null,
+  "options": [
+   "`lock()` has higher privilege",
+   "Both attempt to acquire the lock, but `lock()` blocks if unavailable while `try_lock()` returns immediately with success/failure",
+   "`lock()` enforces preemption, `try_lock()` suggests it",
+   "`try_lock()` snatches the mutex from the current owner"
+  ],
+  "correctIndex": 1,
+  "explanation": "`lock()` blocks (waits) until the mutex is available; `try_lock()` attempts once and returns immediately, reporting whether it succeeded.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q61)",
+  "url": ""
+ },
+ {
+  "question": "What is a race condition in C++?",
+  "code": null,
+  "options": [
+   "A condition where the program runs faster than expected",
+   "A condition where multiple threads access shared data concurrently and the outcome depends on execution timing",
+   "A condition where two threads compete for CPU time",
+   "A condition where a loop executes too fast"
+  ],
+  "correctIndex": 1,
+  "explanation": "A race condition arises when the correctness of a program depends on the relative timing of concurrent operations on shared data.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q159)",
+  "url": ""
+ },
+ {
+  "question": "Consider the following code that has a race condition. What is the correct way to fix it?",
+  "code": "#include <thread>\n#include <vector>\n\nint counter = 0;\n\nvoid incrementCounter() {\n    for(int i = 0; i < 1000; i++) {\n        counter++;\n    }\n}\n\nint main() {\n    std::vector<std::thread> threads;\n    for(int i = 0; i < 10; i++) {\n        threads.push_back(std::thread(incrementCounter));\n    }\n    for(auto& t : threads) {\n        t.join();\n    }\n    return 0;\n}",
+  "options": [
+   "Add `volatile` keyword",
+   "Use `std::mutex` to lock/unlock around `counter++`",
+   "Use `std::this_thread::sleep_for()` to delay each increment",
+   "Change `counter++` to `++counter`"
+  ],
+  "correctIndex": 1,
+  "explanation": "`volatile` does not provide atomicity or synchronization in C++; pre/post-increment form makes no difference to the race. A mutex (or std::atomic<int>) is needed to serialize the read-modify-write of `counter`.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q160)",
+  "url": ""
+ },
+ {
+  "question": "What is the purpose of `std::move` in C++11?",
+  "code": null,
+  "options": [
+   "To copy an object to a new location",
+   "To cast an object to an rvalue reference, enabling move semantics",
+   "To physically move memory from one address to another",
+   "To delete an object and create a new one"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::move` is just a cast to an rvalue reference; it enables move constructors/assignment to be selected, it does not itself move anything.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q161)",
+  "url": ""
+ },
+ {
+  "question": "What is the output of this code?",
+  "code": "#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> v1 = {1, 2, 3};\n    std::vector<int> v2 = std::move(v1);\n    std::cout << v1.size() << \" \" << v2.size();\n    return 0;\n}",
+  "options": [
+   "3 3",
+   "0 3",
+   "3 0",
+   "Compilation error"
+  ],
+  "correctIndex": 1,
+  "explanation": "After being moved-from, `v1` is left in a valid but unspecified state \u2014 for `std::vector` in practice it becomes empty (size 0); `v2` takes ownership of the original 3 elements.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q162)",
+  "url": ""
+ },
+ {
+  "question": "What is the difference between `std::unique_ptr` and `std::shared_ptr`?",
+  "code": null,
+  "options": [
+   "unique_ptr has exclusive ownership, shared_ptr allows multiple owners",
+   "unique_ptr is faster but less safe",
+   "shared_ptr can only be used with classes",
+   "There is no difference"
+  ],
+  "correctIndex": 0,
+  "explanation": "`unique_ptr` cannot be copied, only moved (single owner); `shared_ptr` uses atomic reference counting to allow multiple simultaneous owners.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q165)",
+  "url": ""
+ },
+ {
+  "question": "What is RAII in C++?",
+  "code": null,
+  "options": [
+   "Random Access Iterator Interface",
+   "Resource Acquisition Is Initialization",
+   "Recursive Algorithm Implementation Interface",
+   "Runtime Allocation and Initialization"
+  ],
+  "correctIndex": 1,
+  "explanation": "RAII ties resource lifetime to object lifetime: acquire in the constructor, release in the destructor, so resources are automatically cleaned up via stack unwinding/scope exit.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q166)",
+  "url": ""
+ },
+ {
+  "question": "What is `std::atomic` used for?",
+  "code": null,
+  "options": [
+   "Atomic energy calculations",
+   "Thread-safe operations on shared variables without locks",
+   "Atomic data types",
+   "Indivisible operations on atoms"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::atomic<T>` provides lock-free (on most platforms), thread-safe read/modify/write access to shared variables using specific memory-ordering guarantees.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q190)",
+  "url": ""
+ },
+ {
+  "question": "What is the difference between `std::mutex` and `std::recursive_mutex`?",
+  "code": null,
+  "options": [
+   "recursive_mutex can be locked multiple times by the same thread",
+   "mutex is faster",
+   "recursive_mutex is deprecated",
+   "There is no difference"
+  ],
+  "correctIndex": 0,
+  "explanation": "A plain `std::mutex` deadlocks if the owning thread tries to lock it again; `std::recursive_mutex` tracks an owner and a lock count, allowing repeated locking by the same thread.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q191)",
+  "url": ""
+ },
+ {
+  "question": "What happens if a class has a virtual destructor but the base class pointer deletes an object of a derived class that has already been partially destructed?",
+  "code": null,
+  "options": [
+   "Undefined behavior \u2014 double destruction / memory corruption",
+   "The base destructor runs twice safely",
+   "The compiler prevents the deletion",
+   "The derived destructor runs twice without side effects"
+  ],
+  "correctIndex": 0,
+  "explanation": "Deleting an already-destructed object through any pointer (virtual destructor or not) is undefined behavior \u2014 the object's lifetime has already ended.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q222)",
+  "url": ""
+ },
+ {
+  "question": "What is the purpose of the placement new operator in C++?",
+  "code": null,
+  "options": [
+   "It constructs an object at a specific pre-allocated memory address",
+   "It allocates memory on the heap and initializes the object",
+   "It creates multiple objects in a single memory block automatically",
+   "It performs garbage collection for dynamic memory"
+  ],
+  "correctIndex": 0,
+  "explanation": "`new (buffer) MyClass();` constructs an object in-place at `buffer` without allocating new memory \u2014 used in custom allocators and performance-critical systems.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q224)",
+  "url": ""
+ },
+ {
+  "question": "Suppose two threads access a shared variable without synchronization \u2014 one writes while the other reads. What is this condition called, and what does the standard say about it?",
+  "code": null,
+  "options": [
+   "A data access warning but still well-defined behavior",
+   "A data race, leading to undefined behavior under the C++ memory model",
+   "Automatically handled by the compiler's memory barrier insertion",
+   "Only a problem if both threads write"
+  ],
+  "correctIndex": 1,
+  "explanation": "The C++ memory model defines an unsynchronized concurrent read/write (or write/write) to the same memory location as a data race, which is undefined behavior.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q225)",
+  "url": ""
+ },
+ {
+  "question": "Which of the following statements is TRUE about the virtual keyword when used with destructors?",
+  "code": null,
+  "options": [
+   "A virtual destructor prevents object slicing automatically.",
+   "A virtual destructor ensures dynamic binding for all member functions.",
+   "A virtual destructor allows correct destruction of derived objects through a base class pointer.",
+   "A virtual destructor makes the class abstract automatically."
+  ],
+  "correctIndex": 2,
+  "explanation": "Declaring the base destructor virtual ensures `delete basePtr;` invokes the derived class's destructor first, then the base's, avoiding resource leaks/UB. It does not prevent slicing or affect other member functions' dispatch.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q226)",
+  "url": ""
+ },
+ {
+  "question": "Which of the following correctly describes the behavior of static members in a C++ class?",
+  "code": null,
+  "options": [
+   "Each object gets its own copy of every static data member.",
+   "Static data members are shared by all objects of the class and exist even if no objects are created.",
+   "Static member functions can access both static and non-static members directly.",
+   "Static data members must be initialized inside the constructor of the class."
+  ],
+  "correctIndex": 1,
+  "explanation": "Static data members belong to the class (one shared copy), exist independent of any instantiated object, and cannot be initialized in a constructor (they need out-of-class or inline definition); static member functions have no implicit `this`, so they cannot directly touch non-static members.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q227)",
+  "url": ""
+ },
+ {
+  "question": "What does this code print?",
+  "code": "int i = 0;\nprintf(\"%d\", i++);\nprintf(\"%d\", i--);\nprintf(\"%d\", ++i);\nprintf(\"%d\", --i);",
+  "options": [
+   "0,1,1,0",
+   "0,1,0,1",
+   "0,0,1,0",
+   "1,0,1,0"
+  ],
+  "correctIndex": 0,
+  "explanation": "`i++` prints 0 (i becomes 1); `i--` prints 1 (i becomes 0); `++i` prints 1 (i becomes 1); `--i` prints 0 (i becomes 0). Sequence: 0,1,1,0.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q23)",
+  "url": ""
+ },
+ {
+  "question": "What is the output of this code given below?",
+  "code": "#include <cstdio>\nusing namespace std;\n\nint main(){\n    char c = 255;\n    if(c>10)\n        printf(\"c = %i, which is greater than 10\", c);\n    else\n        printf(\"c = %i, which is less than 10\", c);\n    return 0;\n}",
+  "options": [
+   "c = -1, which is less than 10",
+   "c = 255, which is greater than 10",
+   "c = -1, which is greater than 10",
+   "c = 255, which is less than 10"
+  ],
+  "correctIndex": 0,
+  "explanation": "On implementations where `char` is signed (most common: gcc/clang on x86/ARM Linux/macOS), assigning 255 wraps to -1, so -1 > 10 is false.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q34)",
+  "url": ""
+ },
+ {
+  "question": "Consider the following code segment. What will be the output?",
+  "code": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main () {\nint data[] = {50, 30, 40, 10, 20};\nsort (&data[1], &data[4]);\nfor (int i = 0; i < 5; i++)\ncout << data[i] << \" \";\nreturn 0;\n}",
+  "options": [
+   "10 20 30 40 50",
+   "10 30 40 50 20",
+   "50 10 30 40 20",
+   "50 10 20 30 40"
+  ],
+  "correctIndex": 2,
+  "explanation": "`sort(&data[1], &data[4])` sorts only the half-open range [index 1, index 4) = elements {30,40,10} \u2192 becomes {10,30,40}; index 0 (50) and index 4 (20) are untouched. Result: 50 10 30 40 20.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q110)",
+  "url": ""
+ },
+ {
+  "question": "Consider the following code segment. What will be the output?",
+  "code": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\nint element[5];\nfor(int i = 1; i <= 5; i++)\n*(element + i - 1) = i * 5;\nrotate(element, element + 4, element + 5);\nrotate(element, element + 1, element + 4);\nfor (int i = 0; i < 5; ++i)\ncout << element[i] << \" \";\nreturn 0;\n}",
+  "options": [
+   "5 10 15 20 25",
+   "5 10 15 25 20",
+   "20 10 15 25 5",
+   "25 5 10 15 20"
+  ],
+  "correctIndex": 1,
+  "explanation": "Array starts as {5,10,15,20,25}. First `rotate(element, element+4, element+5)` moves the middle element (index 4, value 25) to the front of the [0,5) range \u2192 {25,5,10,15,20}. Second `rotate(element, element+1, element+4)` rotates range [0,4) so that index1 (5) becomes new front of that subrange \u2192 {5,10,15,25,20}.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q111)",
+  "url": ""
+ },
+ {
+  "question": "Consider the following code segment. What will be the output?",
+  "code": "int i = 5;\nconst int *p = &i;\nint * const q = &i;\nint const *r = &i;\nint const * const s = &i;\n*p = 10; //STMT-1\n*q = 10; //STMT-2\n*r = 10; //STMT-3\n*s = 10; //STMT-4",
+  "options": [
+   "STMT-1 is valid",
+   "STMT-2 is valid",
+   "STMT-3 is valid",
+   "STMT-4 is valid"
+  ],
+  "correctIndex": 1,
+  "explanation": "`p` and `r` are pointers-to-const-int (`const int *` / `int const *`, equivalent forms), so `*p =` and `*r =` are illegal. `s` is a const pointer to const int, so `*s =` is also illegal. Only `q` (`int * const`, a const pointer to non-const int) allows modifying the pointee via `*q = 10`.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q116)",
+  "url": ""
+ },
+ {
+  "question": "Consider the following code segment. What will be the output?",
+  "code": "#include <iostream>\nusing namespace std;\n#define SQR(x) (x)*(x)\nint main() {\nint a=3;\ncout << SQR(a++) << endl;\nreturn 0;\n}",
+  "options": [
+   "12",
+   "25",
+   "9",
+   "16"
+  ],
+  "correctIndex": 0,
+  "explanation": "`SQR(a++)` expands to `(a++)*(a++)`. Order of evaluation of the two `a++` is unspecified before C++17, but a common left-to-right compiler behavior yields `3 * 4 = 12` (first `a++` returns 3, a becomes 4; second `a++` returns 4, a becomes 5). This illustrates why macros with side-effecting arguments are dangerous \u2014 prefer `inline`/templates.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q118)",
+  "url": ""
+ },
+ {
+  "question": "Consider the following program. What will be the output/error(s)?",
+  "code": "#include <iostream>\nusing namespace std;\nchar add(char c1 = 'a') { return c1; }\nchar add(char c1 = 'a', char c2 = 'b') { return c1 + c2 - 'a';}\nchar add(char c1 = 'a', int d1 = 100){ return c1 + d1 - 'a'; }\nchar add(char c1 = 'a', char c2 = 'b', char c3) { return c1 + c2 + c3 - 'a'; }\nint main() {\nchar c = add('o', 'k');\ncout << c << endl;\nreturn 0;\n}",
+  "options": [
+   "y",
+   "z",
+   "Compilation Error: default argument missing for \"char add(char, char, char)\"",
+   "Compilation Error: call of overload \"add(char, char)\" is ambiguous"
+  ],
+  "correctIndex": 2,
+  "explanation": "`add(char,char,char)` has `c3` without a default value after two defaulted parameters \u2014 invalid. Separately, `add('o','k')` is ambiguous between `add(char,char)` and `add(char,int)` since 'k' can implicitly convert to int. --- ## Summary of sourcing - The Deloitte / Oracle / IBM entries above come from a leaked/crowd-sourced \"OA questions from previous years\" repository maintained by an IIT Kharagpur student, organized by company (the same repo also has D. E. Shaw, Millennium, and Neo Wealth folders, but those only contained open-ended DSA/SQL coding questions, no MCQs, in this pass). - The LinkedIn entries come from the well-known `Ebazhanov/linkedin-skill-assessments-quizzes` repo, which crowd-sources actual questions seen on LinkedIn's official \"C++\" Skill Assessment test (a real, still-live assessment product, not company-specific but genuinely used to certify skills / screen candidates), with community-verified correct answers marked via `[x]`.",
+  "topic": "C++ Core & Modern C++",
+  "status": "REAL",
+  "company": "LinkedIn Skill Assessment (general)",
+  "source": "same file (Q117)",
+  "url": ""
+ },
+ {
+  "question": "What is cache memory?",
+  "code": null,
+  "options": [
+   "Permanent storage",
+   "Small, fast memory located close to the CPU",
+   "Virtual memory on disk",
+   "Network storage"
+  ],
+  "correctIndex": 1,
+  "explanation": "Cache memory is a small, fast memory located close to the CPU that stores frequently accessed data and instructions to reduce access time.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack, Flutter MCQ question bank)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "In the memory hierarchy, which is typically the fastest?",
+  "code": null,
+  "options": [
+   "Hard Disk",
+   "RAM",
+   "Cache",
+   "SSD"
+  ],
+  "correctIndex": 2,
+  "explanation": "Cache memory is the fastest in the memory hierarchy, followed by RAM, SSD, and then hard disk (registers are actually fastest of all, faster than cache, but among the listed options cache wins). Speed decreases as capacity increases.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "Which memory is fastest in the memory hierarchy? (registers included as an option)",
+  "code": null,
+  "options": [
+   "Cache memory",
+   "RAM",
+   "Registers",
+   "Hard disk"
+  ],
+  "correctIndex": 2,
+  "explanation": "Registers are fastest (1-cycle access, on-chip). Cache is second, then RAM, then secondary storage (disk). Speed is inversely related to size and cost.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE, college exam-prep site for a Computer Organization course)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "What is the main difference between RISC and CISC architectures?",
+  "code": null,
+  "options": [
+   "RISC has more complex instructions than CISC",
+   "RISC uses simple instructions, CISC uses complex instructions",
+   "RISC is slower than CISC",
+   "There is no difference"
+  ],
+  "correctIndex": 1,
+  "explanation": "RISC (Reduced Instruction Set Computer) uses simple, fixed-length instructions; CISC (Complex Instruction Set Computer) uses complex, variable-length instructions.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is instruction pipelining?",
+  "code": null,
+  "options": [
+   "Storing instructions in memory",
+   "Executing multiple instructions simultaneously by overlapping their execution stages",
+   "Compressing instructions",
+   "Encrypting instructions"
+  ],
+  "correctIndex": 1,
+  "explanation": "Instruction pipelining overlaps execution of multiple instructions, with different stages of different instructions processed simultaneously to raise throughput.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is a pipeline hazard?",
+  "code": null,
+  "options": [
+   "A physical damage to the CPU",
+   "A situation that prevents the next instruction from executing in its designated clock cycle",
+   "A security vulnerability",
+   "A power failure"
+  ],
+  "correctIndex": 1,
+  "explanation": "A pipeline hazard is a situation that prevents the next instruction from executing during its designated clock cycle, causing stalls.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "Which of the following is NOT a type of pipeline hazard?",
+  "code": null,
+  "options": [
+   "Structural hazard",
+   "Data hazard",
+   "Control hazard",
+   "Memory hazard"
+  ],
+  "correctIndex": 3,
+  "explanation": "The three main pipeline hazard classes are structural, data, and control hazards. \"Memory hazard\" is not a standard classification.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "Which of the following is an example of a data hazard?",
+  "code": null,
+  "options": [
+   "An instruction needs a result that is not ready yet",
+   "Two source files have the same name",
+   "A cache line is larger than RAM",
+   "The keyboard input is slow"
+  ],
+  "correctIndex": 0,
+  "explanation": "A data hazard occurs when an instruction depends on the result of a prior instruction that has not yet completed.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"COA MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/quiz.mdx"
+ },
+ {
+  "question": "Which of the following is a control hazard?",
+  "code": null,
+  "options": [
+   "A branch changes which instructions should be fetched",
+   "Two instructions use different registers",
+   "An ALU performs an add",
+   "A store writes data to memory"
+  ],
+  "correctIndex": 0,
+  "explanation": "Control hazards arise from branches/jumps that change the instruction fetch stream before the outcome is known.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"COA MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/quiz.mdx"
+ },
+ {
+  "question": "Which of the following is a structural hazard?",
+  "code": null,
+  "options": [
+   "Two instructions need the same hardware resource in the same cycle",
+   "A branch is taken",
+   "A variable changes type",
+   "A compiler emits assembly"
+  ],
+  "correctIndex": 0,
+  "explanation": "A structural hazard happens when two instructions in the pipeline compete for the same hardware resource in the same cycle.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"COA MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/quiz.mdx"
+ },
+ {
+  "question": "Why can a load instruction become expensive?",
+  "code": null,
+  "options": [
+   "Loads always modify source code",
+   "The data may miss in cache and take much longer to arrive",
+   "Loads are illegal in assembly",
+   "Loads bypass memory completely"
+  ],
+  "correctIndex": 1,
+  "explanation": "If the data being loaded isn't resident in cache, the load must fetch from a slower level (L2/L3/DRAM), stalling dependent instructions.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"COA MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/quiz.mdx"
+ },
+ {
+  "question": "Which hardware block is most directly associated with computing memory addresses?",
+  "code": null,
+  "options": [
+   "ALU",
+   "FPU",
+   "AGU",
+   "Branch predictor"
+  ],
+  "correctIndex": 2,
+  "explanation": "The Address Generation Unit (AGU) computes effective memory addresses for loads/stores, separate from the ALU's arithmetic/logic work.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"COA MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/quiz.mdx"
+ },
+ {
+  "question": "A branch misprediction hurts performance because:",
+  "code": null,
+  "options": [
+   "The CPU may need to discard wrong-path work and restart",
+   "It deletes the binary",
+   "It removes all registers",
+   "It turns RAM into cache"
+  ],
+  "correctIndex": 0,
+  "explanation": "Speculatively executed instructions down the wrong path must be flushed and the pipeline restarted on the correct path, wasting cycles.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"COA MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/quiz.mdx"
+ },
+ {
+  "question": "If a load instruction misses in cache, what often happens to dependent instructions?",
+  "code": null,
+  "options": [
+   "They become faster automatically",
+   "They may stall waiting for the load result",
+   "They retire first anyway",
+   "They change the ISA"
+  ],
+  "correctIndex": 1,
+  "explanation": "Instructions depending on the missed load's result cannot proceed (out-of-order schedulers park them) until the data returns from a lower level of the memory hierarchy.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Instruction Flow in a Modern CPU MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/instruction-flow-modern-cpu-quiz.mdx"
+ },
+ {
+  "question": "In direct-mapped cache, how many possible locations can a memory block be placed?",
+  "code": null,
+  "options": [
+   "Any location",
+   "One specific location",
+   "Two locations",
+   "Four locations"
+  ],
+  "correctIndex": 1,
+  "explanation": "In a direct-mapped cache, each memory block maps to exactly one cache line, determined by (block address mod number of lines).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is the main advantage of fully associative cache over direct-mapped cache?",
+  "code": null,
+  "options": [
+   "It's faster",
+   "It's cheaper",
+   "It has lower conflict misses",
+   "It uses less power"
+  ],
+  "correctIndex": 2,
+  "explanation": "Fully associative cache lets a block go into any line, eliminating conflict misses (at the cost of expensive parallel tag comparators).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "Direct mapping cache: each memory block maps to:",
+  "code": null,
+  "options": [
+   "Any cache line",
+   "Only one specific cache line",
+   "A specific SET",
+   "The most recently used line"
+  ],
+  "correctIndex": 1,
+  "explanation": "Direct Mapping: each memory block maps to exactly one cache line. Line = block_number mod (total_cache_lines). Simple but causes conflict misses.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Associative mapping (CAM) is accessed by:",
+  "code": null,
+  "options": [
+   "Address only",
+   "Content of the data",
+   "Both address and content",
+   "Random access"
+  ],
+  "correctIndex": 1,
+  "explanation": "Associative/Content Addressable Memory (CAM) is accessed by content: an argument register is compared against all stored tag fields simultaneously (parallel search), needing no address.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Set-Associative mapping is a compromise between:",
+  "code": null,
+  "options": [
+   "SRAM and DRAM",
+   "Direct and Associative mapping",
+   "Write-through and Write-back",
+   "Cache and RAM"
+  ],
+  "correctIndex": 1,
+  "explanation": "Set-Associative combines Direct (simple, cheap) and Associative (flexible, expensive): a block maps to one specific set, but within that set any line can be used.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Which of the following is used in TLB (Translation Lookaside Buffer)?",
+  "code": null,
+  "options": [
+   "Direct mapping",
+   "FIFO replacement",
+   "Associative memory (CAM)",
+   "Write-back policy"
+  ],
+  "correctIndex": 2,
+  "explanation": "The TLB uses associative memory (CAM): all TLB entries are searched simultaneously to find the matching virtual page number to physical frame mapping, for fast address translation.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Direct mapping address is divided into:",
+  "code": null,
+  "options": [
+   "Tag + Offset only",
+   "Tag + Index + Offset",
+   "Block + Page + Offset",
+   "Tag + Set + Block"
+  ],
+  "correctIndex": 1,
+  "explanation": "Direct-mapped address = Tag (identifies which block) + Index/Line (selects cache line) + Offset (byte within block); Index = block_number mod cache_size.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Conflict miss in direct mapping occurs when:",
+  "code": null,
+  "options": [
+   "Cache is full",
+   "Two memory blocks compete for same cache line",
+   "Cache tag doesn't match",
+   "Page fault"
+  ],
+  "correctIndex": 1,
+  "explanation": "A conflict miss happens when two memory blocks that map to the same cache line cannot both be resident in cache simultaneously \u2014 even if other lines are empty. This is the worst-case weakness of direct mapping.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Locality of Reference in cache means:",
+  "code": null,
+  "options": [
+   "All memory accessed equally",
+   "Memory references tend to cluster in localized areas",
+   "Cache is local to CPU",
+   "Memory randomly accessed"
+  ],
+  "correctIndex": 1,
+  "explanation": "Locality of reference means memory accesses cluster: temporal locality (reuse of the same data) and spatial locality (access to nearby addresses). Caches exploit both.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Temporal locality in cache means:",
+  "code": null,
+  "options": [
+   "Nearby addresses accessed together",
+   "Recently used data likely used again soon",
+   "Cache is fast",
+   "Memory is large"
+  ],
+  "correctIndex": 1,
+  "explanation": "Temporal locality: if address X is accessed, it is likely to be accessed again soon (e.g. a loop counter). Caches retain recently used data to exploit this.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Cache memory performance is measured in terms of:",
+  "code": null,
+  "options": [
+   "Chat ratio",
+   "Hit ratio",
+   "Copy ratio",
+   "Data ratio"
+  ],
+  "correctIndex": 1,
+  "explanation": "Cache performance is measured by hit ratio = fraction of memory accesses satisfied by the cache; a higher hit ratio yields a lower effective access time.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Tc=0.4ns, Tm=1.2ns, h=0.85. Effective access time Te = ?",
+  "code": null,
+  "options": [
+   "0.4ns",
+   "0.58ns",
+   "1.2ns",
+   "0.85ns"
+  ],
+  "correctIndex": 1,
+  "explanation": "Te = Tc + (1-h)\u00d7Tm = 0.4 + (1-0.85)\u00d71.2 = 0.4 + 0.15\u00d71.2 = 0.4 + 0.18 = 0.58ns. (Not h\u00d7Tc + (1-h)\u00d7Tm \u2014 cache access Tc is always paid first.)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Write Through cache policy means:",
+  "code": null,
+  "options": [
+   "Write to cache only on hit",
+   "Write to both cache and memory on hit",
+   "Write to memory only",
+   "Write to backup storage"
+  ],
+  "correctIndex": 1,
+  "explanation": "Write-through: on every write hit, data is written to both cache and memory. Memory stays current, but it's slower due to memory-write overhead on every store.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Write Back cache policy: when is memory updated?",
+  "code": null,
+  "options": [
+   "On every write",
+   "On read miss",
+   "Only when the block is evicted from cache",
+   "Never"
+  ],
+  "correctIndex": 2,
+  "explanation": "Write-back updates memory only when the modified (\"dirty\") cache block is evicted/replaced, using a dirty bit to track pending writes. Faster than write-through, but memory can be stale until eviction.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "Which page replacement algorithm has Belady's Anomaly?",
+  "code": null,
+  "options": [
+   "LRU",
+   "OPT (Optimal)",
+   "FIFO",
+   "LFU"
+  ],
+  "correctIndex": 2,
+  "explanation": "FIFO exhibits Belady's Anomaly: increasing the number of frames can counter-intuitively increase page faults. LRU and OPT are not susceptible to this anomaly.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Pravesh0005/CSE-211-EXAM-PREP-WEBSITE)",
+  "url": "https://github.com/Pravesh0005/CSE-211-EXAM-PREP-WEBSITE/blob/main/cse211.html"
+ },
+ {
+  "question": "What does LRU stand for in cache replacement policies?",
+  "code": null,
+  "options": [
+   "Last Recently Used",
+   "Least Recently Used",
+   "Last Requested Unit",
+   "Least Required Unit"
+  ],
+  "correctIndex": 1,
+  "explanation": "LRU (Least Recently Used) is a cache/page replacement policy that evicts the line/page that has gone unused for the longest time.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is a TLB (Translation Lookaside Buffer)?",
+  "code": null,
+  "options": [
+   "A type of RAM",
+   "A cache for page table entries",
+   "A disk buffer",
+   "A network buffer"
+  ],
+  "correctIndex": 1,
+  "explanation": "The TLB caches recent virtual-to-physical address translations, avoiding a full page-table walk on every memory access.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is a multi-core processor?",
+  "code": null,
+  "options": [
+   "A processor with multiple cache levels",
+   "A processor with multiple independent processing units on a single chip",
+   "A processor with multiple instruction sets",
+   "A processor with multiple power supplies"
+  ],
+  "correctIndex": 1,
+  "explanation": "A multi-core processor contains multiple independent cores on one chip, enabling true parallel execution of multiple threads.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is DMA (Direct Memory Access)?",
+  "code": null,
+  "options": [
+   "A type of RAM",
+   "A technique allowing devices to transfer data directly to/from memory without CPU intervention",
+   "A CPU instruction",
+   "A type of cache"
+  ],
+  "correctIndex": 1,
+  "explanation": "DMA lets peripherals transfer data to/from memory without continuous CPU involvement, freeing the CPU for other work.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What is Amdahl's Law used for?",
+  "code": null,
+  "options": [
+   "Calculating memory size",
+   "Predicting the theoretical speedup of a program using multiple processors",
+   "Measuring cache performance",
+   "Calculating power consumption"
+  ],
+  "correctIndex": 1,
+  "explanation": "Amdahl's Law predicts the theoretical maximum speedup from parallelization given the fraction of the program that can be parallelized.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "What determines the maximum memory addressable by a system?",
+  "code": null,
+  "options": [
+   "Data bus width",
+   "Address bus width",
+   "Control bus width",
+   "Cache size"
+  ],
+  "correctIndex": 1,
+  "explanation": "Address bus width sets the maximum addressable memory (e.g., a 32-bit address bus addresses 2^32 locations).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (md-ruhulamin/skill_stack)",
+  "url": "https://github.com/md-ruhulamin/skill_stack/blob/main/lib/data/mcq/computer_architecture_mcq.dart"
+ },
+ {
+  "question": "You annotate a branch with `[[likely]]` in C++20. Which of the following is correct?",
+  "code": null,
+  "options": [
+   "The branch predictor will now predict this arm is taken, reducing mispredictions at runtime",
+   "The compiler may lay out the likely arm as fall-through in the instruction stream and move the unlikely arm out of line, improving instruction cache density and enabling certain optimisations; the hardware branch predictor's runtime behaviour is unchanged",
+   "The branch is eliminated and replaced with a conditional move instruction",
+   "The annotation causes the function to be inlined at all call sites"
+  ],
+  "correctIndex": 1,
+  "explanation": "`[[likely]]`/`[[unlikely]]` are compiler layout hints, not hardware hints. They affect fall-through vs. out-of-line code layout (helping icache density and optimizer decisions) but do not change the hardware branch predictor's learned runtime behavior, and they do not generate a `cmov` or force inlining.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, \"Dura\" Quant/HFT interview-prep curriculum, lesson \"Branch Prediction Hints and Branchless Arithmetic\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-1-modern-cpp-for-hft/03-branch-prediction-and-branchless-patterns.mdx"
+ },
+ {
+  "question": "A loop computes `int64_t best = (a > b) ? a : b;` one hundred million times with random a and b values. A colleague says \"this has a 50% misprediction rate \u2014 use a branch to make it faster.\" What is wrong with the reasoning?",
+  "code": null,
+  "options": [
+   "Nothing \u2014 a branch would be faster with 50% misprediction",
+   "The ternary expression on integers compiles to a `cmov` instruction, which has no branch and no prediction; the colleague is right that a branch would mispredict 50% of the time but wrong to propose switching to a branch \u2014 `cmov` is exactly the solution to the 50%-misprediction problem",
+   "Ternary expressions are always slower than branches regardless of prediction rate",
+   "The loop should use `std::max`, which never generates branches"
+  ],
+  "correctIndex": 1,
+  "explanation": "A branch on random 50/50 data mispredicts half the time, costing 10\u201320 cycles per misprediction \u2014 the worst case. A `cmov` (produced by the integer ternary under optimization) has no branch or prediction, always costing 1\u20133 cycles regardless of outcome, so `cmov` is the fix, not a branch.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura)",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-1-modern-cpp-for-hft/03-branch-prediction-and-branchless-patterns.mdx"
+ },
+ {
+  "question": "A hot loop scans 1,000,000 Order structs (32 bytes each: id, timestamp, price, quantity, flags) reading ONLY the price field. What is the cache effect of converting to structure-of-arrays (SoA) so price is its own contiguous `std::vector<int64_t>`?",
+  "code": null,
+  "options": [
+   "No effect \u2014 the same total bytes are read either way",
+   "It is strictly worse, because SoA scatters each Order's fields across five arrays and destroys spatial locality",
+   "AoS loads a full 32-byte Order per element, so one 64-byte line holds 2 prices and 3/4 of every line is unused fields; SoA packs 8 int64 prices per line with zero unused bytes, cutting lines touched ~4x and feeding the hardware prefetcher a clean sequential stride",
+   "SoA helps only because int64 is smaller than the struct; a double field would perform the same as AoS"
+  ],
+  "correctIndex": 2,
+  "explanation": "You pay per cache line, not per byte used. AoS wastes 24 of 32 bytes per struct on unread fields; SoA packs only the field the loop needs, quadrupling effective density and letting the hardware prefetcher stream cleanly.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"Cache-Aware Programming\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/03-cache-aware-programming.mdx"
+ },
+ {
+  "question": "`struct S { std::atomic<uint64_t> a; std::atomic<uint64_t> b; };` is shared by two threads: thread 1 only writes `s.a`, thread 2 only writes `s.b`. Throughput is ~6x worse than expected with no lock anywhere. What is the root cause and fix?",
+  "code": null,
+  "options": [
+   "The atomics need `std::memory_order_seq_cst` instead of relaxed; tightening ordering restores throughput",
+   "False sharing: `a` and `b` are 8 bytes each and land on the same 64-byte line, so each core's write invalidates the other's cached copy via the coherence protocol, ping-ponging the line; fix by padding so `a` and `b` occupy separate cache lines (e.g. via `alignas(std::hardware_destructive_interference_size)`)",
+   "A data race \u2014 two threads writing the same struct is undefined behavior regardless of which fields they touch; add a mutex",
+   "The struct is too small to align; adding a virtual function pushes `b` onto its own line and fixes it"
+  ],
+  "correctIndex": 1,
+  "explanation": "MESI coherence operates at cache-line granularity. Even though the threads touch distinct atomic fields, both fields share one 64-byte line, so each write invalidates the other core's cached copy \u2014 classic false sharing. The fix is padding each field to its own line, not stronger memory ordering (which would make it worse) or a mutex (unnecessary \u2014 the writes are already race-free).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"Cache-Aware Programming\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/03-cache-aware-programming.mdx"
+ },
+ {
+  "question": "An engineer adds `__builtin_prefetch(&arr[i+1], 0, 3);` inside a loop that already iterates `arr` sequentially from front to back. After measuring, the loop is unchanged or slightly slower. Why?",
+  "code": null,
+  "options": [
+   "The third argument should be 0, not 3 \u2014 locality 3 disables the prefetch entirely",
+   "Prefetch only works on heap memory; `arr` must be allocated with `new` for the hint to take effect",
+   "The hardware prefetcher already detects the forward sequential stride and prefetches those lines automatically, so the manual hint is redundant and can mildly hurt by competing for issue slots; manual prefetch only helps access patterns the hardware cannot predict (pointer chasing, computed-index hops), issued far enough ahead to hide load latency",
+   "Prefetch changed the computed sum slightly due to reordering, which is expected"
+  ],
+  "correctIndex": 2,
+  "explanation": "Sequential forward scans are exactly what the hardware stride prefetcher already handles, so the manual hint is redundant instruction overhead. Manual prefetch pays off only for hardware-unpredictable patterns like pointer chasing, issued early enough to hide the ~hundreds-of-cycles load latency.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"Cache-Aware Programming\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/03-cache-aware-programming.mdx"
+ },
+ {
+  "question": "The NIC is attached to socket 0. The strategy thread runs on socket 1. The DMA ring buffer (where the NIC writes incoming packets) is allocated by the main thread (socket 0) at startup. What happens to the strategy thread's reads from the ring buffer?",
+  "code": null,
+  "options": [
+   "They hit local DRAM because the kernel migrates pages to the reading socket automatically",
+   "They cross the QPI/UPI inter-socket link and incur 2\u20133x higher latency than local reads",
+   "They hit the L3 cache on socket 1 because L3 is shared across sockets",
+   "They are unaffected because the DMA ring is in I/O memory, not DRAM"
+  ],
+  "correctIndex": 1,
+  "explanation": "Linux uses a first-touch page policy: the pages backing the ring buffer live on socket 0's DRAM because the main thread (socket 0) first touched them. The strategy thread on socket 1 must cross the QPI/UPI interconnect on every read, incurring the remote-NUMA penalty. L3 is per-socket, not shared, and the kernel doesn't auto-migrate pages. Fix: allocate on the strategy's NUMA node (e.g., `numa_alloc_onnode`) or pin the whole pipeline to one socket.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"NUMA Topology and Remote Memory\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/05-numa-topology-and-remote-memory.mdx"
+ },
+ {
+  "question": "`perf stat` reports IPC (instructions per cycle) of 0.18 for a market-data update loop, versus 3.5 for a compute-bound loop on the same machine. What is the primary interpretation?",
+  "code": null,
+  "options": [
+   "The loop has too many branches \u2014 use branchless patterns",
+   "The CPU is stalled waiting for memory most of the time \u2014 the loop is memory-bound",
+   "The loop is executing too many instructions \u2014 simplify the algorithm",
+   "The CPU is context-switching too frequently \u2014 pin the thread to a core"
+  ],
+  "correctIndex": 1,
+  "explanation": "IPC 0.18 means the CPU completes fewer than 1 instruction every 5 cycles, versus 3\u20135 IPC for a healthy compute-bound out-of-order loop. The dominant cause of such a low IPC is the pipeline stalling on memory (LLC misses to DRAM stall for 30\u2013100+ cycles). Branch mispredictions would show as a high branch-miss counter but wouldn't crush IPC this far; context switches show in task-clock ratio, not IPC.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"perf stat and Cache Profiling\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/07-perf-stat-and-cache-profiling.mdx"
+ },
+ {
+  "question": "A struct has 4 fields: price (8B), size (4B), flags (1B), padding (3B) \u2014 16 bytes total. You keep 1,024 of them and loop to sum the price field. A cache line is 64 bytes. How many cache lines does the loop touch (AoS layout)?",
+  "code": null,
+  "options": [
+   "128 \u2014 only the price bytes, packed at 8B each",
+   "256 \u2014 the struct is 16B, so 4 per cache line, 256 lines for 1024 structs",
+   "1024 \u2014 one load per struct, each struct on its own line",
+   "512 \u2014 structs straddle lines unpredictably"
+  ],
+  "correctIndex": 1,
+  "explanation": "The 16-byte struct packs 4 per 64-byte line; 1024 / 4 = 256 lines, but only 8 of each struct's 16 bytes (the price) are used \u2014 50% utilization. Under SoA the 1024 contiguous int64 prices occupy only 128 lines at 100% utilization.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"AoS vs SoA Layout\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/04-aos-vs-soa-layout.mdx"
+ },
+ {
+  "question": "Your order book's hot-path working set is 32 MB. The L2 TLB covers 6 MB at 4K pages and 2 GB at 2MB (huge) pages. What is the expected TLB behavior with 4K pages?",
+  "code": null,
+  "options": [
+   "All 32 MB fits in L2 TLB because TLB entries cache any page regardless of size",
+   "32 MB / 6 MB \u2248 5.3x TLB overflow \u2014 most accesses miss the TLB and trigger page walks",
+   "TLB misses are irrelevant because page walks use the L3 cache, which covers 32 MB",
+   "4K pages are fine because the hardware prefetcher handles page-walk latency transparently"
+  ],
+  "correctIndex": 1,
+  "explanation": "At 4K pages the L2 TLB (1,536 entries \u00d7 4K = 6MB) can't cover a 32MB working set (needs 8,192 entries) \u2014 most hot accesses miss the TLB and trigger a 4-level page walk. With 2MB huge pages the same 32MB needs only 16 entries, comfortably fitting. Page walks may hit L3 for cached page-table entries but still cost 30\u201350 cycles versus 1\u20134 for a TLB hit.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, lesson \"TLB and Huge Pages\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/12-quant-hft/q-3-cache-aware-programming/06-tlb-huge-pages.mdx"
+ },
+ {
+  "question": "Which of the following belongs more directly to computer organization rather than architecture?",
+  "code": null,
+  "options": [
+   "Instruction set semantics",
+   "Calling convention contract",
+   "Pipeline, cache hierarchy, and issue queues",
+   "The legal meaning of ADD in the ISA"
+  ],
+  "correctIndex": 2,
+  "explanation": "Organization covers the internal implementation choices (pipeline depth, cache hierarchy, issue queues) used to realize a given architecture; the ISA's programmer-visible contract (registers, instruction semantics, calling conventions) is architecture. --- ## Section B: STL & Data Structures",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Architecture vs Organization MCQs Quiz\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/domain/coa/architecture-vs-organization-quiz.mdx"
+ },
+ {
+  "question": "Which of the following is a true statement about the difference between pointers and iterators?",
+  "code": null,
+  "options": [
+   "While pointers are variables that hold memory addresses, iterators are generic functions used to traverse containers",
+   "Incrementing an iterator always means accessing the next element in the container (if any), no matter the container; incrementing a pointer means pointing to the next element in memory, not always the next logical element",
+   "Pointers are variables that hold memory addresses whereas an iterator is an unsigned integer that refers to offsets in arrays",
+   "All iterators are implemented with pointers, so all iterators are pointers but not all pointers are iterators"
+  ],
+  "correctIndex": 1,
+  "explanation": "Iterators are an abstraction that behaves consistently across container types \u2014 incrementing always advances to the next logical element regardless of underlying storage \u2014 whereas pointer arithmetic follows raw memory layout, which is only \"the next element\" for contiguous containers like `std::vector`.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "REAL",
+  "company": "unknown/general (LinkedIn Skill Assessment question bank \u2014 C++)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes, crowd-sourced LinkedIn Skill Assessment questions)",
+  "url": "https://github.com/Ebazhanov/linkedin-skill-assessments-quizzes/blob/main/c%2B%2B/c%2B%2B-quiz.md"
+ },
+ {
+  "question": "Which of the following STL classes is the best fit for implementing a phonebook? Suppose each entry contains a name and a phone number, with no duplicates, and you want lookup by name.",
+  "code": null,
+  "options": [
+   "`std::priority_queue`",
+   "`std::list`",
+   "`std::vector`",
+   "`std::map`"
+  ],
+  "correctIndex": 3,
+  "explanation": "`std::map` provides ordered key-based lookup by name with no duplicate keys, which matches the phonebook requirement directly.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "REAL",
+  "company": "unknown/general (LinkedIn Skill Assessment question bank \u2014 C++)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes)",
+  "url": "https://github.com/Ebazhanov/linkedin-skill-assessments-quizzes/blob/main/c%2B%2B/c%2B%2B-quiz.md"
+ },
+ {
+  "question": "Assume you have `std::map<string, int> m;`. Select the single true statement about `for (const pair<string, int>& elem : m)`.",
+  "code": null,
+  "options": [
+   "The loop properly iterates over the map, creating no extra copies",
+   "The loop will create a copy of each element in the map as the type of `elem` mismatches",
+   "The code won't compile as a const pair cannot bind to a map"
+  ],
+  "correctIndex": 0,
+  "explanation": "As marked in the source repo, option A is the accepted answer. Be aware `std::map`'s actual `value_type` is `std::pair<const Key, T>`, so this is a known point of subtlety/contention worth double-checking before using verbatim.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "REAL",
+  "company": "unknown/general (LinkedIn Skill Assessment question bank \u2014 C++)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes)",
+  "url": "https://github.com/Ebazhanov/linkedin-skill-assessments-quizzes/blob/main/c%2B%2B/c%2B%2B-quiz.md"
+ },
+ {
+  "question": "What is the difference between `std::unique_ptr` and `std::shared_ptr`?",
+  "code": null,
+  "options": [
+   "`unique_ptr` has exclusive ownership, `shared_ptr` allows multiple owners",
+   "`unique_ptr` is faster but less safe",
+   "`shared_ptr` can only be used with classes",
+   "There is no difference"
+  ],
+  "correctIndex": 0,
+  "explanation": "`std::unique_ptr` enforces single, exclusive ownership (move-only); `std::shared_ptr` uses reference counting to allow multiple simultaneous owners of the same resource.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "REAL",
+  "company": "unknown/general (LinkedIn Skill Assessment question bank \u2014 C++)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes)",
+  "url": "https://github.com/Ebazhanov/linkedin-skill-assessments-quizzes/blob/main/c%2B%2B/c%2B%2B-quiz.md"
+ },
+ {
+  "question": "What is `std::unordered_map` based on?",
+  "code": null,
+  "options": [
+   "Binary search tree",
+   "Hash table",
+   "Linked list",
+   "Array"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::unordered_map` is implemented as a hash table, giving average O(1) lookup versus O(log n) for `std::map` (a balanced tree).",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "REAL",
+  "company": "unknown/general (LinkedIn Skill Assessment question bank \u2014 C++)",
+  "source": "GitHub (Ebazhanov/linkedin-skill-assessments-quizzes)",
+  "url": "https://github.com/Ebazhanov/linkedin-skill-assessments-quizzes/blob/main/c%2B%2B/c%2B%2B-quiz.md"
+ },
+ {
+  "question": "What is the default underlying container for `std::stack`?",
+  "code": null,
+  "options": [
+   "`std::vector`",
+   "`std::deque`",
+   "`std::queue`",
+   "`std::list`"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::stack` (and `std::queue`) default to `std::deque` as their underlying container adapter storage.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "Which container does not provide random access iterators?",
+  "code": null,
+  "options": [
+   "`std::list`",
+   "`std::deque`",
+   "`std::array`",
+   "`std::vector`"
+  ],
+  "correctIndex": 0,
+  "explanation": "`std::list` is a doubly-linked list, offering only bidirectional iterators; `vector`, `deque`, and `array` all support random-access iterators.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "Which of the following allows duplicate keys?",
+  "code": null,
+  "options": [
+   "`std::set`",
+   "`std::multimap`",
+   "`std::map`",
+   "`std::unordered_set`"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::multimap` explicitly permits multiple entries with equal keys, unlike `std::map`/`std::set`/`std::unordered_set`.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "What does `std::vector::capacity()` return?",
+  "code": null,
+  "options": [
+   "Number of elements",
+   "Allocated storage size",
+   "Free space",
+   "Max allowed size"
+  ],
+  "correctIndex": 1,
+  "explanation": "`capacity()` returns the size of the currently allocated internal storage, which is greater than or equal to `size()` (the actual element count).",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "Which of these is a container adapter?",
+  "code": null,
+  "options": [
+   "`std::deque`",
+   "`std::array`",
+   "`std::queue`",
+   "`std::set`"
+  ],
+  "correctIndex": 2,
+  "explanation": "`std::queue`, `std::stack`, and `std::priority_queue` are container adapters \u2014 they wrap an underlying container (default `std::deque`) and restrict its interface. `deque`, `array`, and `set` are containers themselves, not adapters.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "Which of these provides constant time insertion/removal at both ends?",
+  "code": null,
+  "options": [
+   "`std::vector`",
+   "`std::deque`",
+   "`std::array`",
+   "`std::set`"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::deque` supports amortized O(1) `push_front`/`push_back`/`pop_front`/`pop_back`, unlike `std::vector`, which is O(1) amortized only at the back and O(n) at the front.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "What is required for `std::sort()` to work?",
+  "code": null,
+  "options": [
+   "Random access iterators",
+   "Bidirectional iterators",
+   "Forward iterators",
+   "None"
+  ],
+  "correctIndex": 0,
+  "explanation": "`std::sort` requires RandomAccessIterators (works on `vector`, `deque`, `array`, raw arrays), which is why `std::list` provides its own `list::sort()` member function instead.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "Which function removes consecutive duplicates in a range?",
+  "code": null,
+  "options": [
+   "`unique()`",
+   "`filter()`",
+   "`remove()`",
+   "`erase()`"
+  ],
+  "correctIndex": 0,
+  "explanation": "`std::unique` removes consecutive duplicate elements in a range (logically, via the erase-remove idiom it needs a follow-up `container.erase(...)` to shrink the container).",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"STL MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/advanced/stl.md"
+ },
+ {
+  "question": "What is a smart pointer in C++?",
+  "code": null,
+  "options": [
+   "A pointer that manages dynamic memory",
+   "A pointer that always points to a valid memory",
+   "A pointer that can be dereferenced",
+   "None of the above"
+  ],
+  "correctIndex": 0,
+  "explanation": "A smart pointer is a class template (`unique_ptr`, `shared_ptr`, `weak_ptr`) that wraps a raw pointer and manages the lifetime of dynamically allocated memory via RAII.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Smart Pointers MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/specialized/smart-pointers.md"
+ },
+ {
+  "question": "Which type of smart pointer automatically deallocates memory when it goes out of scope?",
+  "code": null,
+  "options": [
+   "`std::unique_ptr`",
+   "`std::shared_ptr`",
+   "`std::weak_ptr`",
+   "None of the above"
+  ],
+  "correctIndex": 0,
+  "explanation": "Note: all standard smart pointers deallocate via RAII when they go out of scope (unique_ptr always; shared_ptr when the refcount hits zero). This question's phrasing/marked answer (A) is treating exclusive-ownership auto-deallocation as the more textbook-canonical case \u2014 worth double-checking against your own understanding before relying on it verbatim.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Smart Pointers MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/specialized/smart-pointers.md"
+ },
+ {
+  "question": "What is the purpose of `std::shared_ptr`?",
+  "code": null,
+  "options": [
+   "To manage shared ownership of a dynamically allocated object",
+   "To avoid memory leaks",
+   "To allocate memory for variables",
+   "None of the above"
+  ],
+  "correctIndex": 0,
+  "explanation": "`std::shared_ptr` maintains a reference count so multiple pointers can jointly own and manage the lifetime of a single dynamically-allocated object.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Smart Pointers MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/specialized/smart-pointers.md"
+ },
+ {
+  "question": "What is the purpose of `std::weak_ptr`?",
+  "code": null,
+  "options": [
+   "To observe an object without affecting its reference count",
+   "To provide exclusive ownership",
+   "To manage multiple references",
+   "None of the above"
+  ],
+  "correctIndex": 0,
+  "explanation": "`std::weak_ptr` holds a non-owning (\"weak\") reference to an object managed by `shared_ptr`, used to break reference cycles, without incrementing the reference count.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Smart Pointers MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/specialized/smart-pointers.md"
+ },
+ {
+  "question": "How does `std::unique_ptr` ensure there is only one owner of the object?",
+  "code": null,
+  "options": [
+   "By deleting the object when it goes out of scope",
+   "By preventing copying of the pointer",
+   "By allowing shared ownership",
+   "None of the above"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::unique_ptr`'s copy constructor/assignment are deleted; only move semantics are allowed, which transfers (rather than duplicates) ownership, guaranteeing exclusivity.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (aabhinavg1/compilersutra, \"Smart Pointers MCQs\")",
+  "url": "https://github.com/aabhinavg1/compilersutra/blob/main/docs/mcq/questions/specialized/smart-pointers.md"
+ },
+ {
+  "question": "What is \"iterator invalidation\"?",
+  "code": null,
+  "options": [
+   "A runtime error when an iterator goes past the end of a container",
+   "When an operation on a container (like inserting an element into a `std::vector`) makes some or all of its existing iterators unusable",
+   "A compile-time error when an iterator type does not match its container type",
+   "When an iterator is used with a generic algorithm that doesn't support it"
+  ],
+  "correctIndex": 1,
+  "explanation": "For example, `push_back` on a `std::vector` may trigger a reallocation of its entire internal array, leaving previously-held iterators/pointers/references dangling (pointing at freed memory).",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (AndyDope/CDAC-Notes, \"C++ MCQs\", CDAC PG-DAC course notes)",
+  "url": "https://github.com/AndyDope/CDAC-Notes/blob/main/C%2B%2B%20CDAC/C%2B%2B%20MCQs.md"
+ },
+ {
+  "question": "Which STL container is the best choice if you need fast look-up by a unique key and also require the elements to be stored in sorted order?",
+  "code": null,
+  "options": [
+   "`std::vector`",
+   "`std::unordered_map`",
+   "`std::list`",
+   "`std::map`"
+  ],
+  "correctIndex": 3,
+  "explanation": "`std::map` gives both key-based lookup (O(log n), via its underlying red-black tree) and sorted iteration order; `std::unordered_map` is faster for lookup (O(1) average) but does not maintain order.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (AndyDope/CDAC-Notes, \"C++ MCQs\")",
+  "url": "https://github.com/AndyDope/CDAC-Notes/blob/main/C%2B%2B%20CDAC/C%2B%2B%20MCQs.md"
+ },
+ {
+  "question": "Which of the following operations is most likely to be significantly slower on a `std::vector` than on a `std::list` for a large number of elements?",
+  "code": null,
+  "options": [
+   "Accessing the element at a random index (e.g., `my_container[N/2]`)",
+   "Adding an element to the very end (`push_back`)",
+   "Inserting a new element at the very beginning",
+   "Getting the total number of elements (`.size()`)"
+  ],
+  "correctIndex": 2,
+  "explanation": "Inserting at the front of a `vector` requires shifting every existing element \u2014 O(n). For a `std::list`, inserting at a known position (e.g., `begin()`) is O(1) since it's just pointer relinking.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (AndyDope/CDAC-Notes, \"C++ MCQs\")",
+  "url": "https://github.com/AndyDope/CDAC-Notes/blob/main/C%2B%2B%20CDAC/C%2B%2B%20MCQs.md"
+ },
+ {
+  "question": "Which container would you use to implement a print job queue where jobs are processed in the order they are received?",
+  "code": null,
+  "options": [
+   "`std::stack`",
+   "`std::queue`",
+   "`std::priority_queue`",
+   "`std::vector`"
+  ],
+  "correctIndex": 1,
+  "explanation": "`std::queue` is a FIFO container adapter \u2014 exactly the ordering semantics required for a print job queue processed in arrival order.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (AndyDope/CDAC-Notes, \"C++ MCQs\")",
+  "url": "https://github.com/AndyDope/CDAC-Notes/blob/main/C%2B%2B%20CDAC/C%2B%2B%20MCQs.md"
+ },
+ {
+  "question": "Why does the doubling strategy result in O(1) amortized push cost for a dynamic array, but a fixed \"+10 elements\" growth strategy does not?",
+  "code": null,
+  "options": [
+   "Doubling is faster because multiplication is cheaper than addition",
+   "Doubling makes resizes exponentially rarer \u2014 total copy work across n pushes sums to O(n), but +10 growth causes O(n) resizes, each costing O(n)",
+   "Doubling reduces memory fragmentation in the heap",
+   "Fixed growth strategies are actually the same \u2014 they are both O(1) amortized"
+  ],
+  "correctIndex": 1,
+  "explanation": "With doubling, resizes happen at sizes 1, 2, 4, 8, ... n \u2014 a geometric series summing to ~2n total copy operations across n pushes, i.e., O(1) amortized per push. With +10 growth, resizes happen every 10 pushes (n/10 times), each costing O(current size), summing to O(n\u00b2) total, i.e., O(n) amortized per push. This is exactly why `std::vector`'s growth factor (typically 1.5x\u20132x) matters for amortized `push_back` cost.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, CS-fundamentals module \"Amortized Analysis\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/3-cs-fundamentals/3-1-complexity/07-amortized-analysis.mdx"
+ },
+ {
+  "question": "A dynamic array `push_back` triggers a resize that copies 1,000,000 elements. Can you still say `push_back` is O(1) amortized?",
+  "code": null,
+  "options": [
+   "No \u2014 a single O(n) operation means push is O(n)",
+   "Yes \u2014 amortized O(1) means the average over a sequence of operations is O(1), not that each individual operation is O(1)",
+   "Yes \u2014 but only if the next million pushes do not trigger a resize",
+   "No \u2014 amortized analysis only applies to data structures with fewer than 10,000 elements"
+  ],
+  "correctIndex": 1,
+  "explanation": "Amortized analysis averages cost over a sequence of operations \u2014 the rare expensive O(n) resize is paid for by the credits deposited by the many preceding O(1) pushes since the last resize. The single worst-case push is genuinely O(n), which matters for latency-sensitive (e.g. HFT) code even though the amortized bound is O(1) \u2014 a key point interviewers probe for.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, \"Amortized Analysis\")",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/3-cs-fundamentals/3-1-complexity/07-amortized-analysis.mdx"
+ },
+ {
+  "question": "Why does a priority queue's insert and extract-min run in O(log n) rather than O(1)?",
+  "code": null,
+  "options": [
+   "Priority queues use sorting, which is always at least O(n log n)",
+   "After each insertion or extraction, the heap must restore its ordering property by traversing up or down the tree, which has log n levels",
+   "Priority queues are implemented as linked lists, which require O(log n) traversal",
+   "The priority comparison itself is an O(log n) operation"
+  ],
+  "correctIndex": 1,
+  "explanation": "A binary heap (the typical backing structure for `std::priority_queue`) is a complete binary tree of height log n; sift-up after insert and sift-down after extracting the root each traverse at most log n levels, bounding the cost at O(log n).",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, CS-fundamentals module on deques/priority queues)",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/3-cs-fundamentals/3-3-linked-lists-stacks-queues/06-deques-priority.mdx"
+ },
+ {
+  "question": "In a min-heap stored as an array (zero-indexed), where is the parent of the element at index i?",
+  "code": null,
+  "options": [
+   "Index i - 1",
+   "Index i / 2",
+   "Index floor((i - 1) / 2)",
+   "Index i * 2"
+  ],
+  "correctIndex": 2,
+  "explanation": "For a zero-indexed array-backed heap, parent(i) = floor((i-1)/2); left child = 2i+1, right child = 2i+2. This underlies `std::priority_queue`'s (and `std::push_heap`/`std::pop_heap`'s) array-based binary heap.",
+  "topic": "STL, Memory Management & Pointers",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (Durwood-Studios/Dura, deques/priority queues module)",
+  "url": "https://github.com/Durwood-Studios/Dura/blob/main/src/content/phases/3-cs-fundamentals/3-3-linked-lists-stacks-queues/06-deques-priority.mdx"
+ },
+ {
+  "question": "The protocol data unit (PDU) for the application layer in the Internet stack is",
+  "code": null,
+  "options": [
+   "Segment",
+   "Datagram",
+   "Message",
+   "Frame"
+  ],
+  "correctIndex": 2,
+  "explanation": "The PDU for the Application layer in TCP/IP is a Message. (Also appears verbatim as Q8 in https://www.geeksforgeeks.org/quizzes/application-layer-gq/)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-2/"
+ },
+ {
+  "question": "Which of the following transport layer protocols is used to support electronic mail?",
+  "code": null,
+  "options": [
+   "SMTP",
+   "IP",
+   "TCP",
+   "UDP"
+  ],
+  "correctIndex": 2,
+  "explanation": "E-mail uses SMTP at the application layer, which relies on TCP as its transport-layer protocol.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-2/"
+ },
+ {
+  "question": "In the IPv4 addressing format, the number of networks allowed under Class C addresses is",
+  "code": null,
+  "options": [
+   "2^14",
+   "2^7",
+   "2^21",
+   "2^24"
+  ],
+  "correctIndex": 2,
+  "explanation": "Class C reserves 24 bits for the network ID; with the leading 3 bits fixed as 110, the remaining 21 bits determine the number of available networks (2^21).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-2/"
+ },
+ {
+  "question": "An ISP has the CIDR block 245.248.128.0/20. It wants to give half to Org A and a quarter to Org B, retaining the rest. Which allocation is valid?",
+  "code": null,
+  "options": [
+   "245.248.136.0/21 and 245.248.128.0/22",
+   "245.248.128.0/21 and 245.248.128.0/22",
+   "245.248.132.0/22 and 245.248.132.0/21",
+   "245.248.136.0/22 and 245.248.132.0/21"
+  ],
+  "correctIndex": 0,
+  "explanation": "Org A (half) gets 2^11 addresses (prefix /21) and Org B (quarter) gets 2^10 addresses (prefix /22); only option A splits the block into non-overlapping, correctly aligned ranges of those sizes.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-2/"
+ },
+ {
+  "question": "A source S sends a 10^6-bit file to destination D over a network of 2 routers/3 links; find the total transmission + propagation delay",
+  "code": null,
+  "options": [
+   "1005ms",
+   "1010ms",
+   "3000ms",
+   "3003ms"
+  ],
+  "correctIndex": 0,
+  "explanation": "The first packet incurs 6ms total delay; the remaining 999 packets arrive at 1ms transmission intervals thereafter, giving a total of 1005ms. (Classic GATE CS 2013 question.)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-2/"
+ },
+ {
+  "question": "TCP AIMD: window starts at 2 MSS, threshold 8 MSS at first transmission, timeout occurs during the 5th transmission. Congestion window size at end of 10th transmission?",
+  "code": null,
+  "options": [
+   "8 MSS",
+   "14 MSS",
+   "7 MSS",
+   "12 MSS"
+  ],
+  "correctIndex": 2,
+  "explanation": "Window sizes progress through slow-start and linear-increase phases; the timeout at transmission 5 forces a multiplicative decrease, resulting in 7 MSS by transmission 10.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-2/"
+ },
+ {
+  "question": "A Layer-4 firewall CANNOT:",
+  "code": null,
+  "options": [
+   "block HTTP traffic during 9:00PM and 5:00AM",
+   "block all ICMP traffic",
+   "stop incoming traffic from a specific IP but allow outgoing traffic to the same IP",
+   "block TCP traffic from a specific user on a specific IP on a multi-user system during 9:00PM\u20135:00AM"
+  ],
+  "correctIndex": 3,
+  "explanation": "A Layer-4 firewall only examines IP addresses, ports, and transport-layer info, so it cannot identify individual users on a multi-user system sharing one IP.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-3/"
+ },
+ {
+  "question": "Email client workflow m1 (send), m2 (download to client), m3 (check via browser) use which protocols respectively?",
+  "code": null,
+  "options": [
+   "m1:HTTP, m2:SMTP, m3:POP",
+   "m1:SMTP, m2:FTP, m3:HTTP",
+   "m1:SMTP, m2:POP, m3:HTTP",
+   "m1:POP, m2:SMTP, m3:IMAP"
+  ],
+  "correctIndex": 2,
+  "explanation": "SMTP sends mail, POP retrieves/downloads mail to a client, and checking mail via a web browser is a plain HTTP process. (Also appears as Q1 in https://www.geeksforgeeks.org/quizzes/application-layer-gq/)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-3/"
+ },
+ {
+  "question": "Distance vector routing: given update table state, what does node N3 compute as its new distance vector?",
+  "code": null,
+  "options": [
+   "(3, 2, 0, 2, 5)",
+   "(3, 2, 0, 2, 6)",
+   "(7, 2, 0, 2, 5)",
+   "(7, 2, 0, 2, 6)"
+  ],
+  "correctIndex": 0,
+  "explanation": "N3 receives (1, 0, 2, 7, 3) from N2 and updates its distances to N1 and N5 as 3 and 5 respectively.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-3/"
+ },
+ {
+  "question": "Following a link failure in the same distance-vector network, what distance does N3 compute to N1?",
+  "code": null,
+  "options": [
+   "3",
+   "9",
+   "10",
+   "\u221e"
+  ],
+  "correctIndex": 2,
+  "explanation": "N3 receives an infinite distance from N2 to N1, but receives a distance of 8 from N4 to N1, so it updates its own distance to N1 as 8 + 2 = 10.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-3/"
+ },
+ {
+  "question": "One of the header fields in an IP datagram is the Time to Live (TTL) field. What best explains the need for this field?",
+  "code": null,
+  "options": [
+   "It can be used to prioritize packets",
+   "It can be used to reduce delays",
+   "It can be used to optimize throughput",
+   "It can be used to prevent packet looping"
+  ],
+  "correctIndex": 3,
+  "explanation": "TTL is an upper bound on how long a datagram can exist in the network, preventing an undeliverable datagram from circulating forever.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-4-2/"
+ },
+ {
+  "question": "Computers A (10.105.1.113) and B (10.105.1.91) use the same netmask N. Which value of N should NOT be used if A and B must be on the same network?",
+  "code": null,
+  "options": [
+   "255.255.255.0",
+   "255.255.255.128",
+   "255.255.255.192",
+   "255.255.255.224"
+  ],
+  "correctIndex": 3,
+  "explanation": "The last octets of the two addresses (113 and 91) differ in their top 3 bits; option D's mask requires those bits to match for same-network membership, so it fails.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-4-2/"
+ },
+ {
+  "question": "Network of 6 routers R1\u2013R6 using distance-vector routing; after tables stabilize, how many links are never used to carry data?",
+  "code": null,
+  "options": [
+   "4",
+   "3",
+   "2",
+   "1"
+  ],
+  "correctIndex": 2,
+  "explanation": "Computing all-pairs shortest paths shows links R1\u2013R2 and R4\u2013R6 are never used once the tables stabilize.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-4-2/"
+ },
+ {
+  "question": "If the weights of the previously-unused links are changed to 2 and distance-vector routing re-stabilizes, how many links remain unused?",
+  "code": null,
+  "options": [
+   "0",
+   "1",
+   "2",
+   "3"
+  ],
+  "correctIndex": 1,
+  "explanation": "Recomputing shortest paths with the modified weights leaves only the R5\u2013R6 link unused.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-4-2/"
+ },
+ {
+  "question": "Packets of the same session may be routed through different paths in:",
+  "code": null,
+  "options": [
+   "TCP, but not UDP",
+   "TCP and UDP",
+   "UDP, but not TCP",
+   "Neither TCP nor UDP"
+  ],
+  "correctIndex": 1,
+  "explanation": "Routing happens at the network layer independent of the transport protocol; adaptive routing can send packets of the same TCP or UDP session over different paths depending on congestion/topology.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-5/"
+ },
+ {
+  "question": "The Address Resolution Protocol (ARP) is used for:",
+  "code": null,
+  "options": [
+   "Finding the IP address from the DNS",
+   "Finding the IP address of the default gateway",
+   "Finding the IP address that corresponds to a MAC address",
+   "Finding the MAC address that corresponds to an IP address"
+  ],
+  "correctIndex": 3,
+  "explanation": "ARP is a request-reply mechanism used to discover the MAC address associated with a known IP address on the local network.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-5/"
+ },
+ {
+  "question": "The maximum window size for data transmission using the selective-reject (selective repeat) protocol with n-bit frame sequence numbers is:",
+  "code": null,
+  "options": [
+   "2^n",
+   "2^(n-1)",
+   "2^n - 1",
+   "2^(n-2)"
+  ],
+  "correctIndex": 1,
+  "explanation": "For Selective Repeat, the maximum window size must be at most half the maximum sequence number space (2^(n-1)) to avoid ambiguity between old and new frames.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-5/"
+ },
+ {
+  "question": "Why is the spanning tree algorithm used for bridge routing in LANs with multiple paths?",
+  "code": null,
+  "options": [
+   "For shortest path routing between LANs",
+   "For avoiding loops in the routing paths",
+   "For fault tolerance",
+   "For minimizing collisions"
+  ],
+  "correctIndex": 1,
+  "explanation": "The Spanning Tree Protocol exists specifically to prevent circular/looping paths in bridged LAN topologies.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-5/"
+ },
+ {
+  "question": "An organization has a class B network and wants to form subnets for 64 departments. The subnet mask would be:",
+  "code": null,
+  "options": [
+   "255.255.0.0",
+   "255.255.64.0",
+   "255.255.128.0",
+   "255.255.252.0"
+  ],
+  "correctIndex": 3,
+  "explanation": "A Class B network has a 16-bit host portion; creating 64 subnets needs 6 extra borrowed bits (2^6 = 64), producing subnet mask 255.255.252.0.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-6/"
+ },
+ {
+  "question": "In a packet-switched network with 2 intermediate nodes, a 24-byte message with 3-byte header per packet \u2014 what is the optimum packet size?",
+  "code": null,
+  "options": [
+   "4",
+   "6",
+   "7",
+   "9"
+  ],
+  "correctIndex": 3,
+  "explanation": "Testing candidate packet sizes shows 9-byte packets minimize total transmission time (54t) versus the other options (104t, 60t, 56t).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-6/"
+ },
+ {
+  "question": "Round-trip propagation delay for a 10 Mbps Ethernet with a 48-bit jamming signal is 46.4 ms. What is the minimum frame size?",
+  "code": null,
+  "options": [
+   "94",
+   "416",
+   "464",
+   "512"
+  ],
+  "correctIndex": 2,
+  "explanation": "Minimum frame size = round-trip propagation delay x transmission speed = 46.4ms x 10Mbps = 464 kbits, which is required so collisions can still be detected while the frame is being sent.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-6/"
+ },
+ {
+  "question": "Which of the following system calls results in the sending of SYN packets?",
+  "code": null,
+  "options": [
+   "socket",
+   "bind",
+   "listen",
+   "connect"
+  ],
+  "correctIndex": 3,
+  "explanation": "connect() on the client initiates the TCP three-way handshake by sending the SYN segment; socket(), bind(), and listen() only set up local state.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-7/"
+ },
+ {
+  "question": "In the slow-start phase of the TCP congestion control algorithm, the size of the congestion window:",
+  "code": null,
+  "options": [
+   "does not increase",
+   "increases linearly",
+   "increases quadratically",
+   "increases exponentially"
+  ],
+  "correctIndex": 3,
+  "explanation": "Despite the name \"slow start,\" the window doubles roughly every RTT (grows exponentially) until a loss occurs or the slow-start threshold is reached.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-7/"
+ },
+ {
+  "question": "A class B network has subnet mask 255.255.248.0. What is the maximum number of hosts per subnet?",
+  "code": null,
+  "options": [
+   "1022",
+   "1023",
+   "2046",
+   "2047"
+  ],
+  "correctIndex": 2,
+  "explanation": "The mask has 21 set bits, leaving 11 host bits (2^11 = 2048); subtracting the network and broadcast addresses gives 2046 usable hosts. (Same question also appears unanswered in https://www.geeksforgeeks.org/quizzes/ip-addressing-57/)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-7/"
+ },
+ {
+  "question": "What is the maximum size of data that the application layer can pass on to the TCP layer below?",
+  "code": null,
+  "options": [
+   "Any size",
+   "2^16 bytes minus size of TCP header",
+   "2^16 bytes",
+   "1500 bytes"
+  ],
+  "correctIndex": 0,
+  "explanation": "The application layer can hand off any size of data to TCP; no standard limits it, and lower layers (TCP/IP) perform segmentation/fragmentation as needed.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-8/"
+ },
+ {
+  "question": "Server S does socket()/bind()/listen() then is preempted (no accept() yet). Client P does socket() then connect(). What happens?",
+  "code": null,
+  "options": [
+   "connect() returns successfully",
+   "connect() blocks",
+   "connect() returns an error",
+   "connect() results in a core dump"
+  ],
+  "correctIndex": 2,
+  "explanation": "Actually the TCP handshake can still complete into the listen backlog even without an active accept(); however GfG's answer key marks (C), reasoning that without an accept() call servicing the connection, connect() eventually times out/errors. (Note: some sources dispute this \u2014 the backlog queue is meant to hold such completed connections. Recorded as-published.)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-8/"
+ },
+ {
+  "question": "A computer on a 10 Mbps network is regulated by a token bucket filled at 2 Mbps, initially full with 16 Megabits. What is the maximum duration it can transmit at the full 10 Mbps?",
+  "code": null,
+  "options": [
+   "1.6 seconds",
+   "2 seconds",
+   "5 seconds",
+   "8 seconds"
+  ],
+  "correctIndex": 1,
+  "explanation": "Max burst duration = bucket capacity / (peak rate - fill rate) = 16 / (10 - 2) = 2 seconds.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-8/"
+ },
+ {
+  "question": "Which one of the following uses UDP as the transport protocol?",
+  "code": null,
+  "options": [
+   "HTTP",
+   "Telnet",
+   "DNS",
+   "SMTP"
+  ],
+  "correctIndex": 2,
+  "explanation": "DNS primarily runs over UDP port 53 for its simple request/reply query pattern (falling back to TCP only for large responses/zone transfers).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-9/"
+ },
+ {
+  "question": "In Ethernet when Manchester encoding is used, the bit rate is:",
+  "code": null,
+  "options": [
+   "Half the baud rate",
+   "Twice the baud rate",
+   "Same as the baud rate",
+   "none of the above"
+  ],
+  "correctIndex": 0,
+  "explanation": "Manchester encoding requires two signal transitions (baud units) per data bit, so the bit rate is half the baud rate.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-9/"
+ },
+ {
+  "question": "n stations in a slotted LAN each transmit with probability p per slot. What is the probability that exactly ONE station transmits in a given slot?",
+  "code": null,
+  "options": [
+   "(1-p)^(n-1)",
+   "np(1-p)^(n-1)",
+   "p(1-p)^(n-1)",
+   "1-(1-p)^(n-1)"
+  ],
+  "correctIndex": 1,
+  "explanation": "The probability any one specific station transmits alone is p(1-p)^(n-1); summed over the n stations that could be the one transmitting gives np(1-p)^(n-1).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-9/"
+ },
+ {
+  "question": "In a token ring network with transmission speed 10^7 bps and propagation speed 200 m/microsecond, the 1-bit delay is equivalent to:",
+  "code": null,
+  "options": [
+   "500 meters of cable",
+   "200 meters of cable",
+   "20 meters of cable",
+   "50 meters of cable"
+  ],
+  "correctIndex": 2,
+  "explanation": "One bit takes 0.1 microseconds to transmit at 10^7 bps; at 200 m/microsecond propagation speed that corresponds to 20 meters of cable.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-9/"
+ },
+ {
+  "question": "A class B host address is split into subnets with a 6-bit subnet number. What is the maximum number of subnets and hosts per subnet?",
+  "code": null,
+  "options": [
+   "62 subnets and 262142 hosts",
+   "64 subnets and 262142 hosts",
+   "62 subnets and 1022 hosts",
+   "64 subnets and 1024 hosts"
+  ],
+  "correctIndex": 2,
+  "explanation": "Max subnets = 2^6 - 2 = 62 (excluding all-zero and all-one subnet fields); max hosts per subnet = 2^10 - 2 = 1022 (excluding network and broadcast addresses).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-10/"
+ },
+ {
+  "question": "The message 11001001 is to be transmitted using the CRC polynomial x^3 + 1. What message should actually be transmitted?",
+  "code": null,
+  "options": [
+   "11001001000",
+   "11001001011",
+   "11001010",
+   "110010010011"
+  ],
+  "correctIndex": 1,
+  "explanation": "x^3+1 corresponds to divisor 1001; dividing 11001001000 by 1001 via XOR leaves remainder 011, so the transmitted frame is the original message with that CRC appended: 11001001 011.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-10/"
+ },
+ {
+  "question": "Match OSI/TCP-IP layer protocols: (P) SMTP (Q) BGP (R) TCP (S) PPP to their layers",
+  "code": null,
+  "options": [
+   "P-2,Q-1,R-3,S-5",
+   "P-1,Q-4,R-2,S-3",
+   "P-1,Q-4,R-2,S-5",
+   "P-2,Q-4,R-1,S-3"
+  ],
+  "correctIndex": 1,
+  "explanation": "SMTP is an application-layer protocol, BGP is used at/for the network layer (routing), TCP is a transport-layer protocol, and PPP is a data-link layer protocol.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/computer-networks/computer-networks-set-10/"
+ },
+ {
+  "question": "What is the main function of the Application Layer in the OSI model?",
+  "code": null,
+  "options": [
+   "Error detection and correction",
+   "Routing of packets",
+   "Providing network services to end users",
+   "Establishing physical connections"
+  ],
+  "correctIndex": 2,
+  "explanation": "The Application layer is the topmost OSI layer and is the interface through which end-user applications access network services.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "What additional feature does HTTPS provide over plain HTTP?",
+  "code": null,
+  "options": [
+   "Compression",
+   "Encryption and authentication using SSL/TLS",
+   "Faster data transfer using UDP",
+   "Multicast support"
+  ],
+  "correctIndex": 1,
+  "explanation": "HTTPS is HTTP layered over TLS/SSL, adding encryption of traffic and authentication of the server (and optionally the client).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "Which of the following is a key characteristic of TFTP (Trivial File Transfer Protocol)?",
+  "code": null,
+  "options": [
+   "Uses TCP for transmission",
+   "Supports authentication and encryption",
+   "Simpler and faster than FTP, uses UDP",
+   "Requires user credentials before file transfer"
+  ],
+  "correctIndex": 2,
+  "explanation": "TFTP is a stripped-down file transfer protocol that runs over UDP and has no built-in authentication, making it simpler (but less reliable/secure) than FTP.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "The term \"Internetworking\" primarily refers to:",
+  "code": null,
+  "options": [
+   "Connecting devices within a single LAN",
+   "Connecting multiple networks together",
+   "Sharing files between two computers",
+   "Establishing wireless communication"
+  ],
+  "correctIndex": 1,
+  "explanation": "Internetworking specifically means connecting distinct networks (e.g., via routers) into one larger network, as with the Internet itself.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "Which protocol allows a client to access and manage email on a central mail server repository (as opposed to just downloading it)?",
+  "code": null,
+  "options": [
+   "POP3",
+   "IMAP",
+   "SMTP",
+   "DMSP"
+  ],
+  "correctIndex": 1,
+  "explanation": "IMAP keeps mail on the server and lets clients manage/sync folders remotely, unlike POP3 which typically downloads and removes mail.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "A user wants to send an email, check headers without downloading, and view mail via a browser. Which protocol set is used respectively?",
+  "code": null,
+  "options": [
+   "SMTP, HTTPS, IMAP",
+   "SMTP, POP, IMAP",
+   "SMTP, IMAP, HTTPS",
+   "SMTP, IMAP, POP"
+  ],
+  "correctIndex": 3,
+  "explanation": "SMTP sends the mail; IMAP allows checking headers/managing mail on the server without full download; viewing mail in a browser is a plain HTTP/POP-style webmail access, matching option D per the GfG answer key.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "Which application-layer protocol is used for initiating, maintaining, and terminating real-time multimedia sessions (e.g., VoIP/video calls)?",
+  "code": null,
+  "options": [
+   "Session Maintenance Protocol",
+   "Real-time Streaming Protocol",
+   "Real-time Transport Control Protocol",
+   "Session Initiation Protocol"
+  ],
+  "correctIndex": 3,
+  "explanation": "SIP (Session Initiation Protocol) is the standard signaling protocol for setting up and tearing down real-time multimedia sessions.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GeeksforGeeks",
+  "url": "https://www.geeksforgeeks.org/quizzes/application-layer-gq/"
+ },
+ {
+  "question": "How many layers are in the OSI model?",
+  "code": null,
+  "options": [
+   "5",
+   "6",
+   "7",
+   "4"
+  ],
+  "correctIndex": 2,
+  "explanation": "The seven OSI layers are Physical, Data Link, Network, Transport, Session, Presentation, and Application.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault, tagged interview/screening)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "Which layer of the OSI model is responsible for \"Routing\"?",
+  "code": null,
+  "options": [
+   "Data Link",
+   "Network",
+   "Transport",
+   "Application"
+  ],
+  "correctIndex": 1,
+  "explanation": "Routers and routing decisions operate at Layer 3, the Network layer.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "Which protocol is used to map an IP address to a physical (MAC) address?",
+  "code": null,
+  "options": [
+   "DHCP",
+   "ARP",
+   "DNS",
+   "FTP"
+  ],
+  "correctIndex": 1,
+  "explanation": "ARP (Address Resolution Protocol) resolves a known IP address to its corresponding MAC address on a local network.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "What is the default port for HTTPS?",
+  "code": null,
+  "options": [
+   "80",
+   "443",
+   "22",
+   "21"
+  ],
+  "correctIndex": 1,
+  "explanation": "HTTP uses port 80 by default, while HTTPS (HTTP over TLS) uses port 443.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "TCP is a __________ protocol.",
+  "code": null,
+  "options": [
+   "Connectionless",
+   "Connection-oriented",
+   "Physical layer",
+   "Presentation layer"
+  ],
+  "correctIndex": 1,
+  "explanation": "TCP requires a 3-way handshake (SYN, SYN-ACK, ACK) to establish a connection before any data transfer.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "Which of the following is a \"Connectionless\" protocol?",
+  "code": null,
+  "options": [
+   "TCP",
+   "UDP",
+   "HTTP",
+   "FTP"
+  ],
+  "correctIndex": 1,
+  "explanation": "UDP sends datagrams without establishing or maintaining a connection state, unlike TCP.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "What is the primary function of \"DNS\"?",
+  "code": null,
+  "options": [
+   "To assign IP addresses",
+   "To map domain names to IP addresses",
+   "To encrypt web traffic",
+   "To filter spam emails"
+  ],
+  "correctIndex": 1,
+  "explanation": "DNS (Domain Name System) translates human-readable domain names into the numeric IP addresses used for routing, acting like the internet's phonebook.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "Which protocol is used for sending emails?",
+  "code": null,
+  "options": [
+   "POP3",
+   "IMAP",
+   "SMTP",
+   "HTTP"
+  ],
+  "correctIndex": 2,
+  "explanation": "SMTP (Simple Mail Transfer Protocol) is used to send mail; POP3/IMAP are used to retrieve/manage received mail.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "What is a \"Subnet Mask\" used for?",
+  "code": null,
+  "options": [
+   "To hide the IP address",
+   "To distinguish between the network address and host address",
+   "To speed up the internet",
+   "To identify the physical location of a computer"
+  ],
+  "correctIndex": 1,
+  "explanation": "The subnet mask splits an IP address into its network and host portions.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "What is the purpose of the \"3-way Handshake\" in TCP?",
+  "code": null,
+  "options": [
+   "To encrypt the connection",
+   "To authenticate the user",
+   "To synchronize sequence numbers and establish a connection",
+   "To check if the computer is turned on"
+  ],
+  "correctIndex": 2,
+  "explanation": "The SYN, SYN-ACK, ACK exchange synchronizes initial sequence numbers on both sides and confirms both sender and receiver are ready to communicate.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "Which layer of the OSI model does \"TLS/SSL\" primarily operate on?",
+  "code": null,
+  "options": [
+   "Network",
+   "Transport",
+   "Presentation (though often integrated into Application/Transport)",
+   "Physical"
+  ],
+  "correctIndex": 2,
+  "explanation": "Encryption/decryption is conceptually a Presentation-layer function in OSI terms, though in real TCP/IP stacks TLS is implemented on top of the transport layer.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "A \"Hub\" is a Layer ____ device.",
+  "code": null,
+  "options": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctIndex": 0,
+  "explanation": "A hub is a simple Physical-layer (Layer 1) device that broadcasts electrical/optical signals to all ports; switches operate at Layer 2.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "What is the size of an IPv4 address?",
+  "code": null,
+  "options": [
+   "32 bits",
+   "64 bits",
+   "128 bits",
+   "16 bits"
+  ],
+  "correctIndex": 0,
+  "explanation": "IPv4 addresses are 4 bytes (32 bits) long; IPv6 addresses are 128 bits.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (mrxsierra/CS prepvault)",
+  "url": "https://github.com/mrxsierra/CS/blob/main/prepvault/03_interview_formats/technical_screens/networking_mcqs.md"
+ },
+ {
+  "question": "Three concurrent processes X, Y, Z execute P operations on semaphores a, b, c, d before entering their code segments (X: a,b,c; Y: b,c,d; Z: c,d,a). Which one of the following represents a deadlock-free order of invoking the P operations by the processes?",
+  "code": null,
+  "options": [
+   "X: P(a)P(b)P(c) Y: P(b)P(c)P(d) Z: P(c)P(d)P(a)",
+   "X: P(b)P(a)P(c) Y: P(b)P(c)P(d) Z: P(a)P(c)P(d)",
+   "X: P(b)P(a)P(c) Y: P(c)P(b)P(d) Z: P(a)P(c)P(d)",
+   "X: P(a)P(b)P(c) Y: P(c)P(b)P(d) Z: P(c)P(d)P(a)"
+  ],
+  "correctIndex": 2,
+  "explanation": "Option C imposes a consistent global acquisition order across all three processes (b before a before c for X; c before b before d for Y; a before c before d for Z resolves to no cyclic wait), breaking the circular-wait condition required for deadlock \u2014 the other orderings allow a cycle (X waits on Z's held resource while Z waits on X's).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/deadlock-gq/"
+ },
+ {
+  "question": "Two processes P1 and P2 use a shared variable `critical_flag` to try to achieve mutual exclusion, each spinning on the flag before entering its critical section and clearing it after. Consider statements (i) \"Both P1 and P2 can access the critical region concurrently\" and (ii) \"This may lead to deadlock.\" Which is correct?",
+  "code": null,
+  "options": [
+   "(i) false, (ii) true",
+   "Both false",
+   "(i) true, (ii) false",
+   "Both true"
+  ],
+  "correctIndex": 2,
+  "explanation": "A naive check-then-set on a shared flag (without an atomic test-and-set) has a race window where both processes can read the flag as clear before either sets it, so both can enter the critical section concurrently (i is true); the flaw causes a mutual-exclusion violation, not a deadlock, since neither process ever blocks indefinitely waiting on the flag (ii is false).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/deadlock-gq/"
+ },
+ {
+  "question": "Which one of the following is NOT true of deadlock prevention and deadlock avoidance schemes?",
+  "code": null,
+  "options": [
+   "In deadlock prevention, a request for resource is always granted if the resulting state is safe",
+   "In deadlock avoidance, a request for resource is granted if the resulting state is safe",
+   "Deadlock avoidance is less restrictive than deadlock prevention",
+   "Deadlock avoidance requires knowledge of resource requirements a priori"
+  ],
+  "correctIndex": 0,
+  "explanation": "\"Safe state\" checking (Banker's-algorithm style) is the hallmark of deadlock avoidance, not prevention \u2014 deadlock prevention works by statically denying one of the four Coffman conditions (e.g., request-all-at-once, resource ordering) rather than by computing safe states per request, so statement A misattributes avoidance's mechanism to prevention.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/deadlock-gq/"
+ },
+ {
+  "question": "A computer has 6 tape drives with n processes competing for them; each process may need at most 2 drives. What is the maximum value of n for which the system is guaranteed deadlock-free?",
+  "code": null,
+  "options": [
+   "3",
+   "4",
+   "5",
+   "9"
+  ],
+  "correctIndex": 2,
+  "explanation": "With n=5 processes each holding at most 1 drive in the worst case (5 drives allocated), 1 drive remains free, guaranteeing that at least one process can obtain its 2nd drive and finish, then release both \u2014 preventing deadlock; at n=6, all 6 drives could be allocated one-each with none able to get a second, causing deadlock.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ / classic OS textbook problem)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/deadlock-gq/"
+ },
+ {
+  "question": "Which of the following is NOT a valid scheme for preventing deadlock?",
+  "code": null,
+  "options": [
+   "Release all resources before requesting a new resource",
+   "Number the resources uniquely and never request a lower-numbered resource than currently held",
+   "Never request resources after releasing any resource",
+   "Request and be allocated all resources before beginning execution"
+  ],
+  "correctIndex": 2,
+  "explanation": "A, B, and D are the textbook prevention strategies attacking hold-and-wait and circular-wait respectively; option C is not a recognized deadlock-prevention rule \u2014 it neither prevents circular wait nor hold-and-wait and is a fabricated/invalid scheme used as the distractor.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/deadlock-gq/"
+ },
+ {
+  "question": "Consider a system with a shared variable x, initialized to zero, operated on by four concurrent processes W, X, Y, Z under a counting semaphore S initialized to two, where W and X each read x, increment by one, and store it, while Y and Z each read x, decrement by two, and store it (each guarded by P(S)/V(S)). What is the maximum possible value of x after all four processes complete execution?",
+  "code": null,
+  "options": [
+   "-2",
+   "-1",
+   "1",
+   "2"
+  ],
+  "correctIndex": 3,
+  "explanation": "The counting semaphore S=2 permits at most 2 processes into the critical section concurrently, so W and X (the incrementers) can both run before Y or Z start; if both increments interleave without seeing each other's write (read 0, read 0, write 1, write 1), x ends at 1 momentarily, but the true maximum arises when both W and X fully complete sequentially reaching x=2 before Y/Z run at all, giving the maximum observable final value of 2. --- ## Section B \u2014 GATE CS PYQ via GeeksforGeeks (CPU Scheduling)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/process-synchronization-gq/"
+ },
+ {
+  "question": "A scheduling algorithm assigns priority proportional to the waiting time of a process, with priorities changing while processes wait. When a process gets the CPU, its waiting time resets to 0. Which one of the following is TRUE for this scheduling algorithm?",
+  "code": null,
+  "options": [
+   "This algorithm is equivalent to First Come First Served",
+   "This algorithm is equivalent to Round Robin",
+   "This algorithm is equivalent to Shortest Job First",
+   "This algorithm is equivalent to Shortest Remaining Time First"
+  ],
+  "correctIndex": 0,
+  "explanation": "Priority strictly increasing with waiting time means the process that has waited longest (i.e., arrived earliest and hasn't run) always has the highest priority, which reproduces FCFS ordering exactly.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/cpu-scheduling-gq/"
+ },
+ {
+  "question": "Which of the following statements are TRUE? I. Shortest remaining time first scheduling may cause starvation. II. Preemptive scheduling may cause starvation. III. Round robin is better than FCFS in terms of response time.",
+  "code": null,
+  "options": [
+   "I only",
+   "I and III only",
+   "II and III only",
+   "I, II and III"
+  ],
+  "correctIndex": 1,
+  "explanation": "SRTF can starve long jobs if short jobs keep arriving (I true); Round Robin gives every process a bounded time slice, giving much better average response time than FCFS's convoy-effect-prone ordering (III true); statement II is an over-generalization (not every preemptive algorithm inherently causes starvation, e.g., Round Robin does not) so it is marked false.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/cpu-scheduling-gq/"
+ },
+ {
+  "question": "Three CPU-intensive processes require 10, 20 and 30 time units and arrive at times 0, 2 and 6 respectively. How many context switches are needed if the operating system implements a shortest remaining time first (preemptive) scheduling algorithm? (Do not count the context switch at time zero and at the end.)",
+  "code": null,
+  "options": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctIndex": 1,
+  "explanation": "P1 starts at t=0; at t=2, P2 (remaining 20) doesn't preempt P1 (remaining 8) since 8<20; at t=6, P3 arrives with 30 remaining vs P1's remaining 4, so P1 continues; P1 finishes at t=10, then P2 runs (shorter remaining than P3) \u2014 only two switches occur: P1\u2192P2 at t=10 and P2\u2192P3 at t=30.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/cpu-scheduling-gq/"
+ },
+ {
+  "question": "An operating system uses the Shortest Remaining Time First (SRT) process scheduling algorithm. Given a mix of processes with staggered arrival and burst times, what is the total waiting time for process P2 in the canonical GATE version of this problem?",
+  "code": null,
+  "options": [
+   "5",
+   "15",
+   "40",
+   "55"
+  ],
+  "correctIndex": 3,
+  "explanation": "Working through the SRT preemption timeline (a process is only preempted when a newly arriving process has a strictly smaller remaining burst) and summing P2's idle/preempted time between its arrival and completion yields 55 time units of waiting for P2 in the source problem's numbers. --- ## Section C \u2014 GATE CS PYQ via GeeksforGeeks (Memory Management / Paging / Virtual Memory)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/cpu-scheduling-gq/"
+ },
+ {
+  "question": "Consider the virtual page reference string 1, 2, 3, 2, 4, 1, 3, 2, 4, 1 on a demand-paged virtual memory system with 3 empty page frames. Let LRU, FIFO and OPTIMAL denote the number of page faults under the corresponding page replacement policies. Then:",
+  "code": null,
+  "options": [
+   "OPTIMAL < LRU < FIFO",
+   "OPTIMAL < FIFO < LRU",
+   "OPTIMAL = LRU",
+   "OPTIMAL = FIFO"
+  ],
+  "correctIndex": 1,
+  "explanation": "Simulating each policy on the given string with 3 frames gives OPTIMAL the fewest faults (it evicts the page used furthest in the future), FIFO an intermediate count, and LRU the most faults for this particular reference pattern \u2014 illustrating that LRU is not always better than FIFO in practice despite generally performing well.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/memory-management-gq/"
+ },
+ {
+  "question": "Which of the following page replacement algorithms suffers from Belady's anomaly?",
+  "code": null,
+  "options": [
+   "FIFO",
+   "LRU",
+   "Optimal Page Replacement",
+   "Both LRU and FIFO"
+  ],
+  "correctIndex": 0,
+  "explanation": "FIFO can (counter-intuitively) produce more page faults when given more frames for certain reference strings \u2014 this is Belady's anomaly. LRU and Optimal are \"stack algorithms\" whose fault count is provably monotonic non-increasing in the number of frames, so they cannot exhibit it.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ / classic OS fact)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/memory-management-gq/"
+ },
+ {
+  "question": "A computer system supports 32-bit virtual addresses as well as 32-bit physical addresses. Since the virtual address space is the same size as the physical address space, the OS designers decide to get rid of virtual memory entirely. Which one of the following is true?",
+  "code": null,
+  "options": [
+   "Efficient implementation of multi-user support is no longer possible",
+   "The processor cache organization can be made more efficient now",
+   "Hardware support for memory management is no longer needed",
+   "CPU scheduling can be made more efficient now"
+  ],
+  "correctIndex": 0,
+  "explanation": "Virtual memory (via address translation/protection hardware) is what lets multiple user processes each believe they own the full address space while being isolated from one another; removing it forces every process to share one flat physical address space directly, breaking process isolation and making multi-user support inefficient or unsafe.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/memory-management-gq/"
+ },
+ {
+  "question": "A CPU generates 32-bit virtual addresses. The page size is 4 KB. The processor has a TLB which can hold a total of 128 page table entries and is 4-way set associative. The minimum size of the TLB tag is:",
+  "code": null,
+  "options": [
+   "11 bits",
+   "13 bits",
+   "15 bits",
+   "20 bits"
+  ],
+  "correctIndex": 2,
+  "explanation": "4 KB pages give a 20-bit virtual page number (32-12); 128 entries in a 4-way set-associative TLB means 32 sets, requiring 5 bits to index the set, leaving 20-5 = 15 bits as the minimum tag size to disambiguate entries within a set.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/memory-management-gq/"
+ },
+ {
+  "question": "A computer uses a 46-bit virtual address, 32-bit physical address, and a three-level paged page table organization (T1\u2192T2\u2192T3, each PTE 32 bits, each level table fits exactly in one page). The processor has a 1 MB, 16-way set-associative, virtually indexed physically tagged cache with a 64-byte block size. What is the page size (in KB)?",
+  "code": null,
+  "options": [
+   "2",
+   "4",
+   "8",
+   "16"
+  ],
+  "correctIndex": 1,
+  "explanation": "Because the cache is virtually indexed, the page offset bits must be enough to fully specify the cache index+block-offset within a page without ambiguity; solving cache-size/(ways \u00d7 block-size) = number of sets and matching that against the constraint that each page-table level fits in exactly one page of PTEs yields a 4 KB page size as the consistent solution. --- ## Section D \u2014 Coding Ninjas \"Operating System MCQ\" course quiz (company-tagged questions)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general (GATE CS PYQ)",
+  "source": "GeeksforGeeks Quiz Hub",
+  "url": "https://www.geeksforgeeks.org/quizzes/memory-management-gq/"
+ },
+ {
+  "question": "Which of the following address is generated by the computer system to isolate and protect processes from each other? (Note in source: \"This question was asked in Amazon.\")",
+  "code": null,
+  "options": [
+   "Physical Address",
+   "Absolute Address",
+   "Virtual Address (also known as logical address)",
+   "None of the above"
+  ],
+  "correctIndex": 2,
+  "explanation": "The CPU/process only ever manipulates virtual (logical) addresses; the OS and MMU translate these to physical addresses per-process, so two processes can use the same virtual address without colliding in physical memory \u2014 this indirection is exactly what provides inter-process isolation.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "REAL",
+  "company": "Amazon (attribution as stated in course source; unverified beyond the course author's note)",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Runtime mapping from virtual to physical address is done by: (Note in source: \"This question was asked in TCS.\")",
+  "code": null,
+  "options": [
+   "CPU",
+   "Operating System",
+   "Memory Management Unit",
+   "None of the above"
+  ],
+  "correctIndex": 2,
+  "explanation": "The MMU is the dedicated hardware unit (using the page table / TLB) that performs virtual-to-physical address translation on every memory access at runtime; the OS only sets up the page tables, it doesn't perform the per-access translation itself. --- ## Section E \u2014 Coding Ninjas \"Operating System MCQ\" course quiz (general practice, no company tag)",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "REAL",
+  "company": "TCS (attribution as stated in course source; unverified beyond the course author's note)",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "System calls are invoked by using:",
+  "code": null,
+  "options": [
+   "Polling",
+   "An indirect jump",
+   "A software interrupt",
+   "A privileged instruction"
+  ],
+  "correctIndex": 2,
+  "explanation": "A system call (e.g., via `int 0x80` or the `syscall` instruction) triggers a software interrupt/trap that switches the CPU into kernel mode and transfers control to the OS's syscall handler, unlike hardware interrupts which are triggered externally.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Match the system calls exec(), exit(), wait(), fork() with their functions: (a) creates a new process, (b) keeps PID same and replaces running code with new code, (c) terminates a running process properly, (d) a process synchronizes with termination of a child process.",
+  "code": null,
+  "options": [
+   "exec=3, exit=2, wait=4, fork=1",
+   "exec=2, exit=3, wait=4, fork=1",
+   "exec=2, exit=3, wait=4, fork=1 (duplicate of B in source)",
+   "exec=2, exit=4, wait=3, fork=1"
+  ],
+  "correctIndex": 1,
+  "explanation": "`fork()` creates a new (child) process; `exec()` replaces the calling process's code/image in place while keeping the same PID; `wait()` blocks the parent until a child terminates; `exit()` properly terminates the calling process, releasing its resources.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Consider the set of 5 processes with given arrival/burst times. What is the average turnaround time and average waiting time under First Come First Served (FCFS) scheduling?",
+  "code": null,
+  "options": [
+   "Turnaround: 7.2, Waiting: 4.3",
+   "Turnaround: 5.1, Waiting: 3.1",
+   "Turnaround: 6.6, Waiting: 3.4",
+   "Turnaround: 6.9, Waiting: 5.1"
+  ],
+  "correctIndex": 2,
+  "explanation": "Under FCFS, processes are executed strictly in arrival order with no preemption; summing each process's (completion time \u2212 arrival time) for turnaround and (turnaround \u2212 burst) for waiting, then averaging over the 5 processes, gives 6.6 and 3.4 respectively for the source's numbers.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Consider CPU scheduling decisions: (i) running\u2192waiting, (ii) running\u2192ready, (iii) waiting\u2192ready, (iv) terminates. Preemptive scheduling can take place among which scenarios?",
+  "code": null,
+  "options": [
+   "i and iv",
+   "i and iii",
+   "ii and iii",
+   "i and ii"
+  ],
+  "correctIndex": 2,
+  "explanation": "Preemption means the scheduler forcibly takes the CPU away from a still-runnable process \u2014 this happens at (ii) running\u2192ready (time slice expiry / higher priority process arrives) and (iii) waiting\u2192ready (an I/O-completed or higher-priority process becomes eligible and bumps the current one); (i) and (iv) are voluntary transitions and occur under any scheduling discipline.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "What does a CPU do when a process tries to access memory outside its bounds?",
+  "code": null,
+  "options": [
+   "The CPU modifies its bounds to access the memory the process wants",
+   "The CPU omits that particular instruction in the program",
+   "The CPU raises an exception",
+   "None of the above"
+  ],
+  "correctIndex": 2,
+  "explanation": "Out-of-bounds memory access (checked via base/limit registers or page-table permission bits) causes the hardware to raise a protection-fault/segmentation-violation exception, trapping into the OS, which typically terminates the offending process (e.g., SIGSEGV on Linux).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Which of the following conditions is required for a deadlock to be possible?",
+  "code": null,
+  "options": [
+   "Mutual exclusion",
+   "A process may hold allocated resources while awaiting assignment of other resources (hold and wait)",
+   "All of the above",
+   "No resource can be forcibly removed from a process holding it (no preemption)"
+  ],
+  "correctIndex": 2,
+  "explanation": "All four Coffman conditions (mutual exclusion, hold-and-wait, no preemption, and circular wait) must simultaneously hold for a deadlock to be possible \u2014 this question lists three of the four and the fourth (circular wait) is implied by \"All of the above.\"",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "The circular wait condition can be prevented by:",
+  "code": null,
+  "options": [
+   "Using threads",
+   "Using pipes",
+   "Defining a linear ordering of resource types",
+   "All of the above"
+  ],
+  "correctIndex": 2,
+  "explanation": "Imposing a total (linear) order on resource types and forcing every process to request resources in increasing order makes a cyclic wait-for graph impossible, since a cycle would require some process to request a lower-numbered resource while holding a higher-numbered one.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "An OS uses the Banker's algorithm for deadlock avoidance across resource types X, Y, Z and processes P0, P1, P2. Given the Allocation and Maximum-Need matrices and two pending requests REQ1 and REQ2, which request(s) can be safely granted?",
+  "code": null,
+  "options": [
+   "Only REQ1 can be permitted",
+   "Both REQ1 and REQ2 can be permitted",
+   "Only REQ2 can be permitted",
+   "Neither REQ1 nor REQ2 can be permitted"
+  ],
+  "correctIndex": 2,
+  "explanation": "Banker's algorithm grants a request only if, after tentatively allocating it, the resulting system state is still \"safe\" (there exists some ordering of remaining processes that can all finish with the then-available resources); running the safety check on REQ1 fails to find such an ordering while REQ2 leaves the system in a safe state, so only REQ2 is granted.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "What is the most accurate description for the slowness of paging?",
+  "code": null,
+  "options": [
+   "Division of physical address space into frames",
+   "Extra space allocated for page table",
+   "Too many memory references to access the actual data stored",
+   "Division of virtual address space into pages"
+  ],
+  "correctIndex": 2,
+  "explanation": "Without a TLB, every logical memory access requires first reading the page table entry (one memory reference) and then the actual data (a second memory reference), roughly doubling effective memory access time \u2014 that extra indirection, not the frame/page division itself, is the source of paging's slowdown.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "What is the term used for using swap space to access a page which is not present in physical memory?",
+  "code": null,
+  "options": [
+   "Segmentation Fault",
+   "Page Miss",
+   "Page Fault",
+   "Swap Space Hit"
+  ],
+  "correctIndex": 2,
+  "explanation": "A page fault is the trap raised when a process references a page marked not-present in its page table, prompting the OS to fetch that page from the backing/swap store into a physical frame before resuming the process.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Consider the page reference string 4,3,2,1,4,3,5,4,3,2,1,5 with 4 frames. How many page faults occur under the FIFO page replacement algorithm?",
+  "code": null,
+  "options": [
+   "9",
+   "12",
+   "10",
+   "8"
+  ],
+  "correctIndex": 2,
+  "explanation": "Simulating FIFO (evict the frame that has been resident longest, regardless of recent use) on this reference string with 4 frames produces 10 total page faults.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "An LRU page replacement policy is used with four page frames and eight distinct pages. How many page faults occur with reference string 0 1 7 2 2 3 7 1 0 3, starting with all frames empty? (source string transcribed as \"0172237103\")",
+  "code": null,
+  "options": [
+   "4",
+   "5",
+   "6",
+   "7"
+  ],
+  "correctIndex": 2,
+  "explanation": "Tracing LRU (evict the frame whose page was least recently referenced) with 4 initially empty frames over this string produces 6 page faults; repeated back-to-back references (e.g. \"2 2\") count as only 1 fault since the second reference is a hit.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Which of the following statements are TRUE about programs, processes, and threads?",
+  "code": null,
+  "options": [
+   "Program and process are both stored in main memory and threads, being part of a process, are also stored in main memory",
+   "A program can have many processes, a process can have many threads, and a thread can be associated with multiple processes",
+   "Program is stored in secondary memory, process is stored in main memory, and threads (part of the process) are stored in main memory",
+   "A program can have many processes, a process can have many threads, but a thread belongs to exactly one process"
+  ],
+  "correctIndex": 2,
+  "explanation": "A program is passive code sitting on disk; when loaded and run it becomes a process resident in RAM, and threads are schedulable execution contexts that live within exactly one owning process's address space, so C and D are correct while A (misplaces the program in main memory) and B (a thread cannot span multiple processes) are false.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "Which of the following disk scheduling policies results in the least amount of head movement?",
+  "code": null,
+  "options": [
+   "FCFS",
+   "Circular SCAN",
+   "Elevator (SCAN)",
+   "None of the above"
+  ],
+  "correctIndex": 2,
+  "explanation": "SCAN (\"elevator\") sweeps the arm in one direction servicing all pending requests along the way before reversing, minimizing total seek distance compared to FCFS (which can zig-zag wildly) and C-SCAN (which pays an extra full-sweep-back cost with no requests serviced on the return). --- ## Section F \u2014 General practice compilation (GitHub: hrid0yyy/MCQ, \"Operating System MCQs for Trainee Software Engineer\") > Repo note: \"These questions are commonly asked in interviews, placement exams, and GATE-style tests for Trainee/Junior Software Engineer roles\" \u2014 no specific company is named anywhere in the file, so every item below is tagged PRACTICE / unknown-general per the sourcing rule.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (ajaykumar2pp/DSA-skill-coding-ninjas)",
+  "url": "https://github.com/ajaykumar2pp/DSA-skill-coding-ninjas/blob/main/Operating%20System%20mcq%20Coding%20Ninjas/index.html"
+ },
+ {
+  "question": "What is the primary purpose of an Operating System?",
+  "code": null,
+  "options": [
+   "To run application software only",
+   "To manage hardware resources and provide an interface between user and hardware",
+   "To design websites",
+   "To compile programs"
+  ],
+  "correctIndex": 1,
+  "explanation": "The OS's core role is resource management (CPU, memory, I/O) plus acting as the abstraction layer between hardware and user programs/users.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "The kernel of an operating system is:",
+  "code": null,
+  "options": [
+   "The user interface",
+   "The core part that manages hardware and system resources",
+   "An application software",
+   "A type of virus"
+  ],
+  "correctIndex": 1,
+  "explanation": "The kernel is the privileged core component that directly manages CPU scheduling, memory, and device drivers, mediating all hardware access for user-space programs.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "PCB stands for:",
+  "code": null,
+  "options": [
+   "Process Control Block",
+   "Program Control Block",
+   "Process Communication Block",
+   "Priority Control Block"
+  ],
+  "correctIndex": 0,
+  "explanation": "The PCB is the kernel data structure holding a process's state, program counter, registers, memory info, and scheduling data \u2014 standard OS terminology.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "A Thread is also known as:",
+  "code": null,
+  "options": [
+   "Heavyweight process",
+   "Lightweight process",
+   "Kernel",
+   "Semaphore"
+  ],
+  "correctIndex": 1,
+  "explanation": "Threads are called \"lightweight processes\" because creating/switching them is cheaper than a full process (they share the parent process's address space rather than needing a new one).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Which scheduling algorithm selects the process that arrives first?",
+  "code": null,
+  "options": [
+   "SJF",
+   "FCFS (First Come First Served)",
+   "Round Robin",
+   "Priority Scheduling"
+  ],
+  "correctIndex": 1,
+  "explanation": "FCFS is a strictly non-preemptive, arrival-order queue \u2014 first process to arrive is first to be scheduled, by definition.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Round Robin scheduling is mainly designed for:",
+  "code": null,
+  "options": [
+   "Batch systems",
+   "Time-sharing systems",
+   "Real-time systems only",
+   "Single-user systems"
+  ],
+  "correctIndex": 1,
+  "explanation": "Round Robin's fixed time-quantum preemption is specifically designed to give every interactive process fair, bounded response time \u2014 the defining goal of time-sharing systems.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Starvation in scheduling means:",
+  "code": null,
+  "options": [
+   "A process never gets the CPU because higher priority processes keep coming",
+   "A process uses too much CPU",
+   "A process is terminated",
+   "Memory is full"
+  ],
+  "correctIndex": 0,
+  "explanation": "Starvation is indefinite postponement of a (typically low-priority) process because the scheduler keeps favoring other (higher-priority or newly arriving) processes.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Aging is a technique used to:",
+  "code": null,
+  "options": [
+   "Increase priority of processes that wait for a long time",
+   "Decrease the age of the process",
+   "Terminate old processes",
+   "Allocate more memory"
+  ],
+  "correctIndex": 0,
+  "explanation": "Aging gradually raises a waiting process's priority the longer it waits, which is the standard fix for starvation in priority-based schedulers.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Which page replacement algorithm suffers from Belady's Anomaly?",
+  "code": null,
+  "options": [
+   "LRU",
+   "Optimal",
+   "FIFO",
+   "LFU"
+  ],
+  "correctIndex": 2,
+  "explanation": "FIFO is the classic algorithm exhibiting Belady's Anomaly (more frames sometimes yielding more faults); LRU and Optimal are stack algorithms immune to it.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Belady's Anomaly means:",
+  "code": null,
+  "options": [
+   "More page frames always reduce page faults",
+   "Increasing the number of page frames can increase the number of page faults",
+   "Page faults never occur",
+   "Only optimal algorithm has it"
+  ],
+  "correctIndex": 1,
+  "explanation": "This defines the anomaly precisely: it contradicts the intuitive expectation that more memory (more frames) should never hurt paging performance.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Thrashing occurs when:",
+  "code": null,
+  "options": [
+   "CPU utilization is high",
+   "The system spends most of the time in paging (swapping pages in and out)",
+   "Processes are running smoothly",
+   "Memory is free"
+  ],
+  "correctIndex": 1,
+  "explanation": "Thrashing is the degenerate state where processes spend nearly all their time faulting pages in/out rather than executing, driving CPU utilization down despite high disk I/O activity \u2014 a classic sign of over-committed memory / too high a multiprogramming degree.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Which of the following is a necessary condition for Deadlock?",
+  "code": null,
+  "options": [
+   "Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait",
+   "Only Mutual Exclusion",
+   "Only Circular Wait",
+   "High CPU usage"
+  ],
+  "correctIndex": 0,
+  "explanation": "All four Coffman conditions must hold simultaneously for deadlock to occur; missing even one makes deadlock impossible.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Banker's Algorithm is used for:",
+  "code": null,
+  "options": [
+   "Deadlock detection",
+   "Deadlock avoidance",
+   "Page replacement",
+   "CPU scheduling"
+  ],
+  "correctIndex": 1,
+  "explanation": "Banker's algorithm proactively checks, before granting any resource request, whether the resulting state is \"safe,\" which is the defining mechanism of deadlock avoidance (as opposed to letting deadlock happen and detecting it afterward).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Which of the following is true about Deadlock Detection?",
+  "code": null,
+  "options": [
+   "It prevents deadlock from ever occurring",
+   "It allows deadlock to occur and then detects and recovers",
+   "It is the same as avoidance",
+   "It is only used in batch systems"
+  ],
+  "correctIndex": 1,
+  "explanation": "Detection-and-recovery is a reactive strategy: the OS periodically runs a deadlock-detection algorithm (e.g., resource-allocation graph cycle check) and, upon finding a deadlock, recovers via process termination or resource preemption \u2014 it does not try to prevent deadlock up front.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "In UNIX/Linux, the fork() system call is used to:",
+  "code": null,
+  "options": [
+   "Terminate a process",
+   "Create a new process",
+   "Allocate memory",
+   "Open a file"
+  ],
+  "correctIndex": 1,
+  "explanation": "`fork()` duplicates the calling process into a new child process (returning 0 in the child and the child's PID in the parent) \u2014 the canonical way Unix creates new processes.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Contiguous memory allocation suffers from:",
+  "code": null,
+  "options": [
+   "Internal fragmentation only",
+   "External fragmentation",
+   "No fragmentation",
+   "Only page faults"
+  ],
+  "correctIndex": 1,
+  "explanation": "Contiguous allocation leaves scattered free holes too small individually to satisfy new requests even though total free memory may suffice \u2014 the definition of external fragmentation.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Paging helps to eliminate:",
+  "code": null,
+  "options": [
+   "Internal fragmentation completely",
+   "External fragmentation",
+   "All types of fragmentation",
+   "Context switching"
+  ],
+  "correctIndex": 1,
+  "explanation": "Because pages/frames are fixed, equal-sized units, any free frame can satisfy any page request, eliminating external fragmentation \u2014 though paging can still cause internal fragmentation in the last (partially used) page of a process.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "TLB (Translation Lookaside Buffer) is used for:",
+  "code": null,
+  "options": [
+   "Storing page tables completely",
+   "Caching recent page table entries for faster address translation",
+   "Storing processes",
+   "Disk scheduling"
+  ],
+  "correctIndex": 1,
+  "explanation": "The TLB is a small hardware associative cache of recently used virtual\u2192physical page table entries, avoiding a full page-table walk (which in multi-level tables costs multiple memory accesses) on every memory reference.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "Which disk scheduling algorithm is also known as the Elevator algorithm?",
+  "code": null,
+  "options": [
+   "FCFS",
+   "SSTF",
+   "SCAN",
+   "LOOK"
+  ],
+  "correctIndex": 2,
+  "explanation": "SCAN moves the disk arm to one end of the disk while servicing requests along the way, then reverses \u2014 behaving exactly like a building elevator that services floors on the way up/down.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "SSTF disk scheduling selects the request:",
+  "code": null,
+  "options": [
+   "That arrives first",
+   "With the shortest seek time from the current head position",
+   "Randomly",
+   "With highest priority"
+  ],
+  "correctIndex": 1,
+  "explanation": "Shortest-Seek-Time-First greedily picks whichever pending request is closest (in cylinder distance) to the arm's current position, minimizing the next single seek (though not necessarily total seek distance, and it can starve far-away requests).",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "What is the main difference between a Process and a Thread?",
+  "code": null,
+  "options": [
+   "Processes share address space by default; threads do not",
+   "Threads share the same address space; processes have separate address spaces",
+   "There is no difference",
+   "Threads are heavier than processes"
+  ],
+  "correctIndex": 1,
+  "explanation": "Each process gets its own isolated address space by default, while all threads within a single process share that one address space (code, heap, globals), which is exactly why inter-thread communication is cheap but requires synchronization, unlike IPC between processes.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ },
+ {
+  "question": "The main advantage of using threads over processes is:",
+  "code": null,
+  "options": [
+   "Threads are more secure",
+   "Lower context switch overhead and easier data sharing",
+   "Threads cannot run in parallel",
+   "Threads always use more memory"
+  ],
+  "correctIndex": 1,
+  "explanation": "Because threads share the process's address space, switching between them avoids the expensive page-table/TLB-flush cost of a full process context switch, and they can share data directly through common memory instead of needing IPC mechanisms. --- ## Coverage note Not every extraction above kept the exact original wording verbatim \u2014 several items (marked in their Explanation) were reconstructed from an AI-summarized page fetch (GeeksforGeeks quiz pages could not be scraped as raw HTML; content came back pre-summarized) rather than a byte-for-byte transcript, and a couple of Coding Ninjas items had their option lists truncated by the extraction step. Where the option text looked unreliable this was flagged rather than silently presented as exact. Sanfoundry and IndiaBix were attempted but returned HTTP 403 / no MCQ-format content respectively, so they contributed nothing to this file.",
+  "topic": "OS, Linux, Networking & CPU/Cache/Performance",
+  "status": "PRACTICE",
+  "company": "unknown/general",
+  "source": "GitHub (hrid0yyy/MCQ)",
+  "url": "https://github.com/hrid0yyy/MCQ/blob/main/OperatingSystem.md"
+ }
+]

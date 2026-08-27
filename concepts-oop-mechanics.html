@@ -1,0 +1,486 @@
+<title>Object-Oriented Mechanics &amp; Polymorphism — C++ Concepts</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54" class="current">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">C++ Concepts Reference</p>
+    <h1>Object-Oriented Mechanics &amp; Polymorphism</h1>
+    <p class="tagline"><p>This group is about what the compiler and runtime actually DO when you write <code>virtual</code>, inherit from multiple bases, or overload a name — the mechanics underneath polymorphism, not just &quot;what OOP means.&quot; Every one of these has a well-known interview snippet built around getting it subtly wrong.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">7</div><div class="l">Concepts</div></div>
+      <div class="stat-tile"><div class="n">14</div><div class="l">Worked Examples</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#virtual-functions-vtables"><span>Virtual functions &amp; vtables</span></a></li><li><a href="#pure-virtual-functions-abstract-classes"><span>Pure virtual functions &amp; abstract classes</span></a></li><li><a href="#virtual-destructors"><span>Virtual destructors</span></a></li><li><a href="#the-diamond-problem-multiple-inheritance"><span>The diamond problem &amp; multiple inheritance</span></a></li><li><a href="#static-vs-dynamic-binding"><span>Static vs dynamic binding</span></a></li><li><a href="#object-slicing"><span>Object slicing</span></a></li><li><a href="#function-overloading-vs-overriding-vs-hiding"><span>Function overloading vs overriding vs hiding</span></a></li></ul>
+      <h2>Other concept groups</h2>
+      <ul class="nav-list"><li><a href="https://claude.ai/code/artifact/212d5d66-cec2-43e1-acf4-a5e50c9875e2">Value Categories &amp; Move Semantics</a></li><li><a href="https://claude.ai/code/artifact/a761e058-1dde-445a-aa59-8e22dc8c2500">RAII &amp; Resource Management</a></li><li><a href="https://claude.ai/code/artifact/10812d60-8666-4c04-abcb-9a51494f2a78">Templates &amp; Generic Programming</a></li><li><a href="https://claude.ai/code/artifact/748f9ef6-7666-4b22-9b11-aff10b51fd0e">Compile-Time Constructs &amp; Program Structure</a></li><li><a href="https://claude.ai/code/artifact/e6ecda5d-3bf8-4548-a1b2-1fe0932cf150">Concurrency, Memory Model &amp; Low-Level Layout</a></li><li><a href="https://claude.ai/code/artifact/c0a34229-e57b-4665-b25a-e9197bd62743">Modern C++ (17/20) &amp; STL Utilities</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">All C++ Concepts</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+      </ul>
+    </aside>
+    <main><article class="concept-card" id="virtual-functions-vtables">
+  <h3>Virtual functions &amp; vtables</h3>
+  <div class="intro"><p>A class with at least one virtual function gets a hidden **vtable**: a per-CLASS static array of function pointers, one slot per virtual function. Every instance of that class then carries a hidden **vptr** (usually the first bytes of the object) pointing to its class&#x27;s vtable. When you call a virtual function through a pointer or reference, the compiler doesn&#x27;t emit a direct call — it emits code that follows the vptr, indexes into the vtable at that function&#x27;s fixed slot, and calls whatever function pointer is sitting there. Which function that turns out to be depends on the object&#x27;s ACTUAL (dynamic) type, not the static type of the pointer/reference you&#x27;re calling through — that&#x27;s the whole mechanism behind runtime polymorphism.</p><p>The cost is real and measurable: an indirect call through a pointer that the CPU can&#x27;t always predict well, plus it blocks the compiler from inlining the call (it doesn&#x27;t statically know which function it is), which cascades into losing other optimizations that inlining would have enabled.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Tracing exactly what happens at a virtual call site</div>
+  <pre><code>struct Shape {
+    virtual double area() const = 0;
+    virtual ~Shape() = default;
+};
+struct Circle : Shape {
+    double r;
+    explicit Circle(double r) : r(r) {}   // an explicit constructor is needed:
+    double area() const override { return 3.14159 * r * r; }
+};                                          // Circle has virtual functions (inherited),
+struct Square : Shape {                    // so it isn&#x27;t an aggregate and can&#x27;t use
+    double s;                              // plain brace-init like Circle{5} directly
+    explicit Square(double s) : s(s) {}
+    double area() const override { return s * s; }
+};
+
+void printArea(const Shape&amp; shape) {
+    std::cout &lt;&lt; shape.area(); // indirect call: follow shape&#x27;s vptr, jump to slot 0
+}
+
+Circle c(5); Square sq(4);
+printArea(c);  // shape&#x27;s vptr points at Circle&#x27;s vtable  -&gt; calls Circle::area
+printArea(sq); // shape&#x27;s vptr points at Square&#x27;s vtable  -&gt; calls Square::area</code></pre>
+  <div class="ex-explain"><p><code>printArea</code> is compiled ONCE, with no idea at compile time whether it will be handed a Circle or a Square — the correct <code>area()</code> is found purely by following the vptr at runtime, which is exactly what makes this polymorphic. (Note: Circle/Square need explicit constructors here, not plain aggregate brace-init, precisely because inheriting from a class with virtual functions disqualifies them from being aggregates.)</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why this shows up in low-latency interview discussions</div>
+  <pre><code>// A tight loop calling a virtual function through a base pointer:
+for (auto&amp; order : orders) {           // orders: vector&lt;Order*&gt;, mixed dynamic types
+    total += order-&gt;computeValue();     // virtual call: cannot be inlined,
+}                                        // branch predictor must guess the target each time
+
+// vs. a non-virtual, CRTP-based, or template-based design where the concrete
+// type is known at compile time and the call can be fully inlined into the loop</code></pre>
+  <div class="ex-explain"><p>In a loop processing many heterogeneous orders through a common virtual interface, every iteration pays the indirect-call cost. This is precisely why HFT codebases often reach for CRTP or templates instead of virtual dispatch on the hottest paths — see the Templates &amp; Generic Programming group.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Calling a virtual function from inside a constructor or destructor and expecting the DERIVED override to run — it won&#x27;t; see the C++ Q&amp;A output-prediction question on this exact topic. During Base&#x27;s own constructor, the object&#x27;s dynamic type is still Base.</p></li><li><p>Forgetting that a non-virtual function called through a base pointer is resolved STATICALLY (at compile time, based on the pointer&#x27;s declared type), not dynamically — mixing virtual and non-virtual functions of the same name across a hierarchy is a common source of confusion (see Function overloading vs overriding vs hiding).</p></li></ul></div>
+  <p class="why-box"><p>Understanding the vptr/vtable mechanism (not just &quot;virtual enables polymorphism&quot;) is what separates a surface-level answer from one that shows you understand the actual performance cost — which is exactly what a low-latency interviewer is listening for.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#pure-virtual-functions-abstract-classes" data-related-href="#pure-virtual-functions-abstract-classes">Pure virtual functions &amp; abstract classes</a><a class="related-tag" href="#virtual-destructors" data-related-href="#virtual-destructors">Virtual destructors</a><a class="related-tag" href="#static-vs-dynamic-binding" data-related-href="#static-vs-dynamic-binding">Static vs dynamic binding</a><a class="related-tag" href="https://claude.ai/code/artifact/10812d60-8666-4c04-abcb-9a51494f2a78#crtp-curiously-recurring-template-pattern" data-related-href="https://claude.ai/code/artifact/10812d60-8666-4c04-abcb-9a51494f2a78#crtp-curiously-recurring-template-pattern">CRTP (Curiously Recurring Template Pattern)</a></div>
+</article><article class="concept-card" id="pure-virtual-functions-abstract-classes">
+  <h3>Pure virtual functions &amp; abstract classes</h3>
+  <div class="intro"><p>A pure virtual function — declared with <code>= 0</code> instead of a body — has no implementation in that class, and its presence makes the whole class **abstract**: you cannot instantiate it directly, only through a derived class that provides an override for every pure virtual function it declares. This is C++&#x27;s mechanism for expressing an interface: &quot;any concrete type used this way MUST supply these operations.&quot;</p><p>A subtlety worth knowing: a pure virtual function CAN still have a body (definition) in the base class, which a derived class can explicitly call via qualified name (<code>Base::f()</code>) even though it must still override it to become concrete — useful for providing a default/shared partial implementation that derived classes build on.</p></div>
+  <div class="example-box">
+  <div class="ex-title">A clean interface via pure virtual functions</div>
+  <pre><code>struct Serializable {
+    virtual std::string toJson() const = 0;
+    virtual ~Serializable() = default; // still needs a virtual destructor, see below
+};
+
+// Serializable x;  // ERROR: cannot instantiate an abstract class
+
+struct Order : Serializable {
+    std::string toJson() const override { return &quot;{...order fields...}&quot;; }
+};
+Order o; // OK: Order is concrete, it overrides the one pure virtual function</code></pre>
+  <div class="ex-explain"><p>Serializable can never exist on its own — it exists purely to force every concrete subclass to provide a toJson() implementation, which is exactly the contract an interface is supposed to enforce at compile time.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">A pure virtual function that still has a callable body</div>
+  <pre><code>struct Logger {
+    virtual void log(const std::string&amp; msg) = 0;   // pure virtual: declared here only
+};
+void Logger::log(const std::string&amp; msg) {          // defined OUT-OF-LINE -- a pure virtual
+    std::cout &lt;&lt; &quot;[base] &quot; &lt;&lt; msg;                  // function&#x27;s body cannot be given inline
+}                                                     // with &quot;= 0 { ... }&quot;; that&#x27;s a compile error
+struct FileLogger : Logger {
+    void log(const std::string&amp; msg) override {
+        Logger::log(msg);          // explicitly invoke the base&#x27;s shared behavior
+        writeToFile(msg);
+    }
+};</code></pre>
+  <div class="ex-explain"><p>Logger::log is pure virtual (Logger itself is still abstract, still can&#x27;t be instantiated) but its body is real code that FileLogger&#x27;s override chooses to reuse — a lesser-known pattern for sharing common logic while still forcing every subclass to explicitly opt in. Note the syntax: a pure virtual function&#x27;s definition cannot be written inline as <code>= 0 { ... }</code> — the <code>= 0;</code> declaration and the body must be separated, with the body defined out-of-line (here, immediately after, using the qualified name Logger::log).</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Forgetting that an abstract class still needs constructors/member initialization for any data it holds — &quot;abstract&quot; only blocks instantiation of THAT class directly, it doesn&#x27;t mean the class can&#x27;t have real state.</p></li><li><p>Not marking the destructor virtual on an abstract base — see Virtual destructors below; this is such a common oversight that many style guides mandate it any time a class has any virtual function at all.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#virtual-destructors" data-related-href="#virtual-destructors">Virtual destructors</a></div>
+</article><article class="concept-card" id="virtual-destructors">
+  <h3>Virtual destructors</h3>
+  <div class="intro"><p>If an object might ever be deleted through a pointer to one of its BASE classes, that base&#x27;s destructor must be declared <code>virtual</code>. Without it, <code>delete basePtr;</code> resolves the destructor call statically based on the pointer&#x27;s declared type — it calls ONLY the base class&#x27;s destructor, never the derived class&#x27;s, even if the pointer actually points at a fully-constructed derived object. Any resources the derived part owns (heap memory, file handles, anything with a non-trivial destructor) never get cleaned up. This is undefined behavior per the standard, and in practice manifests as a straightforward resource leak.</p></div>
+  <div class="example-box">
+  <div class="ex-title">The bug: a non-virtual base destructor</div>
+  <pre><code>struct Base {
+    ~Base() { std::cout &lt;&lt; &quot;~Base &quot;; }   // NOT virtual
+};
+struct Derived : Base {
+    int* buffer = new int[1000];
+    ~Derived() { delete[] buffer; std::cout &lt;&lt; &quot;~Derived &quot;; }
+};
+
+Base* p = new Derived();
+delete p;   // prints ONLY &quot;~Base &quot; -- ~Derived() never runs, buffer leaks!</code></pre>
+  <div class="ex-explain"><p>The compiler resolves <code>delete p</code> using p&#x27;s STATIC type (Base*), and since ~Base isn&#x27;t virtual, there&#x27;s no vtable lookup involved at all — it&#x27;s a direct, non-polymorphic call to ~Base only.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The fix: one keyword</div>
+  <pre><code>struct Base {
+    virtual ~Base() { std::cout &lt;&lt; &quot;~Base &quot;; }   // now virtual
+};
+struct Derived : Base {
+    int* buffer = new int[1000];
+    ~Derived() override { delete[] buffer; std::cout &lt;&lt; &quot;~Derived &quot;; }
+};
+
+Base* p = new Derived();
+delete p;   // now correctly prints &quot;~Derived ~Base &quot; -- ~Derived runs first,
+            // then implicitly chains to ~Base, exactly like normal inheritance</code></pre>
+  <div class="ex-explain"><p>With <code>virtual</code> added, <code>delete p</code> becomes a polymorphic call resolved through the vtable at runtime: it finds Derived&#x27;s destructor (because that&#x27;s the object&#x27;s actual dynamic type), runs it, and that automatically chains up to ~Base afterward.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming this only matters if you personally write <code>delete basePtr</code> — it also silently affects <code>std::unique_ptr&lt;Base&gt;</code>/<code>std::shared_ptr&lt;Base&gt;</code> holding a Derived object; smart pointers don&#x27;t magically fix a missing virtual destructor, they just call <code>delete</code> on your behalf at the same wrong destructor.</p></li><li><p>Adding <code>virtual</code> to EVERY destructor &quot;just in case&quot; even on classes never used polymorphically — this isn&#x27;t free (it forces a vtable to exist, growing every instance by a pointer); the rule is specifically &quot;if this class might be deleted through a base pointer,&quot; not &quot;always.&quot;</p></li></ul></div>
+  <p class="why-box"><p>One of THE most common &quot;what&#x27;s wrong with this code&quot; C++ interview snippets — if you see a class hierarchy with a <code>delete</code> through a base pointer, checking for a virtual destructor is the first thing to look at.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#pure-virtual-functions-abstract-classes" data-related-href="#pure-virtual-functions-abstract-classes">Pure virtual functions &amp; abstract classes</a><a class="related-tag" href="https://claude.ai/code/artifact/a761e058-1dde-445a-aa59-8e22dc8c2500#smart-pointer-ownership-models" data-related-href="https://claude.ai/code/artifact/a761e058-1dde-445a-aa59-8e22dc8c2500#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
+</article><article class="concept-card" id="the-diamond-problem-multiple-inheritance">
+  <h3>The diamond problem &amp; multiple inheritance</h3>
+  <div class="intro"><p>When a class D inherits from two classes B and C that both inherit from a common base A, D ends up — by default — with TWO separate, independent A subobjects (one via B, one via C). Any attempt to access a member of A through D is ambiguous, because the compiler can&#x27;t tell which copy you mean. C++&#x27;s answer is **virtual inheritance**: if B and C each inherit from A *virtually*, then D ends up with exactly ONE shared A subobject instead of two, resolving the ambiguity — at the cost of a more complex (and slightly slower) object layout, since the location of the shared virtual base now has to be looked up indirectly rather than at a fixed offset.</p></div>
+  <div class="example-box">
+  <div class="ex-title">The problem: two independent A subobjects</div>
+  <pre><code>struct A { int x = 1; };
+struct B : A {};
+struct C : A {};
+struct D : B, C {};
+
+D d;
+// d.x;        // ERROR: ambiguous -- is this B&#x27;s A::x or C&#x27;s A::x?
+d.B::x = 10;    // must explicitly disambiguate which A subobject you mean
+d.C::x = 20;    // this is a SEPARATE x from d.B::x -- D genuinely has two of them</code></pre>
+  <div class="ex-explain"><p><code>sizeof(D)</code> here is large enough to hold two full, independent A subobjects — one that came through B, one that came through C — and they can hold different values simultaneously, which is exactly the confusing part.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The fix: virtual inheritance collapses it to one shared subobject</div>
+  <pre><code>struct A { int x = 1; };
+struct B : virtual A {};
+struct C : virtual A {};
+struct D : B, C {};
+
+D d;
+d.x = 5;   // unambiguous now: there is exactly ONE A subobject, shared by B and C</code></pre>
+  <div class="ex-explain"><p>Because both B and C inherit from A virtually, the compiler guarantees D contains just one A — accessed through either path, it&#x27;s the same object, so <code>d.x</code> is no longer ambiguous.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming virtual inheritance is &quot;free&quot; — it changes how the base subobject is located (typically via an extra indirection/offset table), so classes using it are slightly larger and slightly slower to access their virtual base than a plain inheritance hierarchy.</p></li><li><p>Not realizing that if only ONE of B or C inherits virtually and the other doesn&#x27;t, D still ends up with two A subobjects — both paths need to agree on virtual inheritance for the sharing to happen.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#static-vs-dynamic-binding" data-related-href="#static-vs-dynamic-binding">Static vs dynamic binding</a></div>
+</article><article class="concept-card" id="static-vs-dynamic-binding">
+  <h3>Static vs dynamic binding</h3>
+  <div class="intro"><p>Static (compile-time) binding decides which function is called based purely on the STATIC type of the expression you&#x27;re calling through — this is how every non-virtual function call and every overload-resolution decision works. Dynamic (runtime) binding decides based on the ACTUAL, runtime type of the object — this is exclusively how virtual function calls, invoked through a base pointer or reference, work. The two can coexist on the very same object in confusing ways, which is exactly what interview snippets exploit.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Both kinds of binding on the same object, in the same two lines</div>
+  <pre><code>struct Base {
+    void f()          { std::cout &lt;&lt; &quot;Base::f &quot;; }         // NOT virtual
+    virtual void g()  { std::cout &lt;&lt; &quot;Base::g &quot;; }
+};
+struct Derived : Base {
+    void f()          { std::cout &lt;&lt; &quot;Derived::f &quot;; }        // hides Base::f, doesn&#x27;t override it
+    void g() override { std::cout &lt;&lt; &quot;Derived::g &quot;; }
+};
+
+Base* p = new Derived();
+p-&gt;f();   // &quot;Base::f &quot;    -- STATIC binding: f isn&#x27;t virtual, resolved from p&#x27;s declared type (Base*)
+p-&gt;g();   // &quot;Derived::g &quot; -- DYNAMIC binding: g is virtual, resolved from p&#x27;s actual type (Derived)</code></pre>
+  <div class="ex-explain"><p>Both calls go through the exact same pointer <code>p</code>, but they&#x27;re resolved completely differently — <code>f</code> never even looks at what <code>p</code> actually points to, while <code>g</code> looks at nothing else.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why this surprises people used to other languages</div>
+  <pre><code>Derived d;
+Base&amp; ref = d;
+ref.f(); // still &quot;Base::f&quot; -- reference type is Base&amp;, f is non-virtual, static binding applies
+d.f();   // &quot;Derived::f&quot; -- calling directly on the Derived object itself uses Derived::f</code></pre>
+  <div class="ex-explain"><p>In languages where every method is virtual by default (Java, Python), this distinction doesn&#x27;t exist — C++&#x27;s default of non-virtual-unless-declared is a deliberate zero-overhead-by-default design choice, and it&#x27;s exactly why you have to reason carefully about which type you&#x27;re calling THROUGH, not just what the object actually is.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming that because a DERIVED class overrides-looking function, calling it through a base pointer will pick up the derived behavior — only true if the base declared that function <code>virtual</code> in the first place.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#function-overloading-vs-overriding-vs-hiding" data-related-href="#function-overloading-vs-overriding-vs-hiding">Function overloading vs overriding vs hiding</a></div>
+</article><article class="concept-card" id="object-slicing">
+  <h3>Object slicing</h3>
+  <div class="intro"><p>Assigning or passing a DERIVED object to a BASE object BY VALUE truncates — &quot;slices&quot; — it: only the Base subobject&#x27;s data gets copied, and anything Derived-specific (extra data members, virtual overrides) is lost, because the destination&#x27;s static type is Base, full stop. This is a copy-semantics problem, and the fix is always the same: pass/store by reference or pointer instead of by value whenever polymorphic behavior matters.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Slicing in action</div>
+  <pre><code>struct Base {
+    int x = 1;
+    virtual void hi() const { std::cout &lt;&lt; &quot;Base&quot;; }
+};
+struct Derived : Base {
+    int y = 2;
+    void hi() const override { std::cout &lt;&lt; &quot;Derived&quot;; }
+};
+
+void printIt(Base b) { b.hi(); }  // parameter taken BY VALUE
+
+Derived d;
+printIt(d);   // prints &quot;Base&quot; -- d was SLICED into a plain Base when copied into the parameter</code></pre>
+  <div class="ex-explain"><p>The moment <code>d</code> is copied into <code>printIt</code>&#x27;s by-value parameter <code>b</code>, only the Base portion of d gets copied — <code>y</code> is discarded, and <code>b</code>&#x27;s actual type really is Base (not Derived), so its vtable pointer points at Base&#x27;s vtable too, meaning <code>hi()</code> calls Base&#x27;s version even though it&#x27;s declared virtual.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The fix</div>
+  <pre><code>void printIt(const Base&amp; b) { b.hi(); } // reference: no copy, no slicing
+
+Derived d;
+printIt(d); // now correctly prints &quot;Derived&quot; -- b refers to the actual Derived object</code></pre>
+  <div class="ex-explain"><p>Taking the parameter by reference (or pointer) means no copy ever happens — <code>b</code> is just another name for the original Derived object, so virtual dispatch works exactly as expected.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Storing polymorphic objects directly in a <code>std::vector&lt;Base&gt;</code> — every element is a Base, full stop; any Derived object pushed into it gets sliced on insertion. Polymorphic collections need <code>std::vector&lt;std::unique_ptr&lt;Base&gt;&gt;</code> (or raw/shared pointers) instead.</p></li><li><p>Slicing during exception handling: <code>catch (Base e)</code> (by value) slices the thrown exception object the same way — always catch exceptions by (const) reference: <code>catch (const Base&amp; e)</code>.</p></li></ul></div>
+  <p class="why-box"><p>A frequent &quot;spot the bug&quot; question: showing a function taking a base-class parameter by value and asking why polymorphism &quot;isn&#x27;t working.&quot;</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="https://claude.ai/code/artifact/a761e058-1dde-445a-aa59-8e22dc8c2500#smart-pointer-ownership-models" data-related-href="https://claude.ai/code/artifact/a761e058-1dde-445a-aa59-8e22dc8c2500#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
+</article><article class="concept-card" id="function-overloading-vs-overriding-vs-hiding">
+  <h3>Function overloading vs overriding vs hiding</h3>
+  <div class="intro"><p>Three different things that all involve &quot;two functions with the same name&quot; but behave completely differently, and mixing them up is a rich source of real bugs, not just interview trivia. **Overloading**: multiple functions with the SAME name but DIFFERENT parameter lists, in the same scope — resolved entirely at compile time by argument types. **Overriding**: a derived class redefines a VIRTUAL function with an IDENTICAL signature to the base&#x27;s — resolved at runtime via the vtable. **Hiding**: a derived class declares ANY function with the same name as something in the base (regardless of signature, regardless of virtual-ness) that is NOT a valid override — and this hides ALL base overloads of that name from ordinary lookup on the derived type, whether or not the derived version&#x27;s signature looks related at all.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Hiding silently removes access to an entire overload set</div>
+  <pre><code>struct Base {
+    virtual void f(int x)   { std::cout &lt;&lt; &quot;Base::f(int) &quot;; }
+    void f(double x)        { std::cout &lt;&lt; &quot;Base::f(double) &quot;; }
+};
+struct Derived : Base {
+    void f(int x) override { std::cout &lt;&lt; &quot;Derived::f(int) &quot;; } // a valid override
+};
+
+Derived d;
+d.f(3.14);       // Surprise: prints &quot;Derived::f(int) &quot; (3.14 truncated to 3!)
+                 // NOT &quot;Base::f(double)&quot; -- Derived::f(int) HIDES Base::f(double) entirely
+d.Base::f(3.14); // must explicitly qualify to reach the hidden overload -&gt; &quot;Base::f(double) &quot;</code></pre>
+  <div class="ex-explain"><p>Declaring ANY function named <code>f</code> in Derived — even one that&#x27;s a perfectly legitimate override of <code>f(int)</code> — removes Base&#x27;s ENTIRE <code>f</code> overload set (including <code>f(double)</code>, which has nothing to do with the override) from ordinary name lookup on a Derived object. This is called the &quot;hiding rule,&quot; and it catches even experienced C++ developers off guard.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Fixing hiding with a using-declaration</div>
+  <pre><code>struct Derived : Base {
+    using Base::f;             // pull ALL of Base&#x27;s f overloads back into scope
+    void f(int x) override { std::cout &lt;&lt; &quot;Derived::f(int) &quot;; }
+};
+
+Derived d;
+d.f(3.14); // now correctly resolves to Base::f(double) via normal overload resolution</code></pre>
+  <div class="ex-explain"><p>The <code>using Base::f;</code> declaration explicitly re-introduces Base&#x27;s overloads into Derived&#x27;s scope, so overload resolution across ALL of them (Base&#x27;s f(double) and Derived&#x27;s own f(int)) works the way you&#x27;d naively expect.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Believing that a same-named function with a DIFFERENT signature in a derived class is automatically an overload that peacefully coexists with the base&#x27;s version — it isn&#x27;t; it hides the base&#x27;s entire overload set unless you explicitly <code>using Base::name;</code>.</p></li><li><p>Marking a function <code>override</code> with a signature that doesn&#x27;t EXACTLY match the base&#x27;s virtual function (wrong parameter types, missing/extra const) — this is actually a compile ERROR when <code>override</code> is used (which is exactly why you should always write <code>override</code>: without it, a signature mismatch silently creates an unrelated new function — hiding — instead of failing to compile).</p></li></ul></div>
+  <p class="why-box"><p>The hiding rule specifically is one of the more &quot;gotcha&quot; pieces of C++ trivia interviewers use to separate candidates who&#x27;ve only read tutorials from candidates who&#x27;ve actually been bitten by real code.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#static-vs-dynamic-binding" data-related-href="#static-vs-dynamic-binding">Static vs dynamic binding</a></div>
+</article></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

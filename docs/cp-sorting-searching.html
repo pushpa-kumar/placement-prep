@@ -1,0 +1,1029 @@
+<title>Sorting &amp; Binary Search — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Sorting &amp; Binary Search</h1>
+    <p class="tagline"><p>Sorting and binary search are the two workhorse techniques that unlock a huge fraction of competitive-programming and placement-exam problems: sorting imposes structure you can exploit (monotonicity, grouping, order statistics), and binary search exploits that structure to cut search spaces from O(n) to O(log n). The most powerful application, binary search on the answer, generalizes the idea from &quot;find a value in a sorted array&quot; to &quot;find the optimal value of any monotonic feasibility predicate,&quot; turning otherwise intractable optimization problems into a handful of feasibility checks. These techniques build directly on Sorting &amp; Binary Search: ternary search is binary search&#x27;s cousin for unimodal (rather than monotonic) functions, custom comparators generalize &#x27;sort then scan&#x27; by engineering the right sort key for a greedy or heap-based argument, and order statistics/quickselect reuse the partition step of quicksort to answer &#x27;what is the k-th element&#x27; without fully sorting.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">6</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">13</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">21</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#sorting-searching-sorting-algorithm-tradeoffs"><span>Sorting Algorithm Tradeoffs</span><span class="cnt">2</span></a></li><li><a href="#sorting-searching-binary-search"><span>Binary Search</span><span class="cnt">2</span></a></li><li><a href="#sorting-searching-binary-search-on-the-answer"><span>Binary Search on the Answer</span><span class="cnt">3</span></a></li><li><a href="#sorting-searching-ternary-search-on-unimodal-functions"><span>Ternary Search on Unimodal Functions</span><span class="cnt">2</span></a></li><li><a href="#sorting-searching-custom-comparators-multi-key-sorting"><span>Custom Comparators &amp; Multi-Key Sorting</span><span class="cnt">2</span></a></li><li><a href="#sorting-searching-order-statistics-quickselect"><span>Order Statistics / Quickselect</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">21</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#sorting-searching">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="sorting-searching-sorting-algorithm-tradeoffs">
+  <div class="topic-head"><h2>Sorting Algorithm Tradeoffs</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Every comparison-based sort is bounded below by Omega(n log n) comparisons in the worst case, so the interesting differences between quicksort, mergesort, and heapsort are not about their average-case time complexity (all three are O(n log n) on average) but about stability, worst-case guarantees, memory usage, and constant factors. Quicksort (what std::sort typically uses, blended with introsort/heapsort fallback and insertion sort for small partitions) has excellent cache locality and the best practical constant factor, but a naive implementation is O(n^2) worst case on adversarial or already-sorted input; production implementations defend against this with random pivots, median-of-three pivots, or by switching to heapsort after too many recursion levels (introsort, which is what the C++ standard mandates for std::sort&#x27;s worst-case bound). Quicksort is also NOT stable: equal elements can be reordered relative to each other.</p><p>Mergesort is stable (equal elements keep their relative input order) and has a guaranteed O(n log n) worst case, which matters when input can be adversarial or when stability is required (e.g., sorting by a secondary key after already sorting by a primary key). The cost is O(n) auxiliary space for the merge step and generally worse cache behavior / constant factor than quicksort on random data. std::stable_sort is typically an implementation of mergesort for this reason. Heapsort is in-place (O(1) extra space) with a guaranteed O(n log n) worst case, but it is not stable and has poor cache locality because of its access pattern jumping around the heap array, making it slower in practice than quicksort or mergesort despite the same asymptotic complexity; it is mainly useful as the &#x27;safety net&#x27; fallback that gives introsort its worst-case guarantee, and as the engine behind priority queues and heap-based algorithms (Dijkstra, k-way merges).</p><p>When array elements come from a small, bounded domain (e.g., integers in [0, k) with k = O(n)), non-comparison sorts break the Omega(n log n) lower bound entirely: counting sort runs in O(n + k) and is naturally stable when implemented with a prefix-sum placement pass, and radix sort applies counting sort digit-by-digit to sort O(n) w-bit integers in O(n * w / log n) time. Recognizing that problem constraints put values in a small range (say, sorting 10^6 integers each at most 10^5) is a classic signal to reach for counting sort instead of std::sort, saving a log factor.</p><p>In competitive programming you almost never hand-implement quicksort/mergesort/heapsort; the actual skill being tested is (1) choosing stable vs unstable sort correctly when a problem has a hidden secondary ordering requirement, (2) writing correct custom comparators (especially ones that must form a valid strict-weak-ordering, e.g., the &#x27;concatenation&#x27; comparator for largest-number problems), and (3) recognizing when bounded-value constraints allow you to drop to a faster non-comparison sort.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for this topic&#x27;s ideas when: a problem asks you to arrange/reorder elements under a custom rule that is not plain numeric order (needs a custom comparator, and you must argue it is a valid total order); a problem&#x27;s correctness depends on ties preserving original order (stability); or the input values are bounded by something small relative to n, hinting that O(n + k) counting/radix sort beats O(n log n) comparison sort. If a solution&#x27;s correctness argument breaks when two equal elements swap places, you need a stable sort or an explicit tie-breaker (e.g., include the original index as a secondary sort key).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Quicksort (introsort/std::sort): O(n log n) average and (with introsort fallback) worst case, O(log n) extra space for recursion, NOT stable. Mergesort/std::stable_sort: O(n log n) worst case guaranteed, O(n) extra space, stable. Heapsort: O(n log n) worst case guaranteed, O(1) extra space, NOT stable. Counting/radix sort: O(n + k) / O(n * w/log n), O(n + k) extra space, stable if implemented via prefix sums.</p></div>
+  </div>
+  <article class="example-card" id="sorting-searching-sorting-algorithm-tradeoffs-ex0">
+  <h4>Largest Number (custom comparator)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n non-negative integers, arrange them (each used exactly once) so that their decimal concatenation forms the largest possible number, and print that number as a string (with no leading zeros, unless the result is exactly &quot;0&quot;). Constraints: 1 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is not orderable by plain numeric or lexicographic comparison of the numbers themselves (e.g., 9 should come before 30 even though &#x27;30&#x27; &lt; &#x27;9&#x27; lexicographically as a prefix issue). Convert every number to its decimal string, then sort the strings with the comparator cmp(a, b) := (a+b) &gt; (b+a) as strings, i.e., a should precede b iff placing a first yields a lexicographically larger concatenation. This comparator is provably a valid strict weak ordering (transitivity follows from comparing digit blocks), so std::sort with it produces a correct total order. After sorting, concatenate all strings; finally, strip leading zeros (but keep a single &#x27;0&#x27; if every element was zero).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;string&gt; v(n);
+    for (auto &amp;s : v) {
+        int x;
+        cin &gt;&gt; x;
+        s = to_string(x);
+    }
+    sort(v.begin(), v.end(), [](const string &amp;a, const string &amp;b) {
+        return a + b &gt; b + a;
+    });
+    string res;
+    for (auto &amp;s : v) res += s;
+    int i = 0;
+    while (i + 1 &lt; (int)res.size() &amp;&amp; res[i] == &#x27;0&#x27;) i++;
+    res = res.substr(i);
+    cout &lt;&lt; res &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+3 30 34 5 9
+</code></pre>
+    <pre><code>9534330
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-sorting-algorithm-tradeoffs-ex1">
+  <h4>Ranking Students (stability matters)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n students in input order, each with a name and an integer score. Print the students sorted by score in descending order; students with equal scores must keep their original relative (input) order. Constraints: 1 &lt;= n &lt;= 1000, 0 &lt;= score &lt;= 100.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the canonical demonstration of why stability matters: sorting only by &#x27;score descending&#x27; does not fully specify the output when scores tie, so the algorithm must preserve input order among equal elements. Using std::sort here is unsafe because it is not guaranteed stable (equal elements may be reordered arbitrarily by its internal introsort). The correct tool is std::stable_sort with the comparator only comparing score (descending); stable_sort guarantees O(n log^2 n) worst case (O(n log n) with enough extra memory, which is the common case) and never disturbs the relative order of elements that compare equal. An equivalent alternative that also works with plain sort is to break ties explicitly by original index.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct Student {
+    string name;
+    int score;
+};
+
+int main(){
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;Student&gt; v(n);
+    for (int i = 0; i &lt; n; i++) cin &gt;&gt; v[i].name &gt;&gt; v[i].score;
+    stable_sort(v.begin(), v.end(), [](const Student &amp;a, const Student &amp;b) {
+        return a.score &gt; b.score;
+    });
+    for (auto &amp;s : v) cout &lt;&lt; s.name &lt;&lt; &quot; &quot; &lt;&lt; s.score &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+Alice 90
+Bob 85
+Carol 90
+Dave 85
+Eve 95
+</code></pre>
+    <pre><code>Eve 95
+Alice 90
+Carol 90
+Bob 85
+Dave 85
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="sorting-searching-binary-search">
+  <div class="topic-head"><h2>Binary Search</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Classic binary search finds a target (or a boundary) inside a structure with a monotonic order in O(log n) by repeatedly halving the search interval [lo, hi]. The essential invariant to keep in your head is not &#x27;the array is sorted&#x27; but &#x27;the predicate I&#x27;m testing at each midpoint is monotonic over the search range&#x27; — sortedness is just the most common way that monotonicity arises. At each step you evaluate the predicate at mid = lo + (hi - lo) / 2 (never (lo + hi) / 2, to avoid signed overflow on large indices) and discard the half of the range that cannot contain the answer. The two most common templates are: (1) exact-match search, shrinking until lo &gt; hi or the element is found; and (2) boundary search (as in std::lower_bound / std::upper_bound), which finds the first index where a predicate flips from false to true, using a loop of the form while (lo &lt; hi) { mid = ...; if (pred(mid)) hi = mid; else lo = mid + 1; }.</p><p>A large family of &#x27;hard&#x27; binary search problems apply the technique to structures that are only piecewise sorted or sorted along a derived quantity rather than the raw array: searching a rotated sorted array (the array is sorted except for one rotation point, and at every step exactly one half of any sub-range is guaranteed properly sorted, which is enough information to decide which half to recurse into), or binary searching over a partition index into two arrays to find a median without merging them. These problems are &#x27;binary search&#x27; in the sense that the state space, not necessarily the raw array, is monotonic — the discipline is to precisely state the invariant you&#x27;re maintaining and prove it holds after each halving step, since off-by-one errors are the single most common source of bugs in this topic.</p><p>It&#x27;s worth internalizing why binary search is provably optimal for plain search in a sorted array: any comparison-based search algorithm needs Omega(log n) comparisons in the worst case (an adversary argument / decision-tree lower bound), and binary search matches that bound exactly.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Use classic binary search when the data is sorted (or can be sorted up front cheaply) and you need membership, insertion position, or a boundary/count query in O(log n); when the phrase &#x27;find the first/last index such that...&#x27; appears; or when a structure is &#x27;almost sorted&#x27; in a way that still lets you determine, from O(1) probes at the midpoint, which half must contain the answer (rotated arrays, bitonic arrays, or a derived monotonic quantity like a partition balance in the two-sorted-array median problem).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(log n) time per search, O(1) extra space (iterative) or O(log n) stack space (recursive).</p></div>
+  </div>
+  <article class="example-card" id="sorting-searching-binary-search-ex0">
+  <h4>Search in a Rotated Sorted Array</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>An array of n distinct integers, originally sorted in ascending order, has been rotated at some unknown pivot (e.g., [0,1,2,4,5,6,7] rotated at index 3 becomes [4,5,6,7,0,1,2]). Given the rotated array and a target value, return the index of the target, or -1 if it is not present. Must run in O(log n) time. Constraints: 1 &lt;= n &lt;= 5000, all elements distinct.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>At any midpoint, even though the whole array isn&#x27;t sorted, at least one of the two halves [lo, mid] or [mid, hi] IS a contiguous sorted run (rotation can only break sortedness at one point). So at each step: compare a[lo] with a[mid] to determine which half is properly sorted; then check whether the target lies within that sorted half&#x27;s value range. If it does, recurse into that half; otherwise the target (if present) must be in the other half. This keeps the search space halving every step, giving O(log n).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    int target;
+    cin &gt;&gt; target;
+
+    int lo = 0, hi = n - 1, ans = -1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] == target) { ans = mid; break; }
+        if (a[lo] &lt;= a[mid]) {
+            // left half [lo, mid] is sorted
+            if (a[lo] &lt;= target &amp;&amp; target &lt; a[mid]) hi = mid - 1;
+            else lo = mid + 1;
+        } else {
+            // right half [mid, hi] is sorted
+            if (a[mid] &lt; target &amp;&amp; target &lt;= a[hi]) lo = mid + 1;
+            else hi = mid - 1;
+        }
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>7
+4 5 6 7 0 1 2
+0
+</code></pre>
+    <pre><code>4
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-binary-search-ex1">
+  <h4>Median of Two Sorted Arrays</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given two sorted arrays nums1 (size m) and nums2 (size n), find the median of the combined sorted array in O(log(min(m, n))) time (merging, which is O(m+n), is too slow for the intended constraints m, n up to 10^6). Print the median with 5 digits after the decimal point.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Binary search over a partition index i in the smaller array (WLOG size m &lt;= n). For a given i, the mirrored partition in the other array is forced: j = (m + n + 1) / 2 - i, so that the left side of the combined partition has exactly ceil((m+n)/2) elements. A partition is correct when max(left side of A) &lt;= min(right side of B) AND max(left side of B) &lt;= min(right side of A); if the first condition fails (A&#x27;s left is too large), shrink i; if the second fails, grow i. When a valid partition is found, the median is either max(leftA, leftB) (odd total length) or the average of max(leftA, leftB) and min(rightA, rightB) (even total length). Sentinels INT_MIN/INT_MAX handle empty partitions cleanly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int m;
+    cin &gt;&gt; m;
+    vector&lt;int&gt; A(m);
+    for (auto &amp;x : A) cin &gt;&gt; x;
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;int&gt; B(n);
+    for (auto &amp;x : B) cin &gt;&gt; x;
+
+    if (m &gt; n) { swap(A, B); swap(m, n); }
+
+    int lo = 0, hi = m, half = (m + n + 1) / 2;
+    double ans = 0;
+    while (lo &lt;= hi) {
+        int i = lo + (hi - lo) / 2;
+        int j = half - i;
+        int Aleft  = (i == 0) ? INT_MIN : A[i - 1];
+        int Aright = (i == m) ? INT_MAX : A[i];
+        int Bleft  = (j == 0) ? INT_MIN : B[j - 1];
+        int Bright = (j == n) ? INT_MAX : B[j];
+
+        if (Aleft &lt;= Bright &amp;&amp; Bleft &lt;= Aright) {
+            if ((m + n) % 2 == 0)
+                ans = (max(Aleft, Bleft) + min(Aright, Bright)) / 2.0;
+            else
+                ans = max(Aleft, Bleft);
+            break;
+        } else if (Aleft &gt; Bright) {
+            hi = i - 1;
+        } else {
+            lo = i + 1;
+        }
+    }
+    cout &lt;&lt; fixed &lt;&lt; setprecision(5) &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>2
+1 2
+2
+3 4
+</code></pre>
+    <pre><code>2.50000
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="sorting-searching-binary-search-on-the-answer">
+  <div class="topic-head"><h2>Binary Search on the Answer</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>Binary search on the answer (a.k.a. &#x27;binary search over the value space&#x27;) is used when you cannot compute the optimal answer directly, but you CAN cheaply check, for a fixed candidate answer x, whether x is &#x27;feasible&#x27; (e.g., &#x27;can we achieve at least this much&#x27;, or &#x27;can we finish within this much time/cost&#x27;), and feasibility is monotonic in x. If feasible(x) is monotonic — every x&#x27; &gt;= x is also feasible whenever x is (or the symmetric case for minimizing) — then the set of feasible x forms a contiguous suffix (or prefix) of the value line, and you can binary search for the boundary between infeasible and feasible exactly like std::lower_bound, except the &#x27;array&#x27; is implicit: it&#x27;s the predicate feasible(mid), evaluated on demand instead of read from memory.</p><p>The template for minimizing an answer is: lo = smallest conceivable value, hi = largest conceivable value (a safe upper bound, often derivable from a trivial feasible construction); while (lo &lt; hi) { mid = lo + (hi - lo) / 2; if (feasible(mid)) hi = mid; else lo = mid + 1; }; answer = lo. Maximizing is the mirror image with feasible(mid) shrinking lo upward. The entire complexity of the algorithm collapses into two parts: (1) proving monotonicity (often the &#x27;aha&#x27; insight — it is rarely stated in the problem and must be argued informally, e.g. &#x27;if we can pack everything using capacity x, we can certainly pack it using any larger capacity&#x27;), and (2) designing an efficient feasibility check, which is frequently a greedy linear scan, a two-pointer count, or a difference-array / prefix-sum computation.</p><p>This technique is what separates &#x27;medium&#x27; from &#x27;hard&#x27; binary search problems: the binary search itself is boilerplate, but recognizing that a problem phrased as &#x27;minimize the maximum X&#x27; or &#x27;maximize the minimum Y&#x27; or &#x27;find the smallest T such that...&#x27; is secretly a monotonic feasibility problem — rather than something requiring direct DP or a closed-form formula — is the actual skill. A huge number of CP problems (&#x27;minimize the largest subarray sum when splitting into k pieces&#x27;, &#x27;maximize the minimum distance between placed items&#x27;, &#x27;find the k-th smallest pairwise distance&#x27;) reduce to exactly this pattern.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Strong signals: the problem says &#x27;minimize the maximum ...&#x27; or &#x27;maximize the minimum ...&#x27;; it asks for the smallest/largest value of some quantity such that a condition holds, and directly computing that value seems to require trying all possibilities; and you can write (even if slowly) a function feasible(x) that tells you in O(n) or O(n log n) whether a candidate value x works, and you can convince yourself that feasibility only turns on (never off) as x increases (or vice versa).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(log(range) * feasibility-check-cost). Feasibility checks are typically O(n) (greedy scan) or O(n log n) (two-pointer over a sorted array, or a scan needing a sort up front), giving overall O(n log(range)) or O(n log n log(range)).</p></div>
+  </div>
+  <article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex0">
+  <h4>Factory Machines</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are k machines producing identical products; machine i needs t_i seconds to make one product, and all machines work in parallel and continuously (machine i can produce floor(T / t_i) products in T seconds). Find the minimum number of seconds T needed so that the machines together have produced at least n products in total. Constraints: 1 &lt;= k &lt;= 2*10^5, 1 &lt;= n &lt;= 10^9, 1 &lt;= t_i &lt;= 10^9. (CSES 1620, Factory Machines.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Computing the optimal T directly is hard because production is a sum of floor divisions with different rates. But feasibility is trivial to check and monotonic: for a fixed candidate time T, the total products made is sum(floor(T / t_i)) over all machines, an O(k) computation, and this total is clearly non-decreasing as T grows. So binary search T over [1, huge upper bound] (e.g., up to n * max(t_i), or just a very large constant since t_i, n &lt;= ~10^9), and find the smallest T with total production &gt;= n.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    long long k, n;
+    cin &gt;&gt; k &gt;&gt; n;
+    vector&lt;long long&gt; t(k);
+    for (auto &amp;x : t) cin &gt;&gt; x;
+
+    long long lo = 1, hi = (long long)2e18;
+    while (lo &lt; hi) {
+        long long mid = lo + (hi - lo) / 2;
+        long long total = 0;
+        for (auto ti : t) {
+            total += mid / ti;
+            if (total &gt;= n) break;
+        }
+        if (total &gt;= n) hi = mid;
+        else lo = mid + 1;
+    }
+    cout &lt;&lt; lo &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 7
+3 2 5
+</code></pre>
+    <pre><code>8
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex1">
+  <h4>Array Division (minimize the maximum subarray sum)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n positive integers, divide it into k contiguous, non-empty subarrays so as to minimize the largest sum among the k subarrays. Print that minimized maximum sum. Constraints: 1 &lt;= k &lt;= n &lt;= 2*10^5, 1 &lt;= a_i &lt;= 10^9. (CSES 1085, Array Division; equivalent to LeetCode&#x27;s Split Array Largest Sum.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Binary search on the candidate maximum sum M. Feasibility check: greedily scan the array left to right, accumulating a running sum for the current subarray; whenever adding the next element would exceed M, start a new subarray there instead. Count how many subarrays this greedy scan needs; if that count is &lt;= k, M is feasible (we can always merge extra small pieces together without exceeding M, or simply use fewer than k cuts). Feasibility is monotonic in M (a larger cap can only need fewer or equal subarrays), so binary search between lo = max single element (a lower bound, since that element alone must fit in some subarray) and hi = total sum (trivially feasible with 1 subarray) finds the minimum feasible M.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n, k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;long long&gt; a(n);
+    long long lo = 0, hi = 0;
+    for (auto &amp;x : a) { cin &gt;&gt; x; hi += x; lo = max(lo, x); }
+
+    while (lo &lt; hi) {
+        long long mid = lo + (hi - lo) / 2;
+        long long parts = 1, cur = 0;
+        for (auto x : a) {
+            if (cur + x &gt; mid) { parts++; cur = x; }
+            else cur += x;
+        }
+        if (parts &lt;= k) hi = mid;
+        else lo = mid + 1;
+    }
+    cout &lt;&lt; lo &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 3
+2 4 7 3 5
+</code></pre>
+    <pre><code>8
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex2">
+  <h4>K-th Smallest Pair Distance</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers, define the distance of a pair (i, j) with i &lt; j as |nums[i] - nums[j]|. Find the k-th smallest such distance among all C(n,2) pairs. Constraints: 2 &lt;= n &lt;= 10^4, 1 &lt;= k &lt;= n*(n-1)/2, 0 &lt;= nums[i] &lt;= 10^6. (LeetCode 719.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort the array. Binary search on the candidate distance d in [0, max-min]. The feasibility check counts how many pairs have distance &lt;= d: after sorting, use a two-pointer sliding window — for each right endpoint, advance left while a[right]-a[left] &gt; d, then every index between left and right (inclusive on the left side) pairs with right at distance &lt;= d, contributing (right - left) pairs; summing this over all right endpoints is an O(n) pass (each pointer moves forward only). This count is monotonic non-decreasing in d, so binary search for the smallest d with count(d) &gt;= k gives exactly the k-th smallest pair distance.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    int k;
+    cin &gt;&gt; k;
+
+    sort(a.begin(), a.end());
+    int lo = 0, hi = a[n - 1] - a[0];
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        long long count = 0;
+        int left = 0;
+        for (int right = 0; right &lt; n; right++) {
+            while (a[right] - a[left] &gt; mid) left++;
+            count += (right - left);
+        }
+        if (count &gt;= k) hi = mid;
+        else lo = mid + 1;
+    }
+    cout &lt;&lt; lo &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+62 100 4
+2
+</code></pre>
+    <pre><code>58
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="sorting-searching-ternary-search-on-unimodal-functions">
+  <div class="topic-head"><h2>Ternary Search on Unimodal Functions</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Binary search finds a target in a MONOTONIC function (or array); ternary search is the analogous tool for a UNIMODAL function -- one that strictly increases and then strictly decreases (or vice versa), with a single peak or valley. Given such a function f, pick two interior points m1 &lt; m2 within the current search range [lo, hi] (commonly at the 1/3 and 2/3 marks). If f(m1) &lt; f(m2) (searching for a maximum), the peak cannot lie to the left of m1, because f is still increasing there, so the range can be narrowed to [m1, hi]; symmetrically if f(m1) &gt; f(m2), the peak cannot lie to the right of m2, so the range narrows to [lo, m2]. Each iteration discards roughly one-third of the range, giving O(log(range) / log(3/2)) iterations to converge -- still O(log n) asymptotically, just with a larger constant than binary search.</p><p>On a continuous (real-valued) domain, this is implemented with a fixed number of iterations (e.g. 100-200), since &#x27;the range is small enough&#x27; has no natural integer stopping point; each iteration roughly multiplies the search interval width by 2/3, so 100 iterations shrink an initial range of 10^6 down to well below any double-precision-meaningful width. On an integer domain, care is needed: naive ternary search can infinite-loop or give an off-by-one wrong answer when the range becomes very small (comparing m1 and m2 might not make progress) or when the function has a PLATEAU (multiple adjacent points sharing the same optimal value) rather than a single strict peak. The standard robust fix is to shrink the search range only down to a small constant width (commonly hi - lo &lt;= 2), using a comparison like &#x27;if f(m1) &lt;= f(m2) then hi = m2 else lo = m1 + 1&#x27;, and then brute-force check the few remaining candidates directly -- this handles plateaus correctly because convexity still guarantees the true optimum survives every narrowing step, and the final brute-force sweep resolves any remaining ties exactly.</p><p>Recognizing unimodality is often the hard part, not implementing the search. Sums of convex functions are convex (and hence unimodal after negation for maximization), so if a cost function is built by summing several convex pieces (e.g. absolute-value costs, or a Kadane-style &#x27;worst subarray sum&#x27; as a function of a shift parameter), the whole thing is guaranteed unimodal even without an explicit closed form -- letting you search on it directly without ever deriving a formula for the optimum.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You need to optimize (minimize or maximize) a real- or integer-valued function of a single parameter, and you can argue (or it is given/provable) that the function first strictly increases then strictly decreases (or the reverse) -- i.e. it is unimodal/convex -- but you cannot easily solve for the optimum in closed form and each function evaluation is itself computable (e.g. via a linear scan or Kadane&#x27;s algorithm).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(log(range)) evaluations of f for the search itself (each evaluation costing whatever it costs, e.g. O(n) for a Kadane-based check), so O(n log(range)) total for a typical &#x27;search over a parameter, evaluate with a linear scan&#x27; problem.</p></div>
+  </div>
+  <article class="example-card" id="sorting-searching-ternary-search-on-unimodal-functions-ex0">
+  <h4>Minimizing the Weakness of a Sequence (real-valued ternary search)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n real numbers a[1..n]. For a chosen real number x, define the &#x27;poorness&#x27; of a segment [l, r] as the absolute value of the sum (a[l]-x) + ... + (a[r]-x), and the &#x27;weakness&#x27; of x as the maximum poorness over all non-empty contiguous segments. Find the value of x that minimizes the weakness, and print that minimum weakness.</p><p>Input: n, then n numbers a[1..n] (given as integers or decimals).<br>Output: the minimum possible weakness, printed with 6 digits after the decimal point.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>For a fixed x, the weakness is max(maximum subarray sum of (a_i - x), -(minimum subarray sum of (a_i - x))), both computed with a standard O(n) Kadane pass. As a function of x, the weakness is a maximum of two functions, each of which is convex in x (a maximum/minimum subarray sum, viewed as a max/min over a finite set of LINEAR functions of x -- one per subarray -- is itself convex, since a pointwise maximum of linear functions is always convex, and negating a concave minimum keeps it convex too); a maximum of convex functions is convex, so weakness(x) is convex, hence unimodal, and ternary search applies directly on the real line. Run ternary search with a fixed number of iterations (200, far more than needed for 1e-6 precision) over a sufficiently wide range, evaluating weakness(x) via Kadane at each of the two candidate points per iteration, and narrow toward the minimum. Verified by brute-force scanning weakness(x) on a fine grid (step 0.0001) for the sample input, confirming the ternary search converges to the same minimum (x=2, weakness=1.0 for input [1,2,3]).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int n;
+vector&lt;double&gt; a;
+
+double weakness(double x) {
+    // compute max subarray sum and min subarray sum of (a[i]-x) via Kadane
+    double curMax = 0, maxSum = -1e18;
+    double curMin = 0, minSum = 1e18;
+    for (int i = 0; i &lt; n; i++) {
+        double v = a[i] - x;
+        curMax = max(v, curMax + v);
+        maxSum = max(maxSum, curMax);
+        curMin = min(v, curMin + v);
+        minSum = min(minSum, curMin);
+    }
+    return max(maxSum, -minSum);
+}
+
+int main(){
+    cin &gt;&gt; n;
+    a.assign(n, 0);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    double lo = -1e6, hi = 1e6;
+    for (int it = 0; it &lt; 200; it++) {
+        double m1 = lo + (hi - lo) / 3;
+        double m2 = hi - (hi - lo) / 3;
+        if (weakness(m1) &lt;= weakness(m2)) hi = m2; else lo = m1;
+    }
+    double ans = weakness((lo + hi) / 2);
+    cout &lt;&lt; fixed &lt;&lt; setprecision(6) &lt;&lt; ans &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 2 3
+</code></pre>
+    <pre><code>1.000000
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-ternary-search-on-unimodal-functions-ex1">
+  <h4>Equalize Pillar Heights at Minimum Total Cost (integer ternary search)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n pillars, where pillar i currently has height h[i]. You want to choose a single target height T (an integer) and adjust every pillar to have height T, where the cost of adjusting pillar i to height T is |h[i] - T| (moving each unit of height costs 1). Find the target height T that minimizes the total cost, and print T together with the minimum total cost. (If multiple T achieve the same minimum cost, print the smallest such T.)</p><p>Input: n, then n integers h[1..n].<br>Output: two integers: the optimal T, and the minimum total cost.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>cost(T) = sum of |h[i] - T| is a sum of convex (absolute-value) functions of T, hence convex, hence unimodal (minimized, with possibly a flat plateau at the median when n is even) -- a textbook target for integer ternary search. Because integer ternary search can behave incorrectly right at the boundary of a very small range or on a plateau, use the robust pattern: shrink the range [lo, hi] only while hi - lo &gt; 2, using two interior points m1, m2 at roughly the 1/3 and 2/3 marks, and comparing cost(m1) &lt;= cost(m2) to decide which side to discard (convexity guarantees the true minimum is never discarded by this rule, even on a plateau, because it never discards past the point where cost stops being provably worse). Once the range has shrunk to at most 3 candidates, brute-force evaluate cost at each remaining integer and take the best (and, for tie-breaking to the smallest T, scan candidates in increasing order and only replace the best on a STRICT improvement). This correctly reproduces the well-known fact that the optimum is the median of h[].</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int n;
+vector&lt;long long&gt; h;
+
+long long cost(long long target) {
+    long long c = 0;
+    for (int i = 0; i &lt; n; i++) c += llabs(h[i] - target);
+    return c;
+}
+
+int main(){
+    cin &gt;&gt; n;
+    h.assign(n, 0);
+    for (auto &amp;x : h) cin &gt;&gt; x;
+    long long lo = *min_element(h.begin(), h.end());
+    long long hi = *max_element(h.begin(), h.end());
+    while (hi - lo &gt; 2) {
+        long long m1 = lo + (hi - lo) / 3;
+        long long m2 = hi - (hi - lo) / 3;
+        if (cost(m1) &lt;= cost(m2)) hi = m2; else lo = m1 + 1;
+    }
+    long long best = LLONG_MAX, bestH = lo;
+    for (long long height = lo; height &lt;= hi; height++) {
+        long long c = cost(height);
+        if (c &lt; best) { best = c; bestH = height; }
+    }
+    cout &lt;&lt; bestH &lt;&lt; &quot; &quot; &lt;&lt; best &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 2 10
+</code></pre>
+    <pre><code>2 9
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="sorting-searching-custom-comparators-multi-key-sorting">
+  <div class="topic-head"><h2>Custom Comparators &amp; Multi-Key Sorting</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Many greedy algorithms are only correct once the input is sorted by exactly the right key -- often a DERIVED key (a ratio, a sum, or a comparison rule between two fields) rather than any single raw field, and sometimes a different sort order for different subsets of the input entirely. Getting this key right is usually justified by an EXCHANGE ARGUMENT: suppose an optimal solution processes two adjacent elements i then j in some order; show that swapping their order never makes the solution worse (and sometimes strictly better) exactly when a certain inequality between their fields holds; that inequality between i&#x27;s and j&#x27;s fields is then used to define the comparator, guaranteeing that no adjacent swap can improve on the sorted order, which (by a standard argument extending adjacent transpositions to arbitrary permutations) means the sorted order is optimal among all orderings.</p><p>A canonical two-group example: processing &#x27;projects&#x27; that each require a minimum resource level to start and then change the resource level by some signed delta. Projects with a non-negative delta (net gainers) should be processed sorted ascending by their requirement -- do the &#x27;cheapest to unlock&#x27; ones first to build up resources as fast as possible. Projects with a negative delta (net spenders) should be processed sorted DESCENDING by (requirement + delta), i.e. by their value AFTER completion -- counter-intuitively not by their requirement directly, because what matters for a spender is how much of a safety margin it leaves behind for the remaining spenders, and an exchange argument shows that ordering by post-completion value descending never causes an avoidable failure.</p><p>A second common shape: a greedy that needs &#x27;the k best items where quality is judged by a MINIMUM over the selected group, multiplied or combined with a SUM over the group&#x27; (e.g. maximize sum(speed) * min(efficiency), or minimize a cost keyed by the max ratio in a hired group). The trick is to sort by the field that appears as a min/max in the objective (efficiency, or wage-to-quality ratio) descending, then scan while maintaining the SUM field (speed, or quality) in a heap of bounded size -- because sorting by the min/max field first guarantees that, at the moment each element is considered, every element seen so far (including the current one) has a min/max-field value at least as large as the current one, so the current element&#x27;s field value is safely usable as &#x27;the min (or the threshold ratio) of the group so far&#x27; without having to re-check every previously chosen element.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>A greedy or heap-based approach seems natural, but sorting by the obvious raw field gives wrong answers on small counterexamples; the objective mixes two fields (a per-element requirement/cost and a per-element gain/effect, or a sum together with a min/max), and you suspect the right order is by a DERIVED key (a sum of two fields, a ratio, or &#x27;value after applying the effect&#x27;) rather than either raw field alone.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the sort, plus O(n) or O(n log n) for the subsequent greedy/heap scan, so O(n log n) total.</p></div>
+  </div>
+  <article class="example-card" id="sorting-searching-custom-comparators-multi-key-sorting-ex0">
+  <h4>Feasibility of Ordering Rating-Changing Projects (two-key exchange-argument sort)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You start with rating R. You are given n projects; project i requires your CURRENT rating to be at least a[i] to start it, and completing it changes your rating by b[i] (which may be positive or negative). Your rating must never become negative at any point (including immediately after completing a project). Determine whether there exists an order to complete ALL n projects without ever violating these constraints.</p><p>Input: n and R, then n pairs a[i] b[i].<br>Output: &quot;YES&quot; if some valid order exists, otherwise &quot;NO&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Split the projects into two groups: &#x27;gainers&#x27; with b[i] &gt;= 0, and &#x27;spenders&#x27; with b[i] &lt; 0. Do all gainers first, sorted ascending by a[i] -- an exchange argument shows that if two gainers could be swapped to violate this order and still be feasible, swapping them back to ascending-a order is also feasible (a gainer only helps future rating, so unlocking the cheapest requirement first is never worse). Then do all spenders, sorted DESCENDING by (a[i] + b[i]) -- the rating immediately after completing the project -- again by an exchange argument: for two adjacent spenders i, j, doing i before j requires rating &gt;= max(a[i], a[j] - b[i]) at that point, while doing j before i requires rating &gt;= max(a[j], a[i] - b[j]); algebraic manipulation shows that ordering by descending post-completion value (a[i]+b[i]) never requires a strictly higher minimum starting rating than any other order, so it&#x27;s always safe to prefer it. Simulate both groups in this fixed order, tracking the running rating and failing immediately if any project&#x27;s requirement isn&#x27;t met or if the rating would go negative afterward. This crafted test demonstrates the necessity of the (a+b)-descending rule: sorting spenders by requirement &#x27;a&#x27; ascending instead would process a=4 before a=5, whose simulation fails, even though the correct (a+b)-descending order (a=5 before a=4) succeeds from the same starting rating.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; long long R;
+    cin &gt;&gt; n &gt;&gt; R;
+    vector&lt;pair&lt;long long,long long&gt;&gt; pos, neg; // (a, b)
+    for (int i = 0; i &lt; n; i++) {
+        long long a, b; cin &gt;&gt; a &gt;&gt; b;
+        if (b &gt;= 0) pos.push_back({a, b});
+        else neg.push_back({a, b});
+    }
+    sort(pos.begin(), pos.end(), [](auto &amp;p, auto &amp;q){ return p.first &lt; q.first; });
+    sort(neg.begin(), neg.end(), [](auto &amp;p, auto &amp;q){
+        return (p.first + p.second) &gt; (q.first + q.second);
+    });
+    long long rating = R;
+    bool ok = true;
+    for (auto &amp;pr : pos) {
+        if (rating &lt; pr.first) { ok = false; break; }
+        rating += pr.second;
+    }
+    if (ok) {
+        for (auto &amp;pr : neg) {
+            if (rating &lt; pr.first) { ok = false; break; }
+            rating += pr.second;
+            if (rating &lt; 0) { ok = false; break; }
+        }
+    }
+    cout &lt;&lt; (ok ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>2 6
+5 -2
+4 -3
+</code></pre>
+    <pre><code>YES
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-custom-comparators-multi-key-sorting-ex1">
+  <h4>Course Schedule III (deadline sort + retroactive max-heap swap)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n courses, course i taking duration[i] days and having a deadline lastDay[i] (you must FINISH it on or before lastDay[i]). You may take the courses in any order, one at a time with no gaps, starting at day 0. Find the maximum number of courses you can take without missing any deadline of a course you commit to finishing.</p><p>Input: n, then n pairs duration[i] lastDay[i].<br>Output: the maximum number of courses that can be taken.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort courses ascending by deadline -- this is the key comparator choice, because it lets you consider courses in an order where, once you decide to &#x27;tentatively take&#x27; a course, every course considered afterward has an equal or later deadline, so there is never a reason to prefer a not-yet-seen course over one already tentatively scheduled except on duration. Greedily try to take every course in this deadline order, maintaining a running total time and a max-heap of the durations of courses currently scheduled. After tentatively adding a course (adding its duration to the running time and pushing it to the heap), check if the running time now exceeds this course&#x27;s deadline; if so, the schedule is currently infeasible, so retroactively REMOVE the single longest-duration course scheduled so far (found instantly via the max-heap) -- this is always at least as good as removing the just-added course, since it frees up the most possible time while keeping the same count of courses scheduled, and it cannot violate any earlier deadline (all remaining courses have equal-or-later, already-satisfied deadlines). The final answer is the number of courses remaining in the heap.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;pair&lt;long long,long long&gt;&gt; courses(n); // duration, lastDay
+    for (auto &amp;c : courses) cin &gt;&gt; c.first &gt;&gt; c.second;
+    sort(courses.begin(), courses.end(), [](auto &amp;a, auto &amp;b){
+        return a.second &lt; b.second; // sort by deadline ascending
+    });
+    priority_queue&lt;long long&gt; maxHeap; // durations taken so far
+    long long curTime = 0;
+    for (auto &amp;c : courses) {
+        long long dur = c.first, deadline = c.second;
+        curTime += dur;
+        maxHeap.push(dur);
+        if (curTime &gt; deadline) {
+            curTime -= maxHeap.top();
+            maxHeap.pop();
+        }
+    }
+    cout &lt;&lt; maxHeap.size() &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+100 200
+200 1300
+1000 1250
+2000 3200
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="sorting-searching-order-statistics-quickselect">
+  <div class="topic-head"><h2>Order Statistics / Quickselect</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The k-th order statistic of a collection is simply the k-th smallest (or largest) element. Sorting the whole collection to find it costs O(n log n), but quickselect -- reusing quicksort&#x27;s partition step without recursing into both sides -- finds it in expected O(n) time. Partition the array around a pivot (ideally chosen randomly to avoid adversarial worst-case inputs) exactly as in quicksort: rearrange so all elements less than the pivot come first, then the pivot itself lands at its final sorted position &#x27;store&#x27;, then all elements greater than or equal to the pivot follow. If store equals the target index k, the pivot IS the answer; otherwise, recurse into only the half of the array that must contain the k-th element (the left part if k &lt; store, the right part if k &gt; store) -- discarding the other half entirely, which is what turns the expected O(n log n) of full quicksort into an expected O(n) (each recursive call operates on a geometrically shrinking array, summing to O(n) total work in expectation with random pivots).</p><p>A second, entirely different family of order-statistics problems asks for the k-th smallest value in an implicitly defined, exponentially large combinatorial set -- e.g. the k-th smallest pairwise distance among all C(n,2) pairs, the k-th smallest pairwise product between two arrays, or the k-th smallest sum choosing one element from each of several sorted lists. Enumerating the whole set is infeasible, but if you can efficiently COUNT how many elements of the set are &lt;= a candidate value v (often via a two-pointer sweep over sorted data, or a per-row binary search), you can binary search on the answer value v itself: search for the smallest v such that count(&lt;=v) &gt;= k. This &#x27;binary search on the answer, count with a cheaper structure&#x27; pattern is itself a generalization of order-statistics selection -- instead of partitioning the actual elements (quickselect), you partition the space of POSSIBLE ANSWER VALUES using a monotonic counting function, which is valid whenever count(&lt;=v) is monotonically non-decreasing in v (always true, since a bigger threshold can only include more elements).</p><p>Which of the two techniques applies depends on whether you can cheaply materialize or partition the actual elements (use quickselect) versus only cheaply COUNT how many elements satisfy a threshold (use binary-search-on-the-answer with a counting subroutine).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You need the k-th smallest/largest element (or a k-th order statistic of some derived quantity like a difference, product, or sum) without needing the collection fully sorted; if the k-th value comes from an explicit array, quickselect applies; if it comes from an implicitly huge set of combinations, look for a monotonic &#x27;count elements &lt;= v&#x27; function and binary search on v.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Expected O(n) time, O(1) extra space for randomized quickselect on an explicit array of n elements; O(n log n) time (sort) plus O(log(range) * (cost of one count)) for binary-search-on-the-answer over an implicit combinatorial set.</p></div>
+  </div>
+  <article class="example-card" id="sorting-searching-order-statistics-quickselect-ex0">
+  <h4>K-th Smallest Element via Randomized Quickselect</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an unsorted array of n distinct integers, find the k-th smallest element (1-indexed: k=1 means the minimum) without fully sorting the array.</p><p>Input: n, then n integers, then k.<br>Output: the k-th smallest element.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Use Hoare-style partitioning with a RANDOMLY chosen pivot (to make worst-case O(n^2) behavior astronomically unlikely regardless of input order): pick a random index in the current subrange, swap that pivot value to the end, then scan the rest of the subrange moving every element smaller than the pivot to the front (tracked by a &#x27;store&#x27; index), and finally swap the pivot into position &#x27;store&#x27; -- its final sorted position within this subrange. If store equals the 0-indexed target k-1, return the pivot immediately. Otherwise, recurse (via a loop, not actual recursion, to keep it iterative) into only the side of the partition that must contain the target: the left part if the target index is less than store, the right part otherwise. This discards, on average, half the remaining array at each step, giving expected O(n) total work despite each partition step itself costing O(current subrange size). A fixed random seed is used here only so the output is reproducible for testing; a real submission could seed from time or use std::random_device.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+mt19937 rng(12345); // fixed seed for reproducible output
+
+int quickselect(vector&lt;long long&gt;&amp; a, int lo, int hi, int k) {
+    // returns the k-th smallest (0-indexed) element of a[lo..hi]
+    while (true) {
+        if (lo == hi) return a[lo];
+        int pivotIdx = lo + rng() % (hi - lo + 1);
+        long long pivot = a[pivotIdx];
+        swap(a[pivotIdx], a[hi]);
+        int store = lo;
+        for (int i = lo; i &lt; hi; i++) {
+            if (a[i] &lt; pivot) { swap(a[i], a[store]); store++; }
+        }
+        swap(a[store], a[hi]);
+        if (store == k) return a[store];
+        else if (k &lt; store) hi = store - 1;
+        else lo = store + 1;
+    }
+}
+
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    int k; cin &gt;&gt; k; // 1-indexed k-th smallest
+    cout &lt;&lt; quickselect(a, 0, n-1, k-1) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>7
+7 2 9 4 1 8 3
+3
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article><article class="example-card" id="sorting-searching-order-statistics-quickselect-ex1">
+  <h4>K-th Smallest Pairwise Distance (binary search on the answer + two pointers)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers, consider the multiset of all C(n,2) pairwise absolute differences |nums[i] - nums[j]| for i &lt; j. Find the k-th smallest value in this multiset (1-indexed).</p><p>Input: n, then n integers, then k.<br>Output: the k-th smallest pairwise distance.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Enumerating all C(n,2) distances directly is too slow for large n, but the number of pairs with distance &lt;= v is easy to COUNT for a fixed v: sort the array, then for each right pointer, advance a left pointer forward while nums[right] - nums[left] &gt; v, and add (right - left) to the count (every index from left to right-1 pairs with right to form a distance &lt;= v) -- this two-pointer count runs in O(n) since both pointers only move forward, for a total of O(n) per candidate v. Since count(&lt;=v) is monotonically non-decreasing in v, binary search on v over the range [0, max-min] for the smallest v with count(&lt;=v) &gt;= k; that v is guaranteed to actually be an achievable pairwise distance (not just a threshold), because count(&lt;=v) only changes at values that are themselves actual pairwise distances. Total time is O(n log n) for the sort plus O(n log(max-min)) for the binary search with its O(n) counting step.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    long long k; cin &gt;&gt; k;
+    sort(a.begin(), a.end());
+    long long lo = 0, hi = a[n-1] - a[0];
+    while (lo &lt; hi) {
+        long long mid = lo + (hi - lo) / 2;
+        // count pairs with distance &lt;= mid using two pointers
+        long long cnt = 0;
+        int left = 0;
+        for (int right = 0; right &lt; n; right++) {
+            while (a[right] - a[left] &gt; mid) left++;
+            cnt += right - left;
+        }
+        if (cnt &gt;= k) hi = mid; else lo = mid + 1;
+    }
+    cout &lt;&lt; lo &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 6 1
+3
+</code></pre>
+    <pre><code>5
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">21</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="present codeforces binary search on the answer + difference array given n flowers with initial heights, w days, and the ability to water m consecutive flowers (raising each by 1) once per day, maximize the minimum flower height after w days.">
+  <td><a href="https://codeforces.com/problemset/problem/460/C" target="_blank" rel="noopener noreferrer">Present</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1700</td>
+  <td class="subtopic-cell">binary search on the answer + difference array</td>
+  <td class="desc-cell">Given n flowers with initial heights, w days, and the ability to water m consecutive flowers (raising each by 1) once per day, maximize the minimum flower height after w days.</td>
+</tr><tr data-search="boxes packing codeforces binary search on the answer + greedy feasibility check given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.">
+  <td><a href="https://codeforces.com/problemset/problem/1066/D" target="_blank" rel="noopener noreferrer">Boxes Packing</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">binary search on the answer + greedy feasibility check</td>
+  <td class="desc-cell">Given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.</td>
+</tr><tr data-search="renting bikes codeforces binary search on the answer + greedy budget allocation given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.">
+  <td><a href="https://codeforces.com/problemset/problem/363/D" target="_blank" rel="noopener noreferrer">Renting Bikes</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">binary search on the answer + greedy budget allocation</td>
+  <td class="desc-cell">Given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.</td>
+</tr><tr data-search="factory machines cses binary search on the answer given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.">
+  <td><a href="https://cses.fi/problemset/task/1620" target="_blank" rel="noopener noreferrer">Factory Machines</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">binary search on the answer</td>
+  <td class="desc-cell">Given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.</td>
+</tr><tr data-search="array division cses binary search on the answer (minimize the maximum) split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.">
+  <td><a href="https://cses.fi/problemset/task/1085" target="_blank" rel="noopener noreferrer">Array Division</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">binary search on the answer (minimize the maximum)</td>
+  <td class="desc-cell">Split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.</td>
+</tr><tr data-search="split array largest sum leetcode binary search on the answer (minimize the maximum) split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.">
+  <td><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank" rel="noopener noreferrer">Split Array Largest Sum</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">binary search on the answer (minimize the maximum)</td>
+  <td class="desc-cell">Split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.</td>
+</tr><tr data-search="median of two sorted arrays leetcode binary search on a partition point given two sorted arrays of sizes m and n, find the median of the combined sorted array in o(log(min(m,n))) time.">
+  <td><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener noreferrer">Median of Two Sorted Arrays</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">binary search on a partition point</td>
+  <td class="desc-cell">Given two sorted arrays of sizes m and n, find the median of the combined sorted array in O(log(min(m,n))) time.</td>
+</tr><tr data-search="find k-th smallest pair distance leetcode binary search on the answer + two-pointer counting given an integer array, find the k-th smallest absolute difference among all pairs of elements.">
+  <td><a href="https://leetcode.com/problems/find-k-th-smallest-pair-distance/" target="_blank" rel="noopener noreferrer">Find K-th Smallest Pair Distance</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">binary search on the answer + two-pointer counting</td>
+  <td class="desc-cell">Given an integer array, find the k-th smallest absolute difference among all pairs of elements.</td>
+</tr><tr data-search="weakness and poorness codeforces ternary search on unimodal functions find a real number x minimizing the &quot;weakness&quot; of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.">
+  <td><a href="https://codeforces.com/problemset/problem/578/C" target="_blank" rel="noopener noreferrer">Weakness and Poorness</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2000</td>
+  <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
+  <td class="desc-cell">Find a real number x minimizing the &quot;weakness&quot; of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.</td>
+</tr><tr data-search="restorer distance codeforces ternary search on unimodal functions given n pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.">
+  <td><a href="https://codeforces.com/problemset/problem/1355/E" target="_blank" rel="noopener noreferrer">Restorer Distance</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
+  <td class="desc-cell">Given N pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.</td>
+</tr><tr data-search="maximize! codeforces ternary search on unimodal functions maintain a growing multiset (with a &quot;add&quot; query keeping it sorted) and, for &quot;query&quot; operations, find the subset maximizing max(s) minus the average of s.">
+  <td><a href="https://codeforces.com/problemset/problem/939/E" target="_blank" rel="noopener noreferrer">Maximize!</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
+  <td class="desc-cell">Maintain a growing multiset (with a &quot;add&quot; query keeping it sorted) and, for &quot;query&quot; operations, find the subset maximizing max(s) minus the average of s.</td>
+</tr><tr data-search="searching local minimum codeforces ternary search on unimodal functions interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.">
+  <td><a href="https://codeforces.com/problemset/problem/1479/A" target="_blank" rel="noopener noreferrer">Searching Local Minimum</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1700</td>
+  <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
+  <td class="desc-cell">Interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.</td>
+</tr><tr data-search="gift set codeforces ternary search on unimodal functions given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.">
+  <td><a href="https://codeforces.com/problemset/problem/1538/G" target="_blank" rel="noopener noreferrer">Gift Set</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
+  <td class="desc-cell">Given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.</td>
+</tr><tr data-search="complete the projects (easy version) codeforces custom comparators &amp; multi-key sorting given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there&#x27;s an order to complete all projects without the rating ever going negative.">
+  <td><a href="https://codeforces.com/problemset/problem/1203/F1" target="_blank" rel="noopener noreferrer">Complete the Projects (easy version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
+  <td class="desc-cell">Given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there&#x27;s an order to complete all projects without the rating ever going negative.</td>
+</tr><tr data-search="complete the projects (hard version) codeforces custom comparators &amp; multi-key sorting same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.">
+  <td><a href="https://codeforces.com/problemset/problem/1203/F2" target="_blank" rel="noopener noreferrer">Complete the Projects (hard version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2300</td>
+  <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
+  <td class="desc-cell">Same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.</td>
+</tr><tr data-search="maximum performance of a team leetcode custom comparators &amp; multi-key sorting given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).">
+  <td><a href="https://leetcode.com/problems/maximum-performance-of-a-team/" target="_blank" rel="noopener noreferrer">Maximum Performance of a Team</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
+  <td class="desc-cell">Given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).</td>
+</tr><tr data-search="minimum cost to hire k workers leetcode custom comparators &amp; multi-key sorting given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.">
+  <td><a href="https://leetcode.com/problems/minimum-cost-to-hire-k-workers/" target="_blank" rel="noopener noreferrer">Minimum Cost to Hire K Workers</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
+  <td class="desc-cell">Given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.</td>
+</tr><tr data-search="course schedule iii leetcode custom comparators &amp; multi-key sorting given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.">
+  <td><a href="https://leetcode.com/problems/course-schedule-iii/" target="_blank" rel="noopener noreferrer">Course Schedule III</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
+  <td class="desc-cell">Given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.</td>
+</tr><tr data-search="sum of medians codeforces order statistics / quickselect maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.">
+  <td><a href="https://codeforces.com/problemset/problem/85/D" target="_blank" rel="noopener noreferrer">Sum of Medians</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2300</td>
+  <td class="subtopic-cell">Order Statistics / Quickselect</td>
+  <td class="desc-cell">Maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.</td>
+</tr><tr data-search="kth smallest product of two sorted arrays leetcode order statistics / quickselect given two sorted arrays, find the k-th smallest product formed by picking one element from each array.">
+  <td><a href="https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/" target="_blank" rel="noopener noreferrer">Kth Smallest Product of Two Sorted Arrays</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Order Statistics / Quickselect</td>
+  <td class="desc-cell">Given two sorted arrays, find the k-th smallest product formed by picking one element from each array.</td>
+</tr><tr data-search="find the kth smallest sum of a matrix with sorted rows leetcode order statistics / quickselect given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.">
+  <td><a href="https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/" target="_blank" rel="noopener noreferrer">Find the Kth Smallest Sum of a Matrix With Sorted Rows</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Order Statistics / Quickselect</td>
+  <td class="desc-cell">Given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

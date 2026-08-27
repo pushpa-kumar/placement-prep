@@ -1,0 +1,128 @@
+[
+ {
+  "name": "Maximum Xor Subset",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/3191",
+  "difficulty": "CSES",
+  "subtopic": "subset enumeration / XOR linear basis",
+  "description": "Given an array of n integers, find the maximum XOR sum achievable by any subset of it.",
+  "why_hard": "The brute-force answer requires enumerating 2^n subsets; the real solution builds a linear (XOR) basis of the array via Gaussian elimination over GF(2), a core technique for reasoning about which XOR values are reachable from a set."
+ },
+ {
+  "name": "Number of Subset Xors",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/3211",
+  "difficulty": "CSES",
+  "subtopic": "subset enumeration / XOR linear basis",
+  "description": "Given an array of n integers, count how many distinct XOR values can be formed by some subset.",
+  "why_hard": "Once you build the XOR linear basis, the answer is 2^(rank of the basis) — the problem tests whether you understand *why* the reachable-subset-XOR space is a vector space over GF(2), not just how to compute the max."
+ },
+ {
+  "name": "Compatible Numbers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/165/E",
+  "difficulty": "CF 2200",
+  "subtopic": "subset enumeration (Sum over Subsets / SOS DP)",
+  "description": "Given n numbers each less than 2^22, for every number find another number in the array whose bitwise AND with it is zero, or report none exists.",
+  "why_hard": "This is the canonical Sum-over-Subsets (SOS) DP problem — you need to precompute, for every bitmask, whether some array element is a submask of it, propagating existence bit-by-bit over all 2^22 masks rather than enumerating subsets directly."
+ },
+ {
+  "name": "Maximum Students Taking Exam",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/maximum-students-taking-exam/",
+  "difficulty": "LeetCode Hard (#1349)",
+  "subtopic": "subset enumeration (bitmask DP)",
+  "description": "Given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.",
+  "why_hard": "Requires enumerating valid seatings (bitmasks with no two adjacent bits) per row and, for each pair of consecutive rows, checking diagonal-compatibility bitmask conditions — real subset enumeration compounded across rows in a DP."
+ },
+ {
+  "name": "Vasiliy's Multiset",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/706/D",
+  "difficulty": "CF 1800",
+  "subtopic": "XOR properties (binary trie)",
+  "description": "Maintain a multiset of integers supporting insertion, deletion, and \"find the maximum XOR of a given value x with any element currently in the multiset.\"",
+  "why_hard": "The standard approach is a binary trie over bit representations with per-node counters to support deletion, greedily walking the trie bit-by-bit from the most significant bit to maximize XOR — the foundational data structure for XOR-maximization problems."
+ },
+ {
+  "name": "Maximum XOR With an Element From Array",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/maximum-xor-with-an-element-from-array/",
+  "difficulty": "LeetCode Hard (#1707)",
+  "subtopic": "XOR properties (binary trie, offline queries)",
+  "description": "Given an array and queries of the form (x, m), find the maximum XOR of x with any array element that is <= m, or -1 if none qualifies.",
+  "why_hard": "Naive per-query trie search doesn't respect the <= m constraint, so queries and array elements must be sorted together and processed offline, inserting elements into the binary trie only once they are <= the current query's bound."
+ },
+ {
+  "name": "Sum of XOR Functions",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1879/D",
+  "difficulty": "CF 1700",
+  "subtopic": "XOR properties",
+  "description": "Given an array, compute the sum over all subarrays [l, r] of (XOR of the subarray) times (r - l + 1).",
+  "why_hard": "Summing a bitwise-XOR-derived quantity over all O(n^2) subarrays forces a divide-and-conquer-on-bits or trie-based approach that tracks, bit by bit, how many subarray XORs have that bit set, rather than any direct closed-form sum."
+ },
+ {
+  "name": "Gray Code",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2205",
+  "difficulty": "CSES",
+  "subtopic": "Bit Tricks & Gray Code (construction)",
+  "description": "For a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a Gray code).",
+  "why_hard": "The direct definitional exercise in Gray codes — implementing the reflect-and-prefix (or i ^ (i >> 1)) construction correctly at n up to 16, and understanding why it guarantees the single-bit-difference property between all consecutive entries."
+ },
+ {
+  "name": "Bits",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/484/A",
+  "difficulty": "CF 1700",
+  "subtopic": "Bit Tricks & Gray Code (popcount maximization)",
+  "description": "For up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.",
+  "why_hard": "The efficient solution is a pure bit trick — starting from l, greedily flip the lowest unset bits on one at a time as long as the result stays <= r, directly exercising low-bit manipulation (l | (l+1)-style reasoning) instead of any search or DP."
+ },
+ {
+  "name": "Bitwise Operation Wizard",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1936/A",
+  "difficulty": "CF 1700",
+  "subtopic": "Bit Tricks & Gray Code (bit-by-bit interactive determination)",
+  "description": "In an interactive problem, find two indices whose values (a hidden permutation) XOR to the maximum possible value, using only queries that compare the bitwise OR of two chosen pairs.",
+  "why_hard": "Requires determining the answer's bits from most significant to least significant using only OR-comparison queries — a clean, interactive stress test of bit-by-bit greedy reasoning distinct from subset-enumeration or XOR-basis techniques."
+ },
+ {
+  "name": "Spy-string",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1360/F",
+  "difficulty": "CF 1700",
+  "subtopic": "Bitset Optimization for Brute-Force Speedup",
+  "description": "Given m strings of length n, find any string of length n that is within Hamming distance 1 of every given string, or report impossible.",
+  "why_hard": "The natural approach is brute force over the O(n) candidate strings derived from fixing the first string and trying each single-character change, and checking each candidate against all m strings in O(nm/64) using std::bitset for the character-mismatch comparisons instead of O(nm) — the canonical \"same asymptotic algorithm, 64x faster with bitset\" pattern."
+ },
+ {
+  "name": "GCD Counting",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1101/D",
+  "difficulty": "CF 2000",
+  "subtopic": "Bitset Optimization for Brute-Force Speedup",
+  "description": "In a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a GCD greater than 1.",
+  "why_hard": "The standard solution represents each node's prime-factor set as a std::bitset over all primes up to the value limit, then does a tree DP where merging two children's \"compatible path\" bitsets via AND/OR operations turns an otherwise O(n^2) or O(n * primes) check into a 64x-faster bitset operation — a widely cited example of bitset-accelerated tree DP."
+ },
+ {
+  "name": "Dasha and cyclic table",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/754/E",
+  "difficulty": "CF 2600",
+  "subtopic": "Bitset Optimization for Brute-Force Speedup",
+  "description": "Given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).",
+  "why_hard": "The classic solution encodes, for each pattern row and each letter, a bitset of matching column positions, then combines per-row bitsets with shifted ANDs — turning what looks like an O(pattern_size * table_size) brute-force check per shift into a bitset-vectorized computation, a canonical 2D bitset string-matching technique."
+ },
+ {
+  "name": "Substrings in a String",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/914/F",
+  "difficulty": "CF 3000",
+  "subtopic": "Bitset Optimization for Brute-Force Speedup",
+  "description": "Given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.",
+  "why_hard": "The reference solution maintains, per character, a std::bitset marking positions where that character occurs, then answers a pattern-match query by ANDing shifted copies of these bitsets together — the textbook example of using bitset shifts to replace an O(n * pattern length) brute-force scan with an O(n * pattern length / 64) one."
+ }
+]

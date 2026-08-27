@@ -1,0 +1,396 @@
+<title>Templates &amp; Generic Programming — C++ Concepts</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">C++ Concepts Reference</p>
+    <h1>Templates &amp; Generic Programming</h1>
+    <p class="tagline"><p>Templates are how C++ gets generic, reusable code with ZERO runtime dispatch cost — everything here is instantiated and resolved entirely at compile time, which is exactly why it&#x27;s the tool of choice when you need polymorphism-like flexibility without paying a virtual-call&#x27;s runtime cost.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">4</div><div class="l">Concepts</div></div>
+      <div class="stat-tile"><div class="n">8</div><div class="l">Worked Examples</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#templates-instantiation"><span>Templates &amp; instantiation</span></a></li><li><a href="#sfinae-substitution-failure-is-not-an-error"><span>SFINAE (Substitution Failure Is Not An Error)</span></a></li><li><a href="#concepts-c-20"><span>Concepts (C++20)</span></a></li><li><a href="#crtp-curiously-recurring-template-pattern"><span>CRTP (Curiously Recurring Template Pattern)</span></a></li></ul>
+      <h2>Other concept groups</h2>
+      <ul class="nav-list"><li><a href="concepts-value-categories.html">Value Categories &amp; Move Semantics</a></li><li><a href="concepts-oop-mechanics.html">Object-Oriented Mechanics &amp; Polymorphism</a></li><li><a href="concepts-raii-resources.html">RAII &amp; Resource Management</a></li><li><a href="concepts-compile-time.html">Compile-Time Constructs &amp; Program Structure</a></li><li><a href="concepts-concurrency-memory.html">Concurrency, Memory Model &amp; Low-Level Layout</a></li><li><a href="concepts-modern-cpp.html">Modern C++ (17/20) &amp; STL Utilities</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="concepts.html">All C++ Concepts</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+      </ul>
+    </aside>
+    <main><article class="concept-card" id="templates-instantiation">
+  <h3>Templates &amp; instantiation</h3>
+  <div class="intro"><p>A template is a blueprint, not code that runs directly — the compiler generates (&quot;instantiates&quot;) a genuinely separate, concrete function or class for every DISTINCT combination of template arguments actually used in the program. This gives you fully generic source code that compiles down to specialized, non-generic machine code for each instantiation — no runtime type checks, no boxing, no dispatch overhead — at the cost of longer compile times and larger binaries (&quot;code bloat&quot;) if many distinct instantiations get generated.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Two calls, two entirely separate instantiations</div>
+  <pre><code>template &lt;class T&gt;
+T max_of(T a, T b) { return a &gt; b ? a : b; }
+
+max_of(3, 5);       // instantiates a fresh max_of&lt;int&gt;(int, int)
+max_of(3.0, 5.0);   // instantiates a COMPLETELY SEPARATE max_of&lt;double&gt;(double, double)
+// each is compiled independently, as if you&#x27;d hand-written both overloads yourself</code></pre>
+  <div class="ex-explain"><p>There&#x27;s no single &quot;max_of&quot; function at the machine-code level — the compiler has generated two distinct functions, each fully specialized to its type, with no runtime branching on &quot;what type am I&quot; anywhere in either one.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Class templates instantiate their MEMBERS lazily</div>
+  <pre><code>template &lt;class T&gt;
+class Box {
+public:
+    T value;
+    void onlyCalledSometimes() { value.methodThatOnlyExistsOnSomeTypes(); }
+};
+
+Box&lt;int&gt; b;
+b.value = 5;
+// b.onlyCalledSometimes(); // if you NEVER call this, it&#x27;s never instantiated,
+                            // and int not having methodThatOnlyExistsOnSomeTypes()
+                            // is never even checked -- templates only instantiate
+                            // member functions that are actually USED</code></pre>
+  <div class="ex-explain"><p>This lazy, per-member instantiation is a real, practical property: a class template can have member functions that would fail to compile for certain T, and that&#x27;s completely fine as long as those specific members are never called for that T.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Underestimating compile-time/binary-size cost — a heavily templated codebase with many distinct instantiations (e.g. a container template used with dozens of different element types) can meaningfully slow builds and bloat the binary; this is a real engineering tradeoff, not just theory.</p></li><li><p>Writing template code and only testing it with one type, then being surprised when it fails to compile for a different type — since each instantiation is checked independently, correctness for T=int says nothing about correctness for T=std::string.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#crtp-curiously-recurring-template-pattern" data-related-href="#crtp-curiously-recurring-template-pattern">CRTP (Curiously Recurring Template Pattern)</a><a class="related-tag" href="#sfinae-substitution-failure-is-not-an-error" data-related-href="#sfinae-substitution-failure-is-not-an-error">SFINAE (Substitution Failure Is Not An Error)</a><a class="related-tag" href="#concepts-c-20" data-related-href="#concepts-c-20">Concepts (C++20)</a></div>
+</article><article class="concept-card" id="sfinae-substitution-failure-is-not-an-error">
+  <h3>SFINAE (Substitution Failure Is Not An Error)</h3>
+  <div class="intro"><p>During overload resolution for a template function, the compiler substitutes candidate template arguments into each overload&#x27;s signature to see if it&#x27;s viable. SFINAE is the rule that if that substitution produces something ill-formed — but ONLY if the ill-formedness is in the &quot;immediate context&quot; (typically the return type or a parameter type, not deep inside the function body) — the compiler quietly REMOVES that candidate from the overload set instead of raising a hard compile error. This lets you write multiple template overloads that each only &quot;participate&quot; for certain types, effectively doing compile-time dispatch based on type properties.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Two overloads, each SFINAE&#x27;d to opt in for exactly one category of type</div>
+  <pre><code>template &lt;class T&gt;
+typename std::enable_if&lt;std::is_integral&lt;T&gt;::value, void&gt;::type
+foo(T t) { std::cout &lt;&lt; &quot;integral overload: &quot; &lt;&lt; t; }
+
+template &lt;class T&gt;
+typename std::enable_if&lt;std::is_floating_point&lt;T&gt;::value, void&gt;::type
+foo(T t) { std::cout &lt;&lt; &quot;floating-point overload: &quot; &lt;&lt; t; }
+
+foo(3);    // std::enable_if&lt;is_integral&lt;int&gt;&gt; succeeds -&gt; only the first overload survives substitution
+foo(3.5);  // std::enable_if&lt;is_floating_point&lt;double&gt;&gt; succeeds -&gt; only the second survives
+// foo(&quot;str&quot;); // BOTH enable_if conditions are false -&gt; both substitutions fail -&gt;
+               // both overloads silently vanish from the candidate set -&gt; genuine compile error
+               // (&quot;no matching function&quot;), NOT a confusing enable_if-internal error</code></pre>
+  <div class="ex-explain"><p>For <code>foo(3)</code>, substituting T=int makes the SECOND overload&#x27;s <code>enable_if&lt;is_floating_point&lt;int&gt;::value, void&gt;::type</code> ill-formed (enable_if with a false condition has no <code>::type</code> member) — SFINAE means this is silently dropped from consideration rather than causing a hard error, leaving exactly the first overload as the only viable candidate.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Detecting whether a type has a member function, a classic SFINAE idiom</div>
+  <pre><code>template &lt;class T&gt;
+class has_toString {
+    template &lt;class U&gt; static auto test(int) -&gt; decltype(std::declval&lt;U&gt;().toString(), std::true_type{});
+    template &lt;class U&gt; static std::false_type test(...);
+public:
+    static constexpr bool value = decltype(test&lt;T&gt;(0))::value;
+};
+
+// has_toString&lt;SomeClassWithToString&gt;::value  -&gt; true
+// has_toString&lt;int&gt;::value                    -&gt; false (int has no .toString(), substitution fails,
+                                                //          falls through to the ... overload)</code></pre>
+  <div class="ex-explain"><p>This pattern — an overload whose return type only compiles if the expression <code>U().toString()</code> is valid — is the classic pre-Concepts way to ask &quot;does this type support this operation?&quot; at compile time. It&#x27;s clever but genuinely hard to read, which is exactly the readability problem C++20 Concepts were designed to fix.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Confusing SFINAE with a hard compile error — SFINAE ONLY applies to substitution failures in the immediate context (the declaration itself); a failure deep inside a function BODY that happens to compile-instantiate is a real, hard error, not silently ignored.</p></li><li><p>Writing dense, hard-to-read enable_if-based template metaprogramming when C++20 Concepts are available — Concepts express the same intent far more readably and with much clearer compiler errors on failure; prefer them in new code.</p></li></ul></div>
+  <p class="why-box"><p>Interviewers who ask about SFINAE are usually checking whether you can explain WHY it&#x27;s needed (compile-time type-based dispatch) and whether you know it&#x27;s been largely superseded by Concepts — not whether you can write it from memory.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#templates-instantiation" data-related-href="#templates-instantiation">Templates &amp; instantiation</a><a class="related-tag" href="#concepts-c-20" data-related-href="#concepts-c-20">Concepts (C++20)</a></div>
+</article><article class="concept-card" id="concepts-c-20">
+  <h3>Concepts (C++20)</h3>
+  <div class="intro"><p>Concepts let you name and directly enforce a compile-time constraint on a template parameter — &quot;T must support addition,&quot; &quot;T must be a forward iterator&quot; — replacing much of what SFINAE was historically used for, with dramatically more readable code and, crucially, far clearer compiler error messages when a constraint isn&#x27;t satisfied (compare to the wall of enable_if-substitution-failure noise SFINAE typically produces).</p></div>
+  <div class="example-box">
+  <div class="ex-title">A named, reusable concept</div>
+  <pre><code>template &lt;class T&gt;
+concept Numeric = std::is_arithmetic_v&lt;T&gt;;
+
+template &lt;Numeric T&gt;
+T square(T x) { return x * x; }
+
+square(5);       // OK: int satisfies Numeric
+// square(&quot;hi&quot;); // clear, direct error: &quot;constraint &#x27;Numeric&#x27; was not satisfied&quot;
+                 // (compare to the multi-page SFINAE error you&#x27;d get from an
+                 //  equivalent enable_if-based overload set for the same mistake)</code></pre>
+  <div class="ex-explain"><p>The concept <code>Numeric</code> is defined once and can be reused across any number of templates — and critically, when a call violates it, the compiler tells you exactly which named constraint failed, rather than dumping the internals of a failed template substitution.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Constraining based on required operations, not just type traits</div>
+  <pre><code>template &lt;class T&gt;
+concept Addable = requires(T a, T b) {
+    { a + b } -&gt; std::same_as&lt;T&gt;;   // T must support a+b, and the result must be T itself
+};
+
+template &lt;Addable T&gt;
+T sum(T a, T b) { return a + b; }</code></pre>
+  <div class="ex-explain"><p>This <code>requires</code> expression directly states &quot;whatever operations I actually need&quot; rather than relying on an indirect type trait — this is closer to how you naturally think about what a generic function requires, and it&#x27;s exactly the kind of constraint that was awkward to express with SFINAE alone.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Treating concepts as purely a documentation/readability improvement with no functional difference from SFINAE — they also change overload resolution rules (a more-constrained overload is preferred over a less-constrained one when both are viable), which SFINAE-based enable_if tricks handle much more awkwardly.</p></li><li><p>Assuming Concepts are available in codebases that haven&#x27;t moved to C++20 yet — many production/interview contexts still target C++17 or earlier, where SFINAE remains the only tool for this.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#sfinae-substitution-failure-is-not-an-error" data-related-href="#sfinae-substitution-failure-is-not-an-error">SFINAE (Substitution Failure Is Not An Error)</a><a class="related-tag" href="#templates-instantiation" data-related-href="#templates-instantiation">Templates &amp; instantiation</a></div>
+</article><article class="concept-card" id="crtp-curiously-recurring-template-pattern">
+  <h3>CRTP (Curiously Recurring Template Pattern)</h3>
+  <div class="intro"><p>A class <code>Derived</code> inherits from a template <code>Base&lt;Derived&gt;</code> — passing ITSELF as the template argument to its own base class. This lets <code>Base</code> call methods on the actual derived type via <code>static_cast&lt;Derived*&gt;(this)</code>, entirely at compile time — no vtable, no virtual dispatch, no indirect call. The result is &quot;static polymorphism&quot;: Base-defined code that behaves differently per Derived type, fully inlinable, at the direct cost of losing genuine RUNTIME polymorphism (you can no longer hold a <code>std::vector&lt;Base*&gt;</code> of mixed concrete types and call through it uniformly, because each <code>Base&lt;X&gt;</code> is actually a distinct type for each X).</p></div>
+  <div class="example-box">
+  <div class="ex-title">CRTP giving polymorphism-like reuse with zero virtual-call overhead</div>
+  <pre><code>template &lt;class Derived&gt;
+struct Shape {
+    double area() const {
+        // static_cast is safe here BY CONVENTION: Derived is required to inherit from Shape&lt;Derived&gt;
+        return static_cast&lt;const Derived*&gt;(this)-&gt;areaImpl();
+    }
+};
+struct Circle : Shape&lt;Circle&gt; {
+    double r;
+    explicit Circle(double r) : r(r) {}   // needed: Circle inherits Shape&lt;Circle&gt;,
+    double areaImpl() const { return 3.14159 * r * r; }
+};
+struct Square : Shape&lt;Square&gt; {
+    double s;
+    explicit Square(double s) : s(s) {}    // so neither is a plain aggregate anymore
+    double areaImpl() const { return s * s; }
+};
+
+Circle c(5);
+c.area(); // Shape&lt;Circle&gt;::area() calls Circle::areaImpl() -- resolved AT COMPILE TIME,
+          // fully inlinable, no vtable lookup anywhere in this call chain</code></pre>
+  <div class="ex-explain"><p>Compare this to the virtual-function version in the OOP group: there, <code>area()</code> requires an indirect call through a vtable that the compiler cannot resolve until runtime. Here, the compiler knows the concrete type of <code>this</code> at compile time (because Shape&lt;Circle&gt; is a distinct, fully-specialized type), so <code>areaImpl()</code> can be inlined directly into the caller. (Circle/Square need an explicit constructor rather than plain brace-init like <code>Circle{5}</code>, since inheriting from Shape&lt;Circle&gt; means they&#x27;re no longer aggregates.)</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The tradeoff: no more uniform runtime collection</div>
+  <pre><code>// This does NOT work with CRTP, because Shape&lt;Circle&gt; and Shape&lt;Square&gt; are
+// genuinely different, unrelated types (no common non-template base):
+// std::vector&lt;Shape&lt;???&gt;*&gt; shapes; // there&#x27;s no single type to put in this vector
+
+// The virtual-dispatch version from the OOP group DOES support this naturally:
+std::vector&lt;std::unique_ptr&lt;Shape&gt;&gt; shapes; // Shape is a real common (non-template) base
+shapes.push_back(std::make_unique&lt;Circle&gt;());
+shapes.push_back(std::make_unique&lt;Square&gt;());
+for (auto&amp; s : shapes) total += s-&gt;area(); // works because it&#x27;s genuine runtime polymorphism</code></pre>
+  <div class="ex-explain"><p>This is the fundamental tradeoff CRTP makes: you gain compile-time-resolved, zero-overhead &quot;polymorphism&quot; for code that KNOWS its concrete types at compile time, but you lose the ability to treat a heterogeneous, runtime-determined collection uniformly — for that, you still need real virtual dispatch.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Reaching for CRTP when you actually need runtime polymorphism (a collection of mixed concrete types processed uniformly) — CRTP fundamentally cannot do this; check which kind of &quot;varies per type&quot; you actually have before picking a mechanism.</p></li><li><p>The <code>static_cast&lt;Derived*&gt;(this)</code> inside Base is NOT checked by the compiler to be safe — it&#x27;s a convention enforced only by the fact that Base&lt;Derived&gt; is meant to only ever be inherited by exactly that Derived. Nothing stops (accidental) misuse like <code>struct Oops : Shape&lt;SomeOtherType&gt; {};</code>, which compiles but is nonsensical.</p></li></ul></div>
+  <p class="why-box"><p>A favorite HFT interview topic specifically because it&#x27;s the direct, concrete answer to &quot;how do you get polymorphism-like code reuse without paying the virtual-call cost on a hot path?&quot;</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-oop-mechanics.html#virtual-functions-vtables" data-related-href="concepts-oop-mechanics.html#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#templates-instantiation" data-related-href="#templates-instantiation">Templates &amp; instantiation</a></div>
+</article></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

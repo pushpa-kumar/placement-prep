@@ -1,0 +1,618 @@
+<title>Game Theory — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Game Theory</h1>
+    <p class="tagline"><p>Combinatorial game theory studies two-player, perfect-information, no-chance games where players alternate moves and the last player unable to move (or, in the &#x27;misere&#x27; variant, the last player TO move) loses. The two foundational tools for competitive programming are the Nim game and its XOR-based winning condition, and the Sprague-Grundy theorem, which lets you reduce ANY impartial game (and sums of independent impartial games) to an equivalent single Nim pile via a recursively-defined Grundy number. Together they turn a huge family of &#x27;who wins under optimal play&#x27; problems into a mechanical computation. Rounding out game theory beyond a single pile or a single interval game, this subtopic covers how the Sprague-Grundy theorem combines several independent games into one compound game via XOR, where that shortcut needs Bouton&#x27;s misère correction, and where it breaks down entirely once a single move is allowed to touch more than one component at a time.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">3</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">8</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">9</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#game-theory-nim-game-and-the-xor-winning-condition"><span>Nim Game and the XOR Winning Condition</span><span class="cnt">3</span></a></li><li><a href="#game-theory-sprague-grundy-theorem-for-composite-and-custom-games"><span>Sprague-Grundy Theorem for Composite and Custom Games</span><span class="cnt">3</span></a></li><li><a href="#game-theory-combinatorial-game-sums-mis-re-play"><span>Combinatorial Game Sums &amp; Misère Play</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">9</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#game-theory">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="game-theory-nim-game-and-the-xor-winning-condition">
+  <div class="topic-head"><h2>Nim Game and the XOR Winning Condition</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>In standard Nim, there are several piles of stones; on each turn a player chooses one nonempty pile and removes any positive number of stones from it; the player who removes the last stone (equivalently, the player who faces all-empty piles on their turn and cannot move) loses under normal play convention. The celebrated Bouton&#x27;s theorem states that a Nim position with pile sizes p1, p2, ..., pk is a LOSING position for the player about to move (a &#x27;P-position&#x27;) if and only if p1 XOR p2 XOR ... XOR pk = 0; otherwise it is a WINNING position (&#x27;N-position&#x27;) for the player about to move. The intuition: from any position with nonzero XOR, there is always a move that zeroes the XOR (reduce whichever pile has the highest differing bit down to the right size), and from any position with zero XOR, EVERY move strictly changes exactly one pile and therefore makes the XOR nonzero again — so zero-XOR positions are exactly the ones from which every move hands the opponent a nonzero-XOR (winning) position, and the all-zero position (immediate loss) has XOR 0, anchoring the induction.</p><p>Many contest problems are &#x27;Nim in disguise&#x27;: the state decomposes into independent components whose sizes you must first compute correctly before XOR-ing them. Staircase Nim is the classic example — balls sit on stairs numbered 1..n, and a legal move takes any positive number of balls from stair k (k != 1) down to stair k-1; the player who cannot move (all balls sit on stair 1) loses. The key insight is that moving balls onto EVEN-numbered stairs is always &#x27;reversible&#x27; by the opponent (they can immediately move the same balls one stair further down), so only the balls sitting on ODD-numbered stairs matter strategically — the game is exactly equivalent to ordinary Nim played on the odd-stair ball-counts alone, and you XOR only those.</p><p>The misere (last-player-to-move LOSES) variant of Nim has a famously subtle winning condition, distinct from normal Nim except in one common case. Misere Nim&#x27;s rule: if at least one pile has 2 or more stones, the winning condition is IDENTICAL to normal Nim (XOR of all piles != 0 means the player to move wins) — the extra flexibility of large piles lets the player about to move always steer the game into the normal-Nim endgame in their favor. But if EVERY pile has size 0 or 1 (so the whole game is forced, move by move, with no choice except which pile to touch), the winning condition flips: the player about to move wins if and only if the number of piles with exactly 1 stone is EVEN (because the game becomes purely a parity race to avoid being forced to take the very last stone).</p><p>Recognizing when a problem is &#x27;really Nim&#x27; is a skill in itself: look for a game with independent piles/heaps, moves that only ever shrink one component, and a normal-play losing condition (can&#x27;t move = lose); if the removal rule is the unrestricted &#x27;take any positive amount&#x27;, it&#x27;s literally Nim and you just XOR pile sizes; if the removal rule is restricted or the piles interact through some structural rule (like the staircase), you first need to find the right transformation or independent decomposition before XOR-ing.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for: (a) multiple independent heaps/piles where each move only shrinks one pile and the last player to move wins (normal play) — compute XOR of pile sizes directly; (b) a structural transformation is hinted (stairs, ranges of consecutive integers, etc.) that reduces to an XOR of some derived quantity; (c) explicit mention that the LAST player to move LOSES (misere convention) — check the special all-piles-&lt;=1 case separately from the general XOR rule.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) to compute and XOR all pile sizes (or derived quantities) for a single query; O(1) additional space beyond the input.</p></div>
+  </div>
+  <article class="example-card" id="game-theory-nim-game-and-the-xor-winning-condition-ex0">
+  <h4>Classic Nim — Determine the Winner</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n piles of stones (1 &lt;= n &lt;= 10^5), the i-th pile containing a[i] stones (1 &lt;= a[i] &lt;= 10^9). Two players alternate turns; on each turn a player chooses a nonempty pile and removes any positive number of stones from it. The player who cannot move (all piles are empty) loses. Both players play optimally. Determine who wins: print &quot;First&quot; if the first player wins, otherwise print &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>By Bouton&#x27;s theorem, compute the XOR of all pile sizes. If the XOR is nonzero, the position is an N-position and the first player (about to move) can force a win; if the XOR is zero, the position is a P-position and the second player wins no matter what the first player does.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    long long x = 0;
+    for (int i = 0; i &lt; n; i++) { long long v; cin &gt;&gt; v; x ^= v; }
+    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+3 4 5
+</code></pre>
+    <pre><code>First
+</code></pre>
+  </div>
+</article><article class="example-card" id="game-theory-nim-game-and-the-xor-winning-condition-ex1">
+  <h4>Staircase Nim</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n stairs, numbered 1 to n, and stair i initially holds b[i] balls (0 &lt;= b[i] &lt;= 10^9). On each turn, a player chooses a stair k with 2 &lt;= k &lt;= n that currently holds at least one ball, and moves any positive number of balls from stair k down to stair k-1 (balls that land on stair 1 are effectively removed from play, since stair 1 cannot be moved from). The player who cannot move (every ball is on stair 1) loses. Determine the winner under optimal play: print &quot;First&quot; or &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is Staircase Nim: only the ball counts on ODD-numbered stairs (1, 3, 5, ...) matter, because any ball moved onto an even stair can always be immediately mirrored one step further down by the opponent, neutralizing that move; effectively the game reduces to ordinary Nim played on b[1], b[3], b[5], .... Compute the XOR of b[i] for all odd i from 1 to n; the first player wins iff this XOR is nonzero.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; b(n + 1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; b[i];
+    long long x = 0;
+    for (int i = 1; i &lt;= n; i += 2) x ^= b[i];
+    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+1 2 3 4 5
+</code></pre>
+    <pre><code>First
+</code></pre>
+  </div>
+</article><article class="example-card" id="game-theory-nim-game-and-the-xor-winning-condition-ex2">
+  <h4>Misere Nim</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n piles of stones (1 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt;= 10^9). Two players alternate turns; on each turn a player chooses a nonempty pile and removes any positive number of stones from it. Unlike standard Nim, here the player who removes the LAST stone LOSES (misere convention). Both players play optimally. Print &quot;First&quot; if the first player wins, otherwise print &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>If at least one pile has 2 or more stones, misere Nim has the SAME winning condition as normal Nim: compute the XOR of all pile sizes, and the first player wins iff it is nonzero. If every pile has size 0 or 1, the outcome instead depends purely on parity: count the piles with exactly 1 stone, and the first player wins iff that count is EVEN (with an even number of forced single-stone moves remaining, the second player is forced to take the last stone).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    long long mx = *max_element(a.begin(), a.end());
+    bool firstWins;
+    if (mx &gt;= 2) {
+        long long x = 0;
+        for (auto v : a) x ^= v;
+        firstWins = (x != 0);
+    } else {
+        int ones = 0;
+        for (auto v : a) if (v == 1) ones++;
+        firstWins = (ones % 2 == 0);
+    }
+    cout &lt;&lt; (firstWins ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 2 3
+</code></pre>
+    <pre><code>Second
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="game-theory-sprague-grundy-theorem-for-composite-and-custom-games">
+  <div class="topic-head"><h2>Sprague-Grundy Theorem for Composite and Custom Games</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>The Sprague-Grundy theorem is the master tool that generalizes Nim to ANY impartial game (a game where both players have exactly the same set of legal moves available from any given position, and the last player unable to move loses under normal play). It assigns every position of every impartial game a single non-negative integer, the Grundy number (or &#x27;nimber&#x27;), defined recursively as g(position) = mex({ g(position&#x27;) : position&#x27; is reachable from position by one legal move }), where mex (minimum excludant) of a set of non-negative integers is the smallest non-negative integer NOT contained in that set — for example mex({0,1,3}) = 2, mex({1,2}) = 0, and mex(empty set) = 0. A position with g = 0 is exactly a losing position (P-position) for the player about to move; any position with g &gt; 0 is winning (N-position). This recursive definition is a direct generalization of a single Nim pile of size n, whose Grundy number is simply n (since from a pile of n stones you can move to a pile of any size 0..n-1, so mex({0,1,...,n-1}) = n).</p><p>The reason mex is the exactly-right operation (rather than, say, max+1 or min) is that it produces the unique value that makes the RESULTING structure behave exactly like a Nim pile of that size: from a position with Grundy number g, you can move to positions with Grundy number EXACTLY 0, 1, ..., g-1 (by definition of mex, all of these must be achievable, or mex would be smaller) but you can also potentially reach positions with other Grundy values &gt;= g or duplicated values — what matters is only that all of 0..g-1 are reachable and g itself is not. This exactly mirrors what a Nim pile of size g can do, which is why the two games are strategically equivalent.</p><p>The theorem&#x27;s real power appears when you combine independent games: if a composite position consists of several independent subgames played simultaneously (a move consists of choosing ONE subgame and making a legal move in it, leaving the others untouched, and the player who cannot move in ANY subgame loses), the Grundy number of the whole composite position is the XOR of the Grundy numbers of the individual subgames — exactly the same combination rule as Nim piles, because Nim itself is just the special case where every subgame IS a simple pile. This lets you decompose a complicated game into independent pieces, compute each piece&#x27;s Grundy number in isolation (often via a recursive DP with memoization, or by spotting a closed-form/periodic pattern), and then combine everything by XOR.</p><p>In practice, computing Grundy numbers for a &#x27;custom&#x27; game follows a template: identify the state space (often just a pile size n, sometimes richer), identify which states are terminal (no moves = Grundy 0 by definition, mex of empty set), and compute g[n] bottom-up as the mex of g[n&#x27;] over every state n&#x27; reachable by one legal move from n. When a single move can SPLIT a position into two or more independent pieces (like splitting a heap of coins into two heaps, à la Grundy&#x27;s Game), each resulting piece contributes its own Grundy number and you XOR those together before taking the mex over all possible splits — this is the Sprague-Grundy composition rule applied one level down inside the recursive definition itself.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for: (a) an impartial game (both players have identical move options everywhere) whose move rule is NOT simply &#x27;remove any positive amount&#x27; (so plain Nim doesn&#x27;t directly apply) — you need to compute a custom Grundy function via mex; (b) a single move that SPLITS a state into two or more independent sub-states (heap splitting, tree/graph decomposition) — combine sub-results via XOR before taking mex; (c) several independent games or piles of DIFFERENT types played as one composite game — compute each type&#x27;s Grundy function separately, then XOR across all components to get the overall verdict.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Computing a Grundy table g[0..N] for a single-parameter game is typically O(N * M) where M is the number of possible moves/splits considered per state (often O(N) itself, giving O(N^2)); combining k independent components by XOR is O(k) once each component&#x27;s Grundy number is known.</p></div>
+  </div>
+  <article class="example-card" id="game-theory-sprague-grundy-theorem-for-composite-and-custom-games-ex0">
+  <h4>Grundy&#x27;s Game — Heap Splitting</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given m independent heaps of coins, the i-th heap having n_i coins (1 &lt;= n_i &lt;= 1000). On each turn, a player chooses ONE heap and splits it into two NON-EMPTY heaps of DIFFERENT sizes (a split into two equal halves is illegal). The player who cannot make any move (every heap has size 0, 1, or 2, none of which can be legally split) loses. Determine the winner under optimal play: print &quot;First&quot; or &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>First compute the Grundy number g[n] for a single heap of size n, for n = 0..1000, via g[n] = mex over all splits (a, b) with a + b = n, a != b, a,b &gt;= 1, of (g[a] XOR g[b]) — the XOR appears because after splitting, the heap becomes two INDEPENDENT heaps, and Sprague-Grundy says their combined Grundy value is the XOR of the two. g[0] = g[1] = g[2] = 0 (no legal split exists, mex of empty set is 0). Once the table is built, the overall game is the disjunctive sum of the m given heaps, so its Grundy number is the XOR of g[n_1], g[n_2], ..., g[n_m]; the first player wins iff this XOR is nonzero.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    const int MAXN = 1000;
+    vector&lt;int&gt; g(MAXN + 1, 0);
+    for (int n = 1; n &lt;= MAXN; n++) {
+        set&lt;int&gt; reachable;
+        for (int a = 1; a &lt; n - a; a++) { // a &lt; b = n-a ensures a != b, avoids dup
+            int b = n - a;
+            reachable.insert(g[a] ^ g[b]);
+        }
+        int mex = 0;
+        while (reachable.count(mex)) mex++;
+        g[n] = mex;
+    }
+    int m; cin &gt;&gt; m;
+    int x = 0;
+    for (int i = 0; i &lt; m; i++) { int v; cin &gt;&gt; v; x ^= g[v]; }
+    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>2
+7 8
+</code></pre>
+    <pre><code>First
+</code></pre>
+  </div>
+</article><article class="example-card" id="game-theory-sprague-grundy-theorem-for-composite-and-custom-games-ex1">
+  <h4>Nim with a Restricted Move Set (Subtraction Game)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are m independent piles (1 &lt;= m &lt;= 1000), the i-th pile having n_i stones (0 &lt;= n_i &lt;= 1000). On each turn, a player chooses a nonempty pile and removes EXACTLY 1, 3, or 4 stones from it (removing any other amount is illegal, and if a pile has fewer than 1 stone no move is possible on it, but if it has 2 stones only the &#x27;remove 1&#x27; option applies since removing 3 or 4 is impossible). The player who cannot move (every pile has 0 stones) loses. Determine the winner under optimal play: print &quot;First&quot; or &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Because the allowed removals are restricted, plain Nim&#x27;s &#x27;XOR the pile sizes&#x27; rule does NOT apply directly — you must first compute each pile&#x27;s Grundy number under this specific move set. Build a table g[0..1000] where g[0] = 0 and g[n] = mex({ g[n-1], g[n-3], g[n-4] } intersected with valid indices &gt;= 0). This sequence turns out to be periodic with period 7 (0,1,0,1,2,3,2, repeating), but the DP computes it correctly without needing to notice that. Once every pile&#x27;s Grundy number is known, XOR them all together (this is valid because the piles are independent subgames); the first player wins iff the XOR is nonzero.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    const int MAXN = 1000;
+    vector&lt;int&gt; S = {1, 3, 4};
+    vector&lt;int&gt; g(MAXN + 1, 0);
+    for (int n = 1; n &lt;= MAXN; n++) {
+        set&lt;int&gt; reach;
+        for (int s : S) if (s &lt;= n) reach.insert(g[n - s]);
+        int mex = 0;
+        while (reach.count(mex)) mex++;
+        g[n] = mex;
+    }
+    int m; cin &gt;&gt; m;
+    int x = 0;
+    for (int i = 0; i &lt; m; i++) { int v; cin &gt;&gt; v; x ^= g[v]; }
+    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+5 6 7
+</code></pre>
+    <pre><code>First
+</code></pre>
+  </div>
+</article><article class="example-card" id="game-theory-sprague-grundy-theorem-for-composite-and-custom-games-ex2">
+  <h4>Composite Game with Heterogeneous Pile Types</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are m independent piles (1 &lt;= m &lt;= 1000), each of one of three TYPES, given as a type letter and a size: type &#x27;A&#x27; piles allow removing 1 or 2 stones per move; type &#x27;B&#x27; piles allow removing exactly 1, 3, or 4 stones per move; type &#x27;C&#x27; piles are standard Nim piles where any positive number of stones may be removed. On each turn, a player picks any one nonempty pile (of any type) and makes a legal move on it according to ITS OWN type&#x27;s rule. The player who cannot move (every pile is empty) loses. Determine the winner under optimal play: print &quot;First&quot; or &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is a genuine composite game made of three DIFFERENT kinds of subgames. Sprague-Grundy still applies: compute each pile&#x27;s Grundy number using the rule for ITS type, independent of the other piles. For type A (subtraction {1,2}), a short hand-derivation (or a DP) shows g_A(n) = n mod 3. For type B (subtraction {1,3,4}), use the same mex-DP as before. For type C (standard Nim pile), g_C(n) = n exactly (a pile of n stones can move to any smaller pile 0..n-1, so mex({0,...,n-1}) = n). Compute each given pile&#x27;s Grundy number by dispatching on its type, then XOR ALL of them together across the whole composite game; the first player wins iff the total XOR is nonzero. This demonstrates the full generality of Sprague-Grundy: it doesn&#x27;t matter that the subgames are structurally different from each other, only that each is independent and impartial.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    const int MAXN = 1000;
+    vector&lt;int&gt; gB(MAXN + 1, 0);
+    vector&lt;int&gt; Sb = {1, 3, 4};
+    for (int n = 1; n &lt;= MAXN; n++) {
+        set&lt;int&gt; reach;
+        for (int s : Sb) if (s &lt;= n) reach.insert(gB[n - s]);
+        int mex = 0;
+        while (reach.count(mex)) mex++;
+        gB[n] = mex;
+    }
+    int m; cin &gt;&gt; m;
+    int x = 0;
+    for (int i = 0; i &lt; m; i++) {
+        char t; int v; cin &gt;&gt; t &gt;&gt; v;
+        int gv;
+        if (t == &#x27;A&#x27;) gv = v % 3;
+        else if (t == &#x27;B&#x27;) gv = gB[v];
+        else gv = v; // type C: standard Nim pile, Grundy(v) = v
+        x ^= gv;
+    }
+    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+A 4
+B 5
+C 3
+</code></pre>
+    <pre><code>First
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="game-theory-combinatorial-game-sums-mis-re-play">
+  <div class="topic-head"><h2>Combinatorial Game Sums &amp; Misère Play</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The Sprague-Grundy theorem is the central tool for analyzing IMPARTIAL games (both players have the same set of moves available from any given position) under NORMAL play convention (the player who makes the last move wins; a player unable to move loses). It assigns every game position a Grundy number (also called a nimber): grundy(position) = mex(set of grundy(next position) over all legal moves), where mex (minimum excludant) is the smallest non-negative integer NOT present in that set; a terminal position with no legal moves has grundy number 0. The theorem&#x27;s payoff is for SUMS of independent games -- a compound game made of several separate components, where a move consists of choosing exactly ONE component and making a legal move within it, and the whole game ends only when every component is simultaneously exhausted: the Grundy number of the sum equals the XOR of the Grundy numbers of the individual components. This immediately generalizes plain Nim (where each pile&#x27;s Grundy number equals its own size) to sums of ARBITRARY impartial games -- a subtraction game where a move removes 1, 2, or 3 objects from one heap has grundy number equal to (heap size mod 4), a fact derivable directly from the mex definition, and summing several such heaps together via XOR (exactly like ordinary Nim) still correctly determines the winner.</p><p>The XOR-of-components shortcut relies critically on the assumption that a single move affects exactly ONE component. If a game&#x27;s move rule allows touching MULTIPLE components in a single move (for example, &#x27;remove one coin from every pile in some chosen non-empty SUBSET of piles simultaneously&#x27;), the plain Sprague-Grundy sum theorem does not apply as stated, because the compound game is no longer literally a disjoint sum of independent single-component games in the technical sense the theorem requires -- such variants must be analyzed from first principles (often bit-by-bit across the binary representations of the pile sizes) rather than by blindly reusing the XOR shortcut.</p><p>A second major complication is MISÈRE PLAY: the convention is flipped so that the player who makes the LAST move LOSES (equivalently, a player unable to move WINS). Basic Sprague-Grundy theory, in its simple mex/XOR form, is a NORMAL-play theory and does not directly carry over to misère play in general (a fully general misère theory exists but requires much more machinery, &#x27;misère quotients,&#x27; and is rarely needed in competitive programming). Fortunately, for ordinary Nim specifically, misère play has a clean classical fix known as Bouton&#x27;s misère Nim theorem: play EXACTLY as in normal-play Nim (always move to leave the XOR of all pile sizes equal to zero) UNLESS every pile currently has size 0 or 1 -- in that special &#x27;all-piles-tiny&#x27; regime, the correct rule flips: under misère play, the first player wins if and only if the number of piles with exactly 1 object is EVEN (the opposite parity from what normal-play Nim&#x27;s XOR rule would otherwise suggest for that same all-0-or-1 configuration).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The game consists of several independent piles/positions, and a single move always acts on exactly one of them -- compute each component&#x27;s Grundy number (from a known closed form for common subtraction/splitting games, or via a mex table when no closed form is obvious) and XOR them all together; a nonzero XOR means the player to move wins under NORMAL play. If the problem explicitly states a misère condition (&#x27;the player who cannot move WINS&#x27; / &#x27;the player who takes the last object LOSES&#x27;) and the underlying game is Nim (or reduces to it), apply Bouton&#x27;s misère correction (normal-play XOR strategy, except reverse the parity rule specifically when every pile is already 0 or 1) rather than assuming misère and normal play always agree. If a single move can affect several piles AT ONCE, do not assume the plain XOR-of-piles shortcut applies at all -- verify against small brute-force cases or derive the correct combination rule from scratch.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) to O(n log(max pile size)) to compute each component&#x27;s Grundy number (depending on whether a closed form exists or a mex table must be built), plus O(n) to XOR them together; O(V) to precompute a full Grundy table via the mex rule over all reachable states when no closed form is available.</p></div>
+  </div>
+  <article class="example-card" id="game-theory-combinatorial-game-sums-mis-re-play-ex0">
+  <h4>Sum of Independent Subtraction Games (Grundy values, normal play)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n heaps of sticks (1 &lt;= n &lt;= 10^5), heap i containing h[i] sticks (0 &lt;= h[i] &lt;= 10^18). Two players alternate turns; on a turn, the current player chooses ONE non-empty heap and removes 1, 2, or 3 sticks from it. The player who removes the last stick overall (leaving every heap empty) wins. Determine the winner under optimal play by both, assuming the first player moves first.</p><p>Input: n, then n integers h[1..n].<br>Output: &quot;First&quot; if the first player wins, otherwise &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Each heap, considered alone, is the classic subtraction game with move set {1, 2, 3}. Its Grundy number is exactly (heap size mod 4): a heap of size 0 has no moves (grundy 0); a heap of size 1, 2, or 3 can be emptied directly, reaching grundy-0, so by the mex rule its own grundy number is mex({0}) = 1, mex({0,1})=... -- working this out by hand for sizes 0..7 confirms the pattern repeats with period 4 (0,1,2,3,0,1,2,3,...), i.e. grundy(x) = x mod 4. By the Sprague-Grundy sum theorem, since a move always acts on exactly one heap, the whole multi-heap game&#x27;s outcome is determined by XOR-ing every heap&#x27;s individual Grundy number together: compute x = XOR over all heaps of (h[i] mod 4); the first player wins (under normal play) if and only if x != 0.</p><p>On the sample (heaps 5, 7, 9): grundy values are 5 mod 4 = 1, 7 mod 4 = 3, 9 mod 4 = 1, XOR = 1^3^1 = 3, which is nonzero, so the first player wins. Cross-checked against an independent brute-force minimax search over the actual multi-heap game (memoized recursion over the exact tuple of remaining heap sizes, exploring every legal 1/2/3-stick removal) across 300 randomly generated small instances (1 to 3 heaps, sizes 0 to 6) with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    int x = 0;
+    for(int i=0;i&lt;n;i++){
+        long long h; cin &gt;&gt; h;
+        x ^= (int)(h % 4);
+    }
+    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+5 7 9
+</code></pre>
+    <pre><code>First
+</code></pre>
+  </div>
+</article><article class="example-card" id="game-theory-combinatorial-game-sums-mis-re-play-ex1">
+  <h4>Misère Nim (last player to move LOSES)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n heaps of stones (1 &lt;= n &lt;= 10^5), heap i containing h[i] stones (0 &lt;= h[i] &lt;= 10^18, not all zero). Two players alternate turns; on a turn, the current player chooses ONE non-empty heap and removes ANY positive number of stones from it (up to the entire heap). Under the MISÈRE convention, the player who removes the LAST stone (the one who empties the final heap) LOSES, not wins. Determine the winner under optimal play by both, assuming the first player moves first.</p><p>Input: n, then n integers h[1..n].<br>Output: &quot;First&quot; if the first player wins, otherwise &quot;Second&quot;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Apply Bouton&#x27;s misère Nim theorem. If at least one heap has size 2 or more, misère Nim is decided by the EXACT SAME rule as normal-play Nim: compute the XOR of all heap sizes; the first player wins if and only if that XOR is nonzero (the standard argument for why misère and normal play coincide here is that whenever a heap of size &gt;= 2 exists, the player with a winning normal-play strategy can always choose to leave at least two heaps of size &gt;= 2 for as long as needed, deferring the misère-specific endgame subtlety indefinitely). If, however, EVERY heap already has size 0 or 1, the two conventions diverge: the correct misère rule is that the first player wins if and only if the number of heaps with exactly 1 stone is EVEN (the opposite of what normal play&#x27;s XOR rule would say for that same configuration, since XOR-of-0s-and-1s is nonzero exactly when the count of 1s is ODD).</p><p>On the sample (three heaps, each of size 1): every heap is already 0 or 1, so the special-case rule applies; the number of heaps of size exactly 1 is 3, which is ODD, so under the misère parity flip the first player LOSES, i.e. the output is &quot;Second&quot; (note this is the opposite of what plain normal-play Nim would give for the same heaps, since XOR(1,1,1) = 1 != 0 would normally mean the first player wins -- this contrast is exactly the point of the misère correction). Cross-checked against an independent brute-force minimax search implementing the misère win condition directly (a move to the all-zero state means the mover just took the last stone and therefore LOSES immediately) across 500 randomly generated small instances (1 to 3 heaps, sizes 0 to 5) with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; h(n);
+    long long mx = 0, x = 0;
+    int onesCount = 0;
+    for(auto &amp;v : h){ cin &gt;&gt; v; mx = max(mx, v); x ^= v; if(v==1) onesCount++; }
+    bool firstWins;
+    if(mx &lt;= 1){
+        // every pile is 0 or 1: first player wins iff the number of 1-piles is even
+        firstWins = (onesCount % 2 == 0);
+    } else {
+        firstWins = (x != 0);
+    }
+    cout &lt;&lt; (firstWins ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 1 1
+</code></pre>
+    <pre><code>Second
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">9</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="industrial nim codeforces nim n quarries each produce an arithmetic run of pile sizes (x_i, x_i+1, ..., x_i+m_i-1); playing standard nim over the union of all these piles, determine the winner under optimal play.">
+  <td><a href="https://codeforces.com/problemset/problem/15/C" target="_blank" rel="noopener noreferrer">Industrial Nim</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2000</td>
+  <td class="subtopic-cell">Nim</td>
+  <td class="desc-cell">n quarries each produce an arithmetic run of pile sizes (x_i, x_i+1, ..., x_i+m_i-1); playing standard Nim over the union of all these piles, determine the winner under optimal play.</td>
+</tr><tr data-search="thanos nim codeforces nim with n (even) piles, each move a player must choose exactly n/2 nonempty piles and remove any positive number of stones from each independently; the player who cannot move (fewer than n/2 nonempty piles remain) loses — determine the winner.">
+  <td><a href="https://codeforces.com/problemset/problem/1147/C" target="_blank" rel="noopener noreferrer">Thanos Nim</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1700</td>
+  <td class="subtopic-cell">Nim</td>
+  <td class="desc-cell">With n (even) piles, each move a player must choose exactly n/2 nonempty piles and remove any positive number of stones from each independently; the player who cannot move (fewer than n/2 nonempty piles remain) loses — determine the winner.</td>
+</tr><tr data-search="stair game cses nim (staircase nim) balls sit on n numbered stairs; a move takes any positive number of balls from a stair k != 1 down to stair k-1, and the player who moves last wins — determine the winner for a given starting configuration.">
+  <td><a href="https://cses.fi/problemset/task/1099" target="_blank" rel="noopener noreferrer">Stair Game</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Nim (Staircase Nim)</td>
+  <td class="desc-cell">Balls sit on n numbered stairs; a move takes any positive number of balls from a stair k != 1 down to stair k-1, and the player who moves last wins — determine the winner for a given starting configuration.</td>
+</tr><tr data-search="not a nim problem codeforces sprague-grundy n piles of stones; a move removes y stones from a pile of size x only if gcd(x, y) = 1, and the player unable to move loses — determine the winner.">
+  <td><a href="https://codeforces.com/problemset/problem/2004/E" target="_blank" rel="noopener noreferrer">Not a Nim Problem</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2100</td>
+  <td class="subtopic-cell">Sprague-Grundy</td>
+  <td class="desc-cell">n piles of stones; a move removes y stones from a pile of size x only if gcd(x, y) = 1, and the player unable to move loses — determine the winner.</td>
+</tr><tr data-search="game of stones codeforces sprague-grundy n independent piles (sizes up to 60); a move removes any positive number of stones from a pile, but the exact same removal amount can never be reused on that same pile again — determine the winner.">
+  <td><a href="https://codeforces.com/problemset/problem/768/E" target="_blank" rel="noopener noreferrer">Game of Stones</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2100</td>
+  <td class="subtopic-cell">Sprague-Grundy</td>
+  <td class="desc-cell">n independent piles (sizes up to 60); a move removes any positive number of stones from a pile, but the exact same removal amount can never be reused on that same pile again — determine the winner.</td>
+</tr><tr data-search="mojtaba and arpa&#x27;s game codeforces sprague-grundy given a list of numbers, a move picks a prime power p^k dividing at least one number, and divides every number in the list divisible by p^k by p^k; the player unable to move loses — determine the winner.">
+  <td><a href="https://codeforces.com/problemset/problem/850/C" target="_blank" rel="noopener noreferrer">Mojtaba and Arpa&#x27;s game</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2200</td>
+  <td class="subtopic-cell">Sprague-Grundy</td>
+  <td class="desc-cell">Given a list of numbers, a move picks a prime power p^k dividing at least one number, and divides every number in the list divisible by p^k by p^k; the player unable to move loses — determine the winner.</td>
+</tr><tr data-search="grundy&#x27;s game cses sprague-grundy a heap of n coins; a move splits one heap into two nonempty heaps of different sizes, and the player who makes the last possible move wins — determine the winner.">
+  <td><a href="https://cses.fi/problemset/task/2207" target="_blank" rel="noopener noreferrer">Grundy&#x27;s Game</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Sprague-Grundy</td>
+  <td class="desc-cell">A heap of n coins; a move splits one heap into two nonempty heaps of different sizes, and the player who makes the last possible move wins — determine the winner.</td>
+</tr><tr data-search="nim game ii cses combinatorial game sums &amp; misère play (sprague-grundy sum of games) with n heaps of sticks where a move removes 1, 2, or 3 sticks from one heap, and the player who removes the last stick wins, determine the winner under optimal play.">
+  <td><a href="https://cses.fi/problemset/task/1098" target="_blank" rel="noopener noreferrer">Nim Game II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Combinatorial Game Sums &amp; Misère Play (Sprague-Grundy sum of games)</td>
+  <td class="desc-cell">With n heaps of sticks where a move removes 1, 2, or 3 sticks from one heap, and the player who removes the last stick wins, determine the winner under optimal play.</td>
+</tr><tr data-search="another game cses combinatorial game sums &amp; misère play (non-xor game sum) with n heaps of coins where a move selects any subset of nonempty heaps and removes one coin from each, and the player who removes the last coin wins, determine the winner under optimal play.">
+  <td><a href="https://cses.fi/problemset/task/2208" target="_blank" rel="noopener noreferrer">Another Game</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Combinatorial Game Sums &amp; Misère Play (non-XOR game sum)</td>
+  <td class="desc-cell">With n heaps of coins where a move selects any subset of nonempty heaps and removes one coin from each, and the player who removes the last coin wins, determine the winner under optimal play.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

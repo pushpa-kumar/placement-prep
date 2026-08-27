@@ -1,0 +1,457 @@
+<title>Modern C++ (17/20) &amp; STL Utilities — C++ Concepts</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">C++ Concepts Reference</p>
+    <h1>Modern C++ (17/20) &amp; STL Utilities</h1>
+    <p class="tagline"><p>A grab-bag of features that all share one theme: they let you express something that used to require a workaround (a sentinel value, a raw tagged union, an owning-string parameter, a <code>.first</code>/<code>.second</code> pair) with a purpose-built, safer, often zero-overhead standard tool instead.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">7</div><div class="l">Concepts</div></div>
+      <div class="stat-tile"><div class="n">14</div><div class="l">Worked Examples</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#lambda-captures"><span>Lambda captures</span></a></li><li><a href="#iterator-invalidation"><span>Iterator invalidation</span></a></li><li><a href="#small-string-optimization-sso"><span>Small String Optimization (SSO)</span></a></li><li><a href="#std-string-view-c-17"><span>std::string_view (C++17)</span></a></li><li><a href="#structured-bindings-c-17"><span>Structured bindings (C++17)</span></a></li><li><a href="#std-optional-std-variant-std-any-c-17"><span>std::optional, std::variant, std::any (C++17)</span></a></li><li><a href="#noexcept-specifier"><span>noexcept specifier</span></a></li></ul>
+      <h2>Other concept groups</h2>
+      <ul class="nav-list"><li><a href="concepts-value-categories.html">Value Categories &amp; Move Semantics</a></li><li><a href="concepts-oop-mechanics.html">Object-Oriented Mechanics &amp; Polymorphism</a></li><li><a href="concepts-raii-resources.html">RAII &amp; Resource Management</a></li><li><a href="concepts-templates.html">Templates &amp; Generic Programming</a></li><li><a href="concepts-compile-time.html">Compile-Time Constructs &amp; Program Structure</a></li><li><a href="concepts-concurrency-memory.html">Concurrency, Memory Model &amp; Low-Level Layout</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="concepts.html">All C++ Concepts</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+      </ul>
+    </aside>
+    <main><article class="concept-card" id="lambda-captures">
+  <h3>Lambda captures</h3>
+  <div class="intro"><p>A lambda&#x27;s capture clause controls exactly how it accesses variables from its enclosing scope. <code>[x]</code> captures <code>x</code> BY VALUE — a copy taken at the moment the lambda is created, independent of <code>x</code>&#x27;s later lifetime. <code>[&amp;x]</code> captures <code>x</code> BY REFERENCE — no copy, but <code>x</code> must genuinely outlive every use of the lambda, or you have a dangling reference. <code>[=]</code> and <code>[&amp;]</code> capture everything the lambda body actually uses, by value or reference respectively (implicit, less explicit about intent). Since C++14, generalized (&quot;init&quot;) captures like <code>[y = std::move(someValue)]</code> let you capture a MOVED or freshly-COMPUTED value under a new name, rather than being limited to copying/referencing an existing variable verbatim.</p></div>
+  <div class="example-box">
+  <div class="ex-title">By-value capture making a returned lambda safe</div>
+  <pre><code>auto makeAdder(int base) {
+    return [base](int x) { return base + x; };  // base copied INTO the lambda at creation
+}
+
+auto add5 = makeAdder(5);
+add5(10); // 15 -- base&#x27;s copy inside the lambda is completely independent of the
+          // original parameter `base`, which no longer exists once makeAdder returns</code></pre>
+  <div class="ex-explain"><p>If this had captured <code>[&amp;base]</code> instead, the returned lambda would hold a reference to a parameter that ceases to exist the instant makeAdder returns — calling add5 later would read a dangling reference, undefined behavior.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Generalized capture: moving an expensive resource into a lambda</div>
+  <pre><code>std::vector&lt;int&gt; bigData = loadHugeDataset();
+
+auto processor = [data = std::move(bigData)]() {
+    // `data` here is a NEW lambda-member variable, initialized by moving bigData&#x27;s
+    // contents in at lambda-creation time -- no copy of the (potentially huge) vector
+    return std::accumulate(data.begin(), data.end(), 0);
+};
+// bigData is now valid-but-unspecified (moved-from) -- ownership genuinely transferred
+// into the lambda, not merely referenced or copied</code></pre>
+  <div class="ex-explain"><p>Without generalized captures, you&#x27;d either have to copy <code>bigData</code> into the lambda (expensive) or capture it by reference (dangerous if the lambda outlives bigData) — moving it in via <code>[data = std::move(bigData)]</code> gets you a cheap, safe, fully-owned copy inside the lambda&#x27;s own closure.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Capturing <code>[&amp;]</code> (implicit by-reference) in a lambda that OUTLIVES its creating scope (stored, returned, or scheduled to run asynchronously later) — this is one of the most common sources of dangling-reference bugs in modern C++; if the lambda&#x27;s lifetime isn&#x27;t strictly nested inside the captured variables&#x27; lifetimes, prefer explicit by-value or generalized-move captures.</p></li><li><p>Assuming <code>[=]</code> is always &quot;safe&quot; because it copies — it copies whatever is captured, but <code>this</code> is captured as a raw pointer even under <code>[=]</code> (pre-C++20; C++20 deprecated implicit <code>this</code> capture via <code>[=]</code> for exactly this reason), so member-variable access inside a <code>[=]</code>-capturing lambda can still dangle if the object itself is destroyed.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a><a class="related-tag" href="concepts-value-categories.html#move-semantics" data-related-href="concepts-value-categories.html#move-semantics">Move semantics</a></div>
+</article><article class="concept-card" id="iterator-invalidation">
+  <h3>Iterator invalidation</h3>
+  <div class="intro"><p>Modifying a container can invalidate existing iterators, references, and pointers into it — and the exact rule is DIFFERENT per container, which is exactly why this shows up so often as a debugging/gotcha question. <code>std::vector</code> invalidates ALL iterators on any reallocation (and invalidates <code>end()</code> on essentially any insert/erase, even without reallocation). <code>std::deque</code> invalidates iterators on insert/erase almost everywhere except sometimes at the very ends. Node-based containers — <code>std::list</code>, <code>std::map</code>, <code>std::set</code>, <code>std::unordered_map</code> — only invalidate iterators/references to the SPECIFIC element that was erased; everything else remains valid (unordered_map additionally invalidates ALL iterators, but not references/pointers, on a rehash). Using an invalidated iterator is undefined behavior.</p></div>
+  <div class="example-box">
+  <div class="ex-title">The classic erase-while-iterating bug on a vector</div>
+  <pre><code>std::vector&lt;int&gt; v = {1, 2, 3, 4, 5};
+for (auto it = v.begin(); it != v.end(); ++it) {
+    if (*it == 3) {
+        v.erase(it);   // erase() invalidates `it` (and everything after it)
+    }
+}   // the loop&#x27;s `++it` on the NEXT iteration uses the now-invalidated `it` --
+    // undefined behavior, even though this often &quot;appears to work&quot; in practice</code></pre>
+  <div class="ex-explain"><p><code>v.erase(it)</code> returns a new, valid iterator to what&#x27;s now at that position, but the loop&#x27;s own <code>++it</code> runs on the OLD, invalidated iterator instead of that returned value — the bug is subtle exactly because it frequently doesn&#x27;t crash, it just silently skips elements or reads garbage.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The correct pattern</div>
+  <pre><code>for (auto it = v.begin(); it != v.end(); ) {
+    if (*it == 3) {
+        it = v.erase(it);   // reassign `it` to erase()&#x27;s return value -- guaranteed valid
+    } else {
+        ++it;                // only advance manually when we DIDN&#x27;T just erase
+    }
+}</code></pre>
+  <div class="ex-explain"><p>erase() itself returns an iterator to the element that now occupies the erased position (or end() if the last element was erased), which is exactly the iterator you should continue the loop with — this pattern correctly avoids ever touching an invalidated iterator.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming ALL containers behave like std::vector regarding invalidation — a perfectly safe erase-while-iterating pattern for std::list (which only invalidates the specific erased element&#x27;s iterator) becomes a real bug if the container is later changed to std::vector.</p></li><li><p>Holding onto a reference/pointer into a std::vector across a push_back/insert call and assuming it&#x27;s still valid — even if the SPECIFIC iterator you&#x27;re tracking wasn&#x27;t the one erased, a vector&#x27;s own growth (reallocation) can invalidate every reference into it, not just ones near the modification point.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-raii-resources.html#smart-pointer-ownership-models" data-related-href="concepts-raii-resources.html#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
+</article><article class="concept-card" id="small-string-optimization-sso">
+  <h3>Small String Optimization (SSO)</h3>
+  <div class="intro"><p>Most <code>std::string</code> implementations avoid a heap allocation entirely for SHORT strings — typically up to somewhere around 15-22 bytes, depending on the standard library implementation — by storing the character data directly INLINE inside the string object&#x27;s own storage (using space that would otherwise hold a pointer/capacity/size for the heap-allocated case). Only strings longer than that threshold actually allocate a separate heap buffer.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Short strings never touch the heap</div>
+  <pre><code>std::string s = &quot;hello&quot;;       // 5 chars -- comfortably within SSO&#x27;s inline buffer on
+                                // essentially every major standard library implementation;
+                                // NO heap allocation happens for this at all
+
+std::string big(100, &#x27;x&#x27;);     // 100 chars -- exceeds SSO&#x27;s inline capacity;
+                                // this DOES heap-allocate a buffer to hold the data</code></pre>
+  <div class="ex-explain"><p>You can observe this indirectly: constructing, copying, and destroying many short strings in a tight loop is dramatically cheaper than the same operations on strings just past the SSO threshold, precisely because the short case involves no allocator calls at all.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why this changes a common intuition about hot-path string use</div>
+  <pre><code>// The old C++03-era instinct: &quot;never use std::string on a hot path, it always heap-allocates&quot;
+// is now only PARTIALLY true. For short, fixed-size identifiers (e.g. a 6-character ticker
+// symbol), std::string operations frequently incur NO allocation at all thanks to SSO.
+// It&#x27;s still generally true that the hottest, most latency-sensitive paths in HFT code
+// prefer fixed-size char buffers or std::string_view over std::string regardless --
+// SSO reduces, but doesn&#x27;t eliminate, the argument against std::string in the hottest loops
+// (copying a short string is still a real memcpy of its inline bytes, and comparisons/hashing
+// still cost something, even with zero heap traffic).</code></pre>
+  <div class="ex-explain"><p>This is a good example of an interview answer that shows nuance: SSO is a real, important optimization to know about, but knowing its LIMITS (still not literally free, still generally avoided in the absolute hottest paths) is what separates a surface-level answer from a deeper one.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming SSO means std::string is always as cheap as a fixed-size buffer — even an SSO&#x27;d string still involves a memcpy of its bytes on copy and real comparison/hashing cost; it&#x27;s &quot;no heap allocation,&quot; not &quot;free.&quot;</p></li><li><p>Assuming the SSO threshold is standardized — it is an IMPLEMENTATION detail; different standard libraries (libstdc++, libc++, MSVC&#x27;s STL) use different inline-buffer sizes, so code should never depend on the exact cutoff.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-raii-resources.html#allocators-custom-allocation" data-related-href="concepts-raii-resources.html#allocators-custom-allocation">Allocators &amp; custom allocation</a><a class="related-tag" href="#std-string-view-c-17" data-related-href="#std-string-view-c-17">std::string_view (C++17)</a></div>
+</article><article class="concept-card" id="std-string-view-c-17">
+  <h3>std::string_view (C++17)</h3>
+  <div class="intro"><p>A <code>std::string_view</code> is a lightweight, NON-OWNING view over a contiguous sequence of characters — just a pointer and a length, no allocation, no copy, no ownership. It&#x27;s ideal for read-only string parameters that don&#x27;t need to outlive the call (avoiding a copy of the caller&#x27;s data), but that convenience comes with a real lifetime obligation: the underlying character data must outlive the string_view, and a string_view is NOT guaranteed to be null-terminated (unlike a <code>const char*</code> or <code>std::string::c_str()</code>).</p></div>
+  <div class="example-box">
+  <div class="ex-title">Avoiding copies on a read-only parameter</div>
+  <pre><code>void log(std::string_view msg) {   // no copy of the caller&#x27;s string, whatever form it&#x27;s in
+    std::cout &lt;&lt; msg;
+}
+
+log(&quot;a string literal&quot;);            // no allocation
+log(someExistingStdString);          // no copy of someExistingStdString&#x27;s buffer either
+log(someExistingStdString.substr(0, 5)); // careful: substr() itself still allocates a
+                                          // temporary std::string here, which is then
+                                          // viewed -- string_view didn&#x27;t avoid THAT copy</code></pre>
+  <div class="ex-explain"><p>string_view eliminates the copy that would otherwise happen converting between string-like types at a function boundary — but it can&#x27;t retroactively make an already-copying operation (like substr on a std::string) free.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The classic dangling string_view bug</div>
+  <pre><code>std::string_view getGreeting() {
+    std::string temp = &quot;hello, &quot; + std::string(&quot;world&quot;);  // a temporary std::string
+    return temp;   // returns a string_view into `temp`&#x27;s buffer...
+}                   // ...but `temp` is destroyed HERE, at the end of the function --
+                    // the returned string_view is immediately dangling
+
+std::string_view bad = getGreeting();
+std::cout &lt;&lt; bad;   // undefined behavior: reading through a dangling string_view</code></pre>
+  <div class="ex-explain"><p>This is the single most important thing to internalize about string_view: it never extends anyone&#x27;s lifetime, and the compiler will not warn you when you view something whose lifetime is about to end — the analogous mistake with a std::string return value would be perfectly safe (the string itself is returned, not just a view into one).</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming a string_view is null-terminated — passing <code>.data()</code> from a string_view to a C API expecting a null-terminated <code>const char*</code> is a real, silent bug unless you specifically know the underlying data happens to be null-terminated (e.g., it came from a std::string via <code>.c_str()</code>-compatible construction).</p></li><li><p>Returning or storing a string_view that views a temporary (as shown above) — this is by far the most common real-world string_view bug, and the compiler generally does not catch it.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#small-string-optimization-sso" data-related-href="#small-string-optimization-sso">Small String Optimization (SSO)</a><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
+</article><article class="concept-card" id="structured-bindings-c-17">
+  <h3>Structured bindings (C++17)</h3>
+  <div class="intro"><p>Structured bindings let you unpack a tuple, pair, array, or any struct with all-public members into individually-named variables in a single declaration — <code>auto [a, b] = someExpr;</code> — which is a substantial readability improvement over repeatedly writing <code>.first</code>/<code>.second</code> or <code>std::get&lt;N&gt;(...)</code>.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Unpacking a map&#x27;s key/value pairs in a range-based for loop</div>
+  <pre><code>std::map&lt;std::string, int&gt; scores = {{&quot;alice&quot;, 90}, {&quot;bob&quot;, 85}};
+for (const auto&amp; [name, score] : scores) {
+    std::cout &lt;&lt; name &lt;&lt; &quot; = &quot; &lt;&lt; score &lt;&lt; &quot;\n&quot;;
+}
+// compare to the pre-C++17 idiom:
+// for (const auto&amp; pair : scores) { std::cout &lt;&lt; pair.first &lt;&lt; &quot; = &quot; &lt;&lt; pair.second; }</code></pre>
+  <div class="ex-explain"><p><code>name</code> and <code>score</code> are genuinely meaningful names bound directly to the pair&#x27;s <code>.first</code>/<code>.second</code>, rather than forcing every reader to remember which of <code>.first</code>/<code>.second</code> corresponds to the key vs. the value.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Structured bindings also work on your own structs</div>
+  <pre><code>struct Point { double x, y; };
+Point p{3.0, 4.0};
+auto [x, y] = p;               // x=3.0, y=4.0, bound by DECLARATION ORDER of the members
+double dist = std::sqrt(x*x + y*y);</code></pre>
+  <div class="ex-explain"><p>This works on any struct whose members are all public and non-static, binding names to members strictly in the order they&#x27;re declared in the struct — no special support needs to be written into Point itself.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming <code>auto [a, b] = pair</code> always makes independent copies — whether <code>a</code>/<code>b</code> are copies, references, or const references depends on whether you wrote <code>auto</code>, <code>auto&amp;</code>, or <code>const auto&amp;</code> before the brackets, exactly analogous to ordinary auto-deduction rules.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
+</article><article class="concept-card" id="std-optional-std-variant-std-any-c-17">
+  <h3>std::optional, std::variant, std::any (C++17)</h3>
+  <div class="intro"><p>Three tools for expressing &quot;this value might not be a simple, always-present T,&quot; each solving a different flavor of that problem. <code>std::optional&lt;T&gt;</code> represents a value that may or may not be present — a much safer, more expressive alternative to a sentinel value (like returning -1 for &quot;not found&quot;) or an owning pointer used purely to signal absence. <code>std::variant&lt;A, B, ...&gt;</code> is a TYPE-SAFE tagged union: it holds exactly one value from a fixed, closed set of alternative types, and the compiler (via <code>std::visit</code> or <code>std::get</code>) enforces that you handle it correctly — no risk of reading the wrong union member. <code>std::any</code> holds a value of essentially ANY copyable type, fully type-erased, retrieved only via a checked <code>any_cast</code> — the most flexible of the three, but also the least type-safe and generally the least performant (it commonly involves a heap allocation and always involves a runtime type check on extraction).</p></div>
+  <div class="example-box">
+  <div class="ex-title">std::optional replacing a sentinel-value anti-pattern</div>
+  <pre><code>std::optional&lt;int&gt; findFirst(const std::vector&lt;int&gt;&amp; v, int target) {
+    for (int x : v) if (x == target) return x;
+    return std::nullopt;    // explicit, type-safe &quot;not found&quot; -- no magic sentinel needed
+}
+
+if (auto result = findFirst(data, 42)) {
+    use(*result);            // safely dereference -- we know it&#x27;s present here
+} else {
+    handleNotFound();
+}</code></pre>
+  <div class="ex-explain"><p>Compare this to the old idiom of returning -1 (or some other magic value) to mean &quot;not found&quot; — that approach silently breaks if -1 is ever a legitimate value in your actual data; optional makes &quot;absent&quot; a distinct, impossible-to-confuse-with-a-real-value state.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">std::variant enforcing exhaustive, type-safe handling</div>
+  <pre><code>std::variant&lt;int, std::string, double&gt; value = 42;
+
+std::visit([](auto&amp;&amp; v) {
+    std::cout &lt;&lt; v;   // the compiler generates the correct call for whichever
+}, value);            // alternative is ACTUALLY active -- no manual tag-checking,
+                      // no risk of reading the union as the wrong type</code></pre>
+  <div class="ex-explain"><p>Compare this to a raw C-style union with a manually-maintained &quot;which member is active&quot; tag — variant makes the tag-tracking and dispatch part of the type system itself, eliminating an entire class of &quot;read the wrong union member&quot; bugs.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Reaching for std::any when std::variant would work — if the SET of possible types is known and fixed, variant gives you compile-time exhaustiveness checking (via std::visit) that any&#x27;s fully-erased, runtime-checked nature cannot; any should be reserved for genuinely open-ended &quot;any copyable type&quot; scenarios.</p></li><li><p>Dereferencing a std::optional without checking it has a value first (<code>*opt</code> when <code>opt</code> is empty) — this is undefined behavior, exactly analogous to dereferencing a null pointer; always check (<code>if (opt)</code>) or use <code>.value()</code> (which throws instead of UB on empty) when you&#x27;re not certain.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
+</article><article class="concept-card" id="noexcept-specifier">
+  <h3>noexcept specifier</h3>
+  <div class="intro"><p>Declaring a function <code>noexcept</code> is a promise that it will NEVER let an exception propagate out of it. If one somehow does anyway, the runtime doesn&#x27;t convert it into a normal catchable exception at the call site — it calls <code>std::terminate()</code> immediately, ending the program. Beyond being documentation, <code>noexcept</code> has a genuine functional consequence for the standard library: containers like <code>std::vector</code> only use a type&#x27;s MOVE constructor during reallocation if that move constructor is marked <code>noexcept</code>; if it isn&#x27;t, the container conservatively falls back to COPYING during reallocation instead, specifically to preserve its own strong exception-safety guarantee (see Exception safety guarantees).</p></div>
+  <div class="example-box">
+  <div class="ex-title">The functional impact of noexcept on vector reallocation</div>
+  <pre><code>class Buffer {
+public:
+    Buffer(Buffer&amp;&amp; other) noexcept { /* steal other&#x27;s resources, cannot throw */ }
+};
+
+std::vector&lt;Buffer&gt; v;
+// when v reallocates: since Buffer&#x27;s move constructor is noexcept, vector moves
+// each existing Buffer into the new allocation -- O(1) per element, no copies
+
+class RiskyBuffer {
+public:
+    RiskyBuffer(const RiskyBuffer&amp;) { /* explicit copy ctor -- gives vector a fallback to use */ }
+    RiskyBuffer(RiskyBuffer&amp;&amp; other) { /* NOT marked noexcept, even if it never actually throws */ }
+};
+
+std::vector&lt;RiskyBuffer&gt; v2;
+// when v2 reallocates: vector cannot be SURE this move won&#x27;t throw partway through
+// (the type system gives it no such promise), so it falls back to COPYING every
+// element instead -- silently, with no compile error, just worse performance</code></pre>
+  <div class="ex-explain"><p>This is a real, easy-to-miss performance bug: forgetting <code>noexcept</code> on a move constructor that genuinely never throws still causes std::vector to copy instead of move during reallocation, and nothing about this is flagged by the compiler — it just silently performs worse. (RiskyBuffer needs an explicit copy constructor here -- declaring only a move constructor would suppress the implicit copy constructor entirely, leaving vector nothing to fall back to but the move it already has.)</p></div>
+</div><div class="example-box">
+  <div class="ex-title">noexcept as a conditional expression</div>
+  <pre><code>template &lt;class T&gt;
+void swap(T&amp; a, T&amp; b) noexcept(std::is_nothrow_move_constructible_v&lt;T&gt;) {
+    T tmp = std::move(a);
+    a = std::move(b);
+    b = std::move(tmp);
+}</code></pre>
+  <div class="ex-explain"><p><code>noexcept</code> can itself take a boolean expression, letting generic code propagate the noexcept-ness of the type it&#x27;s parameterized over — this swap is noexcept exactly when T&#x27;s own move construction is, rather than making a blanket claim that might be false for some T.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Marking a function noexcept when it genuinely CAN throw (e.g., it allocates memory, calls code you don&#x27;t fully control) — if it ever does throw, the program terminates immediately rather than the exception being catchable anywhere, which is a much worse outcome than an uncaught exception normally is.</p></li><li><p>Forgetting noexcept on move constructors/assignment operators that could easily be written to never throw — this is the single most common noexcept-related missed optimization, silently costing you vector&#x27;s move-instead-of-copy behavior.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-raii-resources.html#exception-safety-guarantees" data-related-href="concepts-raii-resources.html#exception-safety-guarantees">Exception safety guarantees</a><a class="related-tag" href="concepts-value-categories.html#move-semantics" data-related-href="concepts-value-categories.html#move-semantics">Move semantics</a></div>
+</article></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

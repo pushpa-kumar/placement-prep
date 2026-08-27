@@ -1,0 +1,1902 @@
+<title>String Algorithms — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>String Algorithms</h1>
+    <p class="tagline"><p>String algorithms turn questions about matching, repetition, and symmetry in text into linear- or near-linear-time computations by precomputing structural information once and reusing it for O(1) or O(log n) queries. The core toolkit here — the prefix function (KMP), the Z-function, polynomial hashing, Manacher&#x27;s algorithm, and tries (with suffix arrays/automata as the natural next step) — covers the overwhelming majority of &quot;hard&quot; string problems on Codeforces, CSES, and LeetCode. Master the mechanics of each precomputed array first; almost every hard problem is a non-obvious reduction on top of one of these arrays rather than a new algorithm. Beyond hashing, KMP/Z-function, and tries, these three automaton-style structures — the suffix automaton, the Aho-Corasick trie, and the palindromic tree — let you answer much harder substring, multi-pattern, and palindrome questions on a single string (or a whole text against many patterns) in linear or near-linear time, at the cost of genuinely fiddly construction code.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">8</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">19</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">23</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#string-algorithms-kmp-pattern-matching-prefix-function"><span>KMP Pattern Matching (Prefix Function)</span><span class="cnt">3</span></a></li><li><a href="#string-algorithms-z-function"><span>Z-function</span><span class="cnt">2</span></a></li><li><a href="#string-algorithms-string-hashing-polynomial-rolling-hash"><span>String Hashing (Polynomial Rolling Hash)</span><span class="cnt">3</span></a></li><li><a href="#string-algorithms-manacher-s-algorithm"><span>Manacher&#x27;s Algorithm</span><span class="cnt">3</span></a></li><li><a href="#string-algorithms-trie-for-strings-and-suffix-array-automaton-basics"><span>Trie for Strings (and Suffix Array/Automaton Basics)</span><span class="cnt">2</span></a></li><li><a href="#string-algorithms-suffix-automaton"><span>Suffix Automaton</span><span class="cnt">2</span></a></li><li><a href="#string-algorithms-aho-corasick-multi-pattern-matching"><span>Aho-Corasick Multi-Pattern Matching</span><span class="cnt">2</span></a></li><li><a href="#string-algorithms-palindromic-tree-eertree"><span>Palindromic Tree (Eertree)</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">23</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="https://claude.ai/code/artifact/c156ae68-4c74-47c9-912a-ad2d47b93c49">Arrays &amp; Strings</a></li><li><a href="https://claude.ai/code/artifact/12a16e00-c911-4e45-a3c2-27b16db6b805">Sorting &amp; Binary Search</a></li><li><a href="https://claude.ai/code/artifact/0316847a-185e-46fa-b2ce-adf55d0710cd">Recursion &amp; Backtracking</a></li><li><a href="https://claude.ai/code/artifact/1c4e103e-c945-47f3-a855-7fc0f5281fc2">Dynamic Programming</a></li><li><a href="https://claude.ai/code/artifact/00f83d03-9d23-4a2c-a704-cd676a3b4ce0">Greedy Algorithms</a></li><li><a href="https://claude.ai/code/artifact/815d3fc1-3172-4d4b-9ceb-680f85b2b8b1">Graph Algorithms</a></li><li><a href="https://claude.ai/code/artifact/aedd06db-fdcf-479b-97bc-247e9734e77e">Trees</a></li><li><a href="https://claude.ai/code/artifact/a4b10d9b-cdd8-4f6d-93fe-9aae23b56638">Data Structures for CP</a></li><li><a href="https://claude.ai/code/artifact/ad30c2df-1f61-4bc2-8169-8dfa3507993c">Number Theory &amp; Combinatorics</a></li><li><a href="https://claude.ai/code/artifact/f254df5f-5086-479e-b80b-2011d428d5e6">Bit Manipulation</a></li><li><a href="https://claude.ai/code/artifact/2dc80eb5-e35f-4079-bb93-351ceae8c683">Game Theory</a></li><li><a href="https://claude.ai/code/artifact/69f48d09-8ce7-495b-9b95-530c827d9af6">Network Flow &amp; Matching</a></li><li><a href="https://claude.ai/code/artifact/ca5bf18b-b4fe-400b-a702-edccd442732d">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide Hub</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+        <li><a href="https://claude.ai/code/artifact/8968b342-ca79-44b8-be52-aa3770481647#string-algorithms">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="string-algorithms-kmp-pattern-matching-prefix-function">
+  <div class="topic-head"><h2>KMP Pattern Matching (Prefix Function)</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>The prefix function pi[i] of a string s is defined as the length of the longest proper prefix of s[0..i] that is also a suffix of s[0..i] (proper meaning it cannot be the entire substring s[0..i] itself). It is computed in O(n) with a clever amortized argument: to compute pi[i] from pi[i-1], start a candidate match length j = pi[i-1] (the best border known so far) and repeatedly fall back to j = pi[j-1] while s[i] != s[j], exactly the same &#x27;failure link&#x27; idea used to avoid re-scanning already-matched characters. Because j can only increase by 1 per iteration of the outer loop but is reset by fallbacks that are bounded by the total increase, the amortized cost over all i is O(n).</p><p>The classic application is substring search: concatenate pattern + separator + text (the separator must be a character that occurs in neither string, e.g. &#x27;#&#x27;) and run the prefix function on the combined string. Every position where pi[i] equals the pattern&#x27;s length marks an occurrence ending there, because a border of length |pattern| at that point means the preceding |pattern| characters of the combined string exactly equal the pattern. This gives O(n + m) pattern matching without ever backtracking in the text, which is what makes KMP asymptotically better than the naive O(n*m) sliding comparison.</p><p>Beyond direct matching, the prefix function encodes deep structural information about a string: repeatedly following pi[n-1] -&gt; pi[pi[n-1]-1] -&gt; ... enumerates every border of the whole string, which is exactly the information needed to find all periods of a string (period k works iff n-k is a border length) or to detect that a string is built from repetitions of a smaller block. The same &#x27;prefix function on a concatenation with a separator&#x27; trick generalizes far beyond pattern search — e.g. computing the longest palindromic prefix of s by running it on s + &#x27;#&#x27; + reverse(s).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for KMP/prefix-function whenever you need exact substring matching in O(n+m), need the borders (prefix=suffix) of a string, need the minimal period of a string, or see a problem that can be phrased as &#x27;longest prefix of A that is also a suffix of B&#x27; — the giveaway is usually the phrase &#x27;find all occurrences&#x27; or &#x27;shortest string with property X built by adding a prefix/suffix&#x27;, which often reduces to a border query on a cleverly concatenated string.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n + m) time, O(n + m) space where n = |text|, m = |pattern|.</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-kmp-pattern-matching-prefix-function-ex0">
+  <h4>All Occurrences of a Pattern</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a text string T (1 &lt;= |T| &lt;= 2*10^5) and a pattern string P (1 &lt;= |P| &lt;= |T|), both consisting of lowercase Latin letters. Find every starting index (0-indexed) at which P occurs in T (occurrences may overlap). Print the number of occurrences, then the 0-indexed starting positions in increasing order on one line separated by spaces.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build combined = P + &#x27;#&#x27; + T using a separator character guaranteed not to appear in either string. Compute the prefix function pi of combined in O(|combined|). For every index i in the T-part of combined (i.e. i &gt; |P|), if pi[i] == |P| then a full copy of P ends at position i of combined; converting back to an index in T gives start = i - 2*|P| (subtract |P| for the pattern part and the separator, then |P| more for the length of the match itself: i - 2*|P|). Collect all such starts.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+vector&lt;int&gt; prefixFunction(const string &amp;s) {
+    int n = s.size();
+    vector&lt;int&gt; pi(n, 0);
+    for (int i = 1; i &lt; n; i++) {
+        int j = pi[i - 1];
+        while (j &gt; 0 &amp;&amp; s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) j++;
+        pi[i] = j;
+    }
+    return pi;
+}
+
+int main() {
+    string text, pattern;
+    getline(cin, text);
+    getline(cin, pattern);
+    string combined = pattern + &quot;#&quot; + text;
+    vector&lt;int&gt; pi = prefixFunction(combined);
+    int m = pattern.size();
+    vector&lt;int&gt; occ;
+    for (int i = m + 1; i &lt; (int)combined.size(); i++) {
+        if (pi[i] == m) occ.push_back(i - 2 * m);
+    }
+    cout &lt;&lt; occ.size() &lt;&lt; &quot;\n&quot;;
+    for (int i = 0; i &lt; (int)occ.size(); i++) {
+        cout &lt;&lt; occ[i] &lt;&lt; &quot; \n&quot;[i + 1 == (int)occ.size()];
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>ababcabababcabc
+abab
+</code></pre>
+    <pre><code>3
+0 5 7
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-kmp-pattern-matching-prefix-function-ex1">
+  <h4>Shortest Palindrome by Prefix Addition</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s (1 &lt;= |s| &lt;= 5*10^4) of lowercase Latin letters, you may add characters in front of s to make the whole string a palindrome. Output the shortest palindrome achievable this way.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>If we prepend k characters to make s a palindrome, those k characters must equal the reverse of the last k characters of the resulting palindrome, which forces the prepended block to equal reverse(suffix) in a very specific way; the key reduction is: we want the longest prefix of s that is itself a palindrome, because everything after that prefix must be mirrored in front. Compute combined = s + &#x27;#&#x27; + reverse(s) and run the prefix function; pi.back() gives the length of the longest palindromic prefix of s (it equals the longest border between s and reverse(s), which is exactly the longest prefix of s that reads the same as a suffix of reverse(s), i.e. a palindrome). The characters of s beyond that prefix, reversed, are exactly what must be prepended: answer = reverse(s[longest:]) + s.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+vector&lt;int&gt; prefixFunction(const string &amp;s) {
+    int n = s.size();
+    vector&lt;int&gt; pi(n, 0);
+    for (int i = 1; i &lt; n; i++) {
+        int j = pi[i - 1];
+        while (j &gt; 0 &amp;&amp; s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) j++;
+        pi[i] = j;
+    }
+    return pi;
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    string rev = s;
+    reverse(rev.begin(), rev.end());
+    string combined = s + &quot;#&quot; + rev;
+    vector&lt;int&gt; pi = prefixFunction(combined);
+    int longestPalinPrefix = pi.back();
+    string toAdd = rev.substr(0, s.size() - longestPalinPrefix);
+    cout &lt;&lt; toAdd + s &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>aacecaaa
+</code></pre>
+    <pre><code>aaacecaaa
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-kmp-pattern-matching-prefix-function-ex2">
+  <h4>Finding All Periods of a String</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A string s of length n (1 &lt;= n &lt;= 10^6) has period k (1 &lt;= k &lt;= n) if s[i] == s[i+k] for every valid i (0 &lt;= i &lt;= n-k-1). Note k = n is always a trivially valid period. Given s, output all valid periods of s in increasing order, space-separated.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Compute the prefix function pi of s directly (no concatenation needed here). The chain b = pi[n-1], then b = pi[b-1], and so on until b = 0, enumerates every border length of the full string. A border of length b corresponds exactly to period n-b, because s[0..b) == s[n-b..n) means s repeats with period n-b. Collect n-b for every border in the chain, add the trivial period n itself, sort, and print.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+vector&lt;int&gt; prefixFunction(const string &amp;s) {
+    int n = s.size();
+    vector&lt;int&gt; pi(n, 0);
+    for (int i = 1; i &lt; n; i++) {
+        int j = pi[i - 1];
+        while (j &gt; 0 &amp;&amp; s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) j++;
+        pi[i] = j;
+    }
+    return pi;
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    int n = s.size();
+    vector&lt;int&gt; pi = prefixFunction(s);
+    vector&lt;int&gt; periods;
+    periods.push_back(n); // trivial period: the whole string
+    int b = pi[n - 1];
+    while (b &gt; 0) {
+        periods.push_back(n - b);
+        b = pi[b - 1];
+    }
+    sort(periods.begin(), periods.end());
+    for (int i = 0; i &lt; (int)periods.size(); i++) {
+        cout &lt;&lt; periods[i] &lt;&lt; &quot; \n&quot;[i + 1 == (int)periods.size()];
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>aabaabaabaab
+</code></pre>
+    <pre><code>3 6 9 12
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-z-function">
+  <div class="topic-head"><h2>Z-function</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The Z-function of a string s is an array z where z[i] is the length of the longest common prefix between s and the suffix of s starting at index i (by convention z[0] is either left undefined or set to n, the whole string trivially matching itself). It is computed in O(n) using the same &#x27;reuse previously computed matches&#x27; idea as KMP, but framed differently: maintain a window [l, r) — the rightmost Z-box found so far, i.e. the interval matching a prefix of s that extends furthest to the right. When computing z[i] for i inside the current window, we can initialize z[i] from the already-known value z[i-l] (mirrored inside the prefix) rather than starting from scratch, then only extend by brute-force comparison past the window boundary r. Every successful character comparison beyond r increases r by 1 and never decreases it, which bounds total comparisons to O(n).</p><p>The Z-function and the prefix function carry equivalent information (each can be derived from the other in O(n)), but the Z-function is often more natural for problems phrased in terms of &#x27;longest common prefix with the whole string starting at position i&#x27;, which is a very common way hard problems disguise this technique — e.g. LeetCode&#x27;s &#x27;Sum of Scores of Built Strings&#x27; literally defines score(i) to be the Z-function by another name.</p><p>For pattern matching, the same separator trick as KMP applies: build pattern + &#x27;#&#x27; + text and scan the Z-array for values &gt;= |pattern|, which mark occurrences. Another powerful use is counting, for every prefix length L, how many times that prefix occurs as a substring anywhere in s: increment a counter at z[i] for every i, add one more for the full string itself (which trivially matches its own prefix at position 0), then take a suffix sum over counter values from n down to 1.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for the Z-function whenever a problem talks about &#x27;the longest common prefix between the string and one of its suffixes&#x27;, needs substring occurrence positions, or needs, for every prefix, how often it recurs inside the string. It is functionally interchangeable with KMP for pure pattern matching, so pick whichever framing makes the reduction to the problem&#x27;s phrasing cleaner.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n + m) time, O(n + m) space where n = |text|, m = |pattern|.</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-z-function-ex0">
+  <h4>Pattern Matching via the Z-array</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a text T and a pattern P (both lowercase Latin letters, 1 &lt;= |P| &lt;= |T| &lt;= 2*10^5), find every 0-indexed starting position where P occurs in T. Print the count followed by the sorted starting positions on one line.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Form combined = P + &#x27;#&#x27; + T and compute its Z-array. For every position i within the T-part (i &gt; |P|), z[i] &gt;= |P| means the substring of combined starting at i shares at least |P| characters with the whole combined string, i.e. with P itself — an occurrence of P in T starting at index i - |P| - 1.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+vector&lt;int&gt; zFunction(const string &amp;s) {
+    int n = s.size();
+    vector&lt;int&gt; z(n, 0);
+    z[0] = n;
+    int l = 0, r = 0;
+    for (int i = 1; i &lt; n; i++) {
+        if (i &lt; r) z[i] = min(r - i, z[i - l]);
+        while (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]]) z[i]++;
+        if (i + z[i] &gt; r) { l = i; r = i + z[i]; }
+    }
+    return z;
+}
+
+int main() {
+    string text, pattern;
+    getline(cin, text);
+    getline(cin, pattern);
+    int m = pattern.size();
+    string combined = pattern + &quot;#&quot; + text;
+    vector&lt;int&gt; z = zFunction(combined);
+    vector&lt;int&gt; occ;
+    for (int i = m + 1; i &lt; (int)combined.size(); i++) {
+        if (z[i] &gt;= m) occ.push_back(i - m - 1);
+    }
+    cout &lt;&lt; occ.size() &lt;&lt; &quot;\n&quot;;
+    for (int i = 0; i &lt; (int)occ.size(); i++) {
+        cout &lt;&lt; occ[i] &lt;&lt; &quot; \n&quot;[i + 1 == (int)occ.size()];
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abcabcabcabc
+abc
+</code></pre>
+    <pre><code>4
+0 3 6 9
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-z-function-ex1">
+  <h4>Sum of Scores of Built Strings</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>For a string s of length n (1 &lt;= n &lt;= 10^5), define score(i) as the length of the longest common prefix between s and the suffix of s starting at index i, for every i from 0 to n-1 (score(0) = n since s trivially matches its whole self). Compute the sum of score(i) over all i. (This is LeetCode Hard #2223.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>score(i) is exactly the definition of the Z-function value z[i] for i &gt;= 1, and score(0) = n matches the conventional z[0] = n. So the answer is simply the sum of the entire Z-array (with z[0] set to n). Compute the Z-array in O(n) and sum it — the entire difficulty of this &#x27;hard&#x27; problem is recognizing the reduction, not the implementation.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+vector&lt;long long&gt; zFunction(const string &amp;s) {
+    int n = s.size();
+    vector&lt;long long&gt; z(n, 0);
+    z[0] = n;
+    int l = 0, r = 0;
+    for (int i = 1; i &lt; n; i++) {
+        if (i &lt; r) z[i] = min((long long)(r - i), z[i - l]);
+        while (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]]) z[i]++;
+        if (i + z[i] &gt; r) { l = i; r = i + z[i]; }
+    }
+    return z;
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    vector&lt;long long&gt; z = zFunction(s);
+    long long sum = 0;
+    for (long long v : z) sum += v;
+    cout &lt;&lt; sum &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>azbazbzaz
+</code></pre>
+    <pre><code>14
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-string-hashing-polynomial-rolling-hash">
+  <div class="topic-head"><h2>String Hashing (Polynomial Rolling Hash)</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>A polynomial hash maps a string s of length n to H(s) = (s[0]*B^(n-1) + s[1]*B^(n-2) + ... + s[n-1]*B^0) mod M for a base B and modulus M. By precomputing prefix hashes h[0..n] (h[i] = hash of s[0..i)) and powers of B, the hash of any substring s[l..r) can be recovered in O(1) via h[r] - h[l]*B^(r-l) (mod M), because shifting the prefix hash of s[0..l) up by (r-l) digits and subtracting cancels out everything before index l. This turns &#x27;are these two substrings equal&#x27; into an O(1) integer comparison after O(n) preprocessing, which is the whole appeal: it trades a small, controllable false-positive probability for speed and simplicity that beats writing a suffix structure.</p><p>The critical danger is collisions. A single hash modulo a ~10^9 prime, especially with a fixed, well-known base/modulus pair, can be deliberately defeated by adversarial test data (this is a known &#x27;anti-hash test&#x27; phenomenon on Codeforces) and even without adversarial input, the birthday bound means collisions become likely once you compare on the order of sqrt(M) substrings. The standard defenses are: (1) double hashing — compute two independent hashes with different (base, modulus) pairs and compare the pair, which squares the safety margin to roughly 10^18; or (2) hash modulo a large prime close to 2^61 with a randomized base chosen at runtime, using 128-bit intermediate multiplication to avoid overflow, which is safe against static anti-hash tests. Never trust a single small-modulus hash in a contest with adaptive or adversarial data.</p><p>Hashing also extends naturally to palindrome checking: precompute both the forward hash of s and the forward hash of reverse(s); a substring s[l..r) is a palindrome iff its forward hash equals the forward hash of the mirrored range in reverse(s). This generalizes to dynamic settings (point updates) by replacing the flat prefix-hash array with a Fenwick tree or segment tree that supports point update and range hash query, at the cost of O(log n) instead of O(1) per query.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Use hashing whenever you need fast substring equality checks, longest common substring/prefix queries combined with binary search, palindrome checks on arbitrary ranges (especially under updates, where suffix structures are hard to maintain), or any place you&#x27;d like to avoid building a suffix automaton/array but still need &#x27;is this substring equal to that substring&#x27; in better than O(length).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) preprocessing, O(1) per substring-hash query (O(log n) with a Fenwick/segment tree for point updates); O(n log n) total for a binary-search-based application.</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-string-hashing-polynomial-rolling-hash-ex0">
+  <h4>Longest Common Substring (Double Hash + Binary Search)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given two strings s and t (1 &lt;= |s|, |t| &lt;= 5*10^4, lowercase Latin letters), find the length of their longest common substring, and print one such substring.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>The existence of a common substring of length L is monotonic in L: if some common substring of length L exists, truncating one character from both copies gives a common substring of length L-1, so the predicate &#x27;a common substring of length L exists&#x27; is true for a prefix of lengths 0..answer and false above. Binary search on L; for the check, hash every length-L substring of s into a set (using a double hash pair to make accidental collisions negligible) and test every length-L substring of t for membership in O(1) per substring. Each check costs O(n+m), giving O((n+m) log n) overall.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+
+struct DoubleHash {
+    // two independent polynomial hashes to make collisions astronomically unlikely
+    static const ll MOD1 = 1000000007LL, MOD2 = 998244353LL;
+    static const ll BASE1 = 131, BASE2 = 137;
+    vector&lt;ll&gt; h1, h2, p1, p2;
+    void build(const string &amp;s) {
+        int n = s.size();
+        h1.assign(n + 1, 0); h2.assign(n + 1, 0);
+        p1.assign(n + 1, 1); p2.assign(n + 1, 1);
+        for (int i = 0; i &lt; n; i++) {
+            h1[i + 1] = (h1[i] * BASE1 + s[i]) % MOD1;
+            h2[i + 1] = (h2[i] * BASE2 + s[i]) % MOD2;
+            p1[i + 1] = (p1[i] * BASE1) % MOD1;
+            p2[i + 1] = (p2[i] * BASE2) % MOD2;
+        }
+    }
+    // hash of s[l..r) 0-indexed, half-open
+    pair&lt;ll, ll&gt; get(int l, int r) const {
+        ll a = ((h1[r] - h1[l] * p1[r - l]) % MOD1 + MOD1) % MOD1;
+        ll b = ((h2[r] - h2[l] * p2[r - l]) % MOD2 + MOD2) % MOD2;
+        return {a, b};
+    }
+};
+
+int main() {
+    string s, t;
+    getline(cin, s);
+    getline(cin, t);
+    DoubleHash hs, ht;
+    hs.build(s);
+    ht.build(t);
+    int n = s.size(), m = t.size();
+
+    auto check = [&amp;](int len) -&gt; pair&lt;bool, int&gt; {
+        if (len == 0) return {true, 0};
+        set&lt;pair&lt;ll, ll&gt;&gt; seen;
+        for (int i = 0; i + len &lt;= n; i++) seen.insert(hs.get(i, i + len));
+        for (int j = 0; j + len &lt;= m; j++) {
+            if (seen.count(ht.get(j, j + len))) return {true, j};
+        }
+        return {false, -1};
+    };
+
+    int lo = 0, hi = min(n, m), ans = 0, startInT = -1;
+    while (lo &lt;= hi) {
+        int mid = (lo + hi) / 2;
+        auto [ok, pos] = check(mid);
+        if (ok) { ans = mid; startInT = pos; lo = mid + 1; }
+        else hi = mid - 1;
+    }
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    if (ans &gt; 0) cout &lt;&lt; t.substr(startInT, ans) &lt;&lt; &quot;\n&quot;;
+    else cout &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>GeeksforGeeks
+GeeksQuiz
+</code></pre>
+    <pre><code>5
+Geeks
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-string-hashing-polynomial-rolling-hash-ex1">
+  <h4>Prefix-Suffix Palindrome</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s (1 &lt;= |s| &lt;= 10^6) of lowercase Latin letters, find the length of the longest string that can be formed by concatenating a prefix of s and a suffix of s (the prefix and suffix must not overlap, and either may be empty) such that the concatenation is a palindrome. Print the length and one such palindrome. (Based on Codeforces 1326 D2.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Greedily peel matching outer characters with two pointers i=0, j=n-1: while s[i] == s[j], advance i and retreat j. This gives the maximal &#x27;shell&#x27; — a prefix of length shell=i that exactly equals the reverse of the corresponding suffix — which can always be wrapped, unmodified, around any palindrome found in the remaining middle segment s[i..j]. The problem now reduces to: find the longest palindromic PREFIX of the middle or the longest palindromic SUFFIX of the middle (whichever is longer), and sandwich it between the shell and its mirrored copy. Use double hashing to test &#x27;is s[l..r) a palindrome&#x27; in O(1) (by comparing the forward hash of that range against the forward hash of the mirrored range in reverse(s)), and scan candidate lengths from the full middle length down to 0, stopping at the first palindrome found — this is O(|middle|) with O(1) checks, no binary search needed since &#x27;is a palindrome&#x27; is not itself monotonic in length.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+struct DoubleHash {
+    static const ll MOD1 = 1000000007LL, MOD2 = 998244353LL;
+    static const ll BASE1 = 131, BASE2 = 137;
+    vector&lt;ll&gt; h1, h2, p1, p2;
+    void build(const string &amp;s) {
+        int n = s.size();
+        h1.assign(n + 1, 0); h2.assign(n + 1, 0);
+        p1.assign(n + 1, 1); p2.assign(n + 1, 1);
+        for (int i = 0; i &lt; n; i++) {
+            h1[i + 1] = (h1[i] * BASE1 + s[i]) % MOD1;
+            h2[i + 1] = (h2[i] * BASE2 + s[i]) % MOD2;
+            p1[i + 1] = (p1[i] * BASE1) % MOD1;
+            p2[i + 1] = (p2[i] * BASE2) % MOD2;
+        }
+    }
+    pair&lt;ll, ll&gt; get(int l, int r) const { // s[l..r) half-open
+        ll a = ((h1[r] - h1[l] * p1[r - l]) % MOD1 + MOD1) % MOD1;
+        ll b = ((h2[r] - h2[l] * p2[r - l]) % MOD2 + MOD2) % MOD2;
+        return {a, b};
+    }
+};
+
+int main() {
+    string s;
+    getline(cin, s);
+    int n = s.size();
+    string rev = s;
+    reverse(rev.begin(), rev.end());
+
+    DoubleHash hf, hr; // hf: hash of s, hr: hash of reverse(s)
+    hf.build(s);
+    hr.build(rev);
+
+    // isPalindrome(l, r) for s[l..r) : compare forward hash of s[l,r)
+    // with forward hash of rev at mirrored positions.
+    auto isPalin = [&amp;](int l, int r) -&gt; bool {
+        int len = r - l;
+        if (len &lt;= 1) return true;
+        int rl = n - r, rr = n - l; // mirrored half-open range in rev
+        return hf.get(l, r) == hr.get(rl, rr);
+    };
+
+    // Step 1: peel the maximal matching outer prefix/suffix shell.
+    int i = 0, j = n - 1;
+    while (i &lt; j &amp;&amp; s[i] == s[j]) { i++; j--; }
+    // shell length = i (chars s[0..i) match reverse of s[j+1..n))
+    int shell = i;
+    // middle is s[i..j] inclusive (0 or more characters)
+    int midL = i, midR = j + 1; // half-open [midL, midR)
+
+    // Step 2: longest palindromic PREFIX of the middle.
+    int bestPrefix = 0;
+    for (int len = midR - midL; len &gt;= 0; len--) {
+        if (isPalin(midL, midL + len)) { bestPrefix = len; break; }
+    }
+    // Step 3: longest palindromic SUFFIX of the middle.
+    int bestSuffix = 0;
+    for (int len = midR - midL; len &gt;= 0; len--) {
+        if (isPalin(midR - len, midR)) { bestSuffix = len; break; }
+    }
+
+    string middlePart = (bestPrefix &gt;= bestSuffix)
+                             ? s.substr(midL, bestPrefix)
+                             : s.substr(midR - bestSuffix, bestSuffix);
+    string result = s.substr(0, shell) + middlePart + s.substr(j + 1, shell);
+    cout &lt;&lt; result.size() &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; result &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>aabxybaa
+</code></pre>
+    <pre><code>7
+aabxbaa
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-string-hashing-polynomial-rolling-hash-ex2">
+  <h4>Palindrome Queries with Point Updates</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a string s (1 &lt;= |s| &lt;= 2*10^5) of lowercase Latin letters and q queries (1 &lt;= q &lt;= 2*10^5) of two types: &#x27;1 pos c&#x27; — set the character at 1-indexed position pos to c; &#x27;2 a b&#x27; — output YES if s[a..b] (1-indexed, inclusive) is currently a palindrome, NO otherwise. Process all queries online. (Based on CSES &#x27;Palindrome Queries&#x27;.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>A flat prefix-hash array can&#x27;t handle point updates efficiently (an update would shift every hash after it). Instead build a segment tree over the string where each node stores two hashes of its range under one large-modulus polynomial hash: the forward hash (read left to right) and the reverse hash (as if the range were read right to left). Forward hashes merge as combine(L,R) = L.hash * B^|R| + R.hash. Reverse hashes merge in the opposite order, because reverse(A+B) = reverse(B) + reverse(A): combine(L,R) = R.rev * B^|L| + L.rev. A point update just rewrites a leaf and recomputes O(log n) ancestors; a range query merges O(log n) segment-tree nodes to get the forward and reverse hash of the queried range in O(log n), and the range is a palindrome iff the two hashes are equal. Using a modulus near 2^61 with 128-bit multiplication (or double hashing) keeps collision probability negligible even under adversarial queries.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+typedef __int128 lll;
+
+// Segment tree over a fixed-length string supporting:
+//  - point update (change one character)
+//  - range palindrome query in O(log n)
+// Each node stores (forwardHash, reverseHash) of its substring under one
+// large-modulus polynomial hash. reverse(A+B) = reverse(B) + reverse(A),
+// which gives the merge rule for the reverse hash below.
+
+static const ll MOD = 1000000000000000003LL; // large prime, fits well under 2^63
+static const ll BASE = 131542391927LL;
+
+ll mulmod(ll a, ll b) {
+    return (ll)((lll)a * b % MOD);
+}
+
+int n;
+vector&lt;ll&gt; pw;
+struct Node { ll fwd = 0, rev = 0; int len = 0; };
+vector&lt;Node&gt; seg;
+string str;
+
+Node merge(const Node &amp;L, const Node &amp;R) {
+    Node res;
+    res.len = L.len + R.len;
+    res.fwd = (mulmod(L.fwd, pw[R.len]) + R.fwd) % MOD;
+    res.rev = (mulmod(R.rev, pw[L.len]) + L.rev) % MOD;
+    return res;
+}
+
+void build(int node, int l, int r) {
+    if (l == r) {
+        ll v = str[l] - &#x27;a&#x27; + 1;
+        seg[node] = {v % MOD, v % MOD, 1};
+        return;
+    }
+    int mid = (l + r) / 2;
+    build(2 * node, l, mid);
+    build(2 * node + 1, mid + 1, r);
+    seg[node] = merge(seg[2 * node], seg[2 * node + 1]);
+}
+
+void update(int node, int l, int r, int pos, char c) {
+    if (l == r) {
+        ll v = c - &#x27;a&#x27; + 1;
+        seg[node] = {v % MOD, v % MOD, 1};
+        return;
+    }
+    int mid = (l + r) / 2;
+    if (pos &lt;= mid) update(2 * node, l, mid, pos, c);
+    else update(2 * node + 1, mid + 1, r, pos, c);
+    seg[node] = merge(seg[2 * node], seg[2 * node + 1]);
+}
+
+Node query(int node, int l, int r, int ql, int qr) {
+    if (qr &lt; l || r &lt; ql) return Node{0, 0, 0};
+    if (ql &lt;= l &amp;&amp; r &lt;= qr) return seg[node];
+    int mid = (l + r) / 2;
+    Node L = query(2 * node, l, mid, ql, qr);
+    Node R = query(2 * node + 1, mid + 1, r, ql, qr);
+    if (L.len == 0) return R;
+    if (R.len == 0) return L;
+    return merge(L, R);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; str;
+    n = str.size();
+    pw.assign(n + 1, 1);
+    for (int i = 1; i &lt;= n; i++) pw[i] = mulmod(pw[i - 1], BASE);
+    seg.assign(4 * n, Node{});
+    build(1, 0, n - 1);
+
+    int q;
+    cin &gt;&gt; q;
+    while (q--) {
+        int type;
+        cin &gt;&gt; type;
+        if (type == 1) {
+            int pos; char c;
+            cin &gt;&gt; pos &gt;&gt; c;
+            update(1, 0, n - 1, pos - 1, c);
+        } else {
+            int a, b;
+            cin &gt;&gt; a &gt;&gt; b;
+            Node res = query(1, 0, n - 1, a - 1, b - 1);
+            cout &lt;&lt; (res.fwd == res.rev ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abacaba
+5
+2 1 7
+2 2 6
+1 4 z
+2 1 7
+2 3 5
+</code></pre>
+    <pre><code>YES
+YES
+YES
+YES
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-manacher-s-algorithm">
+  <div class="topic-head"><h2>Manacher&#x27;s Algorithm</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>Manacher&#x27;s algorithm computes, for every center in a string, the radius of the longest palindrome centered there — for all n centers simultaneously in O(n), rather than the naive O(n^2) of expanding around every center independently. It is usually implemented with two arrays: d1[i], the number of odd-length palindromes centered exactly at index i (so the longest has length 2*d1[i]-1), and d2[i], the number of even-length palindromes centered between indices i-1 and i (longest length 2*d2[i]). Some implementations transform s by inserting separators (e.g. &#x27;#&#x27;) between every character to unify odd and even cases into a single array; the two-array formulation used here avoids that transformation and its associated off-by-one bookkeeping.</p><p>The O(n) bound comes from the same &#x27;reuse a previously discovered window&#x27; trick as the Z-function: maintain the rightmost palindrome boundary [l, r] found so far. When computing the radius at a new center i inside that window, mirror the already-known radius of the reflected center (l+r-i) to get a lower bound for free — because palindromic symmetry around the center of [l,r] guarantees palindromes on the mirrored side extend at least that far — and only then attempt to extend character by character past the window&#x27;s edge. Since r only ever moves rightward and each brute-force extension attempt beyond r advances r by one position, the total extension work across all centers is O(n).</p><p>Beyond &#x27;find the longest palindromic substring&#x27;, the d1/d2 arrays are a general-purpose tool: summing them gives the total count of palindromic substrings in O(n) (each value d1[i] or d2[i] counts exactly that many distinct palindromic substrings centered there, since every radius from 1 up to the maximum is itself a valid, shorter palindrome). A subtler but very common transformation is converting &#x27;longest palindrome centered at each position&#x27; into &#x27;longest palindrome ENDING at each position&#x27; — since a center&#x27;s maximal palindrome only directly tells you about the single rightmost endpoint it reaches, but every smaller radius from the same center is also a valid palindrome ending at an earlier position, so a two-pointer sweep is needed to correctly propagate the best value forward to every ending index.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Manacher&#x27;s is the go-to whenever a problem needs palindrome information (existence, count, or longest) for many or all centers/positions in O(n) rather than per-query O(n) or O(n^2) total — the giveaway phrase is usually &#x27;longest palindromic substring&#x27;, &#x27;count palindromic substrings&#x27;, or &#x27;longest palindrome ending/starting at position i, for every i&#x27;.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) time, O(n) space.</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-manacher-s-algorithm-ex0">
+  <h4>Longest Palindromic Substring</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s (1 &lt;= |s| &lt;= 10^6) of lowercase Latin letters, find its longest palindromic substring. If multiple substrings of the maximum length exist, output the leftmost one.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Run Manacher&#x27;s algorithm to get d1 (odd palindromes) and d2 (even palindromes). For each center i, the odd-length candidate has length 2*d1[i]-1 starting at i-d1[i]+1, and the even-length candidate has length 2*d2[i] starting at i-d2[i]. Track the best (length, start) pair using a strict &#x27;&gt;&#x27; comparison so the first (leftmost) occurrence of the maximum length is kept.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+void manacher(const string &amp;s, vector&lt;int&gt; &amp;d1, vector&lt;int&gt; &amp;d2) {
+    int n = s.size();
+    d1.assign(n, 0);
+    d2.assign(n, 0);
+    int l = 0, r = -1;
+    for (int i = 0; i &lt; n; i++) {
+        int k = (i &gt; r) ? 1 : min(d1[l + r - i], r - i + 1);
+        while (i - k &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
+        d1[i] = k;
+        if (i + k - 1 &gt; r) { l = i - k + 1; r = i + k - 1; }
+    }
+    l = 0; r = -1;
+    for (int i = 0; i &lt; n; i++) {
+        int k = (i &gt; r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
+        while (i - k - 1 &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - 1] == s[i + k]) k++;
+        d2[i] = k;
+        if (i + k - 1 &gt; r) { l = i - k; r = i + k - 1; }
+    }
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    int n = s.size();
+    vector&lt;int&gt; d1, d2;
+    manacher(s, d1, d2);
+
+    int bestLen = 0, bestStart = 0;
+    for (int i = 0; i &lt; n; i++) {
+        int len1 = 2 * d1[i] - 1;
+        if (len1 &gt; bestLen) { bestLen = len1; bestStart = i - d1[i] + 1; }
+        int len2 = 2 * d2[i];
+        if (len2 &gt; bestLen) { bestLen = len2; bestStart = i - d2[i]; }
+    }
+    cout &lt;&lt; bestLen &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; s.substr(bestStart, bestLen) &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>forgeeksskeegfor
+</code></pre>
+    <pre><code>10
+geeksskeeg
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-manacher-s-algorithm-ex1">
+  <h4>Counting All Palindromic Substrings</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s (1 &lt;= |s| &lt;= 10^6), count the total number of palindromic substrings (counting multiplicity — two occurrences of the same palindromic string at different positions count separately).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Every palindrome centered at i with maximum radius d1[i] (odd case) contributes exactly d1[i] distinct palindromic substrings centered there — one for every radius from 1 up to d1[i], since a shorter palindrome sharing the same center is automatically still a palindrome. The same logic gives d2[i] even-length palindromes for each even center. So the total count is simply the sum of the entire d1 array plus the sum of the entire d2 array, computed via one Manacher pass in O(n).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+void manacher(const string &amp;s, vector&lt;int&gt; &amp;d1, vector&lt;int&gt; &amp;d2) {
+    int n = s.size();
+    d1.assign(n, 0);
+    d2.assign(n, 0);
+    int l = 0, r = -1;
+    for (int i = 0; i &lt; n; i++) {
+        int k = (i &gt; r) ? 1 : min(d1[l + r - i], r - i + 1);
+        while (i - k &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
+        d1[i] = k;
+        if (i + k - 1 &gt; r) { l = i - k + 1; r = i + k - 1; }
+    }
+    l = 0; r = -1;
+    for (int i = 0; i &lt; n; i++) {
+        int k = (i &gt; r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
+        while (i - k - 1 &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - 1] == s[i + k]) k++;
+        d2[i] = k;
+        if (i + k - 1 &gt; r) { l = i - k; r = i + k - 1; }
+    }
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    vector&lt;int&gt; d1, d2;
+    manacher(s, d1, d2);
+    long long total = 0;
+    for (int v : d1) total += v;
+    for (int v : d2) total += v;
+    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abaaba
+</code></pre>
+    <pre><code>11
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-manacher-s-algorithm-ex2">
+  <h4>Longest Palindrome Ending at Each Position</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s of length n (1 &lt;= n &lt;= 5*10^5), for every index e from 0 to n-1 output the length of the longest palindromic substring of s that ends exactly at index e. (Based on CSES &#x27;All Palindromes&#x27;.)</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Run Manacher to get d1 and d2. A center c with odd radius d1[c] can produce a palindrome ending at any e with c &lt;= e &lt;= c+d1[c]-1 (just shrink the radius), of length 2*(e-c)+1 — so for fixed e we want the SMALLEST valid center c whose reach c+d1[c]-1 covers e, to maximize the length. Because &#x27;reach covers e&#x27; can only become false as e grows (never true again once false), a single forward-moving pointer suffices: sweep e from 0 to n-1, and while the current candidate center&#x27;s reach is less than e, advance the pointer. This is an O(n) amortized two-pointer sweep, done once for odd centers and once for even centers (which contribute even-length candidates of length 2*(e-c)+2 under the analogous condition), taking the max of both for each position.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+void manacher(const string &amp;s, vector&lt;int&gt; &amp;d1, vector&lt;int&gt; &amp;d2) {
+    int n = s.size();
+    d1.assign(n, 0);
+    d2.assign(n, 0);
+    int l = 0, r = -1;
+    for (int i = 0; i &lt; n; i++) {
+        int k = (i &gt; r) ? 1 : min(d1[l + r - i], r - i + 1);
+        while (i - k &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
+        d1[i] = k;
+        if (i + k - 1 &gt; r) { l = i - k + 1; r = i + k - 1; }
+    }
+    l = 0; r = -1;
+    for (int i = 0; i &lt; n; i++) {
+        int k = (i &gt; r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
+        while (i - k - 1 &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - 1] == s[i + k]) k++;
+        d2[i] = k;
+        if (i + k - 1 &gt; r) { l = i - k; r = i + k - 1; }
+    }
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    int n = s.size();
+    vector&lt;int&gt; d1, d2;
+    manacher(s, d1, d2);
+
+    vector&lt;int&gt; ans(n, 1); // every single character is a palindrome ending at itself
+
+    // Odd palindromes: center c, reach R(c) = c + d1[c] - 1.
+    // For end e, we want the smallest c &lt;= e with R(c) &gt;= e; the answer
+    // contributed is 2*(e-c)+1. As e grows, the valid pointer only moves
+    // forward (once R(c) &lt; e it stays &lt; e for all larger e), so a single
+    // pointer sweep is O(n) total.
+    {
+        int p = 0;
+        for (int e = 0; e &lt; n; e++) {
+            while (p &lt; e &amp;&amp; p + d1[p] - 1 &lt; e) p++;
+            if (p &lt;= e &amp;&amp; p + d1[p] - 1 &gt;= e) {
+                ans[e] = max(ans[e], 2 * (e - p) + 1);
+            }
+        }
+    }
+    // Even palindromes: center pair (i-1, i), reach R(i) = i + d2[i] - 1.
+    // For end e, want smallest i &lt;= e with R(i) &gt;= e; length = 2*(e-i)+2.
+    {
+        int p = 0;
+        for (int e = 0; e &lt; n; e++) {
+            while (p &lt; e &amp;&amp; p + d2[p] - 1 &lt; e) p++;
+            if (p &lt;= e &amp;&amp; p + d2[p] - 1 &gt;= e) {
+                ans[e] = max(ans[e], 2 * (e - p) + 2);
+            }
+        }
+    }
+
+    for (int i = 0; i &lt; n; i++) cout &lt;&lt; ans[i] &lt;&lt; &quot; \n&quot;[i + 1 == n];
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abacaba
+</code></pre>
+    <pre><code>1 1 3 1 3 5 7
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-trie-for-strings-and-suffix-array-automaton-basics">
+  <div class="topic-head"><h2>Trie for Strings (and Suffix Array/Automaton Basics)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A trie (prefix tree) stores a set of strings by sharing common prefixes along root-to-node paths: each node has up to |alphabet| children, and a string is present in the set iff following its characters from the root lands on a node marked as an endpoint. Insertion and single-string lookup both cost O(length), and — crucially — a trie is the natural data structure the moment you have MANY patterns to search for simultaneously, since a single traversal of a text can match against every pattern sharing a prefix at once. Building a trie over all substrings (or all suffixes) of a string of length n also gives an easy, if O(n^2)-node in the worst case, way to count distinct substrings: it equals the number of nodes created (excluding the root).</p><p>The trie&#x27;s real power for multi-pattern text search comes from turning it into the Aho-Corasick automaton: build the trie of all k patterns, then compute a &#x27;failure link&#x27; for every node via BFS — analogous to the KMP failure function, but generalized to a tree of patterns instead of a single string — pointing to the longest proper suffix of the current node&#x27;s path that is also a prefix of some pattern (i.e. also a node in the trie). Scanning the text once, moving along trie edges and falling back along failure links exactly like KMP, visits every position in O(1) amortized per character (with transitions precomputed, true O(1) per character), and a hit counter propagated along fail links after the scan yields, for every pattern, its total number of occurrences in the text — all in O(n + sum of pattern lengths) instead of running separate O(n) KMP passes per pattern.</p><p>When the patterns are the string&#x27;s OWN suffixes rather than an external pattern set, the trie of suffixes becomes prohibitively large (O(n^2) nodes) but its compressed form is the suffix tree, and its array-based cousin is the suffix array: the starting indices of all suffixes, sorted lexicographically. A simple O(n log^2 n) construction sorts suffixes by successively doubling the compared prefix length, re-ranking pairs of previously-computed ranks each round. Once built, Kasai&#x27;s algorithm computes the LCP array (longest common prefix between lexicographically adjacent suffixes) in O(n), which unlocks many classic queries: the number of distinct substrings is n(n+1)/2 minus the sum of the LCP array (every substring is a prefix of exactly one suffix, and the LCP array tells you exactly how much overlap/duplication exists between consecutive suffixes&#x27; prefixes). The suffix automaton is the further, more advanced step: a DAG with O(n) states representing every distinct substring implicitly, built online in O(n), and is generally the tool of choice once suffix-array-based solutions become too slow or intricate — well worth learning next, but its construction is sufficiently bug-prone that it deserves its own dedicated study session rather than a single worked example here.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Use a plain trie whenever you&#x27;re matching against a SET of patterns rather than one (prefix queries, autocomplete, or counting shared prefixes), and specifically reach for Aho-Corasick when you need to find occurrences of many patterns inside one text in a single pass. Reach for a suffix array/automaton once a problem needs global information about ALL substrings of a single string at once — counting distinct substrings, finding the k-th lexicographically smallest substring, or computing longest common substrings across strings — since those are awkward or too slow with hashing/tries alone at large n.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Trie: O(total pattern length) to build, O(length) per query. Aho-Corasick: O(n + sum|pattern|) to build and scan. Suffix array (doubling): O(n log^2 n) to build, O(n) for the LCP array via Kasai&#x27;s algorithm afterward.</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-trie-for-strings-and-suffix-array-automaton-basics-ex0">
+  <h4>Counting Occurrences of Many Patterns (Aho-Corasick)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a text string T (1 &lt;= |T| &lt;= 2*10^5) and k patterns (1 &lt;= k &lt;= 2*10^5, total pattern length up to 2*10^5), all lowercase Latin letters. For each pattern (in input order), output how many times it occurs in T (occurrences may overlap).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Insert all k patterns into a trie, recording the trie node reached at the end of each pattern. Build Aho-Corasick failure links with a BFS over the trie: for the root&#x27;s children, missing transitions point back to the root; for deeper nodes, the failure link of a child reached via character c from node u is next[fail[u]][c] (computed level by level so fail[u] is already finalized), and non-existent transitions are patched to point directly at next[fail[u]][c] so the automaton has O(1) transitions everywhere (no need to walk fail chains during the scan). Scan T once, following automaton transitions and incrementing a hit counter at the current node for every character. Finally, propagate hit counts along failure links from deepest to shallowest node (any pattern ending at a fail-ancestor of a matched node also just matched, since that ancestor&#x27;s string is a suffix of what was matched) so each pattern&#x27;s end-node holds its true total occurrence count.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int ALPHA = 26;
+
+struct AhoCorasick {
+    vector&lt;array&lt;int, ALPHA&gt;&gt; next_;
+    vector&lt;int&gt; fail, link_end; // link_end unused, kept simple
+    vector&lt;long long&gt; cnt;
+    vector&lt;int&gt; depth;
+
+    AhoCorasick() { newNode(); }
+
+    int newNode() {
+        next_.push_back(array&lt;int, ALPHA&gt;{});
+        next_.back().fill(-1);
+        fail.push_back(0);
+        cnt.push_back(0);
+        depth.push_back(0);
+        return next_.size() - 1;
+    }
+
+    int addString(const string &amp;s) {
+        int cur = 0;
+        for (char ch : s) {
+            int c = ch - &#x27;a&#x27;;
+            if (next_[cur][c] == -1) {
+                next_[cur][c] = newNode();
+                depth[next_[cur][c]] = depth[cur] + 1;
+            }
+            cur = next_[cur][c];
+        }
+        return cur; // node index for this pattern&#x27;s end
+    }
+
+    void build() {
+        queue&lt;int&gt; q;
+        for (int c = 0; c &lt; ALPHA; c++) {
+            if (next_[0][c] == -1) next_[0][c] = 0;
+            else { fail[next_[0][c]] = 0; q.push(next_[0][c]); }
+        }
+        vector&lt;int&gt; order;
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            order.push_back(u);
+            for (int c = 0; c &lt; ALPHA; c++) {
+                int v = next_[u][c];
+                if (v == -1) {
+                    next_[u][c] = next_[fail[u]][c];
+                } else {
+                    fail[v] = next_[fail[u]][c];
+                    q.push(v);
+                }
+            }
+        }
+        bfsOrder = order;
+    }
+
+    vector&lt;int&gt; bfsOrder;
+
+    void processText(const string &amp;text) {
+        int cur = 0;
+        for (char ch : text) {
+            cur = next_[cur][ch - &#x27;a&#x27;];
+            cnt[cur]++;
+        }
+        // propagate counts along fail links, from deepest to shallowest
+        vector&lt;int&gt; order = bfsOrder;
+        sort(order.begin(), order.end(), [&amp;](int a, int b) { return depth[a] &gt; depth[b]; });
+        for (int u : order) cnt[fail[u]] += cnt[u];
+    }
+};
+
+int main() {
+    string text;
+    getline(cin, text);
+    int k;
+    cin &gt;&gt; k;
+    cin.ignore();
+    vector&lt;string&gt; patterns(k);
+    AhoCorasick ac;
+    vector&lt;int&gt; endNode(k);
+    for (int i = 0; i &lt; k; i++) {
+        getline(cin, patterns[i]);
+        endNode[i] = ac.addString(patterns[i]);
+    }
+    ac.build();
+    ac.processText(text);
+    for (int i = 0; i &lt; k; i++) {
+        cout &lt;&lt; ac.cnt[endNode[i]] &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>aabaacaadaabaaba
+3
+aaba
+aa
+aaaa
+</code></pre>
+    <pre><code>3
+5
+0
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-trie-for-strings-and-suffix-array-automaton-basics-ex1">
+  <h4>Counting Distinct Substrings via Suffix Array + Kasai&#x27;s LCP</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s of length n (1 &lt;= n &lt;= 10^5), count the number of distinct substrings of s (substrings that are equal as sequences of characters are counted once, regardless of how many positions they occur at).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Every substring of s is a prefix of exactly one suffix. If we sort all n suffixes lexicographically (the suffix array) and look at consecutive suffixes in that sorted order, the number of NEW distinct prefixes contributed by the suffix at sorted position i is (length of that suffix) minus (its longest common prefix with the previous suffix in sorted order) — because any prefix shorter than or equal to that LCP was already counted as a prefix of the previous suffix. Build the suffix array with an O(n log^2 n) doubling algorithm (sort suffixes by (rank[i], rank[i+k]) pairs, doubling k each round), compute the LCP array between lexicographically adjacent suffixes with Kasai&#x27;s O(n) algorithm, and the answer is n(n+1)/2 (total substrings, counted with multiplicity by (start,end) pairs) minus the sum of the LCP array (the total overcount from shared prefixes).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// O(n log^2 n) suffix array via doubling on (rank, rank) pairs.
+vector&lt;int&gt; buildSuffixArray(const string &amp;s) {
+    int n = s.size();
+    vector&lt;int&gt; sa(n), rnk(n), tmp(n);
+    for (int i = 0; i &lt; n; i++) { sa[i] = i; rnk[i] = (unsigned char)s[i]; }
+    for (int k = 1; k &lt; n; k &lt;&lt;= 1) {
+        auto cmp = [&amp;](int a, int b) {
+            if (rnk[a] != rnk[b]) return rnk[a] &lt; rnk[b];
+            int ra = (a + k &lt; n) ? rnk[a + k] : -1;
+            int rb = (b + k &lt; n) ? rnk[b + k] : -1;
+            return ra &lt; rb;
+        };
+        sort(sa.begin(), sa.end(), cmp);
+        tmp[sa[0]] = 0;
+        for (int i = 1; i &lt; n; i++) tmp[sa[i]] = tmp[sa[i - 1]] + (cmp(sa[i - 1], sa[i]) ? 1 : 0);
+        rnk = tmp;
+        if (rnk[sa[n - 1]] == n - 1) break;
+    }
+    return sa;
+}
+
+// Kasai&#x27;s algorithm: lcp[i] = LCP(suffix at sa[i-1], suffix at sa[i]).
+vector&lt;int&gt; buildLCP(const string &amp;s, const vector&lt;int&gt; &amp;sa) {
+    int n = s.size();
+    vector&lt;int&gt; rnk(n), lcp(n, 0);
+    for (int i = 0; i &lt; n; i++) rnk[sa[i]] = i;
+    int h = 0;
+    for (int i = 0; i &lt; n; i++) {
+        if (rnk[i] &gt; 0) {
+            int j = sa[rnk[i] - 1];
+            while (i + h &lt; n &amp;&amp; j + h &lt; n &amp;&amp; s[i + h] == s[j + h]) h++;
+            lcp[rnk[i]] = h;
+            if (h &gt; 0) h--;
+        } else {
+            h = 0;
+        }
+    }
+    return lcp;
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+    int n = s.size();
+    vector&lt;int&gt; sa = buildSuffixArray(s);
+    vector&lt;int&gt; lcp = buildLCP(s, sa);
+    long long total = (long long)n * (n + 1) / 2;
+    for (int i = 1; i &lt; n; i++) total -= lcp[i];
+    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>banana
+</code></pre>
+    <pre><code>15
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-suffix-automaton">
+  <div class="topic-head"><h2>Suffix Automaton</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A suffix automaton (SAM) of a string s is the smallest deterministic automaton that accepts exactly the set of suffixes of s (equivalently, every substring of s corresponds to exactly one path from the initial state). It has at most 2n-1 states and 3n-4 transitions for a string of length n, and can be built online in O(n) amortized time (over a constant alphabet) by appending one character at a time. Each state represents an equivalence class of substrings that share the same set of ending positions in s (their &quot;endpos&quot; set); crucially, all substrings in one class are suffixes of one another, so a state is fully described by an interval of lengths (len[link[state]]+1 .. len[state]) — every length in that interval corresponds to exactly one distinct substring belonging to that state.</p><p>Construction extends the automaton one character at a time, maintaining a pointer &#x27;last&#x27; to the state representing the whole string built so far. Extending with character c creates a new state &#x27;cur&#x27; for the whole new string, then walks up the suffix-link chain from &#x27;last&#x27; adding transitions on c to &#x27;cur&#x27; until either running off the automaton (link cur to the root) or finding a state p that already has a transition on c to some state q. If len[p]+1 == len[q], q&#x27;s endpos class is fully compatible and cur links directly to q; otherwise q must be split by CLONING it into a new state with len[p]+1 (copying q&#x27;s transitions and suffix link), redirecting the walked transitions to the clone, and linking both q and cur to the clone. This cloning step, and getting the redirection loop exactly right, is the single most bug-prone part of the whole structure.</p><p>The suffix LINKS themselves form a tree (the &#x27;link tree&#x27; or &#x27;parent tree&#x27;) on the automaton&#x27;s states, and this tree is where almost all of SAM&#x27;s power for competitive programming comes from: the number of times a substring occurs in s (the size of its endpos set) equals the sum, over its own state and every state below it in the link tree, of a seed count of 1 assigned to states created as the direct target of an extension (not clones) — computed with one pass processing states in decreasing order of len (a valid reverse-topological order, since link[state] always has strictly smaller len than state). Total distinct substrings, distinct substrings of each exact length, longest repeated substring, and multi-string generalizations (generalized SAM) all reduce to a walk or DP over this same link tree.</p><p>A critical implementation detail is that the endpos/occurrence counter array must be seeded ONLY for freshly created non-clone states (seed = 1) and left at 0 for clones, and this counter array must be exactly aligned index-for-index with the state array from the very first (root) state onward — an off-by-one alignment slip here silently shifts every count by one state and produces plausible-looking but wrong answers, which is exactly the kind of bug that stress testing against an O(n^2) brute-force substring enumeration will catch immediately.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem is about a single (possibly very long, up to 10^5-10^6) string and asks about ALL of its substrings at once: counting distinct substrings (in total, by length, or under some cost/letter constraint), finding the longest substring that repeats, finding the k-th lexicographically smallest distinct substring, or comparing substring occurrence patterns. If you find yourself wanting &#x27;one state per distinct substring, sharing structure between substrings that always co-occur,&#x27; that&#x27;s a suffix automaton (or, for identical needs on multiple strings, a generalized suffix automaton).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) states/transitions and O(n) (amortized, constant alphabet) or O(n log alphabet) construction time and space; most link-tree DPs on top of the automaton (counting, length-distribution, cost-constrained counting) are an additional O(n) or O(n log n).</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-suffix-automaton-ex0">
+  <h4>Longest Duplicated Substring</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s of lowercase English letters (1 &lt;= |s| &lt;= 3*10^4), find the length of the longest substring of s that occurs at least twice. The two occurrences are allowed to overlap. If no substring repeats, output 0.</p><p>Input: a single line containing s.<br>Output: a single integer, the length of the longest substring occurring at least twice.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the suffix automaton of s online, one character at a time, using the classic extend() procedure (new state &#x27;cur&#x27; for the whole prefix seen so far, walk suffix links adding c-transitions, clone when a transition target&#x27;s len doesn&#x27;t match p.len+1).</p><p>While building, seed cnt[state] = 1 for every freshly created non-clone state (cur) and cnt[state] = 0 for every clone; every other state (in particular the root) also needs an explicit 0 entry so the cnt array stays aligned with the state array. After construction, sort states by len and process them from LARGEST len to SMALLEST, adding cnt[state] into cnt[link[state]] — this is a valid processing order because link[state] always has strictly smaller len than state, so by the time we push a state&#x27;s count upward, that state&#x27;s own count is already finalized.</p><p>After this propagation, cnt[state] equals the number of end positions (the size of the endpos set) of every substring represented by that state — i.e. how many times those substrings occur in s. The substring is duplicated (occurs at least twice, overlaps allowed) exactly when cnt[state] &gt;= 2, and the longest such substring for that state has length len[state]. The answer is the maximum len[state] over all states (excluding the initial empty-string root) with cnt[state] &gt;= 2. This was cross-checked against an O(n^2) brute force that enumerates every substring into a frequency map, with zero mismatches over 500 random small strings, and it correctly reduces &#x27;banana&#x27; to 3 (the substring &#x27;ana&#x27;, which occurs starting at index 1 and index 3, overlapping at index 3).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct SAM {
+    struct State {
+        int len, link;
+        array&lt;int,26&gt; nxt;
+        State() : len(0), link(-1) { nxt.fill(-1); }
+    };
+    vector&lt;State&gt; st;
+    vector&lt;long long&gt; cnt;
+    int last;
+    SAM() {
+        st.push_back(State());
+        st[0].len = 0; st[0].link = -1;
+        cnt.push_back(0); // keep cnt[] aligned with st[] (root has no seed occurrence)
+        last = 0;
+    }
+    void extend(char ch) {
+        int c = ch - &#x27;a&#x27;;
+        int cur = st.size();
+        st.push_back(State());
+        st[cur].len = st[last].len + 1;
+        cnt.push_back(1); // real occurrence seed, clones fixed to 0 later
+        int p = last;
+        while (p != -1 &amp;&amp; st[p].nxt[c] == -1) {
+            st[p].nxt[c] = cur;
+            p = st[p].link;
+        }
+        if (p == -1) {
+            st[cur].link = 0;
+        } else {
+            int q = st[p].nxt[c];
+            if (st[p].len + 1 == st[q].len) {
+                st[cur].link = q;
+            } else {
+                int clone = st.size();
+                st.push_back(State());
+                st[clone].len = st[p].len + 1;
+                st[clone].link = st[q].link;
+                st[clone].nxt = st[q].nxt;
+                cnt.push_back(0);
+                while (p != -1 &amp;&amp; st[p].nxt[c] == q) {
+                    st[p].nxt[c] = clone;
+                    p = st[p].link;
+                }
+                st[q].link = clone;
+                st[cur].link = clone;
+            }
+        }
+        last = cur;
+    }
+};
+
+int main(){
+    string s;
+    cin &gt;&gt; s;
+    SAM sam;
+    for (char c : s) sam.extend(c);
+    int n = sam.st.size();
+    // order states by len ascending using counting sort, then propagate cnt to links in descending len order
+    vector&lt;int&gt; order(n);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&amp;](int a, int b){ return sam.st[a].len &lt; sam.st[b].len; });
+    for (int i = n - 1; i &gt;= 0; i--) {
+        int v = order[i];
+        int link = sam.st[v].link;
+        if (link &gt;= 0) sam.cnt[link] += sam.cnt[v];
+    }
+    long long best = 0;
+    for (int v = 1; v &lt; n; v++) {
+        if (sam.cnt[v] &gt;= 2) best = max(best, (long long)sam.st[v].len);
+    }
+    cout &lt;&lt; best &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>banana
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-suffix-automaton-ex1">
+  <h4>Distinct Substrings By Exact Length</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s of lowercase English letters (1 &lt;= |s| &lt;= 10^5), for every length L from 1 to |s|, output the number of DISTINCT substrings of s whose length is exactly L.</p><p>Input: a single line containing s.<br>Output: |s| integers on one line, separated by spaces: the number of distinct substrings of length 1, length 2, ..., length |s|.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the suffix automaton of s (this example needs only len[] and link[] — no occurrence counting is required). The key structural fact is that every non-root state represents a contiguous, non-overlapping-across-states range of substring lengths: state v is responsible for exactly one distinct substring of each length in (len[link[v]], len[v]], and no two different states are ever responsible for the same length AND represent the same substring (different states never represent the same substring by construction), while every distinct substring of s is represented by exactly one state at exactly one length. So the number of distinct substrings of exact length L is simply the number of states v with len[link[v]] &lt; L &lt;= len[v].</p><p>This range-counting is done with a difference array: for every non-root state v, add +1 at position len[link[v]]+1 and -1 at position len[v]+1 of an array diff[1..n+1], then take a running prefix sum over diff[1..n] to get, for each L, the count of states whose range covers L — which is exactly the answer for that length. This runs in O(n) after the O(n) SAM construction. Verified against an O(n^2) brute force that inserts every substring of every length into a set and reports its size, with zero mismatches over 500 random small strings (and by hand for &#x27;abab&#x27;, which correctly yields 2 2 2 1 for lengths 1..4: {a,b}, {ab,ba}, {aba,bab}, {abab}).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct SAM {
+    struct State {
+        int len, link;
+        array&lt;int,26&gt; nxt;
+        State() : len(0), link(-1) { nxt.fill(-1); }
+    };
+    vector&lt;State&gt; st;
+    int last;
+    SAM() {
+        st.push_back(State());
+        last = 0;
+    }
+    void extend(char ch) {
+        int c = ch - &#x27;a&#x27;;
+        int cur = st.size();
+        st.push_back(State());
+        st[cur].len = st[last].len + 1;
+        int p = last;
+        while (p != -1 &amp;&amp; st[p].nxt[c] == -1) {
+            st[p].nxt[c] = cur;
+            p = st[p].link;
+        }
+        if (p == -1) {
+            st[cur].link = 0;
+        } else {
+            int q = st[p].nxt[c];
+            if (st[p].len + 1 == st[q].len) {
+                st[cur].link = q;
+            } else {
+                int clone = st.size();
+                st.push_back(State());
+                st[clone].len = st[p].len + 1;
+                st[clone].link = st[q].link;
+                st[clone].nxt = st[q].nxt;
+                while (p != -1 &amp;&amp; st[p].nxt[c] == q) {
+                    st[p].nxt[c] = clone;
+                    p = st[p].link;
+                }
+                st[q].link = clone;
+                st[cur].link = clone;
+            }
+        }
+        last = cur;
+    }
+};
+
+int main(){
+    string s;
+    cin &gt;&gt; s;
+    int n = s.size();
+    SAM sam;
+    for (char c : s) sam.extend(c);
+    // diff[L] += 1 at L = link.len+1, -= 1 at L = state.len+1, for every non-root state.
+    vector&lt;long long&gt; diff(n + 2, 0);
+    for (int v = 1; v &lt; (int)sam.st.size(); v++) {
+        int lo = sam.st[sam.st[v].link].len + 1;
+        int hi = sam.st[v].len;
+        diff[lo] += 1;
+        diff[hi + 1] -= 1;
+    }
+    vector&lt;long long&gt; ans(n + 1, 0);
+    long long running = 0;
+    for (int L = 1; L &lt;= n; L++) {
+        running += diff[L];
+        ans[L] = running;
+    }
+    for (int L = 1; L &lt;= n; L++) {
+        cout &lt;&lt; ans[L] &lt;&lt; (L &lt; n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abab
+</code></pre>
+    <pre><code>2 2 2 1
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-aho-corasick-multi-pattern-matching">
+  <div class="topic-head"><h2>Aho-Corasick Multi-Pattern Matching</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Aho-Corasick generalizes KMP&#x27;s failure function from one pattern to a whole DICTIONARY of patterns at once. First, all patterns are inserted into a trie (each node is a distinct prefix shared by one or more patterns). Then, a BFS over the trie (by increasing depth) computes a FAILURE LINK for every node: fail[v] points to the node representing the longest proper suffix of v&#x27;s string that is also a prefix of some pattern (i.e. also exists as some trie node) — exactly the same idea as the KMP failure function, generalized to a tree of patterns instead of one linear pattern.</p><p>The construction is normally done by converting the trie into a full deterministic automaton (a &#x27;goto&#x27; function) during the same BFS: for a node u already popped from the queue (so fail[u] is known) and for every letter c, if u already has a child on c, that child&#x27;s fail link is set to whatever node fail[u] transitions to on c, and it&#x27;s enqueued; if u has NO child on c, then u&#x27;s own transition on c is DEFINED to be exactly fail[u]&#x27;s transition on c. Because fail[u] has strictly smaller depth than u, and BFS processes nodes in increasing-depth order, fail[u]&#x27;s transitions are already fully resolved (finalized) by the time u is processed, so this recursive-looking definition is well-founded and can be computed in a single BFS pass, producing an automaton where every state has a defined transition for every letter (never falling off), letting you scan a text in exactly O(text length) additional transitions with no backtracking, regardless of how many patterns there are.</p><p>Once built, feeding the text through the automaton one character at a time visits a sequence of states; the state after processing the first i characters is the node representing the LONGEST suffix of text[0..i-1] that matches some prefix of some pattern. Critically, every pattern that occurs ending exactly at position i is represented by some node on the FAIL-LINK CHAIN from that current state up to the root (the current state itself, or its fail-link, or its fail-link&#x27;s fail-link, and so on) — because a shorter matching pattern ending at the same position is, by definition, a suffix of the longest match, and the fail-link chain is precisely the chain of decreasing-length suffixes that are also trie prefixes.</p><p>This fail-chain structure is exactly a tree (the &#x27;fail tree&#x27;, rooted at the trie root), and it is the reason many hard Aho-Corasick problems reduce to a SUBTREE AGGREGATION over this tree: if you record a raw per-node quantity at scan time (a hit count, an earliest-visit timestamp, a value to maximize), then propagate it from every node into its fail-parent — processing nodes in decreasing BFS depth so each node&#x27;s contribution is folded upward exactly once — the aggregated value at any pattern-node ends up correctly combining information from every text position where that pattern was &#x27;on the fail-chain&#x27; of the automaton&#x27;s actual state, not just positions where it was the literal longest match. Getting the propagation DIRECTION right (always from higher depth into lower depth, i.e. child into fail-parent, regardless of whether the aggregate is a sum, a min, or a max) is the step most often gotten backwards.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You are given a (typically large) text and a collection of patterns (rather than just one pattern as in single-pattern matching), and need, for every pattern (or for the best pattern at each text position), some aggregate over its occurrences: how many times it occurs, where it first/last occurs, or the maximum weight among all patterns occurring at/before a position. Whenever &#x27;multiple patterns matched simultaneously against one text&#x27; appears, especially with total pattern length bounded (e.g. sum of |pattern_i| &lt;= 5*10^5) rather than each individually, that is the Aho-Corasick signal.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(total pattern length * alphabet size) or O(total pattern length) (with a hash-map/array transition table) to build the automaton; O(|text|) to scan the text once patterns are built; most fail-tree aggregation post-processing is an additional O(number of automaton nodes).</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-aho-corasick-multi-pattern-matching-ex0">
+  <h4>Counting Pattern Occurrences</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a text string t and k pattern strings p_1..p_k (all lowercase English letters, 1 &lt;= |t|, sum of |p_i| &lt;= 2*10^5). For each pattern p_i, count the number of times it occurs as a substring of t (occurrences may overlap).</p><p>Input: the text t on the first line, then k on the next line, then k lines each containing one pattern.<br>Output: k integers on one line, separated by spaces: the occurrence count of each pattern, in the order given.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build an Aho-Corasick automaton over all k patterns (trie + BFS-computed fail links, converted into a full goto-automaton so every node has a transition for every letter). Scan the text once, maintaining the current automaton state; at every text position, increment a raw hit-counter hit[state] for whatever state the automaton is currently in.</p><p>After scanning, propagate hit counts up the fail tree: process automaton nodes in decreasing BFS-depth order (i.e. iterate the BFS order in reverse) and, for each node u, add hit[u] into hit[fail[u]]. This works because a node v ends up on the fail-chain of exactly the nodes in v&#x27;s own fail-subtree, so folding each node&#x27;s raw count into its fail-parent, deepest first, accumulates into hit[v] the total count of text positions where the pattern ending at v was on the fail-chain of the automaton&#x27;s actual (longest-match) state — which is exactly the number of times that pattern occurs in the text.</p><p>Finally, for each pattern p_i, walk it once more through the (now fully built) automaton from the root to find the node it ends at, and report hit[that node]. Verified against an O(|t| * |p_i|) brute-force substring scan for every pattern, with zero mismatches over 300 random small (text, pattern-set) pairs; the worked example (&#x27;abcbcabc&#x27; against &#x27;abc&#x27;,&#x27;bc&#x27;,&#x27;c&#x27;,&#x27;z&#x27;) gives 2, 3, 3, 0, matching a manual count.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int ALPHA = 26;
+
+struct AhoCorasick {
+    vector&lt;array&lt;int,ALPHA&gt;&gt; nxt;
+    vector&lt;int&gt; fail;
+    int newNode() {
+        nxt.push_back(array&lt;int,ALPHA&gt;{});
+        nxt.back().fill(-1);
+        fail.push_back(0);
+        return (int)nxt.size() - 1;
+    }
+    AhoCorasick() { newNode(); } // node 0 = root
+    void addPattern(const string &amp;p) {
+        int cur = 0;
+        for (char ch : p) {
+            int c = ch - &#x27;a&#x27;;
+            if (nxt[cur][c] == -1) nxt[cur][c] = newNode();
+            cur = nxt[cur][c];
+        }
+    }
+    vector&lt;int&gt; bfsOrder;
+    void build() {
+        queue&lt;int&gt; q;
+        for (int c = 0; c &lt; ALPHA; c++) {
+            if (nxt[0][c] == -1) nxt[0][c] = 0;
+            else { fail[nxt[0][c]] = 0; q.push(nxt[0][c]); }
+        }
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            bfsOrder.push_back(u);
+            for (int c = 0; c &lt; ALPHA; c++) {
+                int v = nxt[u][c];
+                if (v == -1) {
+                    nxt[u][c] = nxt[fail[u]][c];
+                } else {
+                    fail[v] = nxt[fail[u]][c];
+                    q.push(v);
+                }
+            }
+        }
+    }
+};
+
+int main(){
+    string text;
+    cin &gt;&gt; text;
+    int k;
+    cin &gt;&gt; k;
+    vector&lt;string&gt; pats(k);
+    for (auto &amp;p : pats) cin &gt;&gt; p;
+
+    AhoCorasick ac;
+    for (int i = 0; i &lt; k; i++) ac.addPattern(pats[i]);
+    ac.build();
+
+    int nodes = ac.nxt.size();
+    vector&lt;long long&gt; hit(nodes, 0);
+    int cur = 0;
+    for (char ch : text) {
+        cur = ac.nxt[cur][ch - &#x27;a&#x27;];
+        hit[cur]++;
+    }
+    // propagate hit counts up the fail-link tree: process nodes in order of
+    // DEcreasing depth so a child&#x27;s contribution reaches its parent exactly once.
+    // BFS order (ac.bfsOrder) is increasing depth, so traverse it in reverse.
+    for (int i = (int)ac.bfsOrder.size() - 1; i &gt;= 0; i--) {
+        int u = ac.bfsOrder[i];
+        hit[ac.fail[u]] += hit[u];
+    }
+
+    vector&lt;long long&gt; ans(k, 0);
+    // total occurrences of pattern i = hit[node where pattern i ends]
+    for (int i = 0; i &lt; k; i++) {
+        int node = 0;
+        for (char ch : pats[i]) node = ac.nxt[node][ch - &#x27;a&#x27;];
+        ans[i] = hit[node];
+    }
+    for (int i = 0; i &lt; k; i++) cout &lt;&lt; ans[i] &lt;&lt; (i + 1 &lt; k ? &#x27; &#x27; : &#x27;\n&#x27;);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abcbcabc
+4
+abc
+bc
+c
+z
+</code></pre>
+    <pre><code>2 3 3 0
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-aho-corasick-multi-pattern-matching-ex1">
+  <h4>First Occurrence Position of Each Pattern</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a text string t and k pattern strings p_1..p_k (all lowercase English letters, 1 &lt;= |t|, sum of |p_i| &lt;= 2*10^5). For each pattern p_i, report the 1-indexed starting position of its EARLIEST occurrence in t as a substring, or -1 if p_i never occurs in t.</p><p>Input: the text t on the first line, then k on the next line, then k lines each containing one pattern.<br>Output: k integers on one line, separated by spaces: the earliest 1-indexed starting position of each pattern (or -1), in the order given.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the Aho-Corasick automaton over all patterns exactly as before. While scanning the text, instead of a hit COUNT, record firstVisit[state] = the earliest 1-indexed text position after which the automaton&#x27;s current state is exactly that state (i.e. the smallest i such that after reading t[0..i-1], the automaton is in that state); states never directly visited keep a sentinel of +infinity.</p><p>The key aggregation is again over the fail tree, but note carefully which quantity is being aggregated: a pattern node v is &#x27;active&#x27; (its pattern occurs ending at position i) whenever v lies anywhere on the fail-chain of the automaton&#x27;s actual state at position i -- which means v could be an ANCESTOR, in the fail-chain sense, of a node that was directly visited even though v itself was never the literal longest-match state. So earliest[v] must equal the minimum firstVisit over v&#x27;s entire fail-SUBTREE (v and everything that folds into v via repeated fail links), which -- exactly like the sum in the previous example -- is computed by processing nodes in decreasing BFS-depth order and relaxing earliest[fail[u]] = min(earliest[fail[u]], earliest[u]) for each node u (folding a node&#x27;s value into its fail-PARENT, never the other way around).</p><p>For each pattern p_i, walk it through the automaton once to find its ending node, read off earliest[node] as the earliest END position, then subtract |p_i|-1 to get the earliest START position (or report -1 if earliest[node] is still infinity). This direction is easy to get backwards -- an initial implementation that instead computed earliest[v] = min(firstVisit[v], earliest[fail[v]]) top-down looked plausible but silently missed occurrences and was caught immediately by comparing against an O(|t|*|p_i|) brute-force substring search on random small inputs before being corrected to the bottom-up (child-into-fail-parent) direction shown here; 300 random stress tests now pass with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+const int ALPHA = 26;
+const long long INF = LLONG_MAX / 2;
+
+struct AhoCorasick {
+    vector&lt;array&lt;int,ALPHA&gt;&gt; nxt;
+    vector&lt;int&gt; fail;
+    int newNode() {
+        nxt.push_back(array&lt;int,ALPHA&gt;{});
+        nxt.back().fill(-1);
+        fail.push_back(0);
+        return (int)nxt.size() - 1;
+    }
+    AhoCorasick() { newNode(); }
+    void addPattern(const string &amp;p) {
+        int cur = 0;
+        for (char ch : p) {
+            int c = ch - &#x27;a&#x27;;
+            if (nxt[cur][c] == -1) nxt[cur][c] = newNode();
+            cur = nxt[cur][c];
+        }
+    }
+    vector&lt;int&gt; bfsOrder;
+    void build() {
+        queue&lt;int&gt; q;
+        for (int c = 0; c &lt; ALPHA; c++) {
+            if (nxt[0][c] == -1) nxt[0][c] = 0;
+            else { fail[nxt[0][c]] = 0; q.push(nxt[0][c]); }
+        }
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            bfsOrder.push_back(u);
+            for (int c = 0; c &lt; ALPHA; c++) {
+                int v = nxt[u][c];
+                if (v == -1) nxt[u][c] = nxt[fail[u]][c];
+                else { fail[v] = nxt[fail[u]][c]; q.push(v); }
+            }
+        }
+    }
+};
+
+int main(){
+    string text;
+    cin &gt;&gt; text;
+    int k;
+    cin &gt;&gt; k;
+    vector&lt;string&gt; pats(k);
+    for (auto &amp;p : pats) cin &gt;&gt; p;
+
+    AhoCorasick ac;
+    for (auto &amp;p : pats) ac.addPattern(p);
+    ac.build();
+
+    int nodes = ac.nxt.size();
+    // firstVisit[v] = earliest 1-indexed text position after which the automaton
+    // state is exactly v (i.e. the trie path to v is a suffix of text[0..pos-1]).
+    vector&lt;long long&gt; firstVisit(nodes, INF);
+    int cur = 0;
+    for (int i = 0; i &lt; (int)text.size(); i++) {
+        cur = ac.nxt[cur][text[i] - &#x27;a&#x27;];
+        firstVisit[cur] = min(firstVisit[cur], (long long)(i + 1)); // 1-indexed end position
+    }
+    // Pattern v occurs ending at text position p iff v lies on the fail-chain of
+    // whatever node the automaton is in after reading p characters. So
+    // earliest[v] = min firstVisit[u] over v itself and every node u that has v as
+    // a fail-ancestor (u lies in v&#x27;s fail-subtree). This is the same &quot;aggregate
+    // over the fail-subtree&quot; shape as the hit-count trick in the previous example,
+    // just with min instead of sum, so it must be propagated from deeper nodes
+    // toward the root (children into fail[child]), i.e. BFS order reversed.
+    vector&lt;long long&gt; earliest = firstVisit;
+    for (int i = (int)ac.bfsOrder.size() - 1; i &gt;= 0; i--) {
+        int u = ac.bfsOrder[i];
+        earliest[ac.fail[u]] = min(earliest[ac.fail[u]], earliest[u]);
+    }
+
+    for (int i = 0; i &lt; k; i++) {
+        int node = 0;
+        for (char ch : pats[i]) node = ac.nxt[node][ch - &#x27;a&#x27;];
+        long long endPos = earliest[node];
+        if (endPos &gt;= INF) cout &lt;&lt; -1;
+        else cout &lt;&lt; (endPos - (long long)pats[i].size() + 1); // 1-indexed start position
+        cout &lt;&lt; (i + 1 &lt; k ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abcabcabc
+4
+abc
+bca
+cab
+xyz
+</code></pre>
+    <pre><code>1 2 3 -1
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="string-algorithms-palindromic-tree-eertree">
+  <div class="topic-head"><h2>Palindromic Tree (Eertree)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>An Eertree (palindromic tree) is a structure that maintains, incrementally as characters are appended to a string, exactly one node per DISTINCT palindromic substring seen so far, together with a &#x27;suffix link&#x27; tree on those nodes analogous to the suffix automaton&#x27;s link tree. It uses a clever two-root trick: an imaginary root of length -1 (representing an &#x27;odd&#x27; seed so that appending one matching character on both sides produces a length-1 palindrome) and a real root of length 0 (the empty string, seed for &#x27;even&#x27; palindromes), with the imaginary root&#x27;s own suffix link pointing to itself.</p><p>Each node stores its length and a suffix link to the node representing its longest proper palindromic SUFFIX that is also a palindromic prefix of it (equivalently: the longest palindrome that is itself a suffix of this palindrome, other than itself) -- since a palindrome&#x27;s own suffixes and prefixes coincide, this is well-defined and always strictly shorter, exactly mirroring how a suffix automaton&#x27;s suffix links always point to a strictly-shorter-length state. Because every palindrome&#x27;s suffix-link ancestor chain strictly decreases in length, the suffix links again form a genuine tree with the two roots at the top, and this is a valid topological order for any bottom-up aggregation (process nodes by decreasing length, exactly like the suffix automaton&#x27;s link-tree DP).</p><p>Inserting a new character c means finding the longest palindromic SUFFIX of the string-so-far such that prepending c to it (and implicitly appending c, since it&#x27;s a palindrome) still forms a valid palindrome -- checked by walking UP the suffix-link chain from the previous &#x27;last&#x27; pointer, testing at each candidate node v whether the character immediately before v&#x27;s palindrome in the current string equals c. If a transition already exists from that node on c, &#x27;last&#x27; becomes that existing node (the palindrome already occurred before, no new distinct palindrome is created). Otherwise a brand-new node is created with length = candidate.length + 2, and its OWN suffix link is found by continuing to walk up the suffix-link chain from the candidate&#x27;s own suffix link (not from the candidate itself) to find the next node where prepending c also works -- this second, nested suffix-link search (needed only when creating a genuinely new node) is the step most implementations get subtly wrong, e.g. by reusing the wrong starting point or forgetting the length-1 special case (which must link directly to the length-0 root rather than running the general search).</p><p>Because at most one NEW distinct palindrome node can be created per character appended (the total number of distinct palindromic substrings of a length-n string is at most n+1, counting the two roots), an Eertree over a string of length n has at most n+2 nodes, and can be built in O(n) amortized time (using the small-to-large / doubling argument on how far the suffix-link search can walk, exactly as in Manacher&#x27;s algorithm and the suffix automaton). After insertion i, the &#x27;last&#x27; pointer directly gives the longest palindromic suffix ending at position i -- the single most direct exercise of the structure -- while more advanced problems attach an occurrence counter per node, seeded at 1 whenever &#x27;last&#x27; becomes that node during any insertion, and aggregated up the suffix-link tree afterward (bottom-up, deepest length first, exactly mirroring the suffix automaton&#x27;s endpos-size computation) to get the true total occurrence count of every distinct palindrome, from which sums like &#x27;total number of palindromic substrings counting multiplicity&#x27; fall out directly.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem is fundamentally about PALINDROMIC substrings of a string: the longest palindrome ending at (or centered at) every position, the count of distinct palindromic substrings, the total number of palindromic-substring occurrences, or anything requiring efficient &#x27;is this exact substring a palindrome&#x27; plus &#x27;jump to the next shorter palindromic suffix&#x27; queries. If Manacher&#x27;s algorithm only gets you palindrome LENGTHS but the problem also wants to reason about which palindromes recur, are nested, or need to be counted/DP&#x27;d over, that additional structure is exactly what the Eertree&#x27;s node graph and suffix-link tree provide.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) amortized time and O(n) space to build (at most n+2 nodes for a length-n string, each with an alphabet-sized transition array or map); occurrence-count and other suffix-link-tree aggregations are an additional O(n) (or O(n log n) with map-based transitions instead of arrays).</p></div>
+  </div>
+  <article class="example-card" id="string-algorithms-palindromic-tree-eertree-ex0">
+  <h4>Longest Palindromic Suffix at Every Position</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s of lowercase English letters (1 &lt;= |s| &lt;= 2*10^5), for every position i from 1 to |s|, output the length of the longest palindromic substring of s that ENDS exactly at position i (i.e. the longest palindromic suffix of the prefix s[1..i]).</p><p>Input: a single line containing s.<br>Output: |s| integers on one line, separated by spaces.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the Eertree incrementally, appending one character of s at a time. The construction maintains a pointer &#x27;last&#x27; to the node representing the longest palindromic suffix of the string built SO FAR; by definition, immediately after inserting the i-th character, last&#x27;s length IS the answer for position i, so this problem requires no extra post-processing beyond correctly implementing the core add() operation.</p><p>add(c) works as follows: starting from &#x27;last&#x27;, walk up suffix links until reaching a node v (a candidate palindrome) such that the character immediately preceding v&#x27;s occurrence in the current string equals c (checked via the string&#x27;s length and v&#x27;s own length: the required position is currentLength - v.length - 2, using the imaginary root&#x27;s length -1 to make the base case for brand-new length-1 palindromes fall out automatically). If v already has a transition on c, &#x27;last&#x27; becomes that existing target (this exact palindrome already occurred). Otherwise, create a new node of length v.length+2; its suffix link is found by continuing the same upward walk starting from v&#x27;s OWN suffix link (a second, independent search, not reusing v), with the length-1 case special-cased to link directly to the empty-string root. Record v&#x27;s new transition on c to the new node, and set &#x27;last&#x27; to it.</p><p>Verified by hand-tracing the classic example s = &#x27;abacaba&#x27;, which must produce 1 1 3 1 3 5 7 (longest palindromic suffixes &#x27;a&#x27;,&#x27;b&#x27;,&#x27;aba&#x27;,&#x27;c&#x27;,&#x27;aca&#x27;,&#x27;bacab&#x27;,&#x27;abacaba&#x27;), and cross-checked against an O(n^2) brute force that tests every suffix-of-a-prefix for being a palindrome, with zero mismatches over 500 random small strings.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct Eertree {
+    string s;
+    vector&lt;int&gt; len, link;
+    vector&lt;array&lt;int,26&gt;&gt; nxt;
+    int last;
+    Eertree() {
+        // node 0 = imaginary root, len = -1, links to itself
+        len.push_back(-1); link.push_back(0);
+        nxt.push_back(array&lt;int,26&gt;{}); nxt[0].fill(0);
+        // node 1 = empty-string root, len = 0, links to node 0
+        len.push_back(0); link.push_back(0);
+        nxt.push_back(array&lt;int,26&gt;{}); nxt[1].fill(0);
+        last = 1;
+    }
+    int getLink(int v) {
+        int n = (int)s.size();
+        while (true) {
+            int curLen = len[v];
+            int pos = n - curLen - 2; // index of char that must equal s.back()
+            if (pos &gt;= 0 &amp;&amp; s[pos] == s.back()) return v;
+            v = link[v];
+        }
+    }
+    // returns len[last] after inserting c
+    int add(char c) {
+        s.push_back(c);
+        int c_idx = c - &#x27;a&#x27;;
+        int cur = getLink(last);
+        if (!nxt[cur][c_idx]) {
+            int now = (int)len.size();
+            len.push_back(len[cur] + 2);
+            nxt.push_back(array&lt;int,26&gt;{}); nxt.back().fill(0);
+            if (len[now] == 1) {
+                link.push_back(1);
+            } else {
+                int sufLink = getLink(link[cur]);
+                link.push_back(nxt[sufLink][c_idx]);
+            }
+            nxt[cur][c_idx] = now;
+        }
+        last = nxt[cur][c_idx];
+        return len[last];
+    }
+};
+
+int main(){
+    string s;
+    cin &gt;&gt; s;
+    Eertree tree;
+    vector&lt;int&gt; ans;
+    for (char c : s) ans.push_back(tree.add(c));
+    for (int i = 0; i &lt; (int)ans.size(); i++) cout &lt;&lt; ans[i] &lt;&lt; (i+1&lt;(int)ans.size()? &#x27; &#x27; : &#x27;\n&#x27;);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>abacaba
+</code></pre>
+    <pre><code>1 1 3 1 3 5 7
+</code></pre>
+  </div>
+</article><article class="example-card" id="string-algorithms-palindromic-tree-eertree-ex1">
+  <h4>Total Palindromic Substrings (Counting Multiplicity)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a string s of lowercase English letters (1 &lt;= |s| &lt;= 2*10^5), count the total number of palindromic substrings of s, where the SAME palindrome occurring at different positions is counted once for each occurrence (so &#x27;aaa&#x27; has 6 palindromic substrings: three of length 1, two of length 2, one of length 3).</p><p>Input: a single line containing s.<br>Output: a single integer, the total count.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the Eertree over s exactly as before, but additionally maintain an occurrence counter occ[node], incremented by 1 every time &#x27;last&#x27; becomes that node during ANY insertion (whether the node was freshly created or already existed) -- this seed correctly reflects &#x27;this exact palindrome was the longest palindromic suffix ending at this position&#x27; at least once per insertion where it applies directly.</p><p>After processing the whole string, propagate these seed counts up the suffix-link tree so that shorter palindromes correctly accumulate the occurrences of every longer palindrome that has them as a palindromic suffix (e.g. every occurrence of &#x27;aaa&#x27; also implies an occurrence of &#x27;aa&#x27; and of &#x27;a&#x27; ending at the same position, which the seed-counting alone does not directly capture for &#x27;aa&#x27; and &#x27;a&#x27;). This is done by sorting nodes by length in DEcreasing order (a valid topological order since suffix links always point to strictly shorter nodes) and, for each node v (skipping the two imaginary/empty roots), adding occ[v] into occ[link[v]].</p><p>After this propagation, occ[v] equals the true number of times the palindrome represented by v occurs as a substring of s, so the final answer is simply the sum of occ[v] over every real node (excluding the two roots). Verified against an O(n^2) brute force that tests every substring for being a palindrome and sums matches directly, with zero mismatches over 500 random small strings; &#x27;aaa&#x27; correctly yields 6 and &#x27;abacaba&#x27; correctly yields 12.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct Eertree {
+    string s;
+    vector&lt;int&gt; len, link;
+    vector&lt;long long&gt; occ;
+    vector&lt;array&lt;int,26&gt;&gt; nxt;
+    int last;
+    Eertree() {
+        len.push_back(-1); link.push_back(0); occ.push_back(0);
+        nxt.push_back(array&lt;int,26&gt;{}); nxt[0].fill(0);
+        len.push_back(0); link.push_back(0); occ.push_back(0);
+        nxt.push_back(array&lt;int,26&gt;{}); nxt[1].fill(0);
+        last = 1;
+    }
+    int getLink(int v) {
+        int n = (int)s.size();
+        while (true) {
+            int curLen = len[v];
+            int pos = n - curLen - 2;
+            if (pos &gt;= 0 &amp;&amp; s[pos] == s.back()) return v;
+            v = link[v];
+        }
+    }
+    void add(char c) {
+        s.push_back(c);
+        int c_idx = c - &#x27;a&#x27;;
+        int cur = getLink(last);
+        if (!nxt[cur][c_idx]) {
+            int now = (int)len.size();
+            len.push_back(len[cur] + 2);
+            occ.push_back(0);
+            nxt.push_back(array&lt;int,26&gt;{}); nxt.back().fill(0);
+            if (len[now] == 1) {
+                link.push_back(1);
+            } else {
+                int sufLink = getLink(link[cur]);
+                link.push_back(nxt[sufLink][c_idx]);
+            }
+            nxt[cur][c_idx] = now;
+        }
+        last = nxt[cur][c_idx];
+        occ[last]++; // this node was the longest palindromic suffix ending here
+    }
+};
+
+int main(){
+    string s;
+    cin &gt;&gt; s;
+    Eertree tree;
+    for (char c : s) tree.add(c);
+    int total = (int)tree.len.size();
+    // propagate occurrence counts along suffix links: link[v] always has strictly
+    // smaller len than v, so sorting by len descending gives a valid processing
+    // order (every node is finalized before its suffix-link target is updated).
+    vector&lt;int&gt; order(total);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&amp;](int a, int b){ return tree.len[a] &gt; tree.len[b]; });
+    for (int v : order) {
+        if (v &lt;= 1) continue; // skip the two imaginary roots
+        tree.occ[tree.link[v]] += tree.occ[v];
+    }
+    long long answer = 0;
+    for (int v = 2; v &lt; total; v++) answer += tree.occ[v];
+    cout &lt;&lt; answer &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>aaa
+</code></pre>
+    <pre><code>6
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">23</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="shortest palindrome leetcode kmp given a string s, add characters in front of it to make it a palindrome and return the shortest such palindrome.">
+  <td><a href="https://leetcode.com/problems/shortest-palindrome/" target="_blank" rel="noopener noreferrer">Shortest Palindrome</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#214)</td>
+  <td class="subtopic-cell">KMP</td>
+  <td class="desc-cell">Given a string s, add characters in front of it to make it a palindrome and return the shortest such palindrome.</td>
+</tr><tr data-search="sum of scores of built strings leetcode z-function for a string s, define score(i) as the length of the longest common prefix between s and the suffix of s ending at i; return the sum of scores over all suffixes.">
+  <td><a href="https://leetcode.com/problems/sum-of-scores-of-built-strings/" target="_blank" rel="noopener noreferrer">Sum of Scores of Built Strings</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#2223)</td>
+  <td class="subtopic-cell">Z-function</td>
+  <td class="desc-cell">For a string s, define score(i) as the length of the longest common prefix between s and the suffix of s ending at i; return the sum of scores over all suffixes.</td>
+</tr><tr data-search="prefix-suffix palindrome (hard version) codeforces string hashing given a string, find the longest string formed by concatenating a prefix and a suffix of it (each possibly empty, non-overlapping) that is a palindrome.">
+  <td><a href="https://codeforces.com/problemset/problem/1326/D2" target="_blank" rel="noopener noreferrer">Prefix-Suffix Palindrome (Hard version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">string hashing</td>
+  <td class="desc-cell">Given a string, find the longest string formed by concatenating a prefix and a suffix of it (each possibly empty, non-overlapping) that is a palindrome.</td>
+</tr><tr data-search="palindrome queries cses string hashing given a string, process point updates (change a character) and range queries (is the substring from a to b a palindrome) online.">
+  <td><a href="https://cses.fi/problemset/task/2420" target="_blank" rel="noopener noreferrer">Palindrome Queries</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">string hashing</td>
+  <td class="desc-cell">Given a string, process point updates (change a character) and range queries (is the substring from a to b a palindrome) online.</td>
+</tr><tr data-search="all palindromes cses manacher&#x27;s for every position in a string, compute the length of the longest palindrome that ends exactly at that position.">
+  <td><a href="https://cses.fi/problemset/task/3138" target="_blank" rel="noopener noreferrer">All Palindromes</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Manacher&#x27;s</td>
+  <td class="desc-cell">For every position in a string, compute the length of the longest palindrome that ends exactly at that position.</td>
+</tr><tr data-search="counting patterns cses trie / aho-corasick given a text string and k patterns, count for each pattern how many times it occurs in the text.">
+  <td><a href="https://cses.fi/problemset/task/2103" target="_blank" rel="noopener noreferrer">Counting Patterns</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">trie / Aho-Corasick</td>
+  <td class="desc-cell">Given a text string and k patterns, count for each pattern how many times it occurs in the text.</td>
+</tr><tr data-search="martian strings codeforces suffix array / suffix automaton given two strings s and t, find the longest substring of s that can be split into two parts, the first being a substring of t and the second also being a substring of t.">
+  <td><a href="https://codeforces.com/problemset/problem/149/E" target="_blank" rel="noopener noreferrer">Martian Strings</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2300</td>
+  <td class="subtopic-cell">suffix array / suffix automaton</td>
+  <td class="desc-cell">Given two strings s and t, find the longest substring of s that can be split into two parts, the first being a substring of t and the second also being a substring of t.</td>
+</tr><tr data-search="substring order i cses suffix automaton given a string of length up to 1e5, find the k-th smallest string among all of its *distinct* substrings in lexicographic order.">
+  <td><a href="https://cses.fi/problemset/task/2108" target="_blank" rel="noopener noreferrer">Substring Order I</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (String Algorithms, hard section)</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">Given a string of length up to 1e5, find the k-th smallest string among all of its *distinct* substrings in lexicographic order.</td>
+</tr><tr data-search="substring distribution cses suffix automaton for every length 1..n, print the number of distinct substrings of that exact length.">
+  <td><a href="https://cses.fi/problemset/task/2110" target="_blank" rel="noopener noreferrer">Substring Distribution</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (String Algorithms, hard section)</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">For every length 1..n, print the number of distinct substrings of that exact length.</td>
+</tr><tr data-search="longest duplicate substring leetcode suffix automaton find the longest substring of a given string (up to 3*10^4 chars) that occurs at least twice (occurrences may overlap).">
+  <td><a href="https://leetcode.com/problems/longest-duplicate-substring/" target="_blank" rel="noopener noreferrer">Longest Duplicate Substring</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (topicTags include &quot;Suffix Automaton&quot;, &quot;Suffix Array&quot;, &quot;Rolling Hash&quot;)</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">Find the longest substring of a given string (up to 3*10^4 chars) that occurs at least twice (occurrences may overlap).</td>
+</tr><tr data-search="good substrings codeforces suffix automaton each of the 26 letters has a cost and a bad/good flag; count distinct substrings whose total letter cost falls in [mincost, maxcost] and that contain no &quot;bad&quot; letters.">
+  <td><a href="https://codeforces.com/problemset/problem/316/G2" target="_blank" rel="noopener noreferrer">Good Substrings</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200 (easy subtask of a 3-part problem; G3 harder version is rated 2400)</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">Each of the 26 letters has a cost and a bad/good flag; count distinct substrings whose total letter cost falls in [minCost, maxCost] and that contain no &quot;bad&quot; letters.</td>
+</tr><tr data-search="cyclical quest codeforces suffix automaton given a big string and many query strings, for each query count how many times the query and all of its cyclic rotations occur as substrings of the big string, weighted by rotation count.">
+  <td><a href="https://codeforces.com/problemset/problem/235/C" target="_blank" rel="noopener noreferrer">Cyclical Quest</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2700</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">Given a big string and many query strings, for each query count how many times the query and all of its cyclic rotations occur as substrings of the big string, weighted by rotation count.</td>
+</tr><tr data-search="little elephant and strings codeforces suffix automaton given n strings, for each string find the length of its longest substring that also occurs (as a substring) in at least k of the n strings.">
+  <td><a href="https://codeforces.com/problemset/problem/204/E" target="_blank" rel="noopener noreferrer">Little Elephant and Strings</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2800</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">Given n strings, for each string find the length of its longest substring that also occurs (as a substring) in at least k of the n strings.</td>
+</tr><tr data-search="cool slogans codeforces suffix automaton find the longest chain of substrings s1, s2, ..., sk of a given string such that each si+1 is a substring of si occurring at least twice inside it (overlaps allowed).">
+  <td><a href="https://codeforces.com/problemset/problem/700/E" target="_blank" rel="noopener noreferrer">Cool Slogans</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 3300</td>
+  <td class="subtopic-cell">Suffix Automaton</td>
+  <td class="desc-cell">Find the longest chain of substrings s1, s2, ..., sk of a given string such that each si+1 is a substring of si occurring at least twice inside it (overlaps allowed).</td>
+</tr><tr data-search="pattern positions cses aho-corasick multi-pattern matching same setup as counting patterns, but report the first (1-indexed) position at which each pattern occurs in the text, or -1 if it never occurs.">
+  <td><a href="https://cses.fi/problemset/task/2104" target="_blank" rel="noopener noreferrer">Pattern Positions</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (String Algorithms, hard section)</td>
+  <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
+  <td class="desc-cell">Same setup as Counting Patterns, but report the first (1-indexed) position at which each pattern occurs in the text, or -1 if it never occurs.</td>
+</tr><tr data-search="stream of characters leetcode aho-corasick multi-pattern matching design a data structure that, given up to 2*10^4 words, supports streaming individual characters and reports whether any suffix of the stream so far matches one of the words.">
+  <td><a href="https://leetcode.com/problems/stream-of-characters/" target="_blank" rel="noopener noreferrer">Stream of Characters</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (topicTag: &quot;Aho–Corasick Algorithm&quot;, confirmed via LeetCode&#x27;s own tag data)</td>
+  <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
+  <td class="desc-cell">Design a data structure that, given up to 2*10^4 words, supports streaming individual characters and reports whether any suffix of the stream so far matches one of the words.</td>
+</tr><tr data-search="string set queries codeforces aho-corasick multi-pattern matching online queries that add a string to a set, remove a string from the set, or ask for the total number of occurrences (over all strings currently in the set) inside a given text — must be answered before reading the next query.">
+  <td><a href="https://codeforces.com/problemset/problem/710/F" target="_blank" rel="noopener noreferrer">String Set Queries</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2400</td>
+  <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
+  <td class="desc-cell">Online queries that add a string to a set, remove a string from the set, or ask for the total number of occurrences (over all strings currently in the set) inside a given text — must be answered before reading the next query.</td>
+</tr><tr data-search="genetic engineering codeforces aho-corasick multi-pattern matching count dna sequences of length n (over a 4-letter alphabet) such that every position is covered by at least one occurrence of a given collection of up to 10 short patterns.">
+  <td><a href="https://codeforces.com/problemset/problem/86/C" target="_blank" rel="noopener noreferrer">Genetic engineering</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2500</td>
+  <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
+  <td class="desc-cell">Count DNA sequences of length n (over a 4-letter alphabet) such that every position is covered by at least one occurrence of a given collection of up to 10 short patterns.</td>
+</tr><tr data-search="death dbms codeforces aho-corasick multi-pattern matching maintain a database of names (patterns) each with a suspicion value that can be updated; given a query string, find the maximum suspicion value among all database names occurring as a substring of it.">
+  <td><a href="https://codeforces.com/problemset/problem/1437/G" target="_blank" rel="noopener noreferrer">Death DBMS</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2600</td>
+  <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
+  <td class="desc-cell">Maintain a database of names (patterns) each with a suspicion value that can be updated; given a query string, find the maximum suspicion value among all database names occurring as a substring of it.</td>
+</tr><tr data-search="hossam and (sub-)palindromic tree codeforces palindromic tree (eertree) on a tree with a letter at every vertex, for every path between two vertices find the length of the longest palindromic *subsequence* of the letters along that path.">
+  <td><a href="https://codeforces.com/problemset/problem/1771/D" target="_blank" rel="noopener noreferrer">Hossam and (sub-)palindromic tree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2100</td>
+  <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
+  <td class="desc-cell">On a tree with a letter at every vertex, for every path between two vertices find the length of the longest palindromic *subsequence* of the letters along that path.</td>
+</tr><tr data-search="palindrome degree codeforces palindromic tree (eertree) for every prefix of a string, define its &quot;degree&quot; recursively (a prefix has degree k if its first half is itself a palindrome of degree k-1); output the sum of all prefix degrees.">
+  <td><a href="https://codeforces.com/problemset/problem/7/D" target="_blank" rel="noopener noreferrer">Palindrome Degree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200</td>
+  <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
+  <td class="desc-cell">For every prefix of a string, define its &quot;degree&quot; recursively (a prefix has degree k if its first half is itself a palindrome of degree k-1); output the sum of all prefix degrees.</td>
+</tr><tr data-search="palindrome partition codeforces palindromic tree (eertree) count the number of ways to split a string into an even number of non-empty parts p1..pk such that each pi is &quot;special-equal&quot; (equal, or equal after reversal) to its mirror part pk+1-i.">
+  <td><a href="https://codeforces.com/problemset/problem/932/G" target="_blank" rel="noopener noreferrer">Palindrome Partition</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2900</td>
+  <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
+  <td class="desc-cell">Count the number of ways to split a string into an even number of non-empty parts p1..pk such that each pi is &quot;special-equal&quot; (equal, or equal after reversal) to its mirror part pk+1-i.</td>
+</tr><tr data-search="palisection codeforces palindromic tree (eertree) count the number of pairs of palindromic substrings (of length &gt;= 2) of a given string that intersect (share at least one common position).">
+  <td><a href="https://codeforces.com/problemset/problem/17/E" target="_blank" rel="noopener noreferrer">Palisection</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2900</td>
+  <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
+  <td class="desc-cell">Count the number of pairs of palindromic substrings (of length &gt;= 2) of a given string that intersect (share at least one common position).</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

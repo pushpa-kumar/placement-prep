@@ -1,0 +1,1360 @@
+<title>Arrays &amp; Strings — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Arrays &amp; Strings</h1>
+    <p class="tagline"><p>Two pointers, sliding window, prefix sums, and Kadane&#x27;s algorithm are the four workhorse techniques for turning an O(n^2) or O(n^3) brute-force scan over an array or string into an O(n) or O(n log n) pass. They share a common theme: instead of recomputing information about a range from scratch every time the range changes, each technique maintains a running summary (a pointer position, a window&#x27;s aggregate, a running sum, a running best) and updates it incrementally as the range slides or grows. Mastering when each invariant applies -- and, just as importantly, recognizing when it breaks (e.g. negative numbers breaking sliding-window monotonicity) and you need to fall back to prefix sums plus a hash map or monotonic deque -- is what separates easy-tier from hard-tier array problems. These techniques extend the Arrays &amp; Strings toolbox with structural tricks for range updates, in-place multi-way partitioning, and windowed extrema, while Merge Intervals extends the Sorting &amp; Binary Search idea of &#x27;sort first, then sweep&#x27; to problems whose objects are ranges rather than points.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">8</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">20</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">25</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#arrays-strings-two-pointers"><span>Two Pointers</span><span class="cnt">3</span></a></li><li><a href="#arrays-strings-sliding-window"><span>Sliding Window</span><span class="cnt">3</span></a></li><li><a href="#arrays-strings-prefix-sums"><span>Prefix Sums</span><span class="cnt">3</span></a></li><li><a href="#arrays-strings-kadane-s-algorithm"><span>Kadane&#x27;s Algorithm</span><span class="cnt">3</span></a></li><li><a href="#arrays-strings-difference-arrays"><span>Difference Arrays</span><span class="cnt">2</span></a></li><li><a href="#arrays-strings-two-pointer-partitioning-dutch-national-flag"><span>Two-Pointer Partitioning (Dutch National Flag)</span><span class="cnt">2</span></a></li><li><a href="#arrays-strings-monotonic-deque"><span>Monotonic Deque</span><span class="cnt">2</span></a></li><li><a href="#arrays-strings-merge-intervals"><span>Merge Intervals</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">25</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="https://claude.ai/code/artifact/12a16e00-c911-4e45-a3c2-27b16db6b805">Sorting &amp; Binary Search</a></li><li><a href="https://claude.ai/code/artifact/0316847a-185e-46fa-b2ce-adf55d0710cd">Recursion &amp; Backtracking</a></li><li><a href="https://claude.ai/code/artifact/1c4e103e-c945-47f3-a855-7fc0f5281fc2">Dynamic Programming</a></li><li><a href="https://claude.ai/code/artifact/00f83d03-9d23-4a2c-a704-cd676a3b4ce0">Greedy Algorithms</a></li><li><a href="https://claude.ai/code/artifact/815d3fc1-3172-4d4b-9ceb-680f85b2b8b1">Graph Algorithms</a></li><li><a href="https://claude.ai/code/artifact/aedd06db-fdcf-479b-97bc-247e9734e77e">Trees</a></li><li><a href="https://claude.ai/code/artifact/a4b10d9b-cdd8-4f6d-93fe-9aae23b56638">Data Structures for CP</a></li><li><a href="https://claude.ai/code/artifact/ad30c2df-1f61-4bc2-8169-8dfa3507993c">Number Theory &amp; Combinatorics</a></li><li><a href="https://claude.ai/code/artifact/34e4f4f9-6d88-4afd-9426-e243421356c1">String Algorithms</a></li><li><a href="https://claude.ai/code/artifact/f254df5f-5086-479e-b80b-2011d428d5e6">Bit Manipulation</a></li><li><a href="https://claude.ai/code/artifact/2dc80eb5-e35f-4079-bb93-351ceae8c683">Game Theory</a></li><li><a href="https://claude.ai/code/artifact/69f48d09-8ce7-495b-9b95-530c827d9af6">Network Flow &amp; Matching</a></li><li><a href="https://claude.ai/code/artifact/ca5bf18b-b4fe-400b-a702-edccd442732d">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide Hub</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+        <li><a href="https://claude.ai/code/artifact/8968b342-ca79-44b8-be52-aa3770481647#arrays-strings">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="arrays-strings-two-pointers">
+  <div class="topic-head"><h2>Two Pointers</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>The two-pointer technique maintains two (or more) indices into a sequence and advances them according to a rule that guarantees each pointer only ever moves forward (or at least never revisits work already done). The key structural requirement is monotonicity: as one pointer advances, some measured quantity (a sum, a count, a difference) must change in a predictable, one-directional way, so that you never need to re-examine a position once you have moved past it. This is what lets an algorithm that looks like it should be O(n^2) (for every left endpoint, scan forward until some condition breaks) collapse to O(n): each pointer traverses the array once, so total pointer movement is bounded by O(n) even though there are two nested-looking loops.</p><p>The classic setups are: (1) opposite-direction pointers starting at both ends of a sorted array and moving inward, used for problems like pair-sum-to-target, 3Sum, and container/trapping-water problems, where sortedness gives you the monotonic guarantee that lets you decide deterministically which pointer to move; and (2) same-direction pointers (often called the &#x27;fast/slow&#x27; or &#x27;read/write&#x27; pattern) used for in-place partitioning, de-duplication, and merging. A subtler but very powerful variant fixes one pointer and lets the other pointer only ever move forward as the fixed pointer advances, which is the basis of the sliding window technique covered next -- sliding window is really just two pointers with the extra constraint that the region between them defines a contiguous window whose aggregate you maintain incrementally.</p><p>Two pointers is not just for searching -- it composes well with combinatorial counting. A common hard-problem pattern is: sort the array, then for each right pointer position find (via a monotonically advancing left pointer) the maximal valid window, and instead of enumerating pairs one by one, count how many subsequences/subsets that window supports using combinatorics (nCr). This turns an O(n^2) pair-counting problem into O(n log n) (dominated by the sort).</p><p>A critical failure mode to internalize: two pointers relies on monotonicity of the underlying quantity as a pointer moves. The moment negative numbers (or any non-monotonic element) enter the picture for a sum-based window, advancing/shrinking the window no longer has a well-defined &#x27;always helps&#x27; or &#x27;always hurts&#x27; direction, and two pointers silently gives wrong answers rather than failing loudly -- that is exactly when you should reach for prefix sums with a hash map instead.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for problems on a sorted (or sortable) array/string asking about pairs, triplets, or windows defined by a monotonic condition (sum, difference, or count that only increases/decreases as a pointer moves) -- especially phrasings like &#x27;find a pair/triplet with sum X&#x27;, &#x27;is the array a palindrome&#x27;, or &#x27;maximum area between two indices&#x27;.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Typically O(n log n) if sorting is required first, otherwise O(n); O(1) extra space beyond the pointers and, if needed, an output buffer.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-two-pointers-ex0">
+  <h4>Bounded-Range Subsequences (Close Tuples, hard version)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n integers a_1, ..., a_n and integers m and k. Count the number of subsequences (chosen by index, order in the original array does not matter for the value of the subsequence) of size exactly m such that the difference between the maximum and minimum element of the chosen subsequence is at most k. Two subsequences are different if the sets of chosen indices differ. Print the answer modulo 998244353. Constraints: 1 &lt;= m &lt;= n &lt;= 2*10^5, 0 &lt;= k &lt;= 10^9, 0 &lt;= a_i &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Because we are counting subsets of indices and the max-minus-min condition only depends on the multiset of chosen values (not their original positions), we can sort the array first: the number of size-m index-subsets of the original array satisfying the property equals the number of size-m index-subsets of the sorted array satisfying it, since sorting is just a relabeling. Once sorted, fix the subsequence&#x27;s maximum element to be a[i] (the element at the largest chosen index i in the sorted order). Every earlier element a[j] with a[i]-a[j] &lt;= k is a legal partner. Because the array is sorted, the condition a[i]-a[j] &lt;= k is monotonic in j: as i increases, the smallest valid j (call it left) only moves right, never left. So we sweep i left-to-right and advance a single &#x27;left&#x27; pointer forward whenever a[i]-a[left] &gt; k -- classic two pointers, O(n) total pointer movement. For each i, the number of usable earlier elements is cnt = i - left, and we must choose m-1 of them to accompany a[i] as the fixed maximum, contributing C(cnt, m-1) subsequences (choosing a[i] itself fixes one slot). Summing C(cnt, m-1) over all i gives the total count, with no double-counting because each subsequence is counted exactly once, at the index of its maximum element in sorted order. Precomputing factorials and inverse factorials mod p makes each nCr O(1).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+const long long MOD = 998244353;
+
+long long power(long long a, long long b, long long mod){
+    long long res = 1; a %= mod;
+    while (b &gt; 0){
+        if (b &amp; 1) res = res * a % mod;
+        a = a * a % mod;
+        b &gt;&gt;= 1;
+    }
+    return res;
+}
+
+int main(){
+    int n, m; long long k;
+    cin &gt;&gt; n &gt;&gt; m &gt;&gt; k;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    sort(a.begin(), a.end());
+
+    vector&lt;long long&gt; fact(n + 1), inv_fact(n + 1);
+    fact[0] = 1;
+    for (int i = 1; i &lt;= n; i++) fact[i] = fact[i - 1] * i % MOD;
+    inv_fact[n] = power(fact[n], MOD - 2, MOD);
+    for (int i = n; i &gt; 0; i--) inv_fact[i - 1] = inv_fact[i] * i % MOD;
+
+    auto C = [&amp;](int nn, int rr) -&gt; long long {
+        if (rr &lt; 0 || rr &gt; nn) return 0;
+        return fact[nn] * inv_fact[rr] % MOD * inv_fact[nn - rr] % MOD;
+    };
+
+    long long ans = 0;
+    int left = 0;
+    for (int i = 0; i &lt; n; i++){
+        while (a[i] - a[left] &gt; k) left++;
+        int cnt = i - left;
+        ans = (ans + C(cnt, m - 1)) % MOD;
+    }
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 2 2
+1 2 3 4 8
+</code></pre>
+    <pre><code>5
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-two-pointers-ex1">
+  <h4>3Sum: Unique Zero-Sum Triplets</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an integer array nums, find all unique triplets [nums[i], nums[j], nums[k]] (i, j, k distinct indices) such that nums[i] + nums[j] + nums[k] == 0. Print each distinct triplet&#x27;s values in non-decreasing order, one triplet per line, with the triplets themselves ordered by their first element then second element (ties broken naturally by the scanning order described below). Do not print the same value-triplet twice even if it arises from multiple index choices.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort the array first. Fix the smallest element of the triplet at index i by iterating i from 0 to n-3, skipping any i where a[i] equals the previous element (to avoid emitting a duplicate triplet). For the remaining subarray a[i+1..n-1], we need a pair summing to -a[i]: since that subarray is sorted, use opposite-direction two pointers left = i+1 and right = n-1. If a[i]+a[left]+a[right] is too small, the only way to increase the sum is to move left rightward (monotonicity: increasing left only increases the value picked, since the array is sorted); if too large, move right leftward. When the sum equals zero, record the triplet, then advance both pointers past any run of equal values (again to avoid duplicate output). This is the two-pointer invariant in its purest form: because the array is sorted, moving a pointer always changes the sum in a known direction, so we never need to backtrack.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    sort(a.begin(), a.end());
+
+    for (int i = 0; i &lt; n - 2; i++){
+        if (i &gt; 0 &amp;&amp; a[i] == a[i - 1]) continue;
+        int left = i + 1, right = n - 1;
+        while (left &lt; right){
+            long long s = (long long)a[i] + a[left] + a[right];
+            if (s == 0){
+                cout &lt;&lt; a[i] &lt;&lt; &quot; &quot; &lt;&lt; a[left] &lt;&lt; &quot; &quot; &lt;&lt; a[right] &lt;&lt; &quot;\n&quot;;
+                int lv = a[left], rv = a[right];
+                while (left &lt; right &amp;&amp; a[left] == lv) left++;
+                while (left &lt; right &amp;&amp; a[right] == rv) right--;
+            } else if (s &lt; 0){
+                left++;
+            } else {
+                right--;
+            }
+        }
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+-1 0 1 2 -1 -4
+</code></pre>
+    <pre><code>-1 -1 2
+-1 0 1
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-two-pointers-ex2">
+  <h4>Trapping Rain Water</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining. Constraints: 1 &lt;= n &lt;= 2*10^5, 0 &lt;= height[i] &lt;= 10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>The water trapped above position i equals min(maxHeightToLeft(i), maxHeightToRight(i)) - height[i]. Computing both max-to-left and max-to-right arrays with prefix/suffix scans works in O(n) time and O(n) space, but two pointers gets it down to O(1) extra space using the following invariant: maintain pointers left and right at the two ends and running maxima leftMax, rightMax. At each step, whichever side currently has the smaller height tells you the water level there with certainty -- if height[left] &lt;= height[right], then even though we don&#x27;t yet know the true maximum on the right side, we know it is at least height[right] &gt;= height[left], so the water trapped at &#x27;left&#x27; is fully determined by leftMax (the true bottleneck must be on the left since the right side already has a wall at least as tall as anything blocking us from the left). This lets us resolve position &#x27;left&#x27; immediately and advance the left pointer inward, and symmetrically for the right side. Each position is resolved exactly once as one of the two pointers passes it, giving O(n) time and O(1) space.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;int&gt; h(n);
+    for (auto &amp;x : h) cin &gt;&gt; x;
+    int left = 0, right = n - 1;
+    int leftMax = 0, rightMax = 0;
+    long long water = 0;
+    while (left &lt; right){
+        if (h[left] &lt;= h[right]){
+            leftMax = max(leftMax, h[left]);
+            water += leftMax - h[left];
+            left++;
+        } else {
+            rightMax = max(rightMax, h[right]);
+            water += rightMax - h[right];
+            right--;
+        }
+    }
+    cout &lt;&lt; water &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>12
+0 1 0 2 1 0 1 3 2 1 2 1
+</code></pre>
+    <pre><code>6
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-sliding-window">
+  <div class="topic-head"><h2>Sliding Window</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>Sliding window is the specialization of two pointers to problems about contiguous ranges (subarrays or substrings) where you maintain some aggregate statistic of the current window (a sum, a frequency table, a count of distinct elements, a count of characters still needed) and update that aggregate incrementally as the window&#x27;s boundaries move, rather than recomputing it from scratch. There are two flavors: fixed-size windows, where both endpoints move together by one step each iteration (e.g. &#x27;maximum in every window of size k&#x27;), and variable-size windows, where the right endpoint always advances but the left endpoint only advances when some validity condition is violated (e.g. &#x27;smallest window containing all of these characters&#x27;).</p><p>The correctness argument for variable-size sliding window rests on a monotonicity property: as the window grows (right pointer advances), the tracked condition moves in one direction (e.g. adding more of a non-negative-sum array only increases the sum; adding more characters only increases or maintains the count of &#x27;still needed&#x27; characters), and as the window shrinks (left pointer advances) it moves in the opposite direction. Because both endpoints are non-decreasing over the whole scan, the total work across the whole algorithm is O(n) even though it looks like a nested loop -- this is the amortized/two-pointer argument again, just applied to a window&#x27;s aggregate instead of two independent search pointers.</p><p>When the aggregate you need is not a simple running sum/count but something like &#x27;the maximum element currently in the window&#x27;, a plain running variable cannot be updated in O(1) when elements leave the window from the left (you&#x27;d have to rescan). The standard fix is a monotonic deque: keep indices in the deque in an order such that their values are monotonic (decreasing for a max-window, increasing for a min-window), popping from the back whenever a new incoming element would make an existing back-of-deque element useless (it&#x27;s smaller and will leave the window no later than the new element), and popping from the front when the front index falls outside the current window. Each index is pushed and popped at most once, so this maintains window max/min in amortized O(1) per step.</p><p>A very useful meta-trick when a problem asks for &#x27;exactly K&#x27; of something (exactly K distinct values, exactly K odd numbers, etc.) is to solve the easier &#x27;at most K&#x27; sliding-window version twice and subtract: countExactly(K) = countAtMost(K) - countAtMost(K-1). &#x27;At most&#x27; conditions are monotonic in the window (shrinking the window can only decrease the count of distinct values, say), which is exactly the property plain sliding window needs, whereas &#x27;exactly K&#x27; by itself is not monotonic and cannot be solved directly by a single sliding window.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for &#x27;contiguous subarray/substring&#x27; problems asking for a max/min/count over windows of a given size, or the smallest/largest window satisfying some containment or frequency condition -- especially when all values involved are non-negative (so growing the window is &#x27;monotonically worse or better&#x27;).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) or O(n log n) if a heap is used instead of a monotonic deque; O(k) or O(alphabet size) extra space for the window&#x27;s aggregate structure.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-sliding-window-ex0">
+  <h4>Sliding Window Maximum</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an integer array nums of size n and an integer k, there is a sliding window of size k which moves from the very left of the array to the very right, one position at a time. Return the maximum value in the window at each position it stops at (there are n-k+1 such positions). Constraints: 1 &lt;= k &lt;= n &lt;= 10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain a deque of indices whose corresponding values are strictly decreasing from front to back. For each new index i: first pop from the back while the value at the back index is &lt;= nums[i], since those back elements can never be the maximum again (nums[i] is at least as large and will outlive them in the window); push i onto the back. Then pop from the front if the front index has fallen out of the current window (index &lt;= i - k). The front of the deque is now always the index of the maximum value within the current window, because it&#x27;s the largest remaining value and everything larger that could have competed with it has already left the window or was popped for being smaller than something still present. Once i &gt;= k-1 the window is fully formed and we record the front&#x27;s value as this window&#x27;s maximum. Each index enters and leaves the deque at most once, giving O(n) total time.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n, k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+
+    deque&lt;int&gt; dq;
+    vector&lt;int&gt; res;
+    for (int i = 0; i &lt; n; i++){
+        while (!dq.empty() &amp;&amp; a[dq.back()] &lt;= a[i]) dq.pop_back();
+        dq.push_back(i);
+        if (dq.front() &lt;= i - k) dq.pop_front();
+        if (i &gt;= k - 1) res.push_back(a[dq.front()]);
+    }
+
+    for (size_t i = 0; i &lt; res.size(); i++){
+        cout &lt;&lt; res[i];
+        if (i + 1 &lt; res.size()) cout &lt;&lt; &quot; &quot;;
+    }
+    cout &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8 3
+1 3 -1 -3 5 3 6 7
+</code></pre>
+    <pre><code>3 3 5 5 6 7
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-sliding-window-ex1">
+  <h4>Minimum Window Substring</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given two strings s and t of lengths n and m, return the minimum-length contiguous substring of s that contains every character of t, including duplicates (i.e. for each character, the substring must contain at least as many occurrences as t does). If no such substring exists, print an empty line. Constraints: 1 &lt;= m &lt;= n &lt;= 10^5, both strings consist of uppercase and lowercase English letters.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the canonical variable-size sliding window: expand the right endpoint one character at a time, updating a frequency map of the current window and a counter &#x27;formed&#x27; tracking how many distinct required characters currently meet their required count. Once formed equals the number of distinct characters in t, the window is valid, and we greedily shrink from the left as far as possible while it stays valid, recording the shortest valid window seen. Shrinking is safe/correct because removing characters from the left can only ever reduce coverage (monotonic: a valid window that becomes invalid after removing one more character from the left is exactly the boundary we want to record right before it breaks). Because the right pointer only moves forward n times and the left pointer only moves forward at most n times total across the whole run, the algorithm is O(n + m) despite the nested while loop.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    string s, t;
+    cin &gt;&gt; s &gt;&gt; t;
+
+    unordered_map&lt;char,int&gt; need;
+    for (char c : t) need[c]++;
+    int required = (int)need.size();
+    int formed = 0;
+    unordered_map&lt;char,int&gt; windowCounts;
+
+    int left = 0;
+    int bestLen = INT_MAX, bestLeft = 0;
+    for (int right = 0; right &lt; (int)s.size(); right++){
+        char c = s[right];
+        windowCounts[c]++;
+        if (need.count(c) &amp;&amp; windowCounts[c] == need[c]) formed++;
+
+        while (left &lt;= right &amp;&amp; formed == required){
+            if (right - left + 1 &lt; bestLen){
+                bestLen = right - left + 1;
+                bestLeft = left;
+            }
+            char lc = s[left];
+            windowCounts[lc]--;
+            if (need.count(lc) &amp;&amp; windowCounts[lc] &lt; need[lc]) formed--;
+            left++;
+        }
+    }
+
+    if (bestLen == INT_MAX) cout &lt;&lt; &quot;\n&quot;;
+    else cout &lt;&lt; s.substr(bestLeft, bestLen) &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>ADOBECODEBANC ABC
+</code></pre>
+    <pre><code>BANC
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-sliding-window-ex2">
+  <h4>Subarrays with Exactly K Different Integers</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an integer array nums of length n and an integer k, return the number of contiguous subarrays that contain exactly k different (distinct) integer values. Constraints: 1 &lt;= n &lt;= 2*10^4, 1 &lt;= k &lt;= n, 1 &lt;= nums[i] &lt;= n.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>&#x27;Exactly k distinct&#x27; is not directly monotonic under window growth/shrink in the way plain sliding window needs, but &#x27;at most k distinct&#x27; is: as you shrink the window from the left, the number of distinct values can only stay the same or decrease. So define atMost(X) = number of subarrays with at most X distinct values, computed with a standard variable-size sliding window (expand right, track distinct count via a frequency map, shrink left whenever distinct count exceeds X; every window ending at &#x27;right&#x27; that is currently valid contributes (right-left+1) new subarrays, since every subarray ending at &#x27;right&#x27; with left endpoint in [left, right] is valid). Then exactly(k) = atMost(k) - atMost(k-1), because every subarray with at most k distinct values either has at most k-1 distinct values or has exactly k -- subtracting removes precisely the &#x27;k-1 or fewer&#x27; subarrays, leaving only those with exactly k. This &#x27;atMost(K) - atMost(K-1)&#x27; trick generalizes to many &#x27;exactly K&#x27; window-counting problems.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+long long atMost(vector&lt;int&gt;&amp; nums, int k){
+    if (k &lt; 0) return 0;
+    unordered_map&lt;int,int&gt; cnt;
+    int left = 0, distinct = 0;
+    long long total = 0;
+    for (int right = 0; right &lt; (int)nums.size(); right++){
+        if (cnt[nums[right]] == 0) distinct++;
+        cnt[nums[right]]++;
+        while (distinct &gt; k){
+            cnt[nums[left]]--;
+            if (cnt[nums[left]] == 0) distinct--;
+            left++;
+        }
+        total += (right - left + 1);
+    }
+    return total;
+}
+
+int main(){
+    int n, k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    cout &lt;&lt; (atMost(a, k) - atMost(a, k - 1)) &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 2
+1 2 1 2 3
+</code></pre>
+    <pre><code>7
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-prefix-sums">
+  <div class="topic-head"><h2>Prefix Sums</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>A prefix sum array P, where P[0] = 0 and P[i] = a[0] + a[1] + ... + a[i-1], lets you answer &#x27;what is the sum of the subarray a[l..r]?&#x27; in O(1) time as P[r+1] - P[l], after O(n) preprocessing. This is the single most important trick for turning repeated range-sum queries (or the search for a range with a target sum) from O(n) per query into O(1) per query. The invariant is trivial to maintain (a single running total as you scan left to right), but its consequences are powerful: any problem phrased in terms of &#x27;sum of some contiguous range&#x27; can be re-expressed as a problem about a difference of two values in the prefix array, which converts a 2D search space (all pairs l, r) into effectively a 1D one.</p><p>The key unlock this gives you over two pointers/sliding window is handling negative numbers correctly. Sliding window relies on the property that growing a window changes the tracked sum in a known, monotonic direction; with negative elements present, growing the window could increase or decrease the sum, so you can no longer decide which pointer to move. Prefix sums sidestep this entirely: &#x27;find a subarray with sum exactly x&#x27; becomes &#x27;find two prefix indices i &lt; j with P[j] - P[i] = x&#x27;, i.e. &#x27;for each j, has P[j] - x been seen before as some earlier P[i]?&#x27; -- which is answered by scanning once and looking up P[j] - x in a hash map of prefix sums seen so far, incrementing the map with P[j] afterward. This works regardless of the sign of any element, at the cost of O(n) extra space for the hash map (versus O(1) for plain sliding window when it applies).</p><p>Prefix sums generalize cleanly to two dimensions: a 2D prefix sum table lets you compute the sum of any axis-aligned submatrix in O(1) after O(R*C) preprocessing, using inclusion-exclusion (sum = P[r2+1][c2+1] - P[r1][c2+1] - P[r2+1][c1] + P[r1][c1]). This is the standard way to reduce &#x27;submatrix sum&#x27; problems to repeated 1D &#x27;subarray sum&#x27; problems: fix a pair of column boundaries, compute the resulting 1D array of row-range sums using the 2D prefix table, and run the 1D prefix-sum-plus-hashmap technique on that array.</p><p>Prefix sums also combine with a monotonic deque when a problem asks for something like the shortest (or otherwise optimal) subarray meeting a sum threshold, in the presence of negative numbers where a simple non-negative-only sliding window (which would work if all values were non-negative) breaks down. There, you keep prefix indices in a deque ordered by increasing prefix value; because a later, smaller prefix value always makes a better (or equal) starting point than an earlier, larger one, you can safely discard dominated candidates, giving an O(n) sweep even though sums are not monotonic.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for &#x27;count/find a subarray with sum exactly/at least X&#x27; where the array can contain negative or zero elements (ruling out plain sliding window), or any problem asking for repeated range-sum queries over a fixed array/matrix.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) preprocessing plus O(1) per range-sum query; O(n) or O(n) extra space for the prefix array and any hash map/deque used alongside it. 2D prefix sums cost O(R*C) preprocessing.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-prefix-sums-ex0">
+  <h4>Subarray Sums II (allows negatives)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (which may be negative, zero, or positive) and a target integer x, count the number of contiguous subarrays whose sum equals exactly x. Constraints: 1 &lt;= n &lt;= 2*10^5, -10^9 &lt;= a_i, x &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Because elements can be negative, growing or shrinking a sliding window does not change the window sum monotonically, so plain two pointers cannot be used here (unlike the easier variant of this problem restricted to non-negative values). Instead, compute the running prefix sum P as you scan left to right, and maintain a hash map from prefix-sum-value to how many times it has occurred so far (initialized with P=0 occurring once, representing the empty prefix before index 0). At each position, a subarray ending here with sum x exists for every earlier prefix value equal to (current prefix - x); look that up in the map and add its count to the answer, then record the current prefix value in the map. This is O(n) time with O(n) hash-map space, and correctly handles negative numbers because it never relies on the sum changing monotonically -- it only relies on prefix-sum equality.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n; long long x;
+    cin &gt;&gt; n &gt;&gt; x;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;v : a) cin &gt;&gt; v;
+
+    unordered_map&lt;long long,long long&gt; cnt;
+    cnt[0] = 1;
+    long long prefix = 0, ans = 0;
+    for (int i = 0; i &lt; n; i++){
+        prefix += a[i];
+        auto it = cnt.find(prefix - x);
+        if (it != cnt.end()) ans += it-&gt;second;
+        cnt[prefix]++;
+    }
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 0
+1 -1 1 -1
+</code></pre>
+    <pre><code>4
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-prefix-sums-ex1">
+  <h4>Number of Submatrices That Sum to Target</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an R x C integer matrix and an integer target, return the number of non-empty submatrices (axis-aligned, contiguous ranges of rows and columns) whose element sum equals target. Constraints: 1 &lt;= R, C &lt;= 100, -1000 &lt;= matrix[i][j] &lt;= 1000, -10^8 &lt;= target &lt;= 10^8.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build a 2D prefix-sum table P where P[i][j] is the sum of the submatrix from (0,0) to (i-1,j-1), so any submatrix sum can be read off in O(1) via inclusion-exclusion. Then reduce the 2D problem to O(C^2) instances of the 1D &#x27;count subarrays summing to target&#x27; problem: fix a pair of column boundaries (c1, c2) with c1 &lt;= c2, and for each row r compute the sum of that row restricted to columns [c1, c2] using the 2D prefix table in O(1); this produces a 1D array of length R. Run prefix sums plus a hash map (exactly as in the previous example) on that 1D array to count how many row-ranges sum to target for this fixed column pair, and add that to the running answer. Trying every pair of column boundaries costs O(C^2), and each column pair does O(R) work, for a total of O(R * C^2), which is efficient enough given R, C &lt;= 100.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int R, C; long long target;
+    cin &gt;&gt; R &gt;&gt; C &gt;&gt; target;
+    vector&lt;vector&lt;long long&gt;&gt; mat(R, vector&lt;long long&gt;(C));
+    for (int i = 0; i &lt; R; i++)
+        for (int j = 0; j &lt; C; j++)
+            cin &gt;&gt; mat[i][j];
+
+    vector&lt;vector&lt;long long&gt;&gt; prefix(R + 1, vector&lt;long long&gt;(C + 1, 0));
+    for (int i = 0; i &lt; R; i++){
+        for (int j = 0; j &lt; C; j++){
+            prefix[i+1][j+1] = mat[i][j] + prefix[i][j+1] + prefix[i+1][j] - prefix[i][j];
+        }
+    }
+
+    long long ans = 0;
+    for (int c1 = 0; c1 &lt; C; c1++){
+        for (int c2 = c1; c2 &lt; C; c2++){
+            unordered_map&lt;long long,long long&gt; cnt;
+            cnt[0] = 1;
+            long long rowSum = 0;
+            for (int r = 0; r &lt; R; r++){
+                long long s = prefix[r+1][c2+1] - prefix[r+1][c1] - prefix[r][c2+1] + prefix[r][c1];
+                rowSum += s;
+                auto it = cnt.find(rowSum - target);
+                if (it != cnt.end()) ans += it-&gt;second;
+                cnt[rowSum]++;
+            }
+        }
+    }
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3 0
+0 1 0
+1 1 1
+0 1 0
+</code></pre>
+    <pre><code>4
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-prefix-sums-ex2">
+  <h4>Shortest Subarray with Sum at Least K</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an integer array nums (which may contain negative numbers) of length n and an integer k, return the length of the shortest, non-empty, contiguous subarray whose sum is at least k. If no such subarray exists, return -1. Constraints: 1 &lt;= n &lt;= 10^5, -10^5 &lt;= nums[i] &lt;= 10^5, 1 &lt;= k &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Because negatives are allowed, a plain sliding window (valid only when growing a window is guaranteed to help, i.e. all-non-negative arrays) does not work. Instead, build the prefix sum array P[0..n]. A subarray (i, j] with sum &gt;= k corresponds to P[j] - P[i] &gt;= k for some i &lt; j; we want to minimize j - i. Maintain a deque of candidate left-endpoints i with the invariant that P over the deque is strictly increasing from front to back. For each new j (scanning P left to right): first, while the front of the deque gives P[j] - P[front] &gt;= k, that candidate satisfies the sum condition -- record j - front as a candidate answer and pop it from the front, since any larger j&#x27; &gt; j will only give an equal-or-worse (larger) length using that same front, so it can never be optimal again once beaten by this j. Second, before pushing j itself as a future left endpoint, pop from the back any index whose prefix value is &gt;= P[j], because such an index is strictly dominated by j (j is a later, and at-least-as-low, starting point, so it will always produce an equal-or-shorter valid subarray whenever the dominated index would have worked). Each index enters and leaves the deque once, giving O(n) total time.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n; long long k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;long long&gt; nums(n);
+    for (auto &amp;x : nums) cin &gt;&gt; x;
+
+    vector&lt;long long&gt; P(n + 1, 0);
+    for (int i = 0; i &lt; n; i++) P[i+1] = P[i] + nums[i];
+
+    deque&lt;int&gt; dq;
+    int ans = INT_MAX;
+    for (int i = 0; i &lt;= n; i++){
+        while (!dq.empty() &amp;&amp; P[i] - P[dq.front()] &gt;= k){
+            ans = min(ans, i - dq.front());
+            dq.pop_front();
+        }
+        while (!dq.empty() &amp;&amp; P[dq.back()] &gt;= P[i]) dq.pop_back();
+        dq.push_back(i);
+    }
+    cout &lt;&lt; (ans == INT_MAX ? -1 : ans) &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3
+2 -1 2
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-kadane-s-algorithm">
+  <div class="topic-head"><h2>Kadane&#x27;s Algorithm</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>Kadane&#x27;s algorithm finds the maximum-sum contiguous subarray in O(n) time using a single dynamic-programming pass. Define best(i) as the maximum sum of a subarray ending exactly at index i. The recurrence is best(i) = max(a[i], best(i-1) + a[i]): either the best subarray ending at i is just a[i] on its own (restart), or it extends the best subarray ending at i-1 by adding a[i]. The overall answer is max over all i of best(i). The crucial insight that makes this a genuine dynamic-programming/greedy hybrid rather than a brute-force check is that once best(i-1) is negative, it can never help any future subarray sum (adding a negative running total only drags down whatever comes next), so restarting from a[i] alone dominates. This lets you keep only a single rolling value (&#x27;cur&#x27;) instead of the full best(i) array, giving O(1) space in addition to O(n) time -- a dramatic improvement over the naive O(n^2) (try every start) or O(n^3) (try every start and end, resumming each time) approaches.</p><p>Kadane&#x27;s is best understood as a special, very efficient case of the general prefix-sum reformulation: the maximum subarray sum ending at j is P[j] - min(P[0..j-1]) where P is the prefix sum array. Kadane&#x27;s algorithm computes this implicitly by tracking the running minimum prefix (equivalently, the running best partial sum) as it scans, without needing to materialize the full prefix array or search it explicitly. Seeing this connection is what unlocks the harder variants below: whenever a variant constrains which earlier prefix indices are eligible (e.g. only prefixes within a certain distance back), you can no longer just track a single running minimum -- you need a windowed-minimum structure (segment tree or monotonic deque) over the eligible prefix indices, which is exactly sliding-window-minimum applied to the prefix array.</p><p>Two very common hard variants build directly on the base algorithm. First, length-constrained maximum subarray sum (maximize sum subject to the subarray length falling in [minLen, maxLen]): here you compute prefix sums P and, for each right endpoint r, need the minimum P[j] over j in the valid window [r-maxLen, r-minLen] -- a sliding-window-minimum problem over the prefix array, solved with a monotonic deque in O(n) total, since as r increases the valid window of j slides forward monotonically. Second, maximum subarray sum in a circular array (the subarray may wrap past the end back to the start): the best circular-wrapping subarray is total sum minus the minimum-sum non-circular subarray (removing the smallest-sum contiguous &#x27;hole&#x27; from the full circle leaves the best wraparound segment), so compute ordinary Kadane&#x27;s max, and a mirrored Kadane&#x27;s-for-minimum, and take max(ordinarKadaneMax, total - minSubarraySum) -- with the edge case that if every element is negative, the minimum subarray is the entire array, making the wrap candidate an invalid empty selection, so you must fall back to the plain (negative) Kadane&#x27;s max in that case.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for &#x27;maximum (or minimum) sum contiguous subarray&#x27; phrasing, especially when a plain &#x27;sum of all elements&#x27; or &#x27;largest element&#x27; answer is clearly too simple to be the intended solution -- length bounds, circularity, or a two-dimensional (submatrix) version are the standard ways these problems get escalated to hard difficulty.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) time, O(1) extra space for the base algorithm; O(n log n) or O(n) (with a monotonic deque) for length-constrained variants; O(n) time and space for the circular-array variant.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-kadane-s-algorithm-ex0">
+  <h4>Maximum Subarray Sum with Witness Indices</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (which may be negative), find the maximum possible sum of a non-empty contiguous subarray. In addition to the sum, output the 0-indexed start and end indices of a subarray achieving that maximum sum, specifically the one produced by scanning left to right and, whenever the running sum would need to restart, restarting exactly at the current element (this makes the output deterministic). Print the sum, then the start index, then the end index, separated by spaces. Constraints: 1 &lt;= n &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the base Kadane recurrence, best(i) = max(a[i], best(i-1) + a[i]), tracked with a single rolling variable &#x27;cur&#x27; plus its current start index. Whenever cur would become negative after adding the previous element (i.e. cur &lt; 0 before processing a[i]), it is strictly better to restart the running subarray at a[i] alone, since carrying forward a negative running sum can only hurt any future extension -- so we reset cur = a[i] and mark the new candidate start as i. Otherwise we extend by cur += a[i]. After each update we compare cur to the best sum seen so far and, if it improves, record the sum along with the current candidate&#x27;s start and the current index as its end. This single left-to-right pass is O(n) time and O(1) extra space (beyond the input array).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+
+    long long best = a[0], cur = a[0];
+    int bestStart = 0, bestEnd = 0, curStart = 0;
+    for (int i = 1; i &lt; n; i++){
+        if (cur &lt; 0){
+            cur = a[i];
+            curStart = i;
+        } else {
+            cur += a[i];
+        }
+        if (cur &gt; best){
+            best = cur;
+            bestStart = curStart;
+            bestEnd = i;
+        }
+    }
+    cout &lt;&lt; best &lt;&lt; &quot; &quot; &lt;&lt; bestStart &lt;&lt; &quot; &quot; &lt;&lt; bestEnd &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>9
+-2 1 -3 4 -1 2 1 -5 4
+</code></pre>
+    <pre><code>6 3 6
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-kadane-s-algorithm-ex1">
+  <h4>Maximum Subarray Sum with Length Bounds</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (which may be negative) and two integers a and b with 1 &lt;= a &lt;= b &lt;= n, find the maximum possible sum of a contiguous subarray whose length L satisfies a &lt;= L &lt;= b. Constraints: 1 &lt;= n &lt;= 2*10^5, -10^9 &lt;= values &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Plain Kadane&#x27;s does not enforce any length constraint, so instead work with prefix sums P[0..n] (P[0]=0). The sum of a subarray ending at prefix index r (i.e. covering original indices [j, r-1]) with left prefix-boundary j is P[r] - P[j], and its length is r - j; we need a &lt;= r-j &lt;= b, i.e. j must lie in the window [r-b, r-a]. To maximize P[r] - P[j] for fixed r we want the minimum P[j] over that window -- a sliding-window-minimum problem on the prefix array. As r increases by 1, the window [r-b, r-a] slides forward by exactly 1 on both ends, so maintain a monotonic increasing deque of prefix indices: each step, add the newly-eligible index r-a to the deque (popping any back entries with a prefix value &gt;= the new one, since they&#x27;re now dominated), then pop any front entries that have fallen below the window&#x27;s lower bound r-b. The front of the deque is always the minimum-prefix eligible index, so P[r] - P[front] is the best achievable sum ending at r, and we take the max of that quantity over all valid r.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n, a, b;
+    cin &gt;&gt; n &gt;&gt; a &gt;&gt; b;
+    vector&lt;long long&gt; arr(n);
+    for (auto &amp;x : arr) cin &gt;&gt; x;
+
+    vector&lt;long long&gt; P(n + 1, 0);
+    for (int i = 0; i &lt; n; i++) P[i+1] = P[i] + arr[i];
+
+    deque&lt;int&gt; dq;
+    long long best = LLONG_MIN;
+    for (int r = a; r &lt;= n; r++){
+        int newJ = r - a;
+        while (!dq.empty() &amp;&amp; P[dq.back()] &gt;= P[newJ]) dq.pop_back();
+        dq.push_back(newJ);
+
+        int lowBound = r - b;
+        while (!dq.empty() &amp;&amp; dq.front() &lt; lowBound) dq.pop_front();
+
+        best = max(best, P[r] - P[dq.front()]);
+    }
+    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 2 3
+1 -2 3 4 -5
+</code></pre>
+    <pre><code>7
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-kadane-s-algorithm-ex2">
+  <h4>Maximum Circular Subarray Sum</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a circular integer array nums of length n (meaning the subarray is allowed to wrap around past the last element back to the first), return the maximum possible sum of a non-empty contiguous (possibly wrapping) subarray. Constraints: 1 &lt;= n &lt;= 3*10^4, -3*10^4 &lt;= nums[i] &lt;= 3*10^4.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>A subarray that does not wrap is just handled by ordinary Kadane&#x27;s algorithm, giving maxSub. A subarray that does wrap around consists of a prefix of the array plus a suffix of the array, with some contiguous &#x27;hole&#x27; in the middle excluded; its sum equals total - (sum of the excluded middle segment). To maximize the wrapped sum we therefore want to minimize the sum of the excluded middle segment, i.e. compute minSub, the minimum-sum non-empty contiguous subarray, using a mirrored Kadane&#x27;s recurrence (curMin = min(a[i], curMin + a[i])). The best circular answer is then total - minSub, and the overall answer is max(maxSub, total - minSub). The one subtlety: if every element is negative, minSub equals the sum of the entire array, making total - minSub equal to 0, which corresponds to excluding everything -- an empty (invalid) selection. In that case the wrap candidate must be discarded and the answer is simply maxSub (which will correctly be the least-negative single element). This is handled by checking whether maxSub itself is negative before considering the wrap candidate.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+
+    long long total = 0;
+    long long curMax = 0, maxSub = LLONG_MIN;
+    long long curMin = 0, minSub = LLONG_MAX;
+    for (int i = 0; i &lt; n; i++){
+        total += a[i];
+        curMax = max(curMax + a[i], a[i]);
+        maxSub = max(maxSub, curMax);
+        curMin = min(curMin + a[i], a[i]);
+        minSub = min(minSub, curMin);
+    }
+
+    long long ans;
+    if (maxSub &lt; 0) ans = maxSub;
+    else ans = max(maxSub, total - minSub);
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+5 -3 5
+</code></pre>
+    <pre><code>10
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-difference-arrays">
+  <div class="topic-head"><h2>Difference Arrays</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A difference array turns range-update problems into point-update problems. Given an array a[1..n], define d[1] = a[1] and d[i] = a[i] - a[i-1] for i &gt; 1 (conceptually d[0] = a[0] = 0). The key identity is that a[i] = d[1] + d[2] + ... + d[i], i.e. a is the prefix-sum of d. This means adding a constant v to every element of a contiguous range a[l..r] can be done in O(1) by only touching the difference array: d[l] += v and d[r+1] -= v (if r+1 &lt;= n). After all range updates are applied to d, a single prefix-sum pass over d reconstructs the final array a in O(n). This is the array analogue of a Fenwick/segment tree range-update, but with no logarithmic factor -- it is only valid when all updates are applied before any point is read back (an &#x27;offline&#x27; batch of updates), which is exactly the situation in most of these problems.</p><p>The deeper and more powerful insight is the reverse direction: reconstructing the MINIMUM number of range-add operations that could have produced a given final array, starting from all zeros. Since each individual operation rangeAdd(l, r, +1) changes exactly two entries of the difference array (d[l] += 1, d[r+1] -= 1), and a value v &gt; 0 at position i of d must be &#x27;created&#x27; by v operations whose left endpoint is i (each contributing +1), the minimum number of operations equals the sum of all POSITIVE values in the difference array. This is because every operation contributes exactly one positive unit somewhere in d and exactly one negative unit (or falls off the end); an optimal strategy greedily starts a new range exactly when d[i] is positive, and closes ranges exactly when d[i] is negative, and it is never beneficial to start more ranges than the total positive mass requires.</p><p>This reconstruction insight generalizes further: when updates can be signed (+1 or -1 operations, as in turning nums into target), split the required delta d[i] = target[i]-nums[i] into a non-negative part (dpos[i] = max(0, d[i])) and a non-positive part (dneg[i] = max(0, -d[i])). Because a +1 range operation and a -1 range operation can never be merged into fewer operations (they move the value in different directions), the two parts are independent sub-problems, each solved by the same &#x27;sum of positive jumps in the difference array&#x27; rule, and the answers simply add.</p><p>Difference arrays also compose naturally with other structures: 2D difference arrays extend the same trick to rectangle-add/point-query grids, and combining a difference array with a Fenwick tree (a &#x27;Fenwick tree of differences&#x27;) supports range-add + range-sum-query in O(log n) per operation when updates and queries are interleaved online rather than batched.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem describes many operations of the form &#x27;add v to every element in range [l, r]&#x27; (or &#x27;increment/decrement a contiguous subarray&#x27;), especially when all updates happen before you need to read the final array; or the problem gives you a final array and asks for the minimum number of range-add operations that could have produced it from all zeros.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n + q) time and O(n) space for q batched range updates followed by one reconstruction pass; O(1) per update, O(n) for the final prefix-sum reconstruction.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-difference-arrays-ex0">
+  <h4>Minimum Range-Increment Operations to Reach a Target Array</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You start with an array of n zeros. An operation picks a contiguous range [l, r] (1 &lt;= l &lt;= r &lt;= n) and adds 1 to every element in that range. You are given the final array b[1..n] that resulted from applying some sequence of such operations. Find the minimum possible number of operations that could have produced b.</p><p>Input: n, then n integers b[1..n] (0 &lt;= b[i] &lt;= 10^9).<br>Output: the minimum number of operations.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the difference array d[i] = b[i] - b[i-1] for i = 1..n, treating b[0] = 0. Every operation rangeAdd(l, r) increases d[l] by 1 and decreases d[r+1] by 1 (or has no effect on the &#x27;far side&#x27; if r = n). Because each operation contributes exactly one unit of positive mass to some d[l], the total number of operations needed is at least the sum of all positive entries of d; and this bound is achievable by, at each position i where d[i] &gt; 0, opening d[i] new ranges starting at i, and at each position where d[i] &lt; 0, closing that many ranges (always possible greedily since the array of currently-open ranges never goes negative -- this follows because b[i] = sum of d[1..i] &gt;= 0 for all i, guaranteeing enough open ranges exist to close). So the answer is simply the sum of max(0, d[i]) over i = 1..n. This runs in O(n) with O(n) space for the difference computation.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; b(n+1, 0);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; b[i];
+    long long ops = 0;
+    for (int i = 1; i &lt;= n; i++) {
+        long long d = b[i] - b[i-1];
+        if (d &gt; 0) ops += d;
+    }
+    cout &lt;&lt; ops &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+1 2 2 3 1
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-difference-arrays-ex1">
+  <h4>Minimum Operations to Turn nums into target (signed range updates)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given two integer arrays nums and target, both of length n. In one operation you may choose a contiguous subarray of nums and either add 1 to every element in it, or subtract 1 from every element in it. Find the minimum number of operations needed to make nums equal to target.</p><p>Input: n, then n integers nums[1..n], then n integers target[1..n].<br>Output: the minimum number of operations.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Let d[i] = target[i] - nums[i] be the required signed delta at each position. A +1 range operation can only ever help positions that still need a positive delta, and a -1 range operation can only help positions that still need a negative delta -- the two kinds of operations never interact usefully in the same range, so the problem decomposes into two independent instances of the classic difference-array reconstruction: dpos[i] = max(0, d[i]) needs to be built with +1 range ops, and dneg[i] = max(0, -d[i]) needs to be built with -1 range ops. Each is solved exactly like the previous example: form the difference array of dpos (respectively dneg) with an implicit 0 before index 0, and sum the positive jumps. The final answer is the sum of the two independent costs. This is O(n) time and space.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+long long costOneDirection(vector&lt;long long&gt;&amp; d) {
+    // d[i] &gt;= 0 required contribution at each index; cost = sum of positive jumps
+    // treat as difference array with implicit d[-1] = 0
+    long long ops = 0;
+    long long prev = 0;
+    for (long long x : d) {
+        long long jump = x - prev;
+        if (jump &gt; 0) ops += jump;
+        prev = x;
+    }
+    return ops;
+}
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; nums(n), target(n);
+    for (auto &amp;x : nums) cin &gt;&gt; x;
+    for (auto &amp;x : target) cin &gt;&gt; x;
+    vector&lt;long long&gt; dpos(n), dneg(n);
+    for (int i = 0; i &lt; n; i++) {
+        long long d = target[i] - nums[i];
+        dpos[i] = max(0LL, d);
+        dneg[i] = max(0LL, -d);
+    }
+    long long ans = costOneDirection(dpos) + costOneDirection(dneg);
+    cout &lt;&lt; ans &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+3 5 1 2
+4 6 2 4
+</code></pre>
+    <pre><code>2
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-two-pointer-partitioning-dutch-national-flag">
+  <div class="topic-head"><h2>Two-Pointer Partitioning (Dutch National Flag)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The Dutch National Flag problem (Dijkstra) asks how to sort an array containing only three distinct values (conventionally 0, 1, 2) in-place in a single O(n) pass, without counting sort. The classic solution maintains three regions using three pointers: low marks the boundary of the region known to contain only 0s (everything in [0, low) is 0), high marks the boundary of the region known to contain only 2s (everything in (high, n) is 2), and mid scans forward through the unknown middle region. At each step, look at a[mid]: if it&#x27;s 0, swap it with a[low] and advance both low and mid (the swapped-in element at position low was already known to be a 1 or already processed, so mid can safely advance too); if it&#x27;s 1, it&#x27;s already in its correct relative region, so just advance mid; if it&#x27;s 2, swap it with a[high] and decrement high WITHOUT advancing mid, because the element swapped in from position high has not yet been examined and could be 0, 1, or 2.</p><p>The general pattern -- maintaining multiple pointers that each mark the boundary of a region with a known invariant, and advancing them based on a local test -- generalizes far beyond three-way sorting. It applies to any &#x27;in-place partition into k labeled groups&#x27; problem, to problems that require partitioning a sorted or unsorted array into a &#x27;low group&#x27; and a &#x27;high group&#x27; related by some transformation (e.g. recovering an original array from a k-shifted interleaving), and to multi-region search problems where the boundaries of several valid segments must be discovered simultaneously by scanning with coordinated pointers rather than nested loops.</p><p>A second, related pattern is &#x27;matching a multiset against a candidate transformation&#x27;: given a shuffled combination of two related sequences (e.g. {v-k, v+k} pairs for unknown k), sort the combined multiset, then repeatedly peel off the smallest remaining value x and require its designated partner value (x plus some offset determined by the candidate k) to also be present; if this greedy peeling matches every element exactly once, the candidate k is validated and the matching directly reconstructs the original array. This only works correctly when applied to the SORTED order (so that &#x27;smallest remaining element&#x27; always corresponds to the &#x27;low&#x27; member of a pair, never a &#x27;high&#x27; member whose partner has already been consumed) -- this is what makes it a genuine two-pointer/partition technique rather than arbitrary multiset matching.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The array (or the target structure) has a small, fixed number of distinct categories/labels that must end up in contiguous, ordered regions in one pass (Dutch flag itself); or the array was formed by combining two related groups of values under some unknown shift/scale, and you must partition the sorted values back into a &#x27;low&#x27; group and a &#x27;high&#x27; group that pair up exactly.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) time, O(1) extra space for the classic three-way in-place partition; O(n log n) time (dominated by the sort) for multiset-matching reconstruction problems.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-two-pointer-partitioning-dutch-national-flag-ex0">
+  <h4>Sort an Array of 0s, 1s, and 2s (Dutch National Flag)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers, each equal to 0, 1, or 2, sort the array in-place in a single pass (O(n) time, O(1) extra space), without using a library sort or counting sort.</p><p>Input: n, then n integers (each 0, 1, or 2).<br>Output: the sorted array, space-separated.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain three pointers: low (next position to place a 0), mid (current element under examination), and high (next position to place a 2), initialized to 0, 0, n-1. Loop while mid &lt;= high: if a[mid] == 0, swap a[low] with a[mid], then increment both low and mid (the element now at mid, previously at low, is guaranteed to be a 1 or already-examined 0, safe to skip past). If a[mid] == 1, just increment mid (it&#x27;s already correctly placed in the middle region). If a[mid] == 2, swap a[mid] with a[high] and decrement high, but do NOT advance mid, since the newly swapped-in value at mid has not yet been classified. The invariant maintained throughout is: [0, low) contains only 0s, [low, mid) contains only 1s, [mid, high] is unexamined, and (high, n) contains only 2s. When mid exceeds high, the unexamined region is empty and the array is fully sorted.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x; // each x in {0,1,2}
+    int low = 0, mid = 0, high = n - 1;
+    while (mid &lt;= high) {
+        if (a[mid] == 0) {
+            swap(a[low], a[mid]);
+            low++; mid++;
+        } else if (a[mid] == 1) {
+            mid++;
+        } else { // a[mid] == 2
+            swap(a[mid], a[high]);
+            high--;
+            // do not advance mid: the swapped-in value must still be examined
+        }
+    }
+    for (int i = 0; i &lt; n; i++) cout &lt;&lt; a[i] &lt;&lt; (i+1&lt;n?&#x27; &#x27;:&#x27;\n&#x27;);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+2 0 2 1 1 0
+</code></pre>
+    <pre><code>0 0 1 1 2 2
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-two-pointer-partitioning-dutch-national-flag-ex1">
+  <h4>Recover the Original Array from a k-Shifted Interleaving</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>An array arr of n positive integers and an unknown positive integer k were used to build an array b of length 2n: for every arr[i], both arr[i]-k and arr[i]+k were placed somewhere into b (in arbitrary order, fully shuffled). Given b, recover any valid array arr and the value k that could have produced it (if multiple answers exist, any valid one is acceptable).</p><p>Input: 2n (the length of b), then the 2n integers of b.<br>Output: the n integers of a valid arr, sorted ascending, space-separated (print IMPOSSIBLE if no valid reconstruction exists, which will not occur in this example).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort b. The globally smallest element of b, b[0], must be a &#x27;low&#x27; member of some pair (arr[i]-k), since arr[i]+k &gt; arr[i]-k for k &gt; 0, so nothing can be smaller than the smallest low value. Therefore the true k satisfies b[0] + 2k = (partner of b[0]) for SOME other element of b; try every candidate k = (b[i] - b[0]) / 2 for i = 1..2n-1 (skipping non-positive or odd differences). For each candidate k, attempt a greedy two-pointer-style matching using a multiset: repeatedly remove the current smallest remaining value x, and require x + 2k to also be present in the multiset (removing it too) as x&#x27;s high partner; record x + k as a recovered element of arr. If this succeeds for all 2n elements (the multiset empties with no failed lookups), the candidate k is valid and the recovered elements form arr. Processing smallest-to-largest is essential: it guarantees every value taken as &#x27;x&#x27; is genuinely a low member (its partner, if any, still lies ahead in sorted order), so the matching can never mistakenly try to pair two high members together.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n2; cin &gt;&gt; n2; // total length, must be even
+    vector&lt;long long&gt; b(n2);
+    for (auto &amp;x : b) cin &gt;&gt; x;
+    sort(b.begin(), b.end());
+    int n = n2 / 2;
+
+    vector&lt;long long&gt; result;
+    bool found = false;
+    for (int i = 1; i &lt; n2 &amp;&amp; !found; i++) {
+        long long diff = b[i] - b[0];
+        if (diff &lt;= 0 || diff % 2 != 0) continue;
+        long long k = diff / 2;
+        // attempt greedy matching with this k using a multiset
+        multiset&lt;long long&gt; ms(b.begin(), b.end());
+        vector&lt;long long&gt; res;
+        bool ok = true;
+        while (!ms.empty()) {
+            long long x = *ms.begin();
+            ms.erase(ms.begin());
+            auto it = ms.find(x + 2*k);
+            if (it == ms.end()) { ok = false; break; }
+            ms.erase(it);
+            res.push_back(x + k);
+        }
+        if (ok &amp;&amp; (long long)res.size() == n) {
+            result = res;
+            found = true;
+        }
+    }
+    if (!found) {
+        cout &lt;&lt; &quot;IMPOSSIBLE&quot; &lt;&lt; endl;
+        return 0;
+    }
+    sort(result.begin(), result.end());
+    for (size_t i = 0; i &lt; result.size(); i++) cout &lt;&lt; result[i] &lt;&lt; (i+1&lt;result.size()?&#x27; &#x27;:&#x27;\n&#x27;);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+33 7 23 13 27 17
+</code></pre>
+    <pre><code>10 20 30
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-monotonic-deque">
+  <div class="topic-head"><h2>Monotonic Deque</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A monotonic deque maintains a double-ended queue of candidate values (or indices) that is always sorted (monotonically increasing or decreasing) from front to back, and supports O(1) amortized insertion at the back and removal from either end. It is the standard tool for computing a sliding window&#x27;s maximum or minimum in O(n) total, and more generally for online DP transitions of the form dp[i] = f(i) + best(dp[j] for j in a moving window [i-k, i-1]).</p><p>For sliding window maximum, the deque stores indices with strictly decreasing values front-to-back. When a new index i arrives: (1) pop from the back any index whose value is &lt;= a[i], because such an index can never again be the window maximum while i is still in the window (a[i] is at least as large and will outlast it) -- this is what keeps the deque monotonic and is the reason the amortized cost is O(1) (each element is pushed once and popped at most once); (2) push i to the back; (3) pop from the front any index that has fallen outside the current window&#x27;s left boundary; (4) the current window&#x27;s maximum is now the value at the front of the deque.</p><p>A second major use case is when the naive two-pointer sliding window technique breaks because the array contains negative numbers, so prefix sums are not monotonic. For &#x27;shortest subarray with sum &gt;= K&#x27;, a two-pointer approach that only ever advances both pointers forward is unsound because shrinking the window from the left doesn&#x27;t necessarily decrease the sum. The fix is to work with prefix sums pre[0..n] and maintain a deque of indices with strictly INCREASING prefix-sum values front-to-back: for each new index j, first pop from the FRONT any index i where pre[j] - pre[i] &gt;= K (recording the window length j - i as a candidate answer, and popping i because it can never again be useful -- any later j&#x27; &gt; j gives an even longer, so worse, candidate through the same i); then pop from the BACK any index i where pre[i] &gt;= pre[j] (such an i is dominated by j: j is a later index with an equal or smaller prefix sum, so j is always at least as good a left endpoint for future queries); finally push j to the back. Both directions of pruning together guarantee the deque never grows unboundedly and every index is pushed and popped at most once, giving O(n) total time.</p><p>Monotonic-deque DP optimization follows the same shape applied to a DP recurrence instead of a raw array: whenever the transition looks at a max (or min) of dp-values over a sliding window of previous states, replacing the naive O(window size) scan with a monotonic deque turns an O(n*k) DP into O(n).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You need the max or min of every sliding window of an array (fixed or variable size) computed as the window moves, ideally in a single pass; or a DP transition needs &#x27;the best dp-value among the last k states&#x27; computed online; or a two-pointer sliding-window sum breaks because the array contains negative numbers, requiring a monotonic structure on prefix sums instead.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) time and O(k) or O(n) space (amortized O(1) per element, since each index is pushed and popped from the deque at most once).</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-monotonic-deque-ex0">
+  <h4>Sliding Window Maximum</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array nums of n integers and a window size k, return the maximum value of every contiguous window of size k as the window slides from the left end of the array to the right end (there are n - k + 1 such windows).</p><p>Input: n and k, then n integers nums[1..n].<br>Output: the n - k + 1 window maximums, space-separated.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain a deque of indices whose corresponding values are strictly decreasing from front to back. For each index i from 0 to n-1: pop indices from the back of the deque while the value at the back is &lt;= nums[i] (they can never be the max again once nums[i] is in play); push i to the back. Pop from the front any index that is no longer within the window (index &lt;= i - k). Once i &gt;= k - 1 (the window is full), the front of the deque holds the index of the current window&#x27;s maximum, so record nums[front]. Each index enters and leaves the deque at most once, giving O(n) total time.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n, k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    deque&lt;int&gt; dq; // stores indices, values decreasing front-to-back
+    vector&lt;int&gt; res;
+    for (int i = 0; i &lt; n; i++) {
+        while (!dq.empty() &amp;&amp; a[dq.back()] &lt;= a[i]) dq.pop_back();
+        dq.push_back(i);
+        while (dq.front() &lt;= i - k) dq.pop_front();
+        if (i &gt;= k - 1) res.push_back(a[dq.front()]);
+    }
+    for (size_t i = 0; i &lt; res.size(); i++) cout &lt;&lt; res[i] &lt;&lt; (i+1&lt;res.size()?&#x27; &#x27;:&#x27;\n&#x27;);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8 3
+1 3 -1 -3 5 3 6 7
+</code></pre>
+    <pre><code>3 3 5 5 6 7
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-monotonic-deque-ex1">
+  <h4>Shortest Subarray with Sum at Least K</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an integer array nums of n elements (which may include negative numbers) and an integer K, return the length of the shortest, non-empty, contiguous subarray whose sum is at least K. If no such subarray exists, return -1.</p><p>Input: n and K, then n integers nums[1..n].<br>Output: the length of the shortest qualifying subarray, or -1.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Because nums can contain negative numbers, prefix sums pre[0..n] are not monotonic, so a standard two-pointer sliding window (which relies on the sum only increasing as the right end grows and only decreasing as the left end shrinks) is unsound here. Instead, maintain a deque of indices into pre[] with strictly increasing pre[] values front-to-back. For each j from 0 to n: while the deque is non-empty and pre[j] - pre[front] &gt;= K, that gives a candidate answer of length j - front; record it and pop the front (a smaller index can never yield a shorter valid subarray again once a later, equally-or-more-restrictive j has already worked for it -- any future j&#x27; &gt; j would only produce a longer candidate through the same front). Then, while the deque&#x27;s back has pre[] &gt;= pre[j], pop it (index j is a strictly better or equal left endpoint for all future right endpoints, since it has an equal-or-smaller prefix sum at a later, closer position). Push j to the back. The answer is the minimum recorded length, or -1 if none was found.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; long long K;
+    cin &gt;&gt; n &gt;&gt; K;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    vector&lt;long long&gt; pre(n+1, 0);
+    for (int i = 0; i &lt; n; i++) pre[i+1] = pre[i] + a[i];
+    deque&lt;int&gt; dq; // indices into pre[], increasing prefix-sum order front-to-back
+    int best = INT_MAX;
+    for (int j = 0; j &lt;= n; j++) {
+        while (!dq.empty() &amp;&amp; pre[j] - pre[dq.front()] &gt;= K) {
+            best = min(best, j - dq.front());
+            dq.pop_front();
+        }
+        while (!dq.empty() &amp;&amp; pre[dq.back()] &gt;= pre[j]) dq.pop_back();
+        dq.push_back(j);
+    }
+    cout &lt;&lt; (best == INT_MAX ? -1 : best) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3
+2 -1 2
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="arrays-strings-merge-intervals">
+  <div class="topic-head"><h2>Merge Intervals</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Merge Intervals problems build on the Sorting &amp; Binary Search idea that sorting objects by a key transforms an unordered comparison problem into a linear sweep. Here the objects are ranges [l, r] rather than points, and the standard first step is to sort all intervals by their left endpoint. Once sorted, a single left-to-right pass can merge overlapping or touching intervals: keep a running &#x27;current merged interval&#x27;; for each new interval in sorted order, if its start is &lt;= the current merged interval&#x27;s end, extend the current interval&#x27;s end to the max of the two ends (they overlap or touch, so they belong to the same merged group); otherwise, the current merged interval is finalized (push it to the result) and the new interval starts a fresh current interval. This is correct because sorting by start guarantees that once an interval&#x27;s start exceeds the current merged end, no LATER interval (which has an even larger or equal start) can ever overlap the current merged interval either.</p><p>Many harder problems combine this sort-and-sweep idea with a secondary data structure to answer aggregate or per-query questions rather than just producing the merged list. A common pattern: sort both the intervals (by start) and a separate list of queries, then sweep through the queries in increasing order, incrementally adding to a min-heap (or other structure) every interval whose start has already been &#x27;reached&#x27; by the sweep, lazily removing from the heap any interval that has expired (its end is now behind the current query point). This &#x27;offline sweep with a heap keyed by a secondary attribute&#x27; technique answers many queries in O((n + q) log n) total instead of O(n) per query.</p><p>A third pattern extends interval merging into a full mutable data structure: rather than merging a static list once, the structure supports online insertions and/or deletions of ranges, automatically re-merging with neighbors on every update (e.g. a TreeMap/ordered-map of disjoint intervals keyed by start, where inserting a new point or range requires finding and splicing together any now-adjacent or overlapping neighboring intervals). This turns &#x27;merge intervals&#x27; from a one-shot batch algorithm into an amortized-efficient online interval-set structure.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You are given a list of ranges/intervals and need to combine overlapping ones into a canonical disjoint form, or you need to answer &#x27;which merged range covers this point/query&#x27; efficiently, possibly across many queries or many incremental updates to the interval set.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time to sort and merge n intervals once; O((n + q) log n) for an offline sweep answering q queries against n intervals with a heap.</p></div>
+  </div>
+  <article class="example-card" id="arrays-strings-merge-intervals-ex0">
+  <h4>Merge Overlapping Intervals</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a collection of n intervals, each represented as [start, end] (inclusive), merge all overlapping (or touching) intervals and return the resulting list of disjoint intervals, sorted by start.</p><p>Input: n, then n pairs of integers start end.<br>Output: the number of merged intervals, followed by each merged interval on its own line as &#x27;start end&#x27;.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort the intervals by start. Initialize the result with the first interval as the &#x27;current&#x27; interval. For each subsequent interval in sorted order, compare its start to the current interval&#x27;s end: if start &lt;= current end, the intervals overlap or touch, so extend current&#x27;s end to max(current end, this interval&#x27;s end); otherwise, push the current interval to the result and make this interval the new current. After the loop, push the final current interval. This is a single O(n) pass after an O(n log n) sort.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;pair&lt;long long,long long&gt;&gt; iv(n);
+    for (auto &amp;p : iv) cin &gt;&gt; p.first &gt;&gt; p.second;
+    sort(iv.begin(), iv.end());
+    vector&lt;pair&lt;long long,long long&gt;&gt; res;
+    for (auto &amp;p : iv) {
+        if (!res.empty() &amp;&amp; p.first &lt;= res.back().second) {
+            res.back().second = max(res.back().second, p.second);
+        } else {
+            res.push_back(p);
+        }
+    }
+    cout &lt;&lt; res.size() &lt;&lt; &quot;\n&quot;;
+    for (auto &amp;p : res) cout &lt;&lt; p.first &lt;&lt; &quot; &quot; &lt;&lt; p.second &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+1 3
+2 6
+8 10
+15 18
+</code></pre>
+    <pre><code>3
+1 6
+8 10
+15 18
+</code></pre>
+  </div>
+</article><article class="example-card" id="arrays-strings-merge-intervals-ex1">
+  <h4>Minimum Interval to Include Each Query</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n intervals, each [start, end] (inclusive), and q query points. For each query point x, find the size (end - start + 1) of the smallest interval that contains x. If no interval contains x, the answer for that query is -1.</p><p>Input: n, then n pairs start end, then q, then q query integers.<br>Output: q integers (one per query, in the original query order), space-separated, where an unanswerable query prints -1.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort intervals by start, and sort the queries by value (while remembering each query&#x27;s original index so the output can be restored to input order). Sweep the sorted queries left to right: maintain a pointer into the sorted intervals and a min-heap keyed by (interval size, interval end). For each query x, first push into the heap every interval whose start is &lt;= x that has not yet been pushed (advancing the interval pointer). Then pop from the heap any interval whose end &lt; x (it has expired and can never contain this or any larger future query point). The top of the heap, if any remains, has the smallest size among all intervals currently containing x, which is exactly the answer for this query. Because both intervals and queries are processed in sorted order with a heap, each interval is pushed and popped at most once, giving O((n + q) log n) total time.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;pair&lt;long long,long long&gt;&gt; iv(n); // start, end (inclusive)
+    for (auto &amp;p : iv) cin &gt;&gt; p.first &gt;&gt; p.second;
+    int q; cin &gt;&gt; q;
+    vector&lt;long long&gt; queries(q);
+    vector&lt;int&gt; order(q);
+    for (int i = 0; i &lt; q; i++) { cin &gt;&gt; queries[i]; order[i] = i; }
+
+    sort(iv.begin(), iv.end()); // by start
+    sort(order.begin(), order.end(), [&amp;](int i, int j){ return queries[i] &lt; queries[j]; });
+
+    // min-heap of (size, end)
+    priority_queue&lt;pair&lt;long long,long long&gt;, vector&lt;pair&lt;long long,long long&gt;&gt;, greater&lt;&gt;&gt; pq;
+    vector&lt;long long&gt; ans(q, -1);
+    int idx = 0;
+    for (int oi : order) {
+        long long x = queries[oi];
+        while (idx &lt; n &amp;&amp; iv[idx].first &lt;= x) {
+            pq.push({iv[idx].second - iv[idx].first + 1, iv[idx].second});
+            idx++;
+        }
+        while (!pq.empty() &amp;&amp; pq.top().second &lt; x) pq.pop();
+        if (!pq.empty()) ans[oi] = pq.top().first;
+    }
+    for (int i = 0; i &lt; q; i++) cout &lt;&lt; ans[i] &lt;&lt; (i+1&lt;q?&#x27; &#x27;:&#x27;\n&#x27;);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+1 4
+2 4
+3 6
+4 4
+4
+2 3 4 5
+</code></pre>
+    <pre><code>3 3 1 4
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">25</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="petya and array codeforces prefix sums + counting (fenwick tree) count the number of subarrays of an array (which may contain negative numbers) whose sum is strictly less than a given t.">
+  <td><a href="https://codeforces.com/problemset/problem/1042/D" target="_blank" rel="noopener noreferrer">Petya and Array</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">prefix sums + counting (Fenwick tree)</td>
+  <td class="desc-cell">Count the number of subarrays of an array (which may contain negative numbers) whose sum is strictly less than a given t.</td>
+</tr><tr data-search="close tuples (hard version) codeforces two pointers + combinatorial counting count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.">
+  <td><a href="https://codeforces.com/problemset/problem/1462/E2" target="_blank" rel="noopener noreferrer">Close Tuples (hard version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1700</td>
+  <td class="subtopic-cell">two pointers + combinatorial counting</td>
+  <td class="desc-cell">Count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.</td>
+</tr><tr data-search="openstreetmap codeforces 2d sliding window minimum (monotonic deque) given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.">
+  <td><a href="https://codeforces.com/problemset/problem/1195/E" target="_blank" rel="noopener noreferrer">OpenStreetMap</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">2D sliding window minimum (monotonic deque)</td>
+  <td class="desc-cell">Given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.</td>
+</tr><tr data-search="subarray sums ii cses prefix sums + hashmap counting count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.">
+  <td><a href="https://cses.fi/problemset/task/1661" target="_blank" rel="noopener noreferrer">Subarray Sums II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">prefix sums + hashmap counting</td>
+  <td class="desc-cell">Count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.</td>
+</tr><tr data-search="maximum subarray sum ii cses kadane variant with length constraint (prefix sums + segment tree/deque) find the maximum possible sum of a subarray whose length is between two given bounds a and b.">
+  <td><a href="https://cses.fi/problemset/task/1644" target="_blank" rel="noopener noreferrer">Maximum Subarray Sum II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Kadane variant with length constraint (prefix sums + segment tree/deque)</td>
+  <td class="desc-cell">Find the maximum possible sum of a subarray whose length is between two given bounds a and b.</td>
+</tr><tr data-search="sliding window maximum leetcode sliding window with monotonic deque given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.">
+  <td><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">Sliding Window Maximum</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">sliding window with monotonic deque</td>
+  <td class="desc-cell">Given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.</td>
+</tr><tr data-search="shortest subarray with sum at least k leetcode prefix sums + monotonic deque given an integer array (possibly containing negative numbers) and integer k, find the length of the shortest contiguous subarray with sum at least k, or -1 if none exists.">
+  <td><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank" rel="noopener noreferrer">Shortest Subarray with Sum at Least K</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">prefix sums + monotonic deque</td>
+  <td class="desc-cell">Given an integer array (possibly containing negative numbers) and integer K, find the length of the shortest contiguous subarray with sum at least K, or -1 if none exists.</td>
+</tr><tr data-search="number of submatrices that sum to target leetcode 2d prefix sums + hashmap given a 2d matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.">
+  <td><a href="https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/" target="_blank" rel="noopener noreferrer">Number of Submatrices That Sum to Target</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">2D prefix sums + hashmap</td>
+  <td class="desc-cell">Given a 2D matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.</td>
+</tr><tr data-search="range increments codeforces difference arrays given the final array state (all elements start at 0), reconstruct the minimum number of `rangeincrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.">
+  <td><a href="https://codeforces.com/problemset/problem/174/C" target="_blank" rel="noopener noreferrer">Range Increments</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Difference Arrays</td>
+  <td class="desc-cell">Given the final array state (all elements start at 0), reconstruct the minimum number of `rangeIncrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.</td>
+</tr><tr data-search="too many segments (hard version) codeforces difference arrays given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.">
+  <td><a href="https://codeforces.com/problemset/problem/1249/D2" target="_blank" rel="noopener noreferrer">Too Many Segments (hard version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Difference Arrays</td>
+  <td class="desc-cell">Given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.</td>
+</tr><tr data-search="clear the multiset codeforces difference arrays given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.">
+  <td><a href="https://codeforces.com/problemset/problem/1400/E" target="_blank" rel="noopener noreferrer">Clear the Multiset</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2200</td>
+  <td class="subtopic-cell">Difference Arrays</td>
+  <td class="desc-cell">Given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.</td>
+</tr><tr data-search="addition on segments codeforces difference arrays starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.">
+  <td><a href="https://codeforces.com/problemset/problem/981/E" target="_blank" rel="noopener noreferrer">Addition on Segments</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2200</td>
+  <td class="subtopic-cell">Difference Arrays</td>
+  <td class="desc-cell">Starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.</td>
+</tr><tr data-search="minimum operations to make array equal to target leetcode difference arrays given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.">
+  <td><a href="https://leetcode.com/problems/minimum-operations-to-make-array-equal-to-target/" target="_blank" rel="noopener noreferrer">Minimum Operations to Make Array Equal to Target</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard (LeetCode #3454)</td>
+  <td class="subtopic-cell">Difference Arrays</td>
+  <td class="desc-cell">Given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.</td>
+</tr><tr data-search="array partition codeforces two-pointer partitioning split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.">
+  <td><a href="https://codeforces.com/problemset/problem/1454/F" target="_blank" rel="noopener noreferrer">Array Partition</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Two-Pointer Partitioning</td>
+  <td class="desc-cell">Split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.</td>
+</tr><tr data-search="range and partition codeforces two-pointer partitioning choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.">
+  <td><a href="https://codeforces.com/problemset/problem/1630/B" target="_blank" rel="noopener noreferrer">Range and Partition</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Two-Pointer Partitioning</td>
+  <td class="desc-cell">Choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.</td>
+</tr><tr data-search="recover the original array leetcode two-pointer partitioning given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.">
+  <td><a href="https://leetcode.com/problems/recover-the-original-array/" target="_blank" rel="noopener noreferrer">Recover the Original Array</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Two-Pointer Partitioning</td>
+  <td class="desc-cell">Given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.</td>
+</tr><tr data-search="partition array into two arrays to minimize sum difference leetcode two-pointer partitioning partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.">
+  <td><a href="https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/" target="_blank" rel="noopener noreferrer">Partition Array Into Two Arrays to Minimize Sum Difference</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Two-Pointer Partitioning</td>
+  <td class="desc-cell">Partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.</td>
+</tr><tr data-search="constrained subsequence sum leetcode monotonic deque choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.">
+  <td><a href="https://leetcode.com/problems/constrained-subsequence-sum/" target="_blank" rel="noopener noreferrer">Constrained Subsequence Sum</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard (LeetCode #1425)</td>
+  <td class="subtopic-cell">Monotonic Deque</td>
+  <td class="desc-cell">Choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.</td>
+</tr><tr data-search="watching fireworks is fun codeforces monotonic deque you move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.">
+  <td><a href="https://codeforces.com/problemset/problem/372/C" target="_blank" rel="noopener noreferrer">Watching Fireworks is Fun</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Monotonic Deque</td>
+  <td class="desc-cell">You move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.</td>
+</tr><tr data-search="pictures with kittens (hard version) codeforces monotonic deque choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.">
+  <td><a href="https://codeforces.com/problemset/problem/1077/F2" target="_blank" rel="noopener noreferrer">Pictures with Kittens (hard version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Monotonic Deque</td>
+  <td class="desc-cell">Choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.</td>
+</tr><tr data-search="data stream as disjoint intervals leetcode merge intervals design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.">
+  <td><a href="https://leetcode.com/problems/data-stream-as-disjoint-intervals/" target="_blank" rel="noopener noreferrer">Data Stream as Disjoint Intervals</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Merge Intervals</td>
+  <td class="desc-cell">Design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.</td>
+</tr><tr data-search="range module leetcode merge intervals design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.">
+  <td><a href="https://leetcode.com/problems/range-module/" target="_blank" rel="noopener noreferrer">Range Module</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Merge Intervals</td>
+  <td class="desc-cell">Design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.</td>
+</tr><tr data-search="count integers in intervals leetcode merge intervals design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).">
+  <td><a href="https://leetcode.com/problems/count-integers-in-intervals/" target="_blank" rel="noopener noreferrer">Count Integers in Intervals</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Merge Intervals</td>
+  <td class="desc-cell">Design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).</td>
+</tr><tr data-search="minimum interval to include each query leetcode merge intervals given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.">
+  <td><a href="https://leetcode.com/problems/minimum-interval-to-include-each-query/" target="_blank" rel="noopener noreferrer">Minimum Interval to Include Each Query</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Merge Intervals</td>
+  <td class="desc-cell">Given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.</td>
+</tr><tr data-search="the union of k-segments codeforces merge intervals given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.">
+  <td><a href="https://codeforces.com/problemset/problem/612/D" target="_blank" rel="noopener noreferrer">The Union of k-Segments</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Merge Intervals</td>
+  <td class="desc-cell">Given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

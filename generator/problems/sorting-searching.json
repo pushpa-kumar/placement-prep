@@ -1,0 +1,191 @@
+[
+ {
+  "name": "Present",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/460/C",
+  "difficulty": "1700",
+  "subtopic": "binary search on the answer + difference array",
+  "description": "Given n flowers with initial heights, w days, and the ability to water m consecutive flowers (raising each by 1) once per day, maximize the minimum flower height after w days.",
+  "why_hard": "The answer (final minimum height) is monotonic in feasibility, so you binary search on it; checking feasibility for a candidate value efficiently requires a difference-array/sliding-window-sum technique rather than brute-force simulation."
+ },
+ {
+  "name": "Boxes Packing",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1066/D",
+  "difficulty": "1800",
+  "subtopic": "binary search on the answer + greedy feasibility check",
+  "description": "Given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.",
+  "why_hard": "The feasibility check (can capacity x pack everything into ≤k bags) is a simple greedy scan, but recognizing that the answer space is monotonic and binary-searchable — rather than trying to compute the capacity directly — is the non-trivial insight."
+ },
+ {
+  "name": "Renting Bikes",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/363/D",
+  "difficulty": "1800",
+  "subtopic": "binary search on the answer + greedy budget allocation",
+  "description": "Given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.",
+  "why_hard": "Feasibility for a candidate price requires a careful greedy pass (cap each friend's contribution at their own money, sum the shortfalls, compare against the shared budget), and the monotonic structure that makes binary search valid is not obvious at first glance."
+ },
+ {
+  "name": "Factory Machines",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1620",
+  "difficulty": "CSES",
+  "subtopic": "binary search on the answer",
+  "description": "Given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.",
+  "why_hard": "The canonical \"binary search on the answer\" optimization problem — feasibility (can we hit n products by time t) is a trivial O(k) check, but realizing the answer is monotonic in time and binary-searchable (over a huge time range) rather than computable directly is the key idea."
+ },
+ {
+  "name": "Array Division",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1085",
+  "difficulty": "CSES",
+  "subtopic": "binary search on the answer (minimize the maximum)",
+  "description": "Split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.",
+  "why_hard": "A textbook \"minimize the maximum\" binary search problem — binary search on the candidate maximum sum, with a greedy linear-time feasibility check counting how many subarrays are needed."
+ },
+ {
+  "name": "Split Array Largest Sum",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/split-array-largest-sum/",
+  "difficulty": "Hard",
+  "subtopic": "binary search on the answer (minimize the maximum)",
+  "description": "Split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.",
+  "why_hard": "The LeetCode-Hard twin of CSES's Array Division; recognizing that the minimum possible \"largest sum\" is monotonic in feasibility and binary-searchable, backed by a greedy O(n) feasibility check, is the crux insight rather than any direct DP."
+ },
+ {
+  "name": "Median of Two Sorted Arrays",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+  "difficulty": "Hard",
+  "subtopic": "binary search on a partition point",
+  "description": "Given two sorted arrays of sizes m and n, find the median of the combined sorted array in O(log(min(m,n))) time.",
+  "why_hard": "Rather than merging, the intended solution binary searches over a partition index in the smaller array to find a split where all left-side elements are ≤ all right-side elements — a famously tricky, off-by-one-prone binary search that goes well beyond \"find element in sorted array.\""
+ },
+ {
+  "name": "Find K-th Smallest Pair Distance",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/find-k-th-smallest-pair-distance/",
+  "difficulty": "Hard",
+  "subtopic": "binary search on the answer + two-pointer counting",
+  "description": "Given an integer array, find the k-th smallest absolute difference among all pairs of elements.",
+  "why_hard": "Binary searches over the candidate distance value, using a two-pointer pass over the sorted array as the O(n) counting subroutine for \"how many pairs have distance ≤ mid\" — a direct combination of binary-search-on-answer with two-pointer counting."
+ },
+ {
+  "name": "Weakness and Poorness",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/578/C",
+  "difficulty": "2000",
+  "subtopic": "Ternary Search on Unimodal Functions",
+  "description": "Find a real number x minimizing the \"weakness\" of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.",
+  "why_hard": "A pure, classic ternary-search-on-a-real-valued-convex-function problem — the weakness as a function of x is provably convex, and each evaluation itself needs a Kadane-style max/min subarray sum pass."
+ },
+ {
+  "name": "Restorer Distance",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1355/E",
+  "difficulty": "2100",
+  "subtopic": "Ternary Search on Unimodal Functions",
+  "description": "Given N pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.",
+  "why_hard": "The total cost as a function of the target height is convex/unimodal, so the optimal height is found via ternary search, with each evaluation requiring careful accounting of how many bricks can be \"moved\" versus added/removed."
+ },
+ {
+  "name": "Maximize!",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/939/E",
+  "difficulty": "1800",
+  "subtopic": "Ternary Search on Unimodal Functions",
+  "description": "Maintain a growing multiset (with a \"add\" query keeping it sorted) and, for \"query\" operations, find the subset maximizing max(s) minus the average of s.",
+  "why_hard": "For a fixed maximum element, the value max − average(s) is unimodal in how many of the smallest remaining elements are included, so each query is answered via ternary search on that count, combined with maintained prefix sums."
+ },
+ {
+  "name": "Searching Local Minimum",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1479/A",
+  "difficulty": "1700",
+  "subtopic": "Ternary Search on Unimodal Functions",
+  "description": "Interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.",
+  "why_hard": "Requires recognizing the ternary-search-style halving argument that works even though the array isn't sorted or fully unimodal — at least one boundary always leads toward a local minimum, so you can discard half the search space each query."
+ },
+ {
+  "name": "Gift Set",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1538/G",
+  "difficulty": "2100",
+  "subtopic": "Ternary Search on Unimodal Functions",
+  "description": "Given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.",
+  "why_hard": "The maximum achievable count as a function of how many sets use each orientation is unimodal, so binary/ternary search over the split combined with a feasibility check yields the answer — a good example of recognizing unimodality in a non-obvious counting setup."
+ },
+ {
+  "name": "Complete the Projects (easy version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1203/F1",
+  "difficulty": "2100",
+  "subtopic": "Custom Comparators & Multi-Key Sorting",
+  "description": "Given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there's an order to complete all projects without the rating ever going negative.",
+  "why_hard": "The classic two-key exchange-argument sort — positive-b projects must be sorted ascending by requirement, negative-b projects sorted descending by (a_i + b_i) — and proving the comparator correct requires a genuine exchange-argument proof, not just intuition."
+ },
+ {
+  "name": "Complete the Projects (hard version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1203/F2",
+  "difficulty": "2300",
+  "subtopic": "Custom Comparators & Multi-Key Sorting",
+  "description": "Same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.",
+  "why_hard": "Builds on the same exchange-argument multi-key sort, then layers a knapsack-style DP with a greedy \"remove the worst negative project so far\" trick on top, testing whether the sorting insight generalizes under a harder objective."
+ },
+ {
+  "name": "Maximum Performance of a Team",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/maximum-performance-of-a-team/",
+  "difficulty": "Hard",
+  "subtopic": "Custom Comparators & Multi-Key Sorting",
+  "description": "Given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).",
+  "why_hard": "Requires sorting engineers by efficiency descending (the comparator key that \"unlocks\" a correct greedy), then scanning with a min-heap on speed — a clean example of choosing the right sort key to make a greedy/heap approach work."
+ },
+ {
+  "name": "Minimum Cost to Hire K Workers",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-cost-to-hire-k-workers/",
+  "difficulty": "Hard",
+  "subtopic": "Custom Comparators & Multi-Key Sorting",
+  "description": "Given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.",
+  "why_hard": "The workers must be sorted by wage/quality ratio (a derived comparator key, not a raw field) before a max-heap sweep on quality — a strong example of engineering a custom sort key from a ratio constraint."
+ },
+ {
+  "name": "Course Schedule III",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/course-schedule-iii/",
+  "difficulty": "Hard",
+  "subtopic": "Custom Comparators & Multi-Key Sorting",
+  "description": "Given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.",
+  "why_hard": "Requires sorting courses by deadline (not duration) to process greedily, then using a max-heap to retroactively swap out the longest course taken so far whenever a deadline would be violated — a multi-key greedy where picking the wrong sort key breaks correctness."
+ },
+ {
+  "name": "Sum of Medians",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/85/D",
+  "difficulty": "2300",
+  "subtopic": "Order Statistics / Quickselect",
+  "description": "Maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.",
+  "why_hard": "The problem statement itself opens by describing the median-of-medians order-statistics algorithm, then asks you to build a dynamic order-statistics structure (Fenwick tree with binary search, or balanced BST) to answer the aggregate query online."
+ },
+ {
+  "name": "Kth Smallest Product of Two Sorted Arrays",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/",
+  "difficulty": "Hard",
+  "subtopic": "Order Statistics / Quickselect",
+  "description": "Given two sorted arrays, find the k-th smallest product formed by picking one element from each array.",
+  "why_hard": "Extends the order-statistics-via-counting technique (binary search on the answer value, counting how many pairwise products are ≤ mid) to a setting complicated by mixed signs, requiring careful case analysis on the sign of each array's elements."
+ },
+ {
+  "name": "Find the Kth Smallest Sum of a Matrix With Sorted Rows",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/",
+  "difficulty": "Hard",
+  "subtopic": "Order Statistics / Quickselect",
+  "description": "Given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.",
+  "why_hard": "Generalizes k-th-order-statistic reasoning to combining sums across many sorted lists, requiring a heap-based or binary-search-based order-statistics merge across more than two arrays. - Difference Arrays: blog/entry/86420, blog/entry/88474 - Two-Pointer Partitioning: blog/entry/94534 - Monotonic Deque: blog/entry/122003 - Merge Intervals: blog/entry/98629, blog/entry/20377 - Ternary Search on Unimodal Functions: blog/entry/60702, blog/entry/135892 - Custom Comparators & Multi-Key Sorting: blog/entry/63533 - Order Statistics / Quickselect: blog/entry/11080, blog/entry/95575"
+ }
+]

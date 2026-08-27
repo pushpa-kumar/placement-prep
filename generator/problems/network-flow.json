@@ -1,0 +1,164 @@
+[
+ {
+  "name": "Download Speed",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1694",
+  "difficulty": "CSES",
+  "subtopic": "max flow",
+  "description": "Find the maximum data transfer rate from computer 1 to computer n through a network of directed connections with given capacities.",
+  "why_hard": "The canonical from-scratch max flow implementation exercise (Edmonds-Karp/Dinic) with no modeling trick to hide behind."
+ },
+ {
+  "name": "Distinct Routes",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1711",
+  "difficulty": "CSES",
+  "subtopic": "max flow",
+  "description": "Find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.",
+  "why_hard": "Requires not just the max-flow value but decomposing the resulting flow into explicit paths, a step many implementations skip."
+ },
+ {
+  "name": "Fox and Dinner",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/510/E",
+  "difficulty": "2300",
+  "subtopic": "max flow",
+  "description": "Seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.",
+  "why_hard": "The flow network isn't given — you must notice primes > 2 force even/odd parity pairing, turning the seating constraint into a bipartite degree-exactly-2 flow model."
+ },
+ {
+  "name": "Delivery Bears",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/653/D",
+  "difficulty": "2200",
+  "subtopic": "max flow",
+  "description": "Split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.",
+  "why_hard": "Combines binary search on the answer with a max-flow feasibility check under a ratio constraint on edge usage."
+ },
+ {
+  "name": "Police Chase",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1695",
+  "difficulty": "CSES",
+  "subtopic": "min cut",
+  "description": "Find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.",
+  "why_hard": "Direct application of max-flow min-cut duality, including reconstructing the actual cut edges from the residual graph."
+ },
+ {
+  "name": "Petya and Graph",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1082/G",
+  "difficulty": "2400",
+  "subtopic": "min cut",
+  "description": "Choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).",
+  "why_hard": "A non-obvious instance of the maximum-weight closure / project-selection problem, solved by reducing to min cut via source/sink edges on vertices and edges."
+ },
+ {
+  "name": "Rectangle Painting 2",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1198/E",
+  "difficulty": "2500",
+  "subtopic": "min cut",
+  "description": "Paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.",
+  "why_hard": "Requires recognizing a 2-coloring cost-minimization structure as a project-selection/min-cut instance over interacting overlap regions."
+ },
+ {
+  "name": "School Dance",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1696",
+  "difficulty": "CSES",
+  "subtopic": "bipartite matching",
+  "description": "Find the maximum matching between boys and girls given a list of pairs willing to dance together.",
+  "why_hard": "The baseline Kuhn's algorithm / Hopcroft-Karp implementation problem, with input sizes that punish naive O(VE) blow-ups."
+ },
+ {
+  "name": "Exploration Plan",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/852/D",
+  "difficulty": "2100",
+  "subtopic": "bipartite matching",
+  "description": "Find the minimum time limit so that N teams starting in various cities can collectively occupy at least K distinct cities.",
+  "why_hard": "Layers all-pairs shortest paths and binary search on top of a bipartite matching feasibility check (Hall's theorem), a common competitive pattern."
+ },
+ {
+  "name": "Round Marriage",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/981/F",
+  "difficulty": "2500",
+  "subtopic": "bipartite matching",
+  "description": "Match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.",
+  "why_hard": "The circular structure and min-max objective require binary search combined with a Hall's-theorem-based matching existence check, not a direct matching computation."
+ },
+ {
+  "name": "Anti-Palindromize",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/884/F",
+  "difficulty": "2500",
+  "subtopic": "Min-Cost Max-Flow",
+  "description": "Rearrange a string into an antipalindromic permutation maximizing the sum of \"beauty\" values at positions that keep their original character.",
+  "why_hard": "Classic MCMF assignment: build a flow network pairing symmetric position-pairs to letter-pairs with costs, a staple \"recognize the assignment structure\" exercise."
+ },
+ {
+  "name": "Red-Blue Graph",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1288/F",
+  "difficulty": "2900",
+  "subtopic": "Min-Cost Max-Flow",
+  "description": "Color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.",
+  "why_hard": "Non-obvious reduction of a combinatorial coloring/degree-constraint problem into an MCMF instance; frequently cited in curated \"MCMF example\" lists."
+ },
+ {
+  "name": "Build String",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/237/E",
+  "difficulty": "2000",
+  "subtopic": "Min-Cost Max-Flow",
+  "description": "Build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.",
+  "why_hard": "A clean \"characters = flow units, costs = per-source-string price, capacities = per-string budget\" MCMF formulation."
+ },
+ {
+  "name": "Four Melodies",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/818/G",
+  "difficulty": "2600",
+  "subtopic": "Min-Cost Max-Flow",
+  "description": "Select four disjoint, non-intersecting \"melody\" subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.",
+  "why_hard": "Harder generalization of the well-known \"Two Melodies\" problem; needs a carefully constructed layered MCMF graph with node-splitting to bound the number of selected sequences."
+ },
+ {
+  "name": "MCF",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1766/F",
+  "difficulty": "2800",
+  "subtopic": "Min-Cost Max-Flow",
+  "description": "Find the minimum-cost circulation in a DAG-like flow network subject to the extra constraint that each edge's flow must match its capacity's parity.",
+  "why_hard": "Explicitly named \"MCF\" by the setters; forces adapting standard min-cost-flow machinery to handle parity constraints on edge flows."
+ },
+ {
+  "name": "Task Assignment",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2129",
+  "difficulty": "CSES",
+  "subtopic": "Hungarian Algorithm",
+  "description": "Given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).",
+  "why_hard": "This is the canonical, textbook statement of the assignment problem — the direct target of the Hungarian algorithm (confirmed as the flagship \"assignment\" practice problem in USACO Guide's Min-Cost-Flow module)."
+ },
+ {
+  "name": "Chef Monocarp",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1437/C",
+  "difficulty": "1800",
+  "subtopic": "Hungarian Algorithm",
+  "description": "Assign each of n dishes to a distinct positive-integer removal time T, minimizing the sum of |T - t_i| over all dishes.",
+  "why_hard": "Structurally a full bipartite min-cost perfect matching (dishes × time slots); the intended O(n log n) solution exploits the 1-D cost structure, but it is a genuine, frequently-cited real-world instance of the assignment problem."
+ },
+ {
+  "name": "Vasya and Endless Credits",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1107/F",
+  "difficulty": "2600",
+  "subtopic": "Hungarian Algorithm",
+  "description": "Choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.",
+  "why_hard": "Listed by USACO Guide as a direct application of the assignment-problem/Hungarian-algorithm machinery (offers × activation-month slots with a cost/profit matrix)."
+ }
+]

@@ -1,0 +1,587 @@
+[
+ {
+  "name": "A Simple Task",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/11/D",
+  "difficulty": "CF 2200",
+  "subtopic": "Linear/1D DP",
+  "description": "Count the total number of simple cycles (no repeated vertices/edges) in an undirected graph with n <= 19 vertices.",
+  "why_hard": "Requires bitmask DP over (current vertex set, current endpoint) with careful overcounting correction to avoid double-counting each cycle in both directions and from every starting vertex."
+ },
+ {
+  "name": "Elongated Matrix",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1102/F",
+  "difficulty": "CF 2000",
+  "subtopic": "Linear/1D DP",
+  "description": "Reorder the n <= 16 rows of an n x m matrix (traversed column-by-column) to maximize the minimum absolute difference between consecutive visited values.",
+  "why_hard": "Combines binary search on the answer with bitmask DP over row permutations, a classic \"clever state compression\" pattern (TSP-style transition costs between rows)."
+ },
+ {
+  "name": "Increasing Subsequence II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1748",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "Linear/1D DP",
+  "description": "Count the number of strictly increasing subsequences of an array, counting subsequences with equal values at different positions separately.",
+  "why_hard": "A genuine LIS-family generalization — moves from \"find the longest\" to \"count all,\" requiring a Fenwick tree over compressed values to sum DP contributions in O(n log n)."
+ },
+ {
+  "name": "Russian Doll Envelopes",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/russian-doll-envelopes/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Linear/1D DP",
+  "description": "Given (width, height) envelope pairs, find the maximum number that can be nested inside each other (both dimensions must strictly increase).",
+  "why_hard": "A 2D LIS in disguise — needs a sort-then-LIS reduction (with a subtlety in tie-breaking on the sort key) to hit O(n log n)."
+ },
+ {
+  "name": "Maximum Profit in Job Scheduling",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/maximum-profit-in-job-scheduling/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Linear/1D DP",
+  "description": "Given jobs with start time, end time, and profit, schedule a non-overlapping subset that maximizes total profit.",
+  "why_hard": "Classic weighted interval scheduling DP that requires sorting by end time plus binary search for the last compatible job to reach an efficient solution."
+ },
+ {
+  "name": "Super Egg Drop",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/super-egg-drop/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Linear/1D DP",
+  "description": "With k eggs and n floors, find the minimum number of egg-drop trials in the worst case to determine the critical floor.",
+  "why_hard": "The naive DP is O(kn^2); the intended solution flips the DP state to \"moves needed to distinguish m floors with k eggs,\" an unintuitive reformulation that gets it to O(kn) or O(k log n)."
+ },
+ {
+  "name": "The least round way",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/2/B",
+  "difficulty": "CF 2000",
+  "subtopic": "2D Grid DP",
+  "description": "Find a top-left to bottom-right path (moving only right/down) through an n x n matrix that minimizes the number of trailing zeros in the product of visited cells, and output the path.",
+  "why_hard": "Trailing zeros depend on min(count of factor 2, count of factor 5) along the path, forcing a two-state grid DP plus special-case handling whenever the path is forced through a zero cell."
+ },
+ {
+  "name": "Grid Paths I",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1638",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "2D Grid DP",
+  "description": "Count the number of paths (moving only right/down) from the top-left to bottom-right of an n x n grid (n up to 1000) that avoid trap cells, modulo 1e9+7.",
+  "why_hard": "Straightforward recurrence but at n=1000 requires an efficient O(n^2) implementation with careful obstacle handling, a step up from the introductory grid-path DP."
+ },
+ {
+  "name": "Dungeon Game",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/dungeon-game/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "2D Grid DP",
+  "description": "A knight must traverse a grid of damage/heal values from top-left to bottom-right; find the minimum starting health needed so health never drops to zero.",
+  "why_hard": "The DP must be computed backward from the destination because the natural forward state (max health so far) is not well-defined — a classic \"reverse the direction of the DP\" trick."
+ },
+ {
+  "name": "Unique Paths III",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/unique-paths-iii/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "2D Grid DP",
+  "description": "Count the number of paths from a start to an end square in a grid with obstacles that visit every non-obstacle square exactly once.",
+  "why_hard": "Requires Hamiltonian-path counting rather than simple monotone-path DP, typically solved with bitmask-augmented backtracking/DP over visited cells since paths can move in all four directions."
+ },
+ {
+  "name": "Cherry Pickup",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/cherry-pickup/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "2D Grid DP",
+  "description": "Starting from the top-left of a grid with cherries and obstacles, go to the bottom-right and back to the top-left, collecting the maximum cherries (each cell's cherry collected only once).",
+  "why_hard": "The round trip is modeled as two agents walking forward simultaneously, requiring a 3D state (two positions constrained to the same step count) instead of a naive two-pass DP."
+ },
+ {
+  "name": "Cherry Pickup II",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/cherry-pickup-ii/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "2D Grid DP",
+  "description": "Two robots start at the top corners of a grid and move downward simultaneously, collecting the maximum total cherries, sharing cells but each counted once.",
+  "why_hard": "A genuine multi-agent grid DP — state is (row, col1, col2), and transitions must handle the case where both robots land on the same cell."
+ },
+ {
+  "name": "Round Subset",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/837/D",
+  "difficulty": "CF 2100",
+  "subtopic": "Knapsack family",
+  "description": "Choose exactly k numbers from a list of n (n <= 200) to maximize the number of trailing zeros in their product.",
+  "why_hard": "A genuinely multi-dimensional knapsack — state is (items chosen, total factors of 5), tracking the best achievable count of factors of 2 for each state, since trailing zeros are min(#2s, #5s)."
+ },
+ {
+  "name": "Knapsack",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1132/E",
+  "difficulty": "CF 2300",
+  "subtopic": "Knapsack family",
+  "description": "With 8 item weight-classes (1..8), each available in a huge bounded quantity, and a knapsack capacity up to 1e18, find the maximum total weight that fits.",
+  "why_hard": "Astronomical capacity and counts rule out a direct DP table; it forces recognizing that only a small residue/threshold region needs real DP while the rest is handled by bounded-copy reasoning."
+ },
+ {
+  "name": "Two Sets II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1093",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "Knapsack family",
+  "description": "Count the number of ways to partition {1, ..., n} into two sets with equal sum.",
+  "why_hard": "A subset-sum counting knapsack where the target sum and array size both scale with n, requiring care with the modulus and the sum/2 target derivation."
+ },
+ {
+  "name": "Elevator Rides",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1653",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "Knapsack family",
+  "description": "Given n people (n <= 20) with weights and an elevator weight limit, find the minimum number of elevator rides needed to move everyone up.",
+  "why_hard": "This is bin-packing dressed as knapsack — the standard solution is a bitmask DP over subsets tracking (rides used, current ride's remaining capacity), an NP-hard-flavored problem tamed only by the small n."
+ },
+ {
+  "name": "Profitable Schemes",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/profitable-schemes/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Knapsack family",
+  "description": "Choose a subset of crimes (each with a member cost and a profit) using at most n members total that yields profit at least minProfit; count the number of such schemes.",
+  "why_hard": "A 2D bounded knapsack (members used x profit achieved) where profit must be capped/clamped at minProfit to keep the state space polynomial."
+ },
+ {
+  "name": "Tallest Billboard",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/tallest-billboard/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Knapsack family",
+  "description": "Given steel rod lengths, split them into two groups (welded end-to-end) whose totals are equal, maximizing that common total.",
+  "why_hard": "The natural knapsack state isn't a target sum but the running difference between the two sides, requiring a hash-map-indexed DP keyed by signed height difference."
+ },
+ {
+  "name": "Coloring Brackets",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/149/D",
+  "difficulty": "CF 1900",
+  "subtopic": "Interval DP",
+  "description": "Given a valid bracket sequence, count the ways to color each character red/blue/uncolored so that exactly one bracket of each matched pair is colored and no two adjacent characters share a color.",
+  "why_hard": "Classic interval DP over matched bracket ranges with an extra boundary-color dimension in the state to enforce the adjacency constraint across sub-interval joins."
+ },
+ {
+  "name": "Zuma",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/607/B",
+  "difficulty": "CF 1900",
+  "subtopic": "Interval DP",
+  "description": "Given a sequence of colored gems (n <= 500), remove contiguous palindromic substrings one at a time to clear the whole sequence in as few operations as possible.",
+  "why_hard": "The transition must consider merging a middle segment's removal with matching endpoints, an interval DP recurrence subtler than plain palindrome partitioning (dp[i][j] depends on dp over interior splits plus matched-endpoint cases)."
+ },
+ {
+  "name": "Removal Game",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1097",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "Interval DP",
+  "description": "Two players alternately remove the first or last number of a list, each maximizing their own score; compute the first player's optimal score.",
+  "why_hard": "A minimax interval game DP — dp[i][j] must reason about the opponent's optimal response, not just a single maximizer, which is a genuinely different flavor from standard interval optimization."
+ },
+ {
+  "name": "Rectangle Cutting",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1744",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "Interval DP",
+  "description": "Given an a x b rectangle, repeatedly cut a rectangle into two integer-sided rectangles until only squares remain; find the minimum number of cuts.",
+  "why_hard": "A 2D generalization of matrix-chain-style interval DP — dp[a][b] tries every horizontal and vertical cut position, mirroring the \"try every split point\" recurrence of classic interval DP but over a 2D dimension space."
+ },
+ {
+  "name": "Burst Balloons",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/burst-balloons/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Interval DP",
+  "description": "Given n balloons with values, burst them one at a time (gaining left*balloon*right coins) to maximize total coins collected.",
+  "why_hard": "The textbook example of \"think about the last event in the interval, not the first\" — dp[i][j] represents the best score for bursting everything strictly between i and j last, requiring padding with sentinel 1s."
+ },
+ {
+  "name": "Minimum Cost to Merge Stones",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-cost-to-merge-stones/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Interval DP",
+  "description": "Given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum merged) until one pile remains; find the minimum total cost, or -1 if impossible.",
+  "why_hard": "A true generalization of matrix chain multiplication to groups of size k, needing an extra DP dimension for \"number of piles currently merged into a group\" and a feasibility check based on (n-1) % (k-1)."
+ },
+ {
+  "name": "Regular Expression Matching",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/regular-expression-matching/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "String DP",
+  "description": "Implement regex matching with support for '.' (any character) and '*' (zero or more of the preceding element) to determine if a pattern matches an entire string.",
+  "why_hard": "The '*' operator creates non-local transitions (it can match zero occurrences, forcing a skip-back in the DP), making the 2D state transition genuinely tricky to get right."
+ },
+ {
+  "name": "Wildcard Matching",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/wildcard-matching/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "String DP",
+  "description": "Implement wildcard pattern matching with support for '?' (any single character) and '*' (any sequence, including empty) against an entire input string.",
+  "why_hard": "Naive O(nm) memoized DP is correct but the interesting challenge is recognizing the greedy two-pointer O(1)-space alternative, making it a good \"DP vs. greedy trade-off\" problem."
+ },
+ {
+  "name": "Distinct Subsequences",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/distinct-subsequences/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "String DP",
+  "description": "Count the number of distinct ways string t appears as a subsequence of string s.",
+  "why_hard": "The counting recurrence (sum over \"use this match\" and \"skip it\" branches) is easy to state but easy to get subtly wrong on the base cases and overflow of counts."
+ },
+ {
+  "name": "Minimum Insertion Steps to Make a String Palindrome",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "String DP",
+  "description": "Find the minimum number of character insertions needed to turn a given string into a palindrome.",
+  "why_hard": "A hard palindrome-DP variant that reduces to n - LCS(s, reverse(s)), requiring the non-obvious insight to connect interval palindrome DP with a longest-common-subsequence reformulation."
+ },
+ {
+  "name": "Edit Distance",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1639",
+  "difficulty": "CSES (harder end of the Dynamic Programming section)",
+  "subtopic": "String DP",
+  "description": "Compute the minimum number of single-character insertions, deletions, and replacements to transform one string into another.",
+  "why_hard": "The canonical 2D string-alignment DP; a solid checkpoint before tackling the pattern-matching and constrained variants (wildcard/regex) above."
+ },
+ {
+  "name": "Subsequences (hard version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1183/H",
+  "difficulty": "CF 1900",
+  "subtopic": "String DP",
+  "description": "Given a string of length up to 100 and a target count k (up to 1e12), repeatedly add distinct subsequences to a set at cost (n - length); find the minimum total cost to reach k distinct subsequences.",
+  "why_hard": "Requires counting distinct subsequences of each length via DP (not just total distinct subsequences), then greedily consuming the cheapest (longest) ones first — a layered combination of counting-DP and greedy selection."
+ },
+ {
+  "name": "Kefa and Dishes",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/580/D",
+  "difficulty": "1800",
+  "subtopic": "Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)",
+  "description": "Choose an ordered sequence of at most m dishes (no repeats) maximizing total satisfaction plus bonuses for specific adjacent-dish pairs.",
+  "why_hard": "Classic Hamiltonian-path-flavored bitmask DP over \"set of dishes eaten so far, last dish eaten\" with up to 18 dishes."
+ },
+ {
+  "name": "Vladik and cards",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/743/E",
+  "difficulty": "2200",
+  "subtopic": "Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)",
+  "description": "Given up to 1000 cards each with a value 1-8, choose the longest subsequence that can be split into 8 non-decreasing subsequences (one per value).",
+  "why_hard": "Requires binary-searching the answer length, then an assignment-style bitmask DP over \"last used position for each of the 8 values\" combined with greedy/binary-search reasoning — a genuinely tricky state design."
+ },
+ {
+  "name": "Counting Tilings",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2181",
+  "difficulty": "CSES",
+  "subtopic": "Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)",
+  "description": "Count the number of ways to tile an n×m grid completely using 1×2 tiles (horizontal or vertical).",
+  "why_hard": "The canonical broken-profile bitmask DP — process the grid cell by cell, carrying a bitmask of which cells in the current \"profile\" are already filled."
+ },
+ {
+  "name": "Elevator Rides",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1653",
+  "difficulty": "CSES",
+  "subtopic": "Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)",
+  "description": "Partition n people (each with a weight) into the minimum number of elevator rides, each ride capacity-limited.",
+  "why_hard": "Classic \"partition into minimum-cost groups\" bitmask DP over subsets (dp[mask] = min rides, extra weight used in current ride), similar in spirit to bin-packing/TSP subset DP."
+ },
+ {
+  "name": "Maximum Students Taking Exam",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/maximum-students-taking-exam/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)",
+  "description": "Seat the maximum number of students in a classroom grid with broken seats so no student can see an adjacent-row/diagonal neighbor's answers.",
+  "why_hard": "Row-by-row broken-profile-style bitmask DP where each row's mask must be internally valid (no two adjacent bits) and compatible with the previous row's mask (no diagonal conflicts) — two layers of bitmask compatibility checking."
+ },
+ {
+  "name": "The Fair Nut and the Best Path",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1083/A",
+  "difficulty": "1800",
+  "subtopic": "Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)",
+  "description": "Given a tree with vertex weights, find the maximum weight of a simple path (sum of vertex weights along it).",
+  "why_hard": "Direct generalization of tree-diameter-via-DP: at each node combine the best two \"downward chains\" from children while handling negative contributions correctly."
+ },
+ {
+  "name": "Work Group",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/533/B",
+  "difficulty": "2000",
+  "subtopic": "Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)",
+  "description": "On a tree where each employee has a rating, pick a subset of nodes with no supervisor-subordinate pair included, maximizing total rating minus a fixed penalty per chosen member.",
+  "why_hard": "Weighted maximum-independent-set-on-a-tree DP with the added twist of deciding per-subtree whether including the root subtree's answer beats zero, requiring careful combination of children's dp states."
+ },
+ {
+  "name": "Tree with Maximum Cost",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1092/F",
+  "difficulty": "1900",
+  "subtopic": "Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)",
+  "description": "For every possible choice of root, compute sum over all vertices of (vertex value × distance to root), and output the maximum over all roots.",
+  "why_hard": "Textbook rerooting technique — compute the answer once via one DFS, then re-derive every other root's answer in O(1) via a second DFS that transfers subtree contributions."
+ },
+ {
+  "name": "Binary Tree Cameras",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/binary-tree-cameras/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)",
+  "description": "Place the minimum number of cameras on tree nodes (each covers itself, its parent, and its children) so every node is monitored.",
+  "why_hard": "Requires a 3-state tree DP (node has camera / node is covered without a camera / node is uncovered) with a subtle greedy-DP hybrid argument for correctness — a step up from plain max-independent-set DP."
+ },
+ {
+  "name": "Beautiful numbers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/55/D",
+  "difficulty": "2500",
+  "subtopic": "Digit DP (counting numbers with a digit property up to N)",
+  "description": "Count integers in [l, r] that are divisible by the sum of their own digits.",
+  "why_hard": "The archetypal hard digit DP: since the divisor (digit sum) varies, you must DP over (position, remainder mod LCM(1..9), digit-sum-so-far, tight-flag), forcing a clever LCM-based state compression."
+ },
+ {
+  "name": "Magic Numbers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/628/D",
+  "difficulty": "2200",
+  "subtopic": "Digit DP (counting numbers with a digit property up to N)",
+  "description": "Count numbers in [l, r] built by concatenating the substrings \"1\", \"14\", and \"144\" in some order.",
+  "why_hard": "Requires designing a custom finite automaton over digit positions to track partial matches of \"1\"/\"14\"/\"144\", then running digit DP over that automaton's states."
+ },
+ {
+  "name": "Segment Sum",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1073/E",
+  "difficulty": "2300",
+  "subtopic": "Digit DP (counting numbers with a digit property up to N)",
+  "description": "Compute the sum of all integers in [l, r] that contain at most k distinct decimal digits.",
+  "why_hard": "Standard digit-DP counting is not enough — you must simultaneously track a bitmask of digits used and accumulate the actual sum contribution of each digit position, combining digit DP with careful combinatorial bookkeeping."
+ },
+ {
+  "name": "Numbers At Most N Given Digit Set",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/numbers-at-most-n-given-digit-set/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Digit DP (counting numbers with a digit property up to N)",
+  "description": "Given a set of allowed digits, count how many positive integers ≤ N can be formed using only those digits (repetition allowed).",
+  "why_hard": "A clean, from-scratch introduction to the \"process digits of N one position at a time, branch at the first strictly-smaller digit\" digit DP pattern, including the tricky same-length-as-N edge case."
+ },
+ {
+  "name": "Gargari and Permutations",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/463/D",
+  "difficulty": "1900",
+  "subtopic": "DP on DAGs (longest/shortest path in a DAG, counting paths)",
+  "description": "Given k permutations of 1..n, find the longest common subsequence that appears (as a subsequence) in all k permutations simultaneously.",
+  "why_hard": "Reduces multi-permutation LCS to longest-path-in-a-DAG DP, where an edge (u, v) exists only if u appears before v in every one of the k permutations."
+ },
+ {
+  "name": "Toss a Coin to Your Graph...",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1679/D",
+  "difficulty": "1900",
+  "subtopic": "DP on DAGs (longest/shortest path in a DAG, counting paths)",
+  "description": "Binary search on a value x, keep only edges whose weight is ≥ x, and find the longest path (in number of edges) achievable in the resulting graph, restricted to a length budget k.",
+  "why_hard": "Combines binary search on the answer with a longest-path-in-DAG DP over a graph that must first be shown to be acyclic (or detected as having a long-enough cycle) for the chosen threshold."
+ },
+ {
+  "name": "Longest Increasing Path in a Matrix",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "DP on DAGs (longest/shortest path in a DAG, counting paths)",
+  "description": "Find the length of the longest strictly increasing path of adjacent cells in a matrix.",
+  "why_hard": "The grid's \"increasing value\" edges implicitly define a DAG; the intended solution is memoized DFS (longest path in a DAG) rather than naive exponential search."
+ },
+ {
+  "name": "Largest Color Value in a Directed Graph",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/largest-color-value-in-a-directed-graph/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "DP on DAGs (longest/shortest path in a DAG, counting paths)",
+  "description": "In a directed graph where each node has a color, find the largest possible count of any single color along a path, or report that a cycle makes the answer undefined.",
+  "why_hard": "Requires topological-sort-driven DP carrying a full 26-color frequency vector per node while simultaneously detecting non-DAG (cyclic) input."
+ },
+ {
+  "name": "Removal Game",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1097",
+  "difficulty": "CSES",
+  "subtopic": "Game-theory DP (minimax DP, stone/coin games)",
+  "description": "Two players alternately remove a number from either end of an array trying to maximize their own total; both play optimally — find the first player's best possible score.",
+  "why_hard": "The canonical interval minimax DP: dp[i][j] represents the best score difference achievable on subarray [i, j], built from two overlapping smaller subproblems."
+ },
+ {
+  "name": "Stick Game",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1729",
+  "difficulty": "CSES",
+  "subtopic": "Game-theory DP (minimax DP, stone/coin games)",
+  "description": "Two players alternately remove sticks from a pile using only a given set of allowed move sizes; determine who wins with optimal play for every pile size up to n.",
+  "why_hard": "A textbook win/lose-state DP (Grundy-style) over pile sizes, where each state's outcome depends on reachable smaller states — must be computed for all sizes up to n efficiently."
+ },
+ {
+  "name": "Letter Picking",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1728/D",
+  "difficulty": "1800",
+  "subtopic": "Game-theory DP (minimax DP, stone/coin games)",
+  "description": "Two players alternately remove a letter from either end of a string, each trying to end up with the lexicographically better multiset of removed letters after optimal play from both sides.",
+  "why_hard": "Interval minimax DP with a three-way outcome (win/lose/draw) per state and a non-obvious per-state comparison rule between the two players' objectives."
+ },
+ {
+  "name": "Stone Game III",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/stone-game-iii/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Game-theory DP (minimax DP, stone/coin games)",
+  "description": "Two players alternately take 1, 2, or 3 stones from the front of a pile, each trying to maximize their own score; determine who wins (or if it's a tie) with optimal play.",
+  "why_hard": "Requires a suffix minimax DP tracking score differential with a branching factor of 3 per state and a careful sign-flip argument to translate \"maximize my score\" into a single recurrence."
+ },
+ {
+  "name": "Fish",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/16/E",
+  "difficulty": "1900",
+  "subtopic": "Probability & Expected-Value DP",
+  "description": "n fish (n ≤ 18) swim in a pond; on each step two random fish meet and one eats the other with a given probability — compute, for every fish, the probability it survives to be the last one.",
+  "why_hard": "Combines a bitmask DP over \"which fish are still alive\" with probability transitions and a clever trick (fixing the encounter order) to make the state space tractable."
+ },
+ {
+  "name": "Bad Luck Island",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/540/D",
+  "difficulty": "1900",
+  "subtopic": "Probability & Expected-Value DP",
+  "description": "On an island with rocks, scissors, and paper creatures that randomly meet and eliminate each other Rock-Paper-Scissors style, compute the probability each species survives.",
+  "why_hard": "A 3-dimensional probability DP over (rocks remaining, scissors remaining, paper remaining) where each state's probability flows into three possible next states — a clean example of expected-outcome DP over compound state."
+ },
+ {
+  "name": "New Year and Arbitrary Arrangement",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/908/D",
+  "difficulty": "2200",
+  "subtopic": "Probability & Expected-Value DP",
+  "description": "Given probabilities of typing characters 'a' or 'b' at random (and a target k), compute the expected number of occurrences of the substring \"ab\" in a string built until k copies of \"ab\" appear (with a length cap).",
+  "why_hard": "Requires setting up an expected-value recurrence over (count of 'a's so far, count of \"ab\" substrings so far) and reasoning carefully about linearity of expectation combined with an early-stopping condition."
+ },
+ {
+  "name": "Dice Probability",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1725",
+  "difficulty": "CSES",
+  "subtopic": "Probability & Expected-Value DP",
+  "description": "Compute the probability that the sum of n dice rolls (each showing 1..6) lands in a given range [a, b].",
+  "why_hard": "Foundational probability DP — dp[i][s] = probability the sum after i dice is s — that scales naturally into harder biased-dice and weighted variants."
+ },
+ {
+  "name": "Inversion Probability",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1728",
+  "difficulty": "CSES",
+  "subtopic": "Probability & Expected-Value DP",
+  "description": "Given n elements each independently and uniformly assigned one of two possible values (with per-position choices), compute the expected number of inversions.",
+  "why_hard": "Uses linearity of expectation over all O(n²) pairs combined with a running-DP aggregate (expected number of \"smaller\" elements seen so far) to avoid the naive quadratic blow-up."
+ },
+ {
+  "name": "Ciel and Gondolas",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/321/E",
+  "difficulty": "2600",
+  "subtopic": "DP optimization techniques (monotonic deque optimization, divide & conquer optimization, Knuth's optimization, convex hull trick)",
+  "description": "Partition n people standing in a line into exactly k contiguous, non-empty groups to minimize total \"unhappiness\" (sum over each group of a pairwise-cost function).",
+  "why_hard": "The quintessential divide-and-conquer optimization (and alternatively Knuth's optimization) problem — the naive O(n²k) DP is reduced to O(nk log n) by proving the optimal split point is monotonic in the DP layer."
+ },
+ {
+  "name": "Yet Another Minimization Problem",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/868/F",
+  "difficulty": "2500",
+  "subtopic": "DP optimization techniques (monotonic deque optimization, divide & conquer optimization, Knuth's optimization, convex hull trick)",
+  "description": "Split an array into exactly k contiguous segments minimizing the sum, over segments, of C(count of each value in the segment, 2).",
+  "why_hard": "A second core divide-and-conquer optimization exercise, this time requiring an efficient two-pointer/BIT-maintained cost function as the split point recurses — combining D&C optimization with incremental cost maintenance."
+ },
+ {
+  "name": "The Bakery",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/833/B",
+  "difficulty": "2200",
+  "subtopic": "DP optimization techniques (monotonic deque optimization, divide & conquer optimization, Knuth's optimization, convex hull trick)",
+  "description": "Split an array of shop types into exactly k contiguous \"zones\" to maximize the total number of distinct shop types across all zones.",
+  "why_hard": "Requires combining divide-and-conquer optimization on the DP layer with a segment-tree-maintained \"distinct count\" cost function that must be recomputed as the split boundary moves."
+ },
+ {
+  "name": "Watching Fireworks is Fun",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/372/C",
+  "difficulty": "2100",
+  "subtopic": "DP optimization techniques (monotonic deque optimization, divide & conquer optimization, Knuth's optimization, convex hull trick)",
+  "description": "You move along a line of positions over time to maximize happiness gained from fireworks launched at given times/positions/values, with a per-second movement speed limit.",
+  "why_hard": "The DP transition at each time step is a sliding-window maximum over a range that shifts predictably, making it a direct application of monotonic-deque DP optimization to bring an O(n·d²) DP down to O(n·d)."
+ },
+ {
+  "name": "Kalila and Dimna in the Logging Industry",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/319/C",
+  "difficulty": "2100",
+  "subtopic": "DP optimization techniques (monotonic deque optimization, divide & conquer optimization, Knuth's optimization, convex hull trick)",
+  "description": "Cut down n trees (each requiring a specific axe strength and giving specific value if the previous tree cut used a weaker or equal axe) to maximize total value, minimizing total axe cost.",
+  "why_hard": "One of the most commonly cited introductory convex hull trick problems — the DP transition is a min-plus query over lines, and lines are inserted in an order that permits the simple monotonic CHT (no need for Li Chao tree)."
+ },
+ {
+  "name": "Subsequences",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/597/C",
+  "difficulty": "1900",
+  "subtopic": "DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)",
+  "description": "Given n points (x, y), find the maximum length of a sequence of points chosen in increasing order of x and non-decreasing order of y (a 2D \"staircase\" subsequence).",
+  "why_hard": "A direct 2D generalization of the O(n log n) LIS trick — requires a Fenwick tree keyed on the y-coordinate (after coordinate compression) to query \"best dp value among all smaller-or-equal y so far\" in O(log n)."
+ },
+ {
+  "name": "Increasing Subsequence II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1748",
+  "difficulty": "CSES",
+  "subtopic": "DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)",
+  "description": "Count the number of strictly increasing subsequences ending at each position of an array (not just the longest one).",
+  "why_hard": "Extends the classic O(n log n) LIS-length trick to counting: a Fenwick tree over compressed values must maintain running sums of subsequence counts rather than just a running maximum."
+ },
+ {
+  "name": "Russian Doll Envelopes",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/russian-doll-envelopes/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)",
+  "description": "Given (width, height) pairs of envelopes, find the maximum number that can be nested inside each other (each dimension must strictly increase).",
+  "why_hard": "Reduces a 2D nesting problem to 1D LIS via a sort-then-patience-sorting trick (sort by width ascending, height descending for ties) so the O(n log n) LIS algorithm applies directly — a subtle but standard reduction."
+ },
+ {
+  "name": "Maximum Height by Stacking Cuboids",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/maximum-height-by-stacking-cuboids/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)",
+  "description": "Given cuboid dimensions (each freely rotatable), stack cuboids on top of each other (each dimension of the one on top must be ≤ the one below) to maximize total height.",
+  "why_hard": "A 3D generalization of the LIS/patience-sorting family — requires normalizing each cuboid's dimensions, sorting, then running an O(n²) or O(n log n) longest-chain DP, testing whether the LIS-style reduction insight transfers to three dimensions."
+ }
+]

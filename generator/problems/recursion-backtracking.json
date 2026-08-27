@@ -1,0 +1,155 @@
+[
+ {
+  "name": "Maximum Subsequence",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/888/E",
+  "difficulty": "CF 1800",
+  "subtopic": "meet in the middle (subset sums)",
+  "description": "Given an array (n ≤ 35) and modulus m, choose a subsequence maximizing the sum of its elements modulo m.",
+  "why_hard": "n rules out 2^n brute force, so you must recurse over two halves separately to generate all subset sums, sort one half, and combine the two sorted lists with a two-pointer/binary-search sweep to find the optimal pairing mod m."
+ },
+ {
+  "name": "Anya and Cubes",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/525/E",
+  "difficulty": "CF 2100",
+  "subtopic": "meet in the middle (subset sum with a twist operation)",
+  "description": "Given n numbers (n ≤ 25) and a target sum S, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals S.",
+  "why_hard": "The extra \"apply factorial to ≤k picks\" dimension means each half's recursive enumeration must track (subset sum, count of factorials used) pairs, and the merge step needs a hashmap keyed on remaining factorial budget rather than a simple two-pointer join."
+ },
+ {
+  "name": "Lizard Era: Beginning",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/585/D",
+  "difficulty": "CF 2300",
+  "subtopic": "meet in the middle (3-way partition)",
+  "description": "Split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.",
+  "why_hard": "Ternary (not binary) choices per element push brute force to 3^n; you must recursively enumerate all 3^(n/2) assignments on each half, precompute partial costs, and combine the two halves' best completions — a genuine step up in meet-in-the-middle bookkeeping."
+ },
+ {
+  "name": "Chessboard and Queens",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1624",
+  "difficulty": "CSES (Introductory Problems, high end)",
+  "subtopic": "N-Queens style pruning",
+  "description": "Count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.",
+  "why_hard": "The reserved-square constraint means you can't use a closed-form queens count — you need real row-by-row backtracking with column/diagonal attack-set pruning, making it the canonical first \"write actual N-Queens backtracking\" exercise."
+ },
+ {
+  "name": "Creating Strings",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1622",
+  "difficulty": "CSES (Introductory Problems, high end)",
+  "subtopic": "permutation generation with duplicate pruning",
+  "description": "Given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.",
+  "why_hard": "Naively permuting and deduplicating with a set wastes time and memory; the real challenge is backtracking directly over sorted character counts and skipping repeated branches so duplicate permutations are never generated in the first place."
+ },
+ {
+  "name": "Apple Division",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1623",
+  "difficulty": "CSES (Introductory Problems, high end)",
+  "subtopic": "recursive subset enumeration / meet in the middle",
+  "description": "Divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups' total weights.",
+  "why_hard": "With n up to 20 and weights up to 1e9, there's no DP-on-sum shortcut; you must recursively enumerate all 2^20 subset assignments (with pruning/early termination) rather than iterate, making it a clean introduction to exponential backtracking search with a real complexity ceiling."
+ },
+ {
+  "name": "N-Queens",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/n-queens/",
+  "difficulty": "Hard",
+  "subtopic": "N-Queens style pruning",
+  "description": "Return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.",
+  "why_hard": "The reference \"canonical\" backtracking problem — solving it efficiently (not just correctly) requires maintaining column/diagonal/anti-diagonal occupancy sets so each placement attempt is checked and pruned in O(1) rather than rescanning the board."
+ },
+ {
+  "name": "Sudoku Solver",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/sudoku-solver/",
+  "difficulty": "Hard",
+  "subtopic": "constraint-propagation backtracking",
+  "description": "Fill a partially completed 9×9 Sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.",
+  "why_hard": "A naive cell-by-cell backtracking search is technically correct but can blow up; a genuinely fast solution needs candidate-set pruning and picking the most-constrained empty cell first, which is where most incorrect/slow submissions fail."
+ },
+ {
+  "name": "Minimum Euclidean Distance",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2194",
+  "difficulty": "CSES",
+  "subtopic": "Divide and Conquer (closest pair of points)",
+  "description": "Given up to 2*10^5 points in the plane, find the minimum squared Euclidean distance between any two distinct points.",
+  "why_hard": "The naive O(n^2) all-pairs check is too slow at this size, forcing the classical O(n log n) divide-and-conquer closest-pair algorithm — split by x-coordinate, recurse, then carefully bound the merge-step strip search to O(n)."
+ },
+ {
+  "name": "Merge Sort",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/873/D",
+  "difficulty": "CF 1800",
+  "subtopic": "Divide and Conquer (constructive, recursion-tree structure)",
+  "description": "Construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.",
+  "why_hard": "Forces you to reason precisely about the shape of a divide-and-conquer recursion tree — which subranges recurse and which short-circuit — and reverse-engineer an input that produces a target call count."
+ },
+ {
+  "name": "Pashmak and Parmida's problem",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/459/D",
+  "difficulty": "CF 1800",
+  "subtopic": "Divide and Conquer (counting with merge step)",
+  "description": "Count pairs (i, j) with i < j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.",
+  "why_hard": "A classic \"count inversion-like pairs across a split\" problem solved by divide and conquer, computing cross-pair contributions during the merge step (an alternative to a BIT-based approach) — a direct generalization of counting inversions."
+ },
+ {
+  "name": "Painting Fence",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/448/C",
+  "difficulty": "CF 1900",
+  "subtopic": "Divide and Conquer (recursive range minimum splitting)",
+  "description": "Given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.",
+  "why_hard": "The classic solution recurses on segments by finding the minimum height in the range (splitting at the minimum), comparing \"one horizontal stroke across the whole segment\" against \"recurse on the pieces above and around the minimum\" — structurally identical to Largest Rectangle in Histogram solved via divide and conquer."
+ },
+ {
+  "name": "Letter Picking",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1728/D",
+  "difficulty": "CF 1800",
+  "subtopic": "Minimax with Alpha-Beta Pruning",
+  "description": "Alice and Bob alternately take the first or last letter of a string and prepend it to their own string (Alice wants the lexicographically smaller result, Bob the opposite, both settle for a draw if they can't win); determine the outcome under optimal play.",
+  "why_hard": "A genuine two-player minimax over game states (a substring, defined by its two endpoints), where the \"value\" has three outcomes (Alice/Bob/Draw) instead of a single number — memoized minimax search (interval DP acting as the practical CP equivalent of alpha-beta pruning) is required, not a closed-form trick."
+ },
+ {
+  "name": "Game on Sum (Easy Version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1628/D1",
+  "difficulty": "CF 2100",
+  "subtopic": "Minimax with Alpha-Beta Pruning",
+  "description": "Over n turns, Alice picks a real number in [0, k] each turn and Bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); Alice maximizes the final score, Bob minimizes it — find the optimal value.",
+  "why_hard": "A textbook continuous-choice minimax game (one player picks a value, the adversary picks a sign) that must be reduced to a tractable recurrence over remaining turns and remaining \"must-add\" budget — exactly the value-game generalization of alpha-beta minimax search."
+ },
+ {
+  "name": "World is Mine",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1987/D",
+  "difficulty": "CF 1800",
+  "subtopic": "Minimax with Alpha-Beta Pruning",
+  "description": "Alice and Bob alternately eat cakes (Alice can only eat a cake tastier than any she's eaten before; Bob eats anything); Alice maximizes how many cakes she eats and Bob minimizes it — find the count under optimal play.",
+  "why_hard": "A greedy-flavored minimax where naive simulation is exponential; the optimal-play analysis requires proving a monotonic \"best response\" structure so the adversarial min/max search collapses to an efficient two-pointer/greedy evaluation."
+ },
+ {
+  "name": "Cat and Mouse",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/cat-and-mouse/",
+  "difficulty": "LeetCode Hard (#913)",
+  "subtopic": "Minimax with Alpha-Beta Pruning",
+  "description": "On a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.",
+  "why_hard": "The state space can contain cycles (draws), which breaks naive top-down minimax memoization — the standard solution is retrograde/topological analysis (working backward from known terminal states), a key extension of minimax search beyond simple recursion."
+ },
+ {
+  "name": "Cat and Mouse II",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/cat-and-mouse-ii/",
+  "difficulty": "LeetCode Hard (#1728)",
+  "subtopic": "Minimax with Alpha-Beta Pruning",
+  "description": "On a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.",
+  "why_hard": "A grid-based minimax with a much larger branching factor and an explicit move cap to bound infinite play, requiring careful memoized minimax over (mouse position, cat position, whose turn, moves remaining) — a practical-scale instance of the same search that alpha-beta pruning speeds up in real game engines."
+ }
+]

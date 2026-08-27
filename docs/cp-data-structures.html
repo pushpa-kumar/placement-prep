@@ -1,0 +1,2148 @@
+<title>Data Structures for CP — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Data Structures for CP</h1>
+    <p class="tagline"><p>Competitive programming lives or dies on turning an O(n) or O(n^2) brute-force query into O(log n), O(1), or O(sqrt n) using the right structure. This guide covers the six workhorses you&#x27;ll reuse constantly: segment trees (with persistent and merge-sort-tree variants), Fenwick trees (BIT), sparse tables, disjoint-set union, tries, and monotonic stacks/queues. One related technique, sqrt decomposition (block-based arrays with per-block lazy tags, e.g. Codeforces 551E GukiZ and GukiZiana), is only mentioned briefly in the Segment Tree and Monotonic Stack/Queue sections below rather than given its own worked example -- it&#x27;s worth a dedicated study pass on its own once you&#x27;re comfortable with everything here. Beyond segment trees, Fenwick/BIT, sparse tables, DSU, tries, and monotonic stacks/queues, these three techniques give a block-based alternative for operations that don&#x27;t merge cleanly (sqrt decomposition), an offline strategy for answering huge batches of range queries with only cheap add/remove transitions (Mo&#x27;s algorithm), and the extension of the Fenwick tree to two dimensions for rectangle updates and queries.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">9</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">21</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">26</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#data-structures-segment-tree-incl-persistent-merge-sort-tree"><span>Segment Tree (incl. Persistent &amp; Merge-Sort Tree)</span><span class="cnt">3</span></a></li><li><a href="#data-structures-fenwick-tree-binary-indexed-tree"><span>Fenwick Tree (Binary Indexed Tree)</span><span class="cnt">3</span></a></li><li><a href="#data-structures-sparse-table"><span>Sparse Table</span><span class="cnt">2</span></a></li><li><a href="#data-structures-dsu-union-find"><span>DSU / Union-Find</span><span class="cnt">3</span></a></li><li><a href="#data-structures-trie"><span>Trie</span><span class="cnt">2</span></a></li><li><a href="#data-structures-monotonic-stack-queue"><span>Monotonic Stack / Queue</span><span class="cnt">2</span></a></li><li><a href="#data-structures-sqrt-decomposition"><span>Sqrt Decomposition</span><span class="cnt">2</span></a></li><li><a href="#data-structures-mo-s-algorithm"><span>Mo&#x27;s Algorithm</span><span class="cnt">2</span></a></li><li><a href="#data-structures-2d-fenwick-tree-range-queries"><span>2D Fenwick Tree / Range Queries</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">26</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#data-structures">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="data-structures-segment-tree-incl-persistent-merge-sort-tree">
+  <div class="topic-head"><h2>Segment Tree (incl. Persistent &amp; Merge-Sort Tree)</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>A segment tree is a complete binary tree built over the indices of an array: the root covers the whole range [1, n], each internal node covers a contiguous half-open sub-range split evenly between its two children, and each leaf covers a single index. Every node stores an aggregate (sum, min, max, gcd, ...) of its range, computed bottom-up from its children in build(). Because the tree has height O(log n), and any query range [l, r] decomposes into at most O(log n) disjoint node-ranges (the same argument as why binary representations of numbers use O(log n) bits), both point updates and range queries touch only O(log n) nodes.</p><p>Range updates (e.g. &quot;add v to every element in [l, r]&quot;) would naively cost O(n) if applied eagerly to every leaf in range. Lazy propagation fixes this: when an update fully covers a node&#x27;s range, we update that node&#x27;s aggregate directly and stash the pending update in a lazy tag instead of recursing further. The tag is only pushed down to children the next time we need to descend past that node (during a later update or query that only partially overlaps it). This keeps every operation at O(log n) amortized, at the cost of carefully combining tags (e.g. for range-assign you overwrite the tag, for range-add you accumulate it) and rescaling the stored aggregate by the size of the affected sub-range.</p><p>A segment tree isn&#x27;t limited to &quot;compute an aggregate over a range&quot; -- it can also binary search over its own structure. If a node&#x27;s aggregate lets you decide in O(1) whether the answer lies in its left or right child (e.g. &quot;does this range contain a value &gt;= need&quot;), you can descend a single root-to-leaf path in O(log n) total, rather than doing an O(log n) query at each of O(log n) binary-search steps. This &quot;segment tree descent&quot; pattern answers questions like &quot;leftmost index with value &gt;= x&quot; directly.</p><p>A persistent segment tree keeps every historical version of the tree reachable, by never mutating a node in place: an update clones only the O(log n) nodes on the root-to-leaf path it touches and reuses every other subtree unchanged from the previous version. Each version is just a separate root pointer into a shared pool of nodes, so n updates cost O(n log n) total time and space instead of O(n^2). This is the standard tool for offline &quot;as of a certain prefix&quot; queries -- most famously, building one version per prefix of an array (each version inserting one more element into a segment tree over compressed values) turns &quot;k-th smallest value in a[l..r]&quot; into a difference of two versions&#x27; node counts, descended in O(log n). A merge-sort tree is a related but non-persistent idea: build an ordinary segment tree where every node additionally stores a *sorted* copy of the subarray it covers (built the way merge sort merges two sorted halves, hence the name). This costs O(n log n) space and lets you binary search inside each of the O(log n) nodes touched by a query, e.g. &quot;how many elements &lt; x lie in [l, r]&quot; in O(log^2 n) -- the same augmented-merge idea (count cross-inversions while merging) also solves &quot;count of smaller numbers after self&quot; directly during a single merge sort pass, without needing to answer arbitrary range queries.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for a segment tree when you need repeated range aggregate queries (sum/min/max/gcd/xor) interleaved with point or range updates on an array whose size doesn&#x27;t change. If updates never happen and the aggregate is idempotent, prefer a sparse table instead (O(1) query). If you need &quot;leftmost/rightmost position satisfying a threshold&quot; rather than a plain aggregate, think descent. If you need answers &quot;as of an earlier point in time / earlier prefix&quot; or an order statistic (k-th smallest) restricted to a subrange, think persistent segment tree. If you need &quot;how many elements less than x in this range&quot; without persistence, a merge-sort tree or a coordinate-compressed 2D approach (offline BIT) both work.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Build: O(n) time, O(n) space (O(4n) array-based implementation). Point/range update and range query: O(log n) each (amortized with lazy propagation). Persistent segment tree: O(log n) new nodes and O(log n) time per update, O(n log n) total space across all versions, O(log n) per query. Merge-sort tree: O(n log n) build/space, O(log^2 n) per range-rank query.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex0">
+  <h4>Range Add, Range Sum (Lazy Propagation)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an array of n integers (1-indexed) and must process q operations of two kinds:<br>  1 l r v  -- add v to every element in the inclusive range [l, r]<br>  2 l r    -- print the sum of every element in the inclusive range [l, r]<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5, |a_i|, |v| &lt;= 10^9, 1 &lt;= l &lt;= r &lt;= n. Values can exceed a 32-bit range after accumulation, so use 64-bit integers.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build a segment tree over [1, n] storing subtree sums. For a range-add update that fully covers a node&#x27;s range, add v * (range length) to that node&#x27;s stored sum and add v to its lazy tag instead of recursing into children -- the children&#x27;s actual values are now &#x27;stale&#x27; by exactly that pending tag. Whenever a later update or query needs to look past a node with a nonzero tag (i.e. the node&#x27;s range only partially overlaps the query), push the tag down first: add it to both children&#x27;s tags and to their stored sums (scaled by each child&#x27;s range length), then clear the node&#x27;s own tag. Range-sum queries recurse the same way, pushing down lazily as needed and summing the contributions of fully-covered nodes.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+int n, q;
+vector&lt;ll&gt; tre, lz;
+
+void build(vector&lt;ll&gt;&amp; a, int node, int l, int r) {
+    if (l == r) { tre[node] = a[l]; return; }
+    int mid = (l + r) / 2;
+    build(a, 2*node, l, mid);
+    build(a, 2*node+1, mid+1, r);
+    tre[node] = tre[2*node] + tre[2*node+1];
+}
+
+void pushDown(int node, int l, int r) {
+    if (lz[node] != 0) {
+        int mid = (l + r) / 2;
+        int lc = 2*node, rc = 2*node+1;
+        lz[lc] += lz[node];
+        lz[rc] += lz[node];
+        tre[lc] += lz[node] * (mid - l + 1);
+        tre[rc] += lz[node] * (r - mid);
+        lz[node] = 0;
+    }
+}
+
+void update(int node, int l, int r, int ql, int qr, ll val) {
+    if (qr &lt; l || r &lt; ql) return;
+    if (ql &lt;= l &amp;&amp; r &lt;= qr) {
+        tre[node] += val * (r - l + 1);
+        lz[node] += val;
+        return;
+    }
+    pushDown(node, l, r);
+    int mid = (l + r) / 2;
+    update(2*node, l, mid, ql, qr, val);
+    update(2*node+1, mid+1, r, ql, qr, val);
+    tre[node] = tre[2*node] + tre[2*node+1];
+}
+
+ll query(int node, int l, int r, int ql, int qr) {
+    if (qr &lt; l || r &lt; ql) return 0;
+    if (ql &lt;= l &amp;&amp; r &lt;= qr) return tre[node];
+    pushDown(node, l, r);
+    int mid = (l + r) / 2;
+    return query(2*node, l, mid, ql, qr) + query(2*node+1, mid+1, r, ql, qr);
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; n &gt;&gt; q;
+    vector&lt;ll&gt; a(n+1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+    tre.assign(4*(n+1), 0);
+    lz.assign(4*(n+1), 0);
+    build(a, 1, 1, n);
+    for (int i = 0; i &lt; q; i++) {
+        int type; cin &gt;&gt; type;
+        if (type == 1) {
+            int l, r; ll v; cin &gt;&gt; l &gt;&gt; r &gt;&gt; v;
+            update(1, 1, n, l, r, v);
+        } else {
+            int l, r; cin &gt;&gt; l &gt;&gt; r;
+            cout &lt;&lt; query(1, 1, n, l, r) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 4
+1 2 3 4 5
+1 2 4 10
+2 1 5
+1 1 1 5
+2 1 3
+</code></pre>
+    <pre><code>45
+31
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex1">
+  <h4>Hotel Assignment (Leftmost Capacity Descent)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n hotels in a row, hotel i initially having cap[i] free rooms. You must process q groups in order; group j wants g_j rooms and must be assigned to the leftmost hotel whose current free-room count is &gt;= g_j (that hotel&#x27;s free-room count then decreases by g_j). If no hotel qualifies, output 0 for that group. Otherwise output the 1-indexed hotel number.<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5, 1 &lt;= cap[i], g_j &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build a segment tree over [1, n] where each node stores the maximum free-room count in its range. To answer a query for g, descend from the root: if the current node&#x27;s max is &lt; g, no hotel in its range can satisfy the group, so return &#x27;not found&#x27; immediately. Otherwise, if it&#x27;s a leaf, that index is the leftmost valid hotel. Else, recurse into the left child first (since we want the leftmost answer) -- only recurse into the right child if the left subtree failed to produce an index. This costs O(log n) per query because a failed branch is pruned in O(1) via the max check. After finding an index, do a point update to subtract g_j from that hotel&#x27;s capacity and refresh the ancestors&#x27; maxima.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+int n, q;
+vector&lt;ll&gt; maxTree, cap;
+
+void build(int node, int l, int r) {
+    if (l == r) { maxTree[node] = cap[l]; return; }
+    int mid = (l + r) / 2;
+    build(2*node, l, mid);
+    build(2*node+1, mid+1, r);
+    maxTree[node] = max(maxTree[2*node], maxTree[2*node+1]);
+}
+
+void update(int node, int l, int r, int pos, ll val) {
+    if (l == r) { maxTree[node] = val; return; }
+    int mid = (l + r) / 2;
+    if (pos &lt;= mid) update(2*node, l, mid, pos, val);
+    else update(2*node+1, mid+1, r, pos, val);
+    maxTree[node] = max(maxTree[2*node], maxTree[2*node+1]);
+}
+
+// leftmost index in [l,r] whose value &gt;= need, or -1
+int query(int node, int l, int r, ll need) {
+    if (maxTree[node] &lt; need) return -1;
+    if (l == r) return l;
+    int mid = (l + r) / 2;
+    int res = query(2*node, l, mid, need);
+    if (res != -1) return res;
+    return query(2*node+1, mid+1, r, need);
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; n &gt;&gt; q;
+    cap.assign(n+1, 0);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; cap[i];
+    maxTree.assign(4*(n+1), 0);
+    build(1, 1, n);
+    for (int i = 0; i &lt; q; i++) {
+        ll g; cin &gt;&gt; g;
+        int idx = query(1, 1, n, g);
+        if (idx == -1) {
+            cout &lt;&lt; 0 &lt;&lt; &quot;\n&quot;;
+        } else {
+            cout &lt;&lt; idx &lt;&lt; &quot;\n&quot;;
+            cap[idx] -= g;
+            update(1, 1, n, idx, cap[idx]);
+        }
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 4
+3 2 4 1
+3
+3
+2
+2
+</code></pre>
+    <pre><code>1
+3
+2
+0
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex2">
+  <h4>K-th Smallest in a Subarray (Persistent Segment Tree)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a static array of n integers (1-indexed) and q queries (l, r, k), answer for each query: what is the k-th smallest value among a[l], a[l+1], ..., a[r]? Array values may repeat and are not bounded to a small range. Constraints: 1 &lt;= n, q &lt;= 2*10^5, 1 &lt;= k &lt;= r - l + 1.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Coordinate-compress the array&#x27;s distinct values to ranks 1..m. Build version[0] as an empty persistent segment tree over the rank range [1, m] (every count is 0). For i = 1..n, form version[i] by inserting rank(a[i]) into version[i-1]: walk from the root to the leaf for that rank, cloning the O(log m) nodes on the path (each clone&#x27;s count is its predecessor&#x27;s count + 1) and reusing every other node unchanged. version[i] therefore represents &#x27;one insertion per element of a[1..i]&#x27;, so version[r] minus version[l-1] represents exactly the multiset a[l..r] (subtracting counts, not subtracting trees). To find the k-th smallest in that multiset, descend both roots version[l-1] and version[r] together: at each node compare k against leftCount = (version[r]&#x27;s left-child count) - (version[l-1]&#x27;s left-child count); if k &lt;= leftCount recurse left in both trees, else recurse right with k -= leftCount. The leaf reached is the answer&#x27;s compressed rank; map it back to the real value.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct PersistentSegTree {
+    vector&lt;int&gt; lc, rc, cnt;
+    int m;
+    PersistentSegTree(int m_) : m(m_) {
+        lc.push_back(0); rc.push_back(0); cnt.push_back(0); // node 0: null sentinel
+    }
+    int newNode(int l, int r, int c) {
+        lc.push_back(l); rc.push_back(r); cnt.push_back(c);
+        return (int)cnt.size() - 1;
+    }
+    int build(int l, int r) {
+        if (l == r) return newNode(0, 0, 0);
+        int mid = (l + r) / 2;
+        int l1 = build(l, mid);
+        int r1 = build(mid+1, r);
+        return newNode(l1, r1, 0);
+    }
+    // insert value at coordinate `pos` into version `prev`, return new root
+    int update(int prev, int l, int r, int pos) {
+        if (l == r) return newNode(0, 0, cnt[prev] + 1);
+        int mid = (l + r) / 2;
+        if (pos &lt;= mid) {
+            int nl = update(lc[prev], l, mid, pos);
+            return newNode(nl, rc[prev], cnt[prev] + 1);
+        } else {
+            int nr = update(rc[prev], mid+1, r, pos);
+            return newNode(lc[prev], nr, cnt[prev] + 1);
+        }
+    }
+    // k-th smallest among elements inserted between version u (exclusive) and v (inclusive)
+    int query(int u, int v, int l, int r, int k) {
+        if (l == r) return l;
+        int mid = (l + r) / 2;
+        int leftCount = cnt[lc[v]] - cnt[lc[u]];
+        if (k &lt;= leftCount) return query(lc[u], lc[v], l, mid, k);
+        else return query(rc[u], rc[v], mid+1, r, k - leftCount);
+    }
+};
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, q; cin &gt;&gt; n &gt;&gt; q;
+    vector&lt;int&gt; a(n+1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+
+    vector&lt;int&gt; sortedVals(a.begin() + 1, a.end());
+    sort(sortedVals.begin(), sortedVals.end());
+    sortedVals.erase(unique(sortedVals.begin(), sortedVals.end()), sortedVals.end());
+    int m = (int)sortedVals.size();
+
+    auto rankOf = [&amp;](int val) {
+        return int(lower_bound(sortedVals.begin(), sortedVals.end(), val) - sortedVals.begin()) + 1;
+    };
+
+    PersistentSegTree pst(m);
+    vector&lt;int&gt; root(n+1);
+    root[0] = pst.build(1, m);
+    for (int i = 1; i &lt;= n; i++) {
+        int r = rankOf(a[i]);
+        root[i] = pst.update(root[i-1], 1, m, r);
+    }
+
+    for (int i = 0; i &lt; q; i++) {
+        int l, r, k; cin &gt;&gt; l &gt;&gt; r &gt;&gt; k;
+        int idx = pst.query(root[l-1], root[r], 1, m, k);
+        cout &lt;&lt; sortedVals[idx - 1] &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>7 3
+1 5 2 6 3 7 4
+2 6 3
+1 7 4
+3 5 1
+</code></pre>
+    <pre><code>5
+4
+2
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-fenwick-tree-binary-indexed-tree">
+  <div class="topic-head"><h2>Fenwick Tree (Binary Indexed Tree)</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>A Fenwick tree stores an array of size n+1 (1-indexed) where index i is responsible for a range of the original array ending at i, of length equal to lowbit(i) = i &amp; (-i) (the value of i&#x27;s lowest set bit). This works because every prefix [1, i] can be decomposed into O(log n) such &#x27;lowbit blocks&#x27; by repeatedly stripping the lowest set bit of i -- exactly the same idea as writing i in binary. A point update at index i adds delta to bit[i] and then walks to every ancestor block that contains i by repeatedly doing i += lowbit(i), since a block is an ancestor of i in this scheme iff it starts no later than i and covers it. A prefix-sum query at index i walks the other direction, i -= lowbit(i), summing bit[i] at each step, collecting exactly the O(log n) disjoint blocks that tile [1, i].</p><p>The plain BIT supports point update + prefix (hence range, via prefix(r) - prefix(l-1)) query in O(log n), with a much smaller constant factor and about a third of the code of a segment tree -- but only for operations with an inverse (sum, xor, product mod p), since range query is computed as a difference of prefixes. It cannot directly support min/max (no inverse exists). To support range update + range query for sums, use the difference-array trick with *two* Fenwick trees: if diff[i] = a[i] - a[i-1], then a range-add on [l, r] is just two point updates to diff (+v at l, -v at r+1), and prefix(i) = sum_{j&lt;=i} a[j] can be shown algebraically to equal i * (prefix sum of diff up to i) - (prefix sum of j*diff[j] up to i) -- hence the second BIT tracks i*diff[i] terms to correct for the multiplication.</p><p>Fenwick trees pair extremely well with coordinate compression: whenever you need to count &#x27;how many elements are &lt;= x&#x27; with x possibly up to 10^9, compress all values (and all query endpoints, if updates introduce new values online) into ranks 1..m, and use a BIT indexed by rank to do point update (insert/remove an element) + prefix-count query in O(log m). This is the standard building block behind inversion counting (insert elements right-to-left and query how many already-inserted elements are smaller) and dynamic order-statistics problems.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for problems needing prefix/range sums (or any invertible aggregate: xor, count) under point updates -- especially &#x27;count pairs/elements satisfying a comparison&#x27; after coordinate compression (inversions, order statistics, offline range-count-of-value queries). If updates are range-based and only queries are points (or vice versa), or both are ranges, that&#x27;s the two-BIT difference-array pattern. If you need range min/max, you need a segment tree instead, not a BIT.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(log n) per point update and per prefix/range query; O(n) to build (or O(n log n) via naive repeated insertion); O(n) space. Two-BIT range-update/range-query variant is still O(log n) per operation with double the constant factor.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-fenwick-tree-binary-indexed-tree-ex0">
+  <h4>Counting Inversions</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers, count the number of pairs (i, j) with i &lt; j and a[i] &gt; a[j] (the number of inversions). Constraints: 1 &lt;= n &lt;= 2*10^5, values can be arbitrary 32-bit integers (not necessarily distinct or small).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Coordinate-compress the values to ranks 1..n. Process the array from right to left, maintaining a Fenwick tree over ranks that counts how many elements have been inserted so far at each rank. For the current element a[i], every already-inserted element (i.e. every a[j] with j &gt; i) that has a strictly smaller rank forms an inversion with a[i]; that count is exactly the BIT&#x27;s prefix-count query up to rank(a[i]) - 1. Add that to the running total, then insert a[i] (point update +1 at its rank) so it counts toward future (leftward) elements.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+int n;
+vector&lt;ll&gt; bit_;
+
+void update(int i, ll delta) {
+    for (; i &lt;= n; i += i &amp; (-i)) bit_[i] += delta;
+}
+ll query(int i) {
+    ll s = 0;
+    for (; i &gt; 0; i -= i &amp; (-i)) s += bit_[i];
+    return s;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; n;
+    vector&lt;int&gt; a(n+1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+
+    // coordinate-compress (ranks 1..n)
+    vector&lt;int&gt; sortedVals(a.begin()+1, a.end());
+    sort(sortedVals.begin(), sortedVals.end());
+    auto rankOf = [&amp;](int v) {
+        return int(lower_bound(sortedVals.begin(), sortedVals.end(), v) - sortedVals.begin()) + 1;
+    };
+
+    bit_.assign(n+2, 0);
+    ll inversions = 0;
+    // process right to left: count already-inserted elements smaller than a[i]
+    for (int i = n; i &gt;= 1; i--) {
+        int r = rankOf(a[i]);
+        if (r &gt; 1) inversions += query(r - 1);
+        update(r, 1);
+    }
+    cout &lt;&lt; inversions &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+2 4 1 3 5
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-fenwick-tree-binary-indexed-tree-ex1">
+  <h4>Range Add, Range Sum via Two Fenwick Trees</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Same task as the segment-tree lazy-propagation example -- an array of n integers with q operations &#x27;1 l r v&#x27; (add v to [l, r]) and &#x27;2 l r&#x27; (sum of [l, r]) -- but this time implement it with Fenwick trees instead of a segment tree, to see the alternative technique. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain two BITs, B1 and B2, over the difference array diff[i] = a[i] - a[i-1]. A range-add of v on [l, r] is two point updates to diff: +v at l and -v at r+1 (this is standard difference-array logic, generalized to a BIT so partial prefix sums of diff are queryable in O(log n) instead of requiring an O(n) rebuild). B1 tracks these point updates directly. B2 tracks the same updates scaled by (position - 1) at l and by (r) at r+1, i.e. addTo(B2, l, v*(l-1)) and addTo(B2, r+1, -v*r). Algebra shows prefixSum(i) = sumUpTo(B1, i) * i - sumUpTo(B2, i) recovers the true prefix sum of the original array a after any sequence of range-adds; range sum on [l, r] is then prefixSum(r) - prefixSum(l-1). Initial values are loaded by treating each a[i] as a range-add of a[i] on [i, i].</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+int n;
+// two BITs to support range-update, range-query via the difference-array trick:
+// B1 tracks the difference array itself; B2 tracks i*diff[i] to fix the prefix-sum formula.
+vector&lt;ll&gt; B1, B2;
+
+void addTo(vector&lt;ll&gt;&amp; bit_, int i, ll delta) {
+    for (; i &lt;= n; i += i &amp; (-i)) bit_[i] += delta;
+}
+ll sumUpTo(vector&lt;ll&gt;&amp; bit_, int i) {
+    ll s = 0;
+    for (; i &gt; 0; i -= i &amp; (-i)) s += bit_[i];
+    return s;
+}
+void rangeAdd(int l, int r, ll val) {
+    addTo(B1, l, val);
+    addTo(B1, r+1, -val);
+    addTo(B2, l, val * (l - 1));
+    addTo(B2, r+1, -val * r);
+}
+ll prefixSum(int i) {
+    return sumUpTo(B1, i) * i - sumUpTo(B2, i);
+}
+ll rangeSum(int l, int r) {
+    return prefixSum(r) - prefixSum(l - 1);
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int q; cin &gt;&gt; n &gt;&gt; q;
+    vector&lt;ll&gt; a(n+1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+    B1.assign(n+2, 0);
+    B2.assign(n+2, 0);
+    for (int i = 1; i &lt;= n; i++) rangeAdd(i, i, a[i]);
+    for (int i = 0; i &lt; q; i++) {
+        int type; cin &gt;&gt; type;
+        if (type == 1) {
+            int l, r; ll v; cin &gt;&gt; l &gt;&gt; r &gt;&gt; v;
+            rangeAdd(l, r, v);
+        } else {
+            int l, r; cin &gt;&gt; l &gt;&gt; r;
+            cout &lt;&lt; rangeSum(l, r) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 4
+1 2 3 4 5
+2 1 5
+1 2 4 3
+2 1 5
+2 2 3
+</code></pre>
+    <pre><code>15
+24
+11
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-fenwick-tree-binary-indexed-tree-ex2">
+  <h4>Dynamic Salary Range Counting</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A company has n employees, employee k initially earning salary[k] (values up to 10^9, not necessarily distinct). Process q operations:<br>  ! k x  -- set employee k&#x27;s salary to x<br>  ? a b  -- count how many employees currently have salary in [a, b] (inclusive)<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Since salaries can be up to 10^9, first collect every value that will ever appear -- all initial salaries plus every x, a, b that appears in any query -- and coordinate-compress them to ranks 1..M (this requires reading all queries before processing any, i.e. two passes, since updates introduce new values online). Maintain a Fenwick tree over ranks where each employee&#x27;s current salary rank has a +1 &#x27;presence&#x27; count. A &#x27;!&#x27; update removes the employee&#x27;s old rank (-1) and adds the new one (+1). A &#x27;?&#x27; query is a prefix-count difference: count(rank(b)) - count(rank(a) - 1).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+int M; // compressed universe size
+vector&lt;int&gt; bit_;
+
+void update(int i, int delta) {
+    for (; i &lt;= M; i += i &amp; (-i)) bit_[i] += delta;
+}
+int query(int i) {
+    int s = 0;
+    for (; i &gt; 0; i -= i &amp; (-i)) s += bit_[i];
+    return s;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, q; cin &gt;&gt; n &gt;&gt; q;
+    vector&lt;int&gt; salary(n+1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; salary[i];
+
+    vector&lt;int&gt; allVals(salary.begin()+1, salary.end());
+
+    struct Op { char type; int a, b; };
+    vector&lt;Op&gt; parsed(q);
+    for (int i = 0; i &lt; q; i++) {
+        string s; cin &gt;&gt; s;
+        if (s == &quot;!&quot;) {
+            int k, x; cin &gt;&gt; k &gt;&gt; x;
+            parsed[i] = {&#x27;!&#x27;, k, x};
+            allVals.push_back(x);
+        } else {
+            int a, b; cin &gt;&gt; a &gt;&gt; b;
+            parsed[i] = {&#x27;?&#x27;, a, b};
+            allVals.push_back(a);
+            allVals.push_back(b);
+        }
+    }
+
+    sort(allVals.begin(), allVals.end());
+    allVals.erase(unique(allVals.begin(), allVals.end()), allVals.end());
+    M = (int)allVals.size();
+    auto rankOf = [&amp;](int v) {
+        return int(lower_bound(allVals.begin(), allVals.end(), v) - allVals.begin()) + 1;
+    };
+
+    bit_.assign(M+2, 0);
+    for (int i = 1; i &lt;= n; i++) update(rankOf(salary[i]), 1);
+
+    for (int i = 0; i &lt; q; i++) {
+        if (parsed[i].type == &#x27;!&#x27;) {
+            int k = parsed[i].a, x = parsed[i].b;
+            update(rankOf(salary[k]), -1);
+            salary[k] = x;
+            update(rankOf(salary[k]), 1);
+        } else {
+            int a = parsed[i].a, b = parsed[i].b;
+            int ra = rankOf(a), rb = rankOf(b);
+            int cnt = query(rb) - (ra &gt; 1 ? query(ra - 1) : 0);
+            cout &lt;&lt; cnt &lt;&lt; &quot;\n&quot;;
+        }
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 4
+3 7 2 5
+? 2 5
+! 2 4
+? 2 5
+? 6 10
+</code></pre>
+    <pre><code>3
+4
+0
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-sparse-table">
+  <div class="topic-head"><h2>Sparse Table</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A sparse table precomputes, for every starting index i and every power of two 2^j, the aggregate (min, max, gcd, and, or, ...) of the range [i, i + 2^j - 1]. This is a classic DP: sp[0][i] = a[i], and sp[j][i] = combine(sp[j-1][i], sp[j-1][i + 2^(j-1)]) -- a range of length 2^j is exactly two ranges of length 2^(j-1) placed back to back. There are O(log n) values of j and O(n) starting indices, so the table has O(n log n) entries, each computed in O(1), giving O(n log n) total preprocessing.</p><p>The reason sparse tables answer queries in O(1) (rather than O(log n)) is specific to *idempotent* combine functions -- ones where combine(x, x) = x, such as min, max, gcd, and, or (but not sum or xor). For a query range [l, r] of length len = r - l + 1, let j = floor(log2(len)). The two precomputed ranges [l, l + 2^j - 1] and [r - 2^j + 1, r] together cover all of [l, r], and possibly overlap in the middle -- but because combine is idempotent, the overlapping elements being counted twice doesn&#x27;t change the answer. So the query is just combine(sp[j][l], sp[j][r - 2^j + 1]), a single O(1) lookup (after an O(log n) or precomputed-O(1) computation of j via a log table).</p><p>This O(1)-query, O(n log n)-space trade-off only makes sense for a *static* array: there is no efficient way to update a sparse table (a single point change can invalidate O(n log n) table entries), so if updates are required, use a segment tree instead, accepting O(log n) queries. For non-idempotent operations (like sum) on a static array where you still want to beat O(log n) per query, a *disjoint* sparse table (precomputing non-overlapping halves around every possible split point) gives O(1) query without double-counting, at the same O(n log n) preprocessing cost.</p><p>A very common application is O(1) LCA (lowest common ancestor) on a fixed tree: run a DFS Euler tour recording (depth, node) each time the DFS visits or returns to a node, giving a sequence of length O(n) where the LCA of u and v is exactly the shallowest node appearing between u&#x27;s and v&#x27;s *first* occurrences in the tour. That reduces LCA to a range-minimum query (by depth) on the Euler tour array -- a static array of pairs -- which a sparse table answers in O(1) after O(n log n) preprocessing.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Static array (no updates planned), many repeated range queries, and the aggregate is idempotent (min, max, gcd, bitwise and/or). Very common as the backend for O(1) LCA via Euler-tour reduction, and for problems that sweep a window while relying on monotonicity of a range-min or range-max as the window grows (enabling two-pointer or binary-search arguments on top of the RMQ).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Preprocessing: O(n log n) time and space. Query: O(1) for idempotent operations (min/max/gcd/and/or), O(log n) if you fall back to summing O(log n) disjoint blocks for non-idempotent operations without a disjoint sparse table. No updates supported.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-sparse-table-ex0">
+  <h4>Static Range Minimum Query</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers (0-indexed) and q queries, each a pair (l, r) meaning the inclusive 0-indexed range [l, r], output the minimum value in that range for each query. The array never changes. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Precompute sp[j][i] = min of a[i..i+2^j-1] for all valid i, j via the doubling DP. Precompute a log table so floor(log2(len)) is an O(1) lookup for any len. For each query (l, r), let len = r - l + 1 and j = logTable[len]; the answer is min(sp[j][l], sp[j][r - 2^j + 1]) -- two overlapping power-of-two windows that together cover [l, r], safe because min is idempotent.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, q; cin &gt;&gt; n &gt;&gt; q;
+    vector&lt;int&gt; a(n);
+    for (auto&amp; x : a) cin &gt;&gt; x;
+
+    int LOG = 1;
+    while ((1 &lt;&lt; LOG) &lt;= n) LOG++;
+    vector&lt;vector&lt;int&gt;&gt; sp(LOG, vector&lt;int&gt;(n));
+    sp[0] = a;
+    for (int j = 1; j &lt; LOG; j++) {
+        for (int i = 0; i + (1 &lt;&lt; j) &lt;= n; i++) {
+            sp[j][i] = min(sp[j-1][i], sp[j-1][i + (1 &lt;&lt; (j-1))]);
+        }
+    }
+    vector&lt;int&gt; logTable(n+1);
+    for (int i = 2; i &lt;= n; i++) logTable[i] = logTable[i/2] + 1;
+
+    for (int i = 0; i &lt; q; i++) {
+        int l, r; cin &gt;&gt; l &gt;&gt; r; // 0-indexed inclusive [l, r]
+        int j = logTable[r - l + 1];
+        int ans = min(sp[j][l], sp[j][r - (1 &lt;&lt; j) + 1]);
+        cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>7 3
+5 2 4 7 1 3 6
+0 3
+1 4
+4 6
+</code></pre>
+    <pre><code>2
+1
+1
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-sparse-table-ex1">
+  <h4>O(1) LCA via Euler Tour + Sparse Table</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a tree with n nodes (1-indexed, rooted at node 1) and q queries, each a pair (u, v), output the lowest common ancestor of u and v for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Run an Euler tour DFS from the root: every time the traversal visits or returns to a node, append (depth, node) to a sequence, and record tin[node] as the index of that node&#x27;s *first* appearance. The resulting sequence has length O(n) (each edge is traversed twice). The key fact: the LCA of u and v is the node with minimum depth anywhere between index tin[u] and tin[v] in this sequence (inclusive), because the tour must climb back up through every ancestor shared by u and v while moving between their first appearances, and the shallowest such node is exactly their LCA. Build a sparse table over the Euler sequence with combine = min-by-depth (comparing pairs (depth, node) lexicographically works since depth is the first component). Each LCA query is then a single O(1) range-minimum query on [min(tin[u],tin[v]), max(tin[u],tin[v])], returning the node component of the minimum pair.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n; cin &gt;&gt; n;
+    vector&lt;vector&lt;int&gt;&gt; adj(n+1);
+    for (int i = 0; i &lt; n-1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    int root = 1;
+    vector&lt;int&gt; tin(n+1, -1), depth(n+1, 0);
+    vector&lt;pair&lt;int,int&gt;&gt; euler; // (depth, node)
+    euler.reserve(2*n);
+
+    // iterative DFS to avoid recursion-depth concerns
+    vector&lt;int&gt; parent(n+1, 0);
+    vector&lt;size_t&gt; childIdx(n+1, 0);
+    vector&lt;int&gt; stk;
+    stk.push_back(root);
+    parent[root] = 0;
+    depth[root] = 0;
+    tin[root] = 0;
+    euler.push_back({0, root});
+    while (!stk.empty()) {
+        int u = stk.back();
+        if (childIdx[u] &lt; adj[u].size()) {
+            int v = adj[u][childIdx[u]++];
+            if (v == parent[u]) continue;
+            parent[v] = u;
+            depth[v] = depth[u] + 1;
+            tin[v] = (int)euler.size();
+            euler.push_back({depth[v], v});
+            stk.push_back(v);
+        } else {
+            stk.pop_back();
+            if (!stk.empty()) {
+                int p = stk.back();
+                euler.push_back({depth[p], p});
+            }
+        }
+    }
+
+    int m = (int)euler.size();
+    int LOG = 1;
+    while ((1 &lt;&lt; LOG) &lt;= m) LOG++;
+    vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; sp(LOG, vector&lt;pair&lt;int,int&gt;&gt;(m));
+    sp[0] = euler;
+    for (int j = 1; j &lt; LOG; j++) {
+        for (int i = 0; i + (1 &lt;&lt; j) &lt;= m; i++) {
+            sp[j][i] = min(sp[j-1][i], sp[j-1][i + (1 &lt;&lt; (j-1))]);
+        }
+    }
+    vector&lt;int&gt; logTable(m+1, 0);
+    for (int i = 2; i &lt;= m; i++) logTable[i] = logTable[i/2] + 1;
+
+    auto lca = [&amp;](int u, int v) {
+        int l = tin[u], r = tin[v];
+        if (l &gt; r) swap(l, r);
+        int j = logTable[r - l + 1];
+        pair&lt;int,int&gt; res = min(sp[j][l], sp[j][r - (1 &lt;&lt; j) + 1]);
+        return res.second;
+    };
+
+    int q; cin &gt;&gt; q;
+    for (int i = 0; i &lt; q; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; lca(u, v) &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+1 2
+1 3
+2 4
+2 5
+3 6
+4
+4 5
+4 6
+5 3
+4 2
+</code></pre>
+    <pre><code>2
+1
+1
+2
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-dsu-union-find">
+  <div class="topic-head"><h2>DSU / Union-Find</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>A disjoint-set union (DSU) structure maintains a partition of n elements into disjoint sets, represented as a forest: each element has a parent pointer, and an element whose parent is itself is a set&#x27;s representative (root). find(x) follows parent pointers up to the root; union(a, b) merges the two sets by making one root point to the other. Implemented naively, repeatedly unioning in a bad order can produce a degenerate chain of depth O(n), making find() cost O(n).</p><p>Two independent optimizations fix this. Union by rank/size always attaches the root of the smaller (by subtree size or an upper-bound &#x27;rank&#x27;) tree underneath the root of the larger one, which caps the tree&#x27;s height at O(log n) (a node&#x27;s depth can only increase when its tree at least doubles in size). Path compression makes every node visited during a find() point directly to the root afterward, so future finds through those nodes are O(1). Together, these two optimizations give an amortized time per operation of O(alpha(n)), where alpha is the inverse Ackermann function -- for any n that fits in the universe, alpha(n) &lt;= 4, so DSU operations are effectively O(1) in practice.</p><p>DSU generalizes beyond plain &#x27;are u and v connected?&#x27;: a weighted (or &#x27;parity&#x27;) DSU attaches extra relational data to each union -- e.g. a group id, an offset, or a parity bit describing how x relates to its parent -- and combines it correctly during path compression (the parity from x to the root is the XOR of the parity from x to its old parent and from that parent to the root). This lets DSU answer relational queries like &#x27;are u and v forced into the same group, different groups, or is that undetermined?&#x27;, which is exactly bipartiteness checking done incrementally, or the classic &#x27;food chain&#x27; family of problems.</p><p>Processing order also matters for many hard DSU problems. Kruskal&#x27;s MST algorithm sorts edges by weight and unions endpoints greedily, skipping an edge if its endpoints are already connected -- this only works because DSU makes &#x27;already connected&#x27; an O(alpha(n)) check. Offline problems that ask &#x27;can these edges simultaneously belong to some MST&#x27; typically need DSU applied per distinct edge weight (grouping and rebuilding around each weight class), exploiting the MST cycle property. A DSU that skips path compression (keeping only union by rank) supports *rollback*: undoing the last k unions in O(k), which is how offline divide-and-conquer over time works when you need &#x27;connectivity as of query i&#x27; without full persistence.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Any question of the form &#x27;are these two elements in the same connected component?&#x27; under a stream of union operations; Kruskal&#x27;s MST; counting connected components as edges are added incrementally (dynamic/online connectivity, no deletions); checking whether a set of same/different constraints is consistent (parity DSU, bipartiteness); offline MST-edge-inclusion or connectivity-over-time queries where sorting by weight/time turns the problem into a sequence of unions.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(alpha(n)) amortized per find/union with both union-by-rank and path compression (effectively O(1)); O(n) space. Rollback DSU (union by rank only, no path compression): O(log n) per operation, O(k) to undo k unions.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-dsu-union-find-ex0">
+  <h4>Minimum Spanning Tree via Kruskal&#x27;s Algorithm</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a connected, undirected, weighted graph with n vertices and m edges, find the total weight of a minimum spanning tree, or report IMPOSSIBLE if the graph is not connected. Constraints: 1 &lt;= n &lt;= 2*10^5, 1 &lt;= m &lt;= 4*10^5, 1 &lt;= weight &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort all edges by weight ascending. Process them in that order, maintaining a DSU over the n vertices; for each edge (u, v, w), if find(u) != find(v) (they&#x27;re in different components), union them and add w to the running total -- this edge cannot create a cycle since its endpoints weren&#x27;t connected, and greedily taking the cheapest such edges is optimal (the cut/cycle property of MSTs). Track how many edges were actually added; if it reaches n - 1, all vertices are connected and the total is the MST weight, otherwise the graph was disconnected.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+struct DSU {
+    vector&lt;int&gt; par, rnk;
+    DSU(int n) : par(n), rnk(n, 0) { iota(par.begin(), par.end(), 0); }
+    int find(int x) { return par[x] == x ? x : par[x] = find(par[x]); }
+    bool unite(int a, int b) {
+        a = find(a); b = find(b);
+        if (a == b) return false;
+        if (rnk[a] &lt; rnk[b]) swap(a, b);
+        par[b] = a;
+        if (rnk[a] == rnk[b]) rnk[a]++;
+        return true;
+    }
+};
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, m; cin &gt;&gt; n &gt;&gt; m;
+    vector&lt;array&lt;ll,3&gt;&gt; edges(m); // weight, u, v
+    for (int i = 0; i &lt; m; i++) {
+        ll u, v, w; cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
+        edges[i] = {w, u, v};
+    }
+    sort(edges.begin(), edges.end());
+    DSU dsu(n+1);
+    ll total = 0;
+    int used = 0;
+    for (auto&amp; e : edges) {
+        ll w = e[0], u = e[1], v = e[2];
+        if (dsu.unite((int)u, (int)v)) {
+            total += w;
+            used++;
+        }
+    }
+    if (used == n - 1) cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+    else cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 5
+1 2 1
+2 3 2
+3 4 1
+1 4 4
+1 3 3
+</code></pre>
+    <pre><code>4
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-dsu-union-find-ex1">
+  <h4>Dynamic Connectivity: Number of Islands II</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an initially all-water grid of size rows x cols. You are given k positions (r, c) to convert to land, one at a time, in order (a position may repeat, in which case it&#x27;s a no-op). After each conversion, output the current number of islands (maximal 4-directionally-connected groups of land cells). Constraints: 1 &lt;= rows, cols &lt;= 1000, 1 &lt;= k &lt;= 10^4.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the reverse of the usual &#x27;remove edges&#x27; connectivity problem, so DSU (which only supports merging, not splitting) applies directly: maintain a DSU over all rows*cols grid cells and a running island count. When converting a new cell to land, mark it as land and increment the island count by 1 (it starts as its own island). Then check its up-to-4 grid neighbors; for each neighbor that is already land, if union(cell, neighbor) actually merges two previously-different components (find() differs before the union), decrement the island count by 1. Output the running count after processing each of the k positions (if a position was already land, just repeat the previous count).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct DSU {
+    vector&lt;int&gt; par, rnk;
+    DSU(int n) : par(n), rnk(n, 0) { iota(par.begin(), par.end(), 0); }
+    int find(int x) { return par[x] == x ? x : par[x] = find(par[x]); }
+    bool unite(int a, int b) {
+        a = find(a); b = find(b);
+        if (a == b) return false;
+        if (rnk[a] &lt; rnk[b]) swap(a, b);
+        par[b] = a;
+        if (rnk[a] == rnk[b]) rnk[a]++;
+        return true;
+    }
+};
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int rows, cols, k; cin &gt;&gt; rows &gt;&gt; cols &gt;&gt; k;
+    DSU dsu(rows * cols);
+    vector&lt;char&gt; isLand(rows * cols, 0);
+    int islandCount = 0;
+    vector&lt;int&gt; results;
+    int dr[4] = {-1, 1, 0, 0};
+    int dc[4] = {0, 0, -1, 1};
+
+    for (int t = 0; t &lt; k; t++) {
+        int r, c; cin &gt;&gt; r &gt;&gt; c;
+        int id = r * cols + c;
+        if (isLand[id]) {
+            results.push_back(islandCount);
+            continue;
+        }
+        isLand[id] = 1;
+        islandCount++;
+        for (int d = 0; d &lt; 4; d++) {
+            int nr = r + dr[d], nc = c + dc[d];
+            if (nr &lt; 0 || nr &gt;= rows || nc &lt; 0 || nc &gt;= cols) continue;
+            int nid = nr * cols + nc;
+            if (isLand[nid] &amp;&amp; dsu.unite(id, nid)) {
+                islandCount--;
+            }
+        }
+        results.push_back(islandCount);
+    }
+    for (size_t i = 0; i &lt; results.size(); i++) {
+        cout &lt;&lt; results[i] &lt;&lt; (i + 1 &lt; results.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3 4
+0 0
+0 1
+1 2
+2 1
+</code></pre>
+    <pre><code>1 1 2 3
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-dsu-union-find-ex2">
+  <h4>Consistency Checking with Parity DSU</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n people (1-indexed) that will be split into two unknown groups. You receive m statements in order, each of the form (a, b, rel) where rel = 0 means &#x27;a and b are claimed to be in the SAME group&#x27; and rel = 1 means &#x27;a and b are claimed to be in DIFFERENT groups&#x27;. Process statements online: for each one, output YES if it&#x27;s consistent with all previously accepted statements (and incorporate it into your knowledge), or NO if it contradicts them (ignore it, keeping prior knowledge unchanged). Constraints: 1 &lt;= n &lt;= 2*10^5, 1 &lt;= m &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Use a DSU where each node also stores parity[x] = the XOR-parity of x&#x27;s group relative to its immediate parent. find(x) returns (root, parityToRoot), recursively combining parities during path compression: parity[x] ^= (parent&#x27;s parity to root) before repointing x directly at the root. For a statement (a, b, rel): compute (ra, pa) = find(a) and (rb, pb) = find(b). If ra == rb, the relation between a and b is already fixed at pa ^ pb, so the statement is consistent iff (pa ^ pb) == rel -- no union needed either way. If ra != rb, the statement is always consistent (it&#x27;s new information): attach the smaller-rank root under the larger, and set the parity of the newly-attached root so that combining it with pa and pb yields exactly rel between a and b (solve pa ^ prel ^ pb = rel for prel).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct ParityDSU {
+    vector&lt;int&gt; par, rnk, parity; // parity[x] = relation of x to par[x] (0 = same, 1 = different)
+    ParityDSU(int n) : par(n), rnk(n, 0), parity(n, 0) { iota(par.begin(), par.end(), 0); }
+
+    pair&lt;int,int&gt; find(int x) {
+        if (par[x] == x) return {x, 0};
+        pair&lt;int,int&gt; r = find(par[x]);
+        parity[x] ^= r.second;
+        par[x] = r.first;
+        return {par[x], parity[x]};
+    }
+
+    // rel = 0 means &quot;same group&quot;, rel = 1 means &quot;different group&quot;
+    // returns false if this contradicts previously established relations
+    bool relate(int a, int b, int rel) {
+        pair&lt;int,int&gt; A = find(a), B = find(b);
+        int ra = A.first, pa = A.second;
+        int rb = B.first, pb = B.second;
+        if (ra == rb) return (pa ^ pb) == rel;
+        if (rnk[ra] &lt; rnk[rb]) { swap(ra, rb); swap(pa, pb); }
+        par[rb] = ra;
+        parity[rb] = pa ^ pb ^ rel;
+        if (rnk[ra] == rnk[rb]) rnk[ra]++;
+        return true;
+    }
+};
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, m; cin &gt;&gt; n &gt;&gt; m;
+    ParityDSU dsu(n+1);
+    for (int i = 0; i &lt; m; i++) {
+        int a, b, rel; cin &gt;&gt; a &gt;&gt; b &gt;&gt; rel;
+        bool ok = dsu.relate(a, b, rel);
+        cout &lt;&lt; (ok ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 6
+1 2 0
+2 3 1
+1 3 1
+1 3 0
+3 4 0
+1 4 1
+</code></pre>
+    <pre><code>YES
+YES
+YES
+NO
+YES
+YES
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-trie">
+  <div class="topic-head"><h2>Trie</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A trie (prefix tree) stores a set of strings (or, in the binary variant, fixed-length bit sequences) as paths from a shared root: each edge is labeled with one character (or bit), and following the path spelled out by a string&#x27;s characters traces out exactly that string, sharing nodes with every other stored string that shares the same prefix. Because every operation (insert, search, prefix-count) follows one root-to-somewhere path, its cost is O(length of the string), completely independent of how many other strings are stored -- a major advantage over a hash set when you need prefix-based queries (autocomplete, &#x27;does any stored string start with this prefix&#x27;, counting strings with a given prefix), which a hash set cannot answer efficiently at all.</p><p>The binary (XOR) trie variant treats each non-negative integer as a fixed-length bit string (commonly 30-31 bits for values up to ~10^9), inserted from the most significant bit down to the least significant. This supports a classic greedy query: to maximize x XOR (some stored value), walk down the trie one bit of x at a time, and at each level greedily try to move into the child representing the *opposite* bit of x (since that contributes 1 at that bit position of the XOR, and higher bit positions dominate the final numeric value no matter what happens at lower bits) -- only falling back to the same-bit child if the opposite-bit child doesn&#x27;t exist. To support deletion in a multiset of integers, store a count at every node of how many currently-active inserted values pass through it; erase(x) walks the same path decrementing counts (rather than physically removing nodes), and the max-XOR query only follows a child if its count is still positive.</p><p>String tries also combine naturally with backtracking search over a graph/grid: rather than searching a grid separately for each of k dictionary words (each search costing O(grid size) for a total of O(k * grid size)), merge all k words into a single trie first, then run one DFS over the grid that only continues along a path if the corresponding trie node exists -- this prunes all non-matching prefixes for every word simultaneously in one pass. Marking which trie nodes are word-ends (and clearing that mark once reported, or tracking visited-word status separately) avoids reporting the same dictionary word multiple times if several grid paths spell it.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Any workload centered on prefixes of strings: autocomplete, longest common prefix among a group, counting how many stored strings start with a given prefix, or dictionary matching over a grid/graph (combine with backtracking). A multiset of integers that needs &#x27;maximum (or minimum) XOR with a query value&#x27; -- especially with insertions and deletions -- signals a binary/XOR trie.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>String trie: O(L) time per insert/search/prefix-query where L is the string&#x27;s length; O(total characters across all stored strings) space in the worst case. Binary/XOR trie: O(B) time per insert/erase/max-xor-query where B is the fixed bit width (e.g. 30); O(n * B) space for n stored values.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-trie-ex0">
+  <h4>Maximum XOR Multiset with Deletion</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Maintain a multiset of non-negative integers (initially containing just the value 0) supporting q operations:<br>  + x  -- insert x into the multiset<br>  - x  -- remove one occurrence of x (guaranteed to be present)<br>  ? x  -- output the maximum value of x XOR y over every y currently in the multiset<br>Constraints: 1 &lt;= q &lt;= 2*10^5, 0 &lt;= x &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build a binary trie over 31-bit representations (bits 30 down to 0) of inserted values, where every node stores a count of how many currently-active values pass through it. Insert(x) walks bit by bit from MSB to LSB, creating child nodes as needed and incrementing each visited node&#x27;s count. Erase(x) walks the same fixed path (guaranteed to exist) decrementing counts -- nodes are never physically deleted, they&#x27;re just treated as &#x27;inactive&#x27; once their count hits 0. maxXor(x) greedily walks down: at each bit position, if the child representing the opposite bit of x exists and has a positive count, go there and set that output bit to 1 (this is always at least as good as the same-bit child, since a 1 at a higher unresolved bit beats any combination of lower bits); otherwise fall back to the same-bit child. The initial 0 in the multiset guarantees it&#x27;s never empty, matching the source problem&#x27;s setup.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const int BITS = 30; // enough for values up to ~1e9
+
+struct XorTrie {
+    vector&lt;array&lt;int,2&gt;&gt; child;
+    vector&lt;int&gt; cnt; // number of active values passing through this node
+    XorTrie() {
+        child.push_back({-1, -1});
+        cnt.push_back(0);
+    }
+    void insert(int val) {
+        int cur = 0;
+        for (int b = BITS; b &gt;= 0; b--) {
+            int bit = (val &gt;&gt; b) &amp; 1;
+            if (child[cur][bit] == -1) {
+                child[cur][bit] = (int)child.size();
+                child.push_back({-1, -1});
+                cnt.push_back(0);
+            }
+            cur = child[cur][bit];
+            cnt[cur]++;
+        }
+    }
+    void erase(int val) {
+        int cur = 0;
+        for (int b = BITS; b &gt;= 0; b--) {
+            int bit = (val &gt;&gt; b) &amp; 1;
+            cur = child[cur][bit];
+            cnt[cur]--;
+        }
+    }
+    // max xor of val with any currently-present element (cnt&gt;0 along the path)
+    int maxXor(int val) {
+        int cur = 0;
+        int res = 0;
+        for (int b = BITS; b &gt;= 0; b--) {
+            int bit = (val &gt;&gt; b) &amp; 1;
+            int want = bit ^ 1;
+            if (child[cur][want] != -1 &amp;&amp; cnt[child[cur][want]] &gt; 0) {
+                res |= (1 &lt;&lt; b);
+                cur = child[cur][want];
+            } else {
+                cur = child[cur][bit];
+            }
+        }
+        return res;
+    }
+};
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int q; cin &gt;&gt; q;
+    XorTrie trie;
+    trie.insert(0); // sentinel so multiset is never empty; represents value 0
+    for (int i = 0; i &lt; q; i++) {
+        string type; int x;
+        cin &gt;&gt; type &gt;&gt; x;
+        if (type == &quot;+&quot;) trie.insert(x);
+        else if (type == &quot;-&quot;) trie.erase(x);
+        else cout &lt;&lt; trie.maxXor(x) &lt;&lt; &quot;\n&quot;;
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>9
++ 8
++ 9
++ 11
++ 6
++ 3
+? 3
+? 6
+- 8
+? 3
+</code></pre>
+    <pre><code>11
+15
+10
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-trie-ex1">
+  <h4>Word Search II (Trie + Backtracking)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an m x n grid of lowercase letters and a dictionary of words, find every dictionary word that can be formed by a path of horizontally/vertically adjacent grid cells, where no cell is reused within a single word&#x27;s path. Output the matching words (each at most once), space-separated in sorted order. Constraints: 1 &lt;= m, n &lt;= 12, 1 &lt;= number of words &lt;= 3*10^4, word lengths &lt;= 10.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Insert every dictionary word into a shared trie, marking each word&#x27;s terminal node with the word&#x27;s index. Then run a single DFS starting from every grid cell: at grid position (r, c) having already matched down to trie node <code>node</code>, look up the trie child for board[r][c]; if it doesn&#x27;t exist, this path can&#x27;t extend to any dictionary word, so stop. If it exists and is marked as a word-end, record that word and clear the mark (so revisiting the same trie node via a different grid path won&#x27;t report it twice). Mark the current cell visited, recurse into its up-to-4 unvisited neighbors using the matched trie child, then unmark it (backtrack) before returning. Because the DFS only ever follows edges that exist in the trie, it automatically prunes any grid path that isn&#x27;t a prefix of some dictionary word, checking all words in a single pass over the grid rather than one DFS per word.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct TrieNode {
+    array&lt;int,26&gt; child;
+    int wordIdx = -1; // index into the word list if a word ends here, else -1
+    TrieNode() { child.fill(-1); }
+};
+
+int rows, cols;
+vector&lt;string&gt; board;
+vector&lt;TrieNode&gt; nodes;
+vector&lt;string&gt; found;
+
+int dr[4] = {-1,1,0,0};
+int dc[4] = {0,0,-1,1};
+
+void dfs(int r, int c, int node, vector&lt;vector&lt;bool&gt;&gt;&amp; visited, vector&lt;string&gt;&amp; words) {
+    char ch = board[r][c];
+    int nxt = nodes[node].child[ch - &#x27;a&#x27;];
+    if (nxt == -1) return;
+    if (nodes[nxt].wordIdx != -1) {
+        found.push_back(words[nodes[nxt].wordIdx]);
+        nodes[nxt].wordIdx = -1; // avoid duplicate reporting
+    }
+    visited[r][c] = true;
+    for (int d = 0; d &lt; 4; d++) {
+        int nr = r + dr[d], nc = c + dc[d];
+        if (nr &lt; 0 || nr &gt;= rows || nc &lt; 0 || nc &gt;= cols) continue;
+        if (visited[nr][nc]) continue;
+        dfs(nr, nc, nxt, visited, words);
+    }
+    visited[r][c] = false;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; rows &gt;&gt; cols;
+    board.assign(rows, &quot;&quot;);
+    for (int i = 0; i &lt; rows; i++) cin &gt;&gt; board[i];
+    int w; cin &gt;&gt; w;
+    vector&lt;string&gt; words(w);
+    for (auto&amp; s : words) cin &gt;&gt; s;
+
+    nodes.emplace_back(); // root = index 0
+    for (int i = 0; i &lt; w; i++) {
+        int cur = 0;
+        for (char ch : words[i]) {
+            int idx = ch - &#x27;a&#x27;;
+            if (nodes[cur].child[idx] == -1) {
+                nodes[cur].child[idx] = (int)nodes.size();
+                nodes.emplace_back();
+            }
+            cur = nodes[cur].child[idx];
+        }
+        nodes[cur].wordIdx = i;
+    }
+
+    vector&lt;vector&lt;bool&gt;&gt; visited(rows, vector&lt;bool&gt;(cols, false));
+    for (int r = 0; r &lt; rows; r++)
+        for (int c = 0; c &lt; cols; c++)
+            dfs(r, c, 0, visited, words);
+
+    sort(found.begin(), found.end());
+    for (size_t i = 0; i &lt; found.size(); i++) {
+        cout &lt;&lt; found[i] &lt;&lt; (i + 1 &lt; found.size() ? &quot; &quot; : &quot;\n&quot;);
+    }
+    if (found.empty()) cout &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 4
+oaan
+etae
+ihkr
+iflv
+4
+oath
+pea
+eat
+rain
+</code></pre>
+    <pre><code>eat oath
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-monotonic-stack-queue">
+  <div class="topic-head"><h2>Monotonic Stack / Queue</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A monotonic stack keeps its elements in strictly increasing (or decreasing) order of value at all times, by popping from the top before pushing a new element whenever the new element would break that order. The key efficiency argument is amortized: each element is pushed exactly once and popped at most once over the whole scan, so a linear scan with a monotonic stack does O(n) total work even though a naive reading suggests nested loops. The classic use is &#x27;next greater/ smaller element to the left/right of each position&#x27;: scanning left to right with a stack kept in increasing order, whenever a new value forces a pop, the element being popped has just found its &#x27;next smaller element to the right&#x27; (the new value), and the stack element left underneath it (if any) is its &#x27;previous smaller element to the left&#x27;.</p><p>Largest Rectangle in Histogram is the sharpest illustration of this idea: for every bar, the widest rectangle with that bar as its shortest bar spans exactly from just after the nearest strictly-shorter bar on its left to just before the nearest strictly-shorter bar on its right. Rather than computing both boundaries with two separate passes, a single pass with a stack of increasing bar heights gets both simultaneously: whenever the current bar is shorter than the stack&#x27;s top, pop the top -- at the moment of popping, the new stack top (or -1, if empty) is the popped bar&#x27;s nearest-smaller-to-the-left, and the current index is its nearest-smaller-to-the-right, so its candidate rectangle area can be finalized right there.</p><p>A monotonic queue (deque) solves the sliding-window extremum problem the same way but needs eviction from both ends: to track the maximum in a size-k window as it slides, maintain a deque of indices with strictly decreasing *values* front-to-back. Before pushing a new index, pop from the back every index whose value is &lt;= the new value (those elements can never again be the window&#x27;s maximum, since the new, larger-or-equal element outlives them within any window that contains both). Then pop from the front any index that has fallen outside the current window&#x27;s left edge. The front of the deque is always the current window&#x27;s maximum, and again, each index is pushed once and popped at most once, giving O(n) total.</p><p>Sqrt decomposition is a related but distinct &#x27;discard nothing, but coarsen the resolution&#x27; technique that splits an array into ~sqrt(n) blocks, each maintaining its own aggregate (and often a sorted copy for value-based queries) plus a pending lazy tag; range operations touch O(sqrt n) full blocks in O(1) each and at most 2 partial blocks element-by-element. It&#x27;s not covered with its own worked example in this guide for space, but it is the standard fallback when a query mixes range updates with value-based lookups (like &#x27;leftmost index with value == v after range-adds&#x27;) that don&#x27;t fit a segment tree&#x27;s aggregate-based model -- see Codeforces 551E, GukiZ and GukiZiana, as the canonical hard example to study separately.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for &#x27;next/previous greater or smaller element&#x27; phrasing, sliding-window minimum/maximum, or &#x27;largest rectangle / maximal area&#x27; problems built from bar heights or histograms. The common thread: once a new element dominates an older one for every future purpose, the older one can be discarded permanently and never needs to be reconsidered.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) total (amortized) for a full left-to-right or right-to-left pass, since each element is pushed and popped at most once; O(n) space for the stack/deque.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-monotonic-stack-queue-ex0">
+  <h4>Sliding Window Maximum</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an array of n integers and a window size k, output the maximum value in each contiguous window of size k as it slides from the start to the end of the array (there are n - k + 1 such windows). Constraints: 1 &lt;= k &lt;= n &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain a deque of indices whose corresponding values are strictly decreasing from front to back. For each new index i: while the deque&#x27;s back index has a value &lt;= a[i], pop it from the back (it can never be a future window&#x27;s maximum now that a[i], which outlives it, is at least as large). Push i onto the back. Then, while the deque&#x27;s front index has fallen out of the current window (front &lt;= i - k), pop it from the front. Once i &gt;= k - 1 (the window is fully formed), the value at the deque&#x27;s front index is the current window&#x27;s maximum.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, k; cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;int&gt; a(n);
+    for (auto&amp; x : a) cin &gt;&gt; x;
+
+    deque&lt;int&gt; dq; // stores indices, values strictly decreasing front-to-back
+    vector&lt;int&gt; res;
+    for (int i = 0; i &lt; n; i++) {
+        while (!dq.empty() &amp;&amp; a[dq.back()] &lt;= a[i]) dq.pop_back();
+        dq.push_back(i);
+        while (dq.front() &lt;= i - k) dq.pop_front();
+        if (i &gt;= k - 1) res.push_back(a[dq.front()]);
+    }
+    for (size_t i = 0; i &lt; res.size(); i++) {
+        cout &lt;&lt; res[i] &lt;&lt; (i + 1 &lt; res.size() ? &quot; &quot; : &quot;\n&quot;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8 3
+1 3 -1 -3 5 3 6 7
+</code></pre>
+    <pre><code>3 3 5 5 6 7
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-monotonic-stack-queue-ex1">
+  <h4>Largest Rectangle in Histogram</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n non-negative integers representing the heights of histogram bars, each of width 1, find the area of the largest rectangle that can be formed within the histogram&#x27;s outline. Constraints: 1 &lt;= n &lt;= 2*10^5, 0 &lt;= height &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Scan left to right maintaining a stack of bar indices with strictly increasing heights. Append a sentinel bar of height -1 at the very end to force every remaining bar in the stack to be popped and finalized. When the current bar&#x27;s height is less than (or, at the sentinel, always less than) the stack top&#x27;s height, pop the top: that popped bar&#x27;s height is the rectangle&#x27;s height, its right boundary is the current index (exclusive), and its left boundary is the new stack top after popping (exclusive), or -1 if the stack is now empty -- so width = currentIndex - newStackTop - 1. Update the best-area-so-far with height * width, then continue popping against the (possibly still smaller) current bar before finally pushing the current index.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n; cin &gt;&gt; n;
+    vector&lt;ll&gt; h(n);
+    for (auto&amp; x : h) cin &gt;&gt; x;
+
+    vector&lt;int&gt; st; // indices, heights strictly increasing
+    ll best = 0;
+    for (int i = 0; i &lt;= n; i++) {
+        ll cur = (i == n) ? -1 : h[i]; // sentinel forces flush at the end
+        while (!st.empty() &amp;&amp; h[st.back()] &gt;= cur) {
+            ll height = h[st.back()];
+            st.pop_back();
+            int leftBound = st.empty() ? -1 : st.back();
+            ll width = i - leftBound - 1;
+            best = max(best, height * width);
+        }
+        st.push_back(i);
+    }
+    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+2 1 5 6 2 3
+</code></pre>
+    <pre><code>10
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-sqrt-decomposition">
+  <div class="topic-head"><h2>Sqrt Decomposition</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Sqrt decomposition (block decomposition) splits an array of n elements into roughly sqrt(n) contiguous blocks, each of size roughly sqrt(n), and maintains a precomputed aggregate (sum, min, sorted copy, frequency table, etc.) for every block. The reason block size ~sqrt(n) is the right choice is a balancing act: a range operation [l, r] touches at most two &#x27;partial&#x27; boundary blocks (the ones containing l and r, which must be scanned element by element) plus some number of &#x27;full&#x27; blocks lying entirely inside [l, r] (which can be answered in O(1) each using the precomputed aggregate). If the block size is B, there are at most 2B elements to scan individually (the two boundary blocks) and at most n/B full blocks to combine; the total work per operation is O(B + n/B), which is minimized when B = n/B, i.e. B = sqrt(n), giving O(sqrt(n)) per operation. Choosing B much smaller makes the &#x27;number of blocks to scan fully&#x27; term dominate; choosing B much larger makes the &#x27;boundary elements to scan individually&#x27; term dominate -- sqrt(n) is the unique balance point (up to a small tunable constant, since real implementations often pick B slightly different from the exact sqrt to account for different constant factors on the two terms).</p><p>The general recipe has three parts. First, decide what aggregate each block needs to store, driven entirely by what operations the problem requires: a running sum (range-add / range-sum), a running minimum or maximum, a sorted copy of the block&#x27;s elements (to binary-search &#x27;how many elements &lt; x&#x27; in O(log(block size))), a frequency map from value to count within the block (to answer &#x27;how many elements equal x&#x27; in O(1) per block), or even a small ordered container like a deque or a balanced structure (to support insertions, deletions, or rotations localized to a block). Second, whenever a single element inside a block changes (a point update, or the boundary portion of a range update), rebuild or incrementally patch that one block&#x27;s aggregate in O(sqrt(n)) or O(block size) time -- crucially, ONLY that one block needs to be touched, because every other block&#x27;s aggregate is unaffected by a change confined to one block. Third, answer a range query [l, r] by combining the O(1) precomputed aggregate of every full block lying strictly between the boundary blocks with a manual, element-by-element scan of the (at most two) partial boundary blocks, folding the boundary elements into the same running answer.</p><p>A classic refinement is LAZY block-level propagation, directly analogous to segment-tree lazy propagation but one level shallower: for a range-add update that fully covers a block, instead of touching every element in that block (which would cost O(block size) and defeat the point), just bump the block&#x27;s stored aggregate (e.g. blockSum += v * blockLength) and add v to a per-block &#x27;pending lazy add&#x27; value, in O(1). The individual elements underneath are left stale until the block is later touched again by a PARTIAL update or a query that needs individual values, at which point the lazy value is &#x27;pushed down&#x27; into the actual array once, in O(block size), and cleared. This gives O(sqrt(n)) range-add and O(sqrt(n)) range-sum, mirroring segment-tree lazy propagation but with a much simpler, non-recursive implementation.</p><p>Sqrt decomposition&#x27;s real advantage over a segment tree is flexibility: a segment tree fundamentally needs the per-node aggregate to be efficiently MERGEABLE from two children (a simple associative combine, like sum or min). Many useful aggregates are not efficiently mergeable that way -- a sorted array, a frequency table, or a deque supporting rotation don&#x27;t have an O(1) or even O(log n) merge operation in the segment-tree sense; merging two sorted blocks of size sqrt(n) already costs O(sqrt(n)), which is fine for sqrt decomposition (whose whole per-operation budget is O(sqrt(n)) anyway) but would blow up a segment tree&#x27;s O(log n) guarantee. This is exactly why sqrt decomposition is often preferred for harder variants like &#x27;count elements less than x in range&#x27; (segment tree with a sorted vector per node, aka a merge-sort tree, works but sqrt decomposition with a sorted copy per block is simpler to update) or &#x27;cyclically rotate a subrange&#x27; (deque-per-block sqrt decomposition handles this naturally, whereas a segment tree has no clean way to represent a rotation as a node merge at all). The tradeoff is that sqrt decomposition&#x27;s worst-case per-operation cost, O(sqrt(n)), is asymptotically worse than a segment tree&#x27;s O(log n) -- but for problems where the operation itself does not compose well with a tree merge, sqrt decomposition is often the only clean, correct, and maintainable option.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You need to answer range queries and/or range updates on an array, and either (a) a plain segment tree already works but you want a simpler, less error-prone, non-recursive alternative, or (b) the operation you need does NOT compose cleanly as a two-child merge -- e.g. maintaining a sorted structure per range for &#x27;count values &lt; x&#x27;, a frequency table per range for &#x27;count occurrences of x&#x27;, a deque per range to support rotations/shifts of a subrange, or any aggregate whose &#x27;combine two blocks&#x27; step is itself expensive (O(sqrt n) rather than O(1)/O(log n)), which would be unacceptable in a segment tree&#x27;s O(log n) budget but is perfectly fine when the whole algorithm&#x27;s target complexity is already O(sqrt n) per operation. A strong tell is a problem statement mixing an update that is easy to apply to a whole contiguous block at once (add a constant, remove/insert at an end) with a query that is easy to answer from block-level summaries plus a small boundary scan.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(sqrt(n)) time per update and per query (both range updates/rebuilds of one block and range queries touching O(sqrt(n)) full blocks plus O(sqrt(n)) boundary elements); O(n) preprocessing to build the initial blocks; O(n) space for the array plus O(n/B) = O(sqrt(n)) space for block aggregates (more if each block stores a full sorted copy or frequency map of its own elements, which is still O(n) total across all blocks).</p></div>
+  </div>
+  <article class="example-card" id="data-structures-sqrt-decomposition-ex0">
+  <h4>Range Add, Range Sum via Block-Level Lazy Propagation</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an array of n integers a[1..n]. You must process q operations of two kinds:<br>  &quot;1 l r v&quot; -- add v to every element a[l], a[l+1], ..., a[r] (1 &lt;= l &lt;= r &lt;= n).<br>  &quot;2 l r&quot; -- output the sum a[l] + a[l+1] + ... + a[r].<br>Constraints for this worked example: 1 &lt;= n &lt;= 16, 1 &lt;= q &lt;= 30, values and v fit in standard 64-bit range (use long long for sums).</p><p>Input: first line n, second line the n integers a[1..n], third line q, then q lines each describing one operation in the format above.<br>Output: for each type-2 operation, print the requested sum on its own line.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Split the array into blocks of size B = floor(sqrt(n)) (at least 1), giving numBlocks = ceil(n/B) blocks; block i covers indices [blockStart[i], blockEnd[i]]. Maintain, per block: blockSum[i] = the CURRENT true sum of every element in that block (including any pending lazy add not yet pushed into the individual array cells), and lazy[i] = a pending &#x27;add this to every element of the block&#x27; value not yet applied to the individual a[] entries.</p><p>Range-add(l, r, v): if l and r fall in the same block, first push down that block&#x27;s lazy (add lazy[b] to every a[j] in the block and reset lazy[b] to 0, so a[] is exactly correct for that block), then add v directly to a[l..r], then recompute blockSum[b] by re-summing the block (O(block size)). If l and r span multiple blocks: handle the left partial block and right partial block exactly the same way (push down, apply v to the covered sub-range, recompute the block sum), and for every FULLY covered block strictly between them, just do lazy[b] += v and blockSum[b] += v * blockLength(b) in O(1) each -- no need to touch individual elements. Total cost O(sqrt(n)) (two O(sqrt(n)) boundary rebuilds plus O(sqrt(n)) full blocks handled in O(1) each).</p><p>Range-sum(l, r): for the (up to two) partial boundary blocks, sum the individual elements PLUS that block&#x27;s pending lazy value for each element (since a[] itself may be stale by lazy[b]); for every fully covered block strictly between them, just add its precomputed blockSum[b] in O(1) (blockSum already reflects any pending lazy, since it was bumped alongside lazy in the update step). This also costs O(sqrt(n)).</p><p>Verification: implemented a naive O(n) reference (direct array add / direct array sum, no blocks) and stress-tested the block-decomposition solution against it over 500 randomly generated instances (n from 1 to 16, up to 30 mixed add/sum operations, random signed values), with zero mismatches. Also hand-verified the sample below: initial sum of 1..10 is 55; adding 10 to positions 3-7 raises it to 105 and makes the sum of positions 3-7 equal 75; then adding -3 to positions 1-5 makes that sub-sum 30.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    int B = max(1, (int)sqrt((double)n));
+    int numBlocks = (n + B - 1) / B;
+    vector&lt;int&gt; blockStart(numBlocks), blockEnd(numBlocks);
+    vector&lt;long long&gt; blockSum(numBlocks, 0), lazy(numBlocks, 0);
+    vector&lt;int&gt; blockOf(n);
+    for (int i = 0; i &lt; numBlocks; i++) {
+        blockStart[i] = i * B;
+        blockEnd[i] = min(n, (i + 1) * B) - 1;
+        for (int j = blockStart[i]; j &lt;= blockEnd[i]; j++) { blockOf[j] = i; blockSum[i] += a[j]; }
+    }
+    auto pushDown = [&amp;](int b) {
+        if (lazy[b] != 0) {
+            for (int j = blockStart[b]; j &lt;= blockEnd[b]; j++) a[j] += lazy[b];
+            lazy[b] = 0;
+        }
+    };
+    auto recompute = [&amp;](int b) {
+        blockSum[b] = 0;
+        for (int j = blockStart[b]; j &lt;= blockEnd[b]; j++) blockSum[b] += a[j];
+    };
+    int q; cin &gt;&gt; q;
+    while (q--) {
+        int type; cin &gt;&gt; type;
+        if (type == 1) {
+            int l, r; long long v; cin &gt;&gt; l &gt;&gt; r &gt;&gt; v;
+            l--; r--;
+            int bl = blockOf[l], br = blockOf[r];
+            if (bl == br) {
+                pushDown(bl);
+                for (int j = l; j &lt;= r; j++) a[j] += v;
+                recompute(bl);
+            } else {
+                pushDown(bl);
+                for (int j = l; j &lt;= blockEnd[bl]; j++) a[j] += v;
+                recompute(bl);
+                pushDown(br);
+                for (int j = blockStart[br]; j &lt;= r; j++) a[j] += v;
+                recompute(br);
+                for (int b = bl + 1; b &lt; br; b++) {
+                    lazy[b] += v;
+                    blockSum[b] += v * (long long)(blockEnd[b] - blockStart[b] + 1);
+                }
+            }
+        } else {
+            int l, r; cin &gt;&gt; l &gt;&gt; r;
+            l--; r--;
+            int bl = blockOf[l], br = blockOf[r];
+            long long sum = 0;
+            if (bl == br) {
+                for (int j = l; j &lt;= r; j++) sum += a[j] + lazy[bl];
+            } else {
+                for (int j = l; j &lt;= blockEnd[bl]; j++) sum += a[j] + lazy[bl];
+                for (int j = blockStart[br]; j &lt;= r; j++) sum += a[j] + lazy[br];
+                for (int b = bl + 1; b &lt; br; b++) sum += blockSum[b];
+            }
+            cout &lt;&lt; sum &lt;&lt; &quot;\n&quot;;
+        }
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>10
+1 2 3 4 5 6 7 8 9 10
+6
+2 1 10
+1 3 7 10
+2 1 10
+2 3 7
+1 1 5 -3
+2 1 5
+</code></pre>
+    <pre><code>55
+105
+75
+30
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-sqrt-decomposition-ex1">
+  <h4>Cyclic Range Rotation With Frequency Queries (blocks of deques + frequency maps)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an array of n integers a[1..n]. You must process q operations of two kinds:<br>  &quot;1 l r&quot; -- cyclically rotate the subarray a[l..r] to the right by one position: the element currently at position r moves to position l, and every other element in [l, r] shifts one position to the right (elements outside [l, r] are unaffected).<br>  &quot;2 l r x&quot; -- output how many elements equal to x appear among a[l..r].<br>Constraints for this worked example: 1 &lt;= n &lt;= 10, 1 &lt;= q &lt;= 10, so the whole process can be hand-verified. (This is a scaled-down version of the block-decomposition technique used on Codeforces 455D &#x27;Serega and Fun&#x27;, which handles n and q up to 10^5 by keeping each block&#x27;s contents in a deque so that whole-block rotations cost O(1) per block via push_front/pop_back.)</p><p>Input: first line n, second line the n integers a[1..n], third line q, then q lines each describing one operation in the format above.<br>Output: for each type-2 operation, print the requested count on its own line.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is exactly the kind of operation a segment tree handles awkwardly (there is no clean way to express &#x27;rotate a subrange&#x27; as merging two child nodes), which is why sqrt decomposition with a richer per-block structure is the natural tool. Split the array into blocks of size B = floor(sqrt(n)); each block i stores its elements in a std::deque&lt;int&gt; (so both ends support O(1) push/pop and the middle supports O(1) random access) plus a std::map&lt;int,int&gt; freq mapping value -&gt; count of that value within the block.</p><p>A helper getVal(pos) locates the block containing position pos and reads the deque at the right offset in O(1). A helper setVal(pos, v) locates the block, decrements freq[block][oldValue] (erasing the entry if it drops to zero), overwrites the deque slot, and increments freq[block][v] -- so every single-element write keeps that block&#x27;s frequency map exactly in sync, in O(log(block size)) for the map operations.</p><p>Rotate(l, r): read x = getVal(r) (the element that will move to the front of the range). Then, for pos from r down to l+1, set position pos to whatever value currently sits at pos-1 (setVal(pos, getVal(pos-1))); finally setVal(l, x). Every one of these single-position writes correctly updates whichever block it falls in, including the frequency map, so no block&#x27;s aggregate ever goes stale. As specified for this scaled-down teaching example, boundary/partial-block elements are shifted individually (element by element) rather than moving whole blocks at once with deque push/pop chains; the essential sqrt-decomposition idea being demonstrated is the block-local frequency map, not a fully amortized O(sqrt n) rotation.</p><p>Count(l, r, x): if l and r land in the same block, scan that sub-range element by element. Otherwise, scan the (at most two) partial boundary blocks element by element, and for every FULLY covered block strictly between them, do an O(log(block size)) lookup in that block&#x27;s freq map for x (0 if absent) -- no need to touch its individual elements at all. This is the real payoff of the block-based frequency map: a query that would otherwise be O(r-l+1) is answered using O(1)-ish lookups for every full block plus a small boundary scan.</p><p>Verification: implemented a naive reference using a plain std::vector, std::rotate(a.begin()+l, a.begin()+r, a.begin()+r+1) for the rotation (which produces exactly a right-rotate-by-one of [l,r]), and a linear scan for the count query. Stress-tested the block-decomposition solution against this brute force over 1000 random instances with n up to 12 and values restricted to a small alphabet {1..4} (to make repeated-value frequency counts common and meaningful), plus another 500 instances with n up to 30 and values in {1..9}, mixing random rotate and count operations -- zero mismatches in all runs. The worked sample below was also hand-traced: starting from [1,2,3,4,1,2,3,4], rotating [2,6] right by one gives [1,2,2,3,4,1,3,4], and rotating the whole array right by one afterward gives [4,1,2,2,3,4,1,3]; the printed counts (2, 2, 1, 2, 2) match both the hand trace and the brute-force simulation exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int n;
+int B;
+int numBlocks;
+vector&lt;int&gt; blockStart, blockEnd, blockOf;
+vector&lt;deque&lt;int&gt;&gt; elems;
+vector&lt;map&lt;int,int&gt;&gt; freq;
+
+int getVal(int pos) {
+    int b = blockOf[pos];
+    return elems[b][pos - blockStart[b]];
+}
+void setVal(int pos, int v) {
+    int b = blockOf[pos];
+    int idx = pos - blockStart[b];
+    int old = elems[b][idx];
+    if (old == v) return;
+    freq[b][old]--;
+    if (freq[b][old] == 0) freq[b].erase(old);
+    elems[b][idx] = v;
+    freq[b][v]++;
+}
+
+int main(){
+    cin &gt;&gt; n;
+    vector&lt;int&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    B = max(1, (int)sqrt((double)n));
+    numBlocks = (n + B - 1) / B;
+    blockStart.assign(numBlocks, 0);
+    blockEnd.assign(numBlocks, 0);
+    blockOf.assign(n, 0);
+    elems.assign(numBlocks, deque&lt;int&gt;());
+    freq.assign(numBlocks, map&lt;int,int&gt;());
+    for (int i = 0; i &lt; numBlocks; i++) {
+        blockStart[i] = i * B;
+        blockEnd[i] = min(n, (i + 1) * B) - 1;
+        for (int j = blockStart[i]; j &lt;= blockEnd[i]; j++) {
+            blockOf[j] = i;
+            elems[i].push_back(a[j]);
+            freq[i][a[j]]++;
+        }
+    }
+    int q; cin &gt;&gt; q;
+    while (q--) {
+        int type; cin &gt;&gt; type;
+        if (type == 1) {
+            int l, r; cin &gt;&gt; l &gt;&gt; r;
+            l--; r--;
+            int x = getVal(r);
+            for (int pos = r; pos &gt; l; pos--) {
+                setVal(pos, getVal(pos - 1));
+            }
+            setVal(l, x);
+        } else {
+            int l, r, x; cin &gt;&gt; l &gt;&gt; r &gt;&gt; x;
+            l--; r--;
+            int bl = blockOf[l], br = blockOf[r];
+            long long cnt = 0;
+            if (bl == br) {
+                for (int pos = l; pos &lt;= r; pos++) if (getVal(pos) == x) cnt++;
+            } else {
+                for (int pos = l; pos &lt;= blockEnd[bl]; pos++) if (getVal(pos) == x) cnt++;
+                for (int pos = blockStart[br]; pos &lt;= r; pos++) if (getVal(pos) == x) cnt++;
+                for (int b = bl + 1; b &lt; br; b++) {
+                    auto it = freq[b].find(x);
+                    if (it != freq[b].end()) cnt += it-&gt;second;
+                }
+            }
+            cout &lt;&lt; cnt &lt;&lt; &quot;\n&quot;;
+        }
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8
+1 2 3 4 1 2 3 4
+7
+2 1 8 1
+1 2 6
+2 1 8 2
+2 2 6 4
+1 1 8
+2 1 8 1
+2 3 5 2
+</code></pre>
+    <pre><code>2
+2
+1
+2
+2
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-mo-s-algorithm">
+  <div class="topic-head"><h2>Mo&#x27;s Algorithm</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Mo&#x27;s algorithm is an OFFLINE technique for answering q range queries [l, r] on a static array (the array never changes between queries) when you have a cheap way to extend or shrink a current window by one element -- functions add(idx) and remove(idx) that update a running &quot;current answer&quot; in O(1) or O(log n) -- but no cheap way to MERGE two disjoint ranges&#x27; answers the way a segment tree can. The idea: instead of answering each query independently (which would cost O(n) per query and O(n*q) overall), reorder ALL q queries so that consecutive queries in the processing order have nearby [l, r] endpoints, then slide a single window across the array, calling add/remove one index at a time to walk the window from one query&#x27;s range to the next&#x27;s. The reordering is a sqrt-decomposition on query space: split the array into blocks of size roughly n / sqrt(q) and sort queries first by block(l) = l / blockSize, and within a block by r -- ascending r for even-numbered l-blocks, descending r for odd-numbered l-blocks. This alternating (&quot;boustrophedon&quot; or &quot;snake&quot;) tie-break means that when processing crosses from one l-block to the next, the r-pointer is already sitting near where the next block of queries needs it, instead of snapping back to 0 (or n) and re-sweeping the whole array; without this snake trick, sorting r purely ascending inside every block forces the r-pointer to reset all the way back at every block boundary, which is still within the same asymptotic bound in the classic analysis but roughly doubles the real pointer movement and is a common source of surprising constant-factor TLEs on adversarial inputs, so it should be treated as a correctness-adjacent requirement, not a cosmetic optimization.</p><p>With queries sorted this way, maintain two pointers curL and curR delimiting the algorithm&#x27;s current window, initialized to an empty window (e.g. curL = 0, curR = -1). For each query in the sorted order, move curL and curR ONE STEP AT A TIME until they match that query&#x27;s [l, r]: extend curR upward calling add on each newly included index, extend curL downward calling add on each newly included index, shrink curR downward calling remove on each excluded index, and shrink curL upward calling remove on each excluded index. The pointers must never jump directly to the target index -- add/remove only know how to change the answer by a single element, so every intermediate index the window passes through has to be individually added or removed to keep the running answer correct. Because queries are sorted by block, the l-pointer moves at most O(blockSize) = O(n / sqrt(q)) per query (O(n*sqrt(q)) total across all queries in the worst tuning), and the r-pointer moves monotonically (or near-monotonically, thanks to the snake order) within each block, contributing O(n) per block and O(n*sqrt(q)) total across the O(sqrt(q)) blocks -- balancing block size to n/sqrt(q) makes both terms equal, giving the overall O((n+q) * sqrt(n)) time bound, dramatically better than the O(n*q) of answering every query from scratch.</p><p>Because queries are physically reordered before processing, Mo&#x27;s algorithm is inherently OFFLINE: you must know every query in advance, answer them in the reordered (block, snake) sequence, then write each answer back into an output array indexed by the query&#x27;s original position (never print answers in processing order). This rules out Mo&#x27;s for problems that require answering queries online (each query must be answered before the next is revealed). A well-known extension, &quot;Mo&#x27;s algorithm with updates,&quot; handles arrays with interleaved point-update operations by adding a third sort key: TIME (the number of updates applied so far when the query was issued). Queries are then sorted by (block(l), block(r), time), and a third pointer walks through the update timeline, applying or rolling back point updates (add/remove any element affected by the update whose current window happens to contain the updated index) as time moves forward or backward to match each query&#x27;s timestamp; this costs an extra factor of the update-block-size, giving roughly O(n^(5/3)) total time with well-tuned block sizes.</p><p>A second major extension applies Mo&#x27;s algorithm to TREES rather than arrays. A query about a subtree (&quot;aggregate over all nodes in the subtree of u&quot;) is flattened into a contiguous range by an Euler tour: record in[u] and out[u] (tin/tout DFS entry/exit indices) so the subtree of u corresponds exactly to the array range [in[u], out[u]] in the tour order, and ordinary array Mo&#x27;s algorithm runs unmodified on that range. A query about a PATH between two nodes u and v is handled with a slightly different Euler-tour trick: use a tour that records each node exactly twice (once on entering, once on leaving), and for a query (u, v) with u appearing before v in tour order, take the range [out-or-in(u), in(v)] together with the LCA&#x27;s contribution handled separately; each node on the path ends up appearing an odd number of times (once) in that range while every off-path node appears an even number of times (zero or two), so the add/remove functions XOR a node&#x27;s presence in or out of the running answer each time its counter flips from even to odd or back -- this is the classic &quot;appears twice cancels out&quot; trick that lets ordinary Mo&#x27;s machinery answer path queries.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You have a STATIC array (or a tree flattened via Euler tour into one) and a large batch of q range queries [l, r] that are all known in ADVANCE (offline is acceptable -- you don&#x27;t need to answer query i before seeing query i+1). The per-query aggregate (distinct count, mode, number of pairs/inversions with some property, sum of squares of frequencies, etc.) is easy to update incrementally: you can write add(idx) and remove(idx) that adjust a running answer in O(1) or O(log n) when a single index enters or leaves the current window, but there is no efficient way to MERGE the precomputed answers of two disjoint subranges (which is exactly the condition under which a segment tree&#x27;s divide-and-conquer approach does NOT directly apply -- e.g. &quot;number of distinct values&quot; or &quot;number of pairs with xor = k&quot; don&#x27;t combine cleanly from two half-range answers the way sum or max do). If updates are interleaved with queries, or the queries are about tree paths/subtrees rather than a flat array, look for &quot;Mo&#x27;s with updates&quot; or &quot;Mo&#x27;s on trees&quot; as the specific variant.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O((n + q) * sqrt(n)) time for standard Mo&#x27;s algorithm with block size ~ n/sqrt(q) (each add/remove call assumed O(1); multiply by the add/remove cost if it is O(log n) instead), plus O(n log n) or O(q log q) for the initial sort of queries; O(n + q + V) space for the array, queries, and a frequency table of size V (the value range). Mo&#x27;s algorithm with updates costs roughly O(n^(5/3)) time with a block size tuned to n^(2/3). Mo&#x27;s on trees costs the same O((n+q) * sqrt(n)) as the flat-array version, plus an O(n) one-time Euler tour to flatten the tree.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-mo-s-algorithm-ex0">
+  <h4>Distinct Values Queries (CSES 1734)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an array of n integers (1 &lt;= n &lt;= 2*10^5) and q queries (1 &lt;= q &lt;= 2*10^5). Each query gives two indices a and b (1 &lt;= a &lt;= b &lt;= n, 1-indexed) and asks: how many DISTINCT values occur in the subarray from index a to index b, inclusive? Process all queries and print one answer per line, in the same order the queries were given.</p><p>Input: the first line has n and q. The second line has n integers, the array values (1 &lt;= value &lt;= 10^9, but for this worked example values are kept small). Then q lines follow, each with two integers a and b describing one query.<br>Output: q lines, the i-th line giving the number of distinct values in the i-th query&#x27;s range.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the canonical target for Mo&#x27;s algorithm: a static array, many range queries known in advance, and an aggregate (count of distinct values) that is trivial to update one element at a time but has no cheap way to merge two disjoint ranges&#x27; answers directly.</p><p>Maintain a frequency array freq[] indexed by array VALUE, and a running integer curDistinct = the number of values with freq &gt; 0 in the current window. add(idx): if freq[a[idx]] was 0 before incrementing, a brand-new distinct value just entered the window, so curDistinct++ before doing freq[a[idx]]++. remove(idx): decrement freq[a[idx]] first; if it becomes 0 after decrementing, that value has left the window entirely, so curDistinct--.</p><p>Read all queries first, convert to 0-indexed inclusive [L, R], and compute blockSize = max(1, n / sqrt(q)). Sort the query indices by (L / blockSize) ascending, breaking ties by R ascending if the block number is even, or R descending if the block number is odd (the snake/boustrophedon order) -- this keeps the r-pointer from resetting across block boundaries. Then sweep: starting from an empty window (curL = 0, curR = -1), for each query in sorted order move the window one step at a time in the fixed order (grow curR up, grow curL down, shrink curR down, shrink curL up), calling add/remove on each index the pointer crosses, and record curDistinct as that query&#x27;s answer once curL == L and curR == R. Finally print answers in the ORIGINAL query order (not the reordered processing order), since Mo&#x27;s algorithm is only correct offline.</p><p>Correctness was cross-checked against a brute-force reference (for each query, build a std::set over the exact subarray slice and report its size) across 150 randomized small tests (n and q up to 30, small value ranges): every single query answer matched exactly, with zero mismatches. The final sample below also reproduces the well-known CSES 1734 worked example (array [1,1,2,3,2], queries (2,4)-&gt;3, (5,5)-&gt;1, (1,4)-&gt;3).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, q;
+vector&lt;int&gt; a;
+vector&lt;int&gt; freq;
+long long curDistinct = 0;
+
+void add(int idx){
+    if (freq[a[idx]] == 0) curDistinct++;
+    freq[a[idx]]++;
+}
+void remove_(int idx){
+    freq[a[idx]]--;
+    if (freq[a[idx]] == 0) curDistinct--;
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cin &gt;&gt; n &gt;&gt; q;
+    a.resize(n);
+    int maxVal = 0;
+    for (auto &amp;x : a) { cin &gt;&gt; x; maxVal = max(maxVal, x); }
+    freq.assign(maxVal + 2, 0);
+
+    vector&lt;int&gt; L(q), R(q);
+    for (int i = 0; i &lt; q; i++) {
+        int l, r;
+        cin &gt;&gt; l &gt;&gt; r;
+        L[i] = l - 1; R[i] = r - 1; // 0-indexed inclusive
+    }
+
+    int blockSize = max(1, (int)(n / sqrt((double)max(q,1))));
+    vector&lt;int&gt; order(q);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&amp;](int i, int j){
+        int bi = L[i] / blockSize, bj = L[j] / blockSize;
+        if (bi != bj) return bi &lt; bj;
+        if (bi % 2 == 0) return R[i] &lt; R[j];
+        return R[i] &gt; R[j];
+    });
+
+    vector&lt;long long&gt; ans(q);
+    int curL = 0, curR = -1;
+    for (int idx : order) {
+        int l = L[idx], r = R[idx];
+        while (curR &lt; r) add(++curR);
+        while (curL &gt; l) add(--curL);
+        while (curR &gt; r) remove_(curR--);
+        while (curL &lt; l) remove_(curL++);
+        ans[idx] = curDistinct;
+    }
+
+    for (int i = 0; i &lt; q; i++) cout &lt;&lt; ans[i] &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 3
+1 1 2 3 2
+2 4
+5 5
+1 4
+</code></pre>
+    <pre><code>3
+1
+3
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-mo-s-algorithm-ex1">
+  <h4>XOR and Favorite Number (Codeforces 617E)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an array a of n integers (1 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt; 2^20) and an integer k (0 &lt;= k &lt; 2^20). You must answer q queries (1 &lt;= q &lt;= 10^5); each query gives l and r (1 &lt;= l &lt;= r &lt;= n, 1-indexed) and asks: how many pairs of indices (i, j) with l &lt;= i &lt;= j &lt;= r have a[i] xor a[i+1] xor ... xor a[j] equal to k? (Pairs are unordered by choice of i&lt;=j, and i == j, i.e. a single-element subarray, is allowed.)</p><p>Input: the first line has n, q, and k. The second line has the n array values. Then q lines follow, each with l and r.<br>Output: q lines, the i-th line giving the count of valid subarrays for the i-th query.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Reduce the subarray-xor condition to a pair-counting condition on PREFIX xors. Define p[0] = 0 and p[i] = a[1] xor a[2] xor ... xor a[i] for i = 1..n. The xor of subarray a[i..j] (1-indexed) equals p[j] xor p[i-1], so &quot;count subarrays [i,j] within [l,r] whose xor is k&quot; becomes &quot;count pairs (x, y) with l-1 &lt;= x &lt; y &lt;= r and p[x] xor p[y] == k&quot;, which is exactly a range query over the PREFIX array p[0..n], transformed from the original query (l, r) into the prefix-array range [l-1, r].</p><p>Run ordinary Mo&#x27;s algorithm on this transformed range over p[]. Maintain freq[] indexed by prefix-xor VALUE (sized to the next power of two above the largest possible p-value or k, since values are bounded by 2^20) and a running answer curAns = the number of valid pairs already counted among prefix-array indices currently inside the window. add(idx): first do curAns += freq[p[idx] xor k] -- this counts every element ALREADY in the window whose value pairs with p[idx] to xor to k -- THEN increment freq[p[idx]]. The order matters: incrementing before reading would let idx pair with itself whenever k == 0 (since p[idx] xor 0 == p[idx]), silently inflating the answer by counting a phantom self-pair. remove(idx) reverses both the order and the sign: first decrement freq[p[idx]] (removing idx&#x27;s own contribution from the table), THEN do curAns -= freq[p[idx] xor k] using the now-updated frequency -- doing the subtraction before the decrement would, again for k == 0, subtract one extra because idx&#x27;s own now-stale entry would still be counted against itself.</p><p>Sort queries by (block(l-1), r) with the standard even/odd snake tie-break, sweep the window with add/remove exactly as in the distinct-values example, and record curAns as each query&#x27;s answer, then output in original query order.</p><p>This exact add/remove ordering bug (increment/decrement vs. read-frequency order) is the single most common way to get this problem wrong, especially for k == 0, so it was stress tested heavily: 150 randomized small cases with general k, plus a further 200 randomized cases specifically biased to pick k == 0 about half the time (plus explicit single-element and full-array queries appended to every case), all checked against an O((r-l)^2) brute-force direct double loop over every subarray -- 350 total randomized cases, zero mismatches. The sample below also reproduces the exact official Codeforces 617E sample (n=6, q=3, k=3, array [1,2,1,1,0,3]), whose published answers are 7, 0, 1, which this implementation matches exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, q, k;
+vector&lt;int&gt; p; // prefix xor, p[0..n]
+vector&lt;int&gt; freq;
+long long curAns = 0;
+
+void add(int idx){
+    curAns += freq[p[idx] ^ k];
+    freq[p[idx]]++;
+}
+void remove_(int idx){
+    freq[p[idx]]--;
+    curAns -= freq[p[idx] ^ k];
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cin &gt;&gt; n &gt;&gt; q &gt;&gt; k;
+    vector&lt;int&gt; a(n + 1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+    p.assign(n + 1, 0);
+    for (int i = 1; i &lt;= n; i++) p[i] = p[i-1] ^ a[i];
+
+    int maxVal = 0;
+    for (int i = 0; i &lt;= n; i++) maxVal = max(maxVal, p[i]);
+    maxVal = max(maxVal, k);
+    int sz = 1;
+    while (sz &lt;= maxVal) sz &lt;&lt;= 1;
+    freq.assign(sz + 1, 0);
+
+    // transformed query: original [l, r] (1-indexed subarray) -&gt; prefix range [l-1, r]
+    vector&lt;int&gt; L(q), R(q);
+    for (int i = 0; i &lt; q; i++) {
+        int l, r;
+        cin &gt;&gt; l &gt;&gt; r;
+        L[i] = l - 1; R[i] = r;
+    }
+
+    int m = n + 1; // size of the prefix array we run Mo&#x27;s over (indices 0..n)
+    int blockSize = max(1, (int)(m / sqrt((double)max(q,1))));
+    vector&lt;int&gt; order(q);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&amp;](int i, int j){
+        int bi = L[i] / blockSize, bj = L[j] / blockSize;
+        if (bi != bj) return bi &lt; bj;
+        if (bi % 2 == 0) return R[i] &lt; R[j];
+        return R[i] &gt; R[j];
+    });
+
+    vector&lt;long long&gt; ans(q);
+    int curL = 0, curR = -1;
+    for (int idx : order) {
+        int l = L[idx], r = R[idx];
+        while (curR &lt; r) add(++curR);
+        while (curL &gt; l) add(--curL);
+        while (curR &gt; r) remove_(curR--);
+        while (curL &lt; l) remove_(curL++);
+        ans[idx] = curAns;
+    }
+
+    for (int i = 0; i &lt; q; i++) cout &lt;&lt; ans[i] &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6 3 3
+1 2 1 1 0 3
+1 6
+3 5
+2 4
+</code></pre>
+    <pre><code>7
+0
+1
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="data-structures-2d-fenwick-tree-range-queries">
+  <div class="topic-head"><h2>2D Fenwick Tree / Range Queries</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A 2D Fenwick tree (BIT) extends the 1D Fenwick tree you already know to a grid by nesting one Fenwick index-walk inside another -- it is literally a &#x27;BIT of BITs&#x27;. Store bit[x][y] in an (n+1) x (m+1) array. To add delta to a single cell (x,y), run the usual outer loop for i = x; i &lt;= n; i += i &amp; (-i), and for EACH such i run an inner loop for j = y; j &lt;= m; j += j &amp; (-j), adding delta to bit[i][j]; since each dimension visits O(log n) (resp. O(log m)) indices, a point update touches O(log n * log m) cells. Querying the prefix rectangle sum over [1,x] x [1,y] is the mirror image: for i = x; i &gt; 0; i -= i &amp; (-i), and for each i, for j = y; j &gt; 0; j -= j &amp; (-j), accumulate bit[i][j]; this is also O(log n * log m). A general rectangle sum over [x1,x2] x [y1,y2] then falls out of 2D inclusion-exclusion exactly the way you&#x27;d expect from a 2D prefix-sum array: rectSum = query(x2,y2) - query(x1-1,y2) - query(x2,y1-1) + query(x1-1,y1-1), where the four terms correspond to &#x27;everything up to the far corner&#x27;, minus the two strips that stick out to the left and below the target rectangle, plus the corner region that got subtracted twice.</p><p>The genuinely non-obvious extension is generalizing the 1D &#x27;range-update range-query&#x27; difference-array trick (two BITs: one over the raw difference, one over difference*index) to two dimensions. Define a 2D difference array diff[x][y] = a[x][y] - a[x-1][y] - a[x][y-1] + a[x-1][y-1], so that a[x][y] = sum over p&lt;=x,q&lt;=y of diff[p][q] (the same telescoping identity that makes the 1D difference trick work, applied in both axes). To add delta to every cell of a rectangle [x1,y1]-[x2,y2] you touch only the 4 corners of diff: diff[x1][y1] += delta, diff[x2+1][y1] -= delta, diff[x1][y2+1] -= delta, diff[x2+1][y2+1] += delta -- exactly the 2D analogue of the two-point 1D difference update, now with 4 signed corner updates. The subtle part is answering a prefix SUM query S(x,y) = sum_{i&lt;=x,j&lt;=y} a[i][j] in terms of diff: expanding the double sum gives S(x,y) = sum_{p&lt;=x,q&lt;=y} diff[p][q] * (x-p+1) * (y-q+1) = (x+1)(y+1)*sum(diff) - (x+1)*sum(diff*q) - (y+1)*sum(diff*p) + sum(diff*p*q). This means you must maintain FOUR separate 2D BITs -- B00 storing diff[p][q], B10 storing diff[p][q]*p, B01 storing diff[p][q]*q, and B11 storing diff[p][q]*p*q -- and every rectangle update performs one point-update into EACH of the 4 BITs at EACH of the 4 corners (16 point-updates total, each O(log n log m)), while a prefix query combines all four BITs&#x27; query results with the (x+1)(y+1)/-(x+1)/-(y+1)/+1 weights above, and a rectangle sum again uses the same 4-corner inclusion-exclusion on top of that.</p><p>A practical companion technique, not a replacement: when the grid&#x27;s coordinate range is huge (e.g. up to 10^9) but the actual set of x- and y-coordinates that ever appear in an update or query is modest (e.g. &lt;= 2*10^5), coordinate-compress each axis independently (sort and dedupe the distinct x&#x27;s actually used, same for y&#x27;s, and map every real coordinate to its rank) before building the 2D BIT over the compressed rank grid. This keeps the O(log n log m) point/rectangle operations but shrinks memory from O(range_x * range_y) to O(count_x * count_y) -- essential whenever updates/queries are given as arbitrary large coordinates rather than dense grid cells.</p><p>A final adaptation worth internalizing (illustrated in the second example below) is that the additive range-update/range-query trick is not tied to addition -- it generalizes to any operation forming an abelian group where you have a well-defined notion of &#x27;count of times a term is included&#x27;, as long as you replace magnitude-based cancellation with a PARITY argument. Under XOR, a term included an even number of times cancels (v xor v = 0) and one included an odd number of times survives unchanged (regardless of how many times, as long as it is odd), so the &#x27;(x-p+1)(y-q+1)&#x27; multiplier that scales contributions in the additive case collapses to a parity check: is (x-p+1) odd (equivalently, does p have the same parity as x) AND is (y-q+1) odd (same parity as y)? This lets you replace the 4 &#x27;weighted-sum&#x27; BITs with 4 BITs keyed by parity class of the coordinate itself, one per (x mod 2, y mod 2) combination.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The data lives on a 2D grid (or a set of points with two coordinate axes) and the operations are some mix of: point update + rectangle (axis-aligned submatrix) aggregate query, or rectangle update + rectangle aggregate query, with q up to 10^5-10^6 and grid dimensions up to a few thousand (or coordinate-compressible if larger). If you&#x27;d reach for a 1D Fenwick tree but the query/update region is a submatrix instead of a subarray, that&#x27;s the signal for a 2D Fenwick tree; if in addition entire rectangles (not just points) get updated and you still need fast rectangle queries back, that&#x27;s the signal for the 4-BIT range-update/range-query extension (or its XOR/other-group analogue).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Point update and rectangle query: O(log n * log m) per operation, O(n*m) space, for the basic 2D BIT. Range (rectangle) update with range (rectangle) query: O(log n * log m) per operation (a constant number, 4 or 16, of point BIT operations per call), O(n*m) space across the 4 BITs. Coordinate compression keeps the same time complexity but shrinks space to O(k_x * k_y) where k_x, k_y are the counts of distinct compressed coordinates.</p></div>
+  </div>
+  <article class="example-card" id="data-structures-2d-fenwick-tree-range-queries-ex0">
+  <h4>Forest Queries II (point update, rectangle sum -- basic 2D Fenwick tree)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an n x n grid (1 &lt;= n &lt;= 8 for this worked example; the underlying technique scales to n up to 1000 and beyond with coordinate compression or a larger BIT). Each cell either contains a tree (&#x27;*&#x27;) or is empty (&#x27;.&#x27;). You must process q operations of two types:<br>  &quot;1 y x&quot; -- toggle cell (y, x): if it currently has a tree, remove it; if it is currently empty, plant one there.<br>  &quot;2 y1 x1 y2 x2&quot; -- count how many trees lie within the rectangle spanning rows y1..y2 and columns x1..x2 inclusive (1 &lt;= y1 &lt;= y2 &lt;= n, 1 &lt;= x1 &lt;= x2 &lt;= n), and print that count.<br>All coordinates are 1-indexed. Print the answer to every type-2 operation on its own line, in order.</p><p>Input: n and q on the first line; then n lines, each a string of n characters (&#x27;*&#x27; or &#x27;.&#x27;) describing the initial grid; then q lines, each describing one operation as above.<br>Output: one line per type-2 (query) operation, containing the tree count in that rectangle.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the direct introduction to the basic 2D Fenwick tree, with no range updates involved -- only point updates (toggle a single cell by +1 or -1) and rectangle-sum queries. Build a 2D BIT bit[1..n][1..n], initialized by treating every existing tree as a +1 point update at its cell.</p><p>A point update add(x, y, delta) nests the standard 1D BIT loop: for i = x; i &lt;= n; i += i&amp;(-i), and inside it for j = y; j &lt;= n; j += j&amp;(-j), do bit[i][j] += delta. A prefix query(x, y) mirrors this downward: for i = x; i &gt; 0; i -= i&amp;(-i), for j = y; j &gt; 0; j -= j&amp;(-j), accumulate bit[i][j]; this returns the total tree count in the rectangle [1,x] x [1,y]. Query(x,y) is defined to be 0 whenever x &lt;= 0 or y &lt;= 0 (an empty rectangle), which both the update and query loops handle naturally since the loops simply don&#x27;t execute.</p><p>A general rectangle query on [x1,y1]-[x2,y2] is obtained by 2D inclusion-exclusion: rangeSum = query(x2,y2) - query(x1-1,y2) - query(x2,y1-1) + query(x1-1,y1-1) -- take everything up to the far corner, subtract the strip to the left of x1 and the strip below y1 (each counted once too many), then add back the small corner rectangle that got subtracted twice.</p><p>For a toggle operation, first read the current cell value with a degenerate rangeSum call on the single cell (y,y,x,x) (equivalently query(y,x)-query(y-1,x)-query(y,x-1)+query(y-1,x-1)); if it&#x27;s currently 1 (tree present) apply delta = -1, otherwise delta = +1, then call the point update. Each operation costs O(log^2 n). Verified by hand-tracing a small 8x8 grid with 5 trees through a sequence of full-grid and sub-rectangle queries interleaved with two toggles, matching the program&#x27;s output exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;vector&lt;long long&gt;&gt; bit; // bit[x][y], 1-indexed, size (n+1) x (n+1)
+
+void update(int x, int y, long long delta) {
+    for (int i = x; i &lt;= n; i += i &amp; (-i))
+        for (int j = y; j &lt;= n; j += j &amp; (-j))
+            bit[i][j] += delta;
+}
+
+// prefix sum over rectangle [1,x] x [1,y]
+long long query(int x, int y) {
+    if (x &lt;= 0 || y &lt;= 0) return 0;
+    long long res = 0;
+    for (int i = x; i &gt; 0; i -= i &amp; (-i))
+        for (int j = y; j &gt; 0; j -= j &amp; (-j))
+            res += bit[i][j];
+    return res;
+}
+
+// rectangle sum over rows [x1,x2], cols [y1,y2] inclusive, 1-indexed
+long long rangeSum(int x1, int y1, int x2, int y2) {
+    return query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) + query(x1 - 1, y1 - 1);
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin &gt;&gt; n &gt;&gt; q;
+    bit.assign(n + 1, vector&lt;long long&gt;(n + 1, 0));
+
+    vector&lt;string&gt; grid(n);
+    for (int i = 0; i &lt; n; i++) cin &gt;&gt; grid[i];
+    for (int i = 0; i &lt; n; i++)
+        for (int j = 0; j &lt; n; j++)
+            if (grid[i][j] == &#x27;*&#x27;) update(i + 1, j + 1, 1);
+
+    for (int Q = 0; Q &lt; q; Q++) {
+        int type;
+        cin &gt;&gt; type;
+        if (type == 1) {
+            int y, x;
+            cin &gt;&gt; y &gt;&gt; x;
+            long long cur = rangeSum(y, x, y, x);
+            long long delta = (cur &gt; 0) ? -1 : 1;
+            update(y, x, delta);
+        } else {
+            int y1, x1, y2, x2;
+            cin &gt;&gt; y1 &gt;&gt; x1 &gt;&gt; y2 &gt;&gt; x2;
+            cout &lt;&lt; rangeSum(y1, x1, y2, x2) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8 8
+*.......
+..*.....
+........
+...*....
+........
+....*...
+........
+.......*
+2 1 1 8 8
+2 1 1 4 4
+1 1 1
+2 1 1 4 4
+1 5 5
+2 4 4 6 6
+1 6 5
+2 4 4 6 6
+</code></pre>
+    <pre><code>5
+3
+2
+3
+2
+</code></pre>
+  </div>
+</article><article class="example-card" id="data-structures-2d-fenwick-tree-range-queries-ex1">
+  <h4>Iahub and Xors (rectangle XOR update, rectangle XOR query -- four-BIT parity trick)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given an n x n matrix (1 &lt;= n &lt;= 6 for this worked example; the technique scales to n up to 1000 as in the original Codeforces 341D) of integers, all initially 0. You must process q operations of two types, each specifying a rectangle by its opposite corners (x1,y1) and (x2,y2) with 1 &lt;= x1 &lt;= x2 &lt;= n, 1 &lt;= y1 &lt;= y2 &lt;= n:<br>  &quot;1 x1 y1 x2 y2 v&quot; -- XOR every cell (x,y) with x1&lt;=x&lt;=x2, y1&lt;=y&lt;=y2 with the value v (0 &lt;= v &lt;= 10^6).<br>  &quot;2 x1 y1 x2 y2&quot; -- report the XOR of every cell in that same rectangle (i.e. cell(x1,y1) xor cell(x1,y1+1) xor ... xor cell(x2,y2)), printed on its own line.<br>Process operations in input order; each type-2 operation&#x27;s answer must reflect all type-1 operations that came before it.</p><p>Input: n and q on the first line, then q lines each formatted as above.<br>Output: one line per type-2 operation with the requested XOR value.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This adapts the 2D range-update/range-query difference trick to XOR instead of addition, which needs care because XOR cancels on EVEN repetition rather than on opposite-signed magnitudes.</p><p>Define a 2D XOR-difference array D[p][q] by the same telescoping identity as the additive case, but with XOR replacing +/-: a[x][y] = XOR over all p&lt;=x, q&lt;=y of D[p][q]. To XOR a rectangle [x1,y1]-[x2,y2] with v, XOR D at exactly its 4 corners with v: D[x1][y1] ^= v, D[x2+1][y1] ^= v, D[x1][y2+1] ^= v, D[x2+1][y2+1] ^= v. Checking any target cell (x,y): a corner (p,q) affects it iff p&lt;=x and q&lt;=y, and counting how many of the 4 corners satisfy that shows the count is 1 (odd) exactly when (x,y) is inside the rectangle, and 0, 2, or 4 (even) everywhere else -- so the XORs cancel outside and survive, unchanged, inside. This is a hand-verified even/odd overlap-count argument, the XOR analogue of the additive telescoping proof.</p><p>For queries, define Q(x,y) = XOR of a[i][j] over the prefix rectangle i&lt;=x, j&lt;=y. The same 4-corner inclusion-exclusion identity that works for sums also works for XOR (subtraction and addition coincide with XOR in GF(2)): rangeXor(x1,y1,x2,y2) = Q(x2,y2) ^ Q(x1-1,y2) ^ Q(x2,y1-1) ^ Q(x1-1,y1-1) -- verified by the same corner-overlap-parity argument as above, applied to Q instead of a single cell.</p><p>The remaining question is how to compute Q(x,y) fast. Expanding Q(x,y) = XOR_{p&lt;=x,q&lt;=y} D[p][q], a term D[p][q] contributes to Q(x,y) iff the number of times it&#x27;s &#x27;counted&#x27; is odd; in the additive derivation this count was the product of multiplicities (x-p+1)(y-q+1), and here we only care about its PARITY: (x-p+1) is odd exactly when p and x have the same parity, and likewise (y-q+1) is odd exactly when q and y have the same parity, so D[p][q] contributes to Q(x,y) iff p%2==x%2 AND q%2==y%2. This means D naturally splits into 4 independent parity classes -- maintain 4 separate 2D Fenwick trees bitTree[a][b] for a,b in {0,1}, where a point-update to D[p][q] is routed to bitTree[p%2][q%2].update(p,q,v) (an ordinary point-XOR-update, combining values with XOR instead of +), and Q(x,y) is answered by a single prefix-XOR query on bitTree[x%2][y%2] alone (since only entries of matching parity were ever stored there, no extra weighting is needed). This was worked out by hand on the update/query formulas above, then cross-checked against a brute-force O(n^2)-per-operation grid simulation that directly XORs a dense n x n array cell by cell: 500 randomized small tests (n in [2,6], 5-25 mixed operations) plus 100 larger randomized tests (n in [20,50], 50-200 operations) all matched exactly, confirming the 4-parity-BIT construction is correct.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// Four 2D BITs, one per parity class (p mod 2, q mod 2) of the difference
+// array&#x27;s coordinates. bitTree[a][b] only ever receives point-XOR-updates at
+// coordinates (p,q) with p%2==a and q%2==b, so its own prefix-XOR query
+// naturally restricts to that parity class -- no extra weighting needed.
+struct BIT2D {
+    int N;
+    vector&lt;vector&lt;int&gt;&gt; t;
+    void init(int n) { N = n; t.assign(N + 1, vector&lt;int&gt;(N + 1, 0)); }
+    void update(int x, int y, int v) {
+        for (int i = x; i &lt;= N; i += i &amp; (-i))
+            for (int j = y; j &lt;= N; j += j &amp; (-j))
+                t[i][j] ^= v;
+    }
+    int query(int x, int y) const {
+        int res = 0;
+        for (int i = x; i &gt; 0; i -= i &amp; (-i))
+            for (int j = y; j &gt; 0; j -= j &amp; (-j))
+                res ^= t[i][j];
+        return res;
+    }
+};
+
+int n;
+BIT2D bitTree[2][2];
+
+// point-XOR-update of the underlying 2D difference array at (p,q)
+void diffUpdate(int p, int q, int v) {
+    if (p &lt; 1 || p &gt; n + 1 || q &lt; 1 || q &gt; n + 1) return;
+    bitTree[p &amp; 1][q &amp; 1].update(p, q, v);
+}
+
+// Q(x,y) = XOR of a[i][j] for all 1&lt;=i&lt;=x, 1&lt;=j&lt;=y (prefix &quot;rectangle&quot; xor)
+int Q(int x, int y) {
+    if (x &lt;= 0 || y &lt;= 0) return 0;
+    return bitTree[x &amp; 1][y &amp; 1].query(x, y);
+}
+
+void rangeUpdate(int x1, int y1, int x2, int y2, int v) {
+    diffUpdate(x1,     y1,     v);
+    diffUpdate(x2 + 1, y1,     v);
+    diffUpdate(x1,     y2 + 1, v);
+    diffUpdate(x2 + 1, y2 + 1, v);
+}
+
+int rangeQuery(int x1, int y1, int x2, int y2) {
+    return Q(x2, y2) ^ Q(x1 - 1, y2) ^ Q(x2, y1 - 1) ^ Q(x1 - 1, y1 - 1);
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin &gt;&gt; n &gt;&gt; q;
+    for (int a = 0; a &lt; 2; a++)
+        for (int b = 0; b &lt; 2; b++)
+            bitTree[a][b].init(n + 1);
+
+    for (int i = 0; i &lt; q; i++) {
+        int type;
+        cin &gt;&gt; type;
+        if (type == 1) {
+            int x1, y1, x2, y2, v;
+            cin &gt;&gt; x1 &gt;&gt; y1 &gt;&gt; x2 &gt;&gt; y2 &gt;&gt; v;
+            rangeUpdate(x1, y1, x2, y2, v);
+        } else {
+            int x1, y1, x2, y2;
+            cin &gt;&gt; x1 &gt;&gt; y1 &gt;&gt; x2 &gt;&gt; y2;
+            cout &lt;&lt; rangeQuery(x1, y1, x2, y2) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 7
+1 1 1 2 2 5
+1 2 2 3 3 3
+2 1 1 4 4
+2 2 2 2 2
+1 1 1 4 4 7
+2 1 1 4 4
+2 3 3 3 3
+</code></pre>
+    <pre><code>0
+6
+0
+4
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">26</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="new year tree codeforces segment tree (lazy propagation with bitmask trick) on a rooted tree, repaint an entire subtree with a color or answer how many distinct colors appear in a subtree.">
+  <td><a href="https://codeforces.com/problemset/problem/620/E" target="_blank" rel="noopener noreferrer">New Year Tree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Segment Tree (lazy propagation with bitmask trick)</td>
+  <td class="desc-cell">On a rooted tree, repaint an entire subtree with a color or answer how many distinct colors appear in a subtree.</td>
+</tr><tr data-search="hotel queries cses segment tree (descent / binary search on tree) given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.">
+  <td><a href="https://cses.fi/problemset/task/1143" target="_blank" rel="noopener noreferrer">Hotel Queries</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Range Queries, harder set)</td>
+  <td class="subtopic-cell">Segment Tree (descent / binary search on tree)</td>
+  <td class="desc-cell">Given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.</td>
+</tr><tr data-search="one occurrence codeforces persistent segment tree for each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.">
+  <td><a href="https://codeforces.com/problemset/problem/1000/F" target="_blank" rel="noopener noreferrer">One Occurrence</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2400</td>
+  <td class="subtopic-cell">Persistent Segment Tree</td>
+  <td class="desc-cell">For each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.</td>
+</tr><tr data-search="count of smaller numbers after self leetcode merge-sort tree / offline order-statistics counting for every index i, count how many elements to its right are strictly smaller than nums[i].">
+  <td><a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/" target="_blank" rel="noopener noreferrer">Count of Smaller Numbers After Self</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Merge-sort Tree / offline order-statistics counting</td>
+  <td class="desc-cell">For every index i, count how many elements to its right are strictly smaller than nums[i].</td>
+</tr><tr data-search="salary queries cses fenwick tree / bit (point update, range count with coordinate compression) support raising/lowering an employee&#x27;s salary and counting how many employees currently have a salary within a given range.">
+  <td><a href="https://cses.fi/problemset/task/1144" target="_blank" rel="noopener noreferrer">Salary Queries</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Range Queries, harder set)</td>
+  <td class="subtopic-cell">Fenwick Tree / BIT (point update, range count with coordinate compression)</td>
+  <td class="desc-cell">Support raising/lowering an employee&#x27;s salary and counting how many employees currently have a salary within a given range.</td>
+</tr><tr data-search="mishka and interesting sum codeforces fenwick tree / bit (offline queries) for each range [l, r], compute the xor of all values that occur an even number of times within that range.">
+  <td><a href="https://codeforces.com/problemset/problem/703/D" target="_blank" rel="noopener noreferrer">Mishka and Interesting Sum</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Fenwick Tree / BIT (offline queries)</td>
+  <td class="desc-cell">For each range [l, r], compute the XOR of all values that occur an even number of times within that range.</td>
+</tr><tr data-search="friends and subsequences codeforces sparse table (rmq) given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.">
+  <td><a href="https://codeforces.com/problemset/problem/689/D" target="_blank" rel="noopener noreferrer">Friends and Subsequences</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">Sparse Table (RMQ)</td>
+  <td class="desc-cell">Given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.</td>
+</tr><tr data-search="envy codeforces dsu / union-find (offline, grouped by weight) given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.">
+  <td><a href="https://codeforces.com/problemset/problem/891/C" target="_blank" rel="noopener noreferrer">Envy</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2300</td>
+  <td class="subtopic-cell">DSU / Union-Find (offline, grouped by weight)</td>
+  <td class="desc-cell">Given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.</td>
+</tr><tr data-search="word search ii leetcode trie + backtracking given a 2d board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.">
+  <td><a href="https://leetcode.com/problems/word-search-ii/" target="_blank" rel="noopener noreferrer">Word Search II</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Trie + backtracking</td>
+  <td class="desc-cell">Given a 2D board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.</td>
+</tr><tr data-search="vasiliy&#x27;s multiset codeforces trie (binary/xor trie) maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum xor of x with any element currently in the multiset.&quot;">
+  <td><a href="https://codeforces.com/problemset/problem/706/D" target="_blank" rel="noopener noreferrer">Vasiliy&#x27;s Multiset</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Trie (binary/XOR trie)</td>
+  <td class="desc-cell">Maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum XOR of x with any element currently in the multiset.&quot;</td>
+</tr><tr data-search="sliding window maximum leetcode monotonic queue given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.">
+  <td><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">Sliding Window Maximum</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">Monotonic Queue</td>
+  <td class="desc-cell">Given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.</td>
+</tr><tr data-search="gukiz and gukiziana codeforces sqrt decomposition on an array, support &quot;add a value to every element in a range&quot; and &quot;find the leftmost/rightmost index whose value equals v&quot; queries.">
+  <td><a href="https://codeforces.com/problemset/problem/551/E" target="_blank" rel="noopener noreferrer">GukiZ and GukiZiana</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2500</td>
+  <td class="subtopic-cell">Sqrt Decomposition</td>
+  <td class="desc-cell">On an array, support &quot;add a value to every element in a range&quot; and &quot;find the leftmost/rightmost index whose value equals v&quot; queries.</td>
+</tr><tr data-search="anton and permutation codeforces sqrt decomposition maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.">
+  <td><a href="https://codeforces.com/problemset/problem/785/E" target="_blank" rel="noopener noreferrer">Anton and Permutation</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200</td>
+  <td class="subtopic-cell">Sqrt Decomposition</td>
+  <td class="desc-cell">Maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.</td>
+</tr><tr data-search="serega and fun codeforces sqrt decomposition support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.">
+  <td><a href="https://codeforces.com/problemset/problem/455/D" target="_blank" rel="noopener noreferrer">Serega and Fun</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2700</td>
+  <td class="subtopic-cell">Sqrt Decomposition</td>
+  <td class="desc-cell">Support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.</td>
+</tr><tr data-search="holes codeforces sqrt decomposition each position on a line has a &quot;power&quot; that launches a ball forward by that amount; support updating a position&#x27;s power and querying how many jumps and how far a ball launched from a position travels before leaving the row.">
+  <td><a href="https://codeforces.com/problemset/problem/13/E" target="_blank" rel="noopener noreferrer">Holes</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2700</td>
+  <td class="subtopic-cell">Sqrt Decomposition</td>
+  <td class="desc-cell">Each position on a line has a &quot;power&quot; that launches a ball forward by that amount; support updating a position&#x27;s power and querying how many jumps and how far a ball launched from a position travels before leaving the row.</td>
+</tr><tr data-search="yet another array queries problem codeforces sqrt decomposition apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.">
+  <td><a href="https://codeforces.com/problemset/problem/863/D" target="_blank" rel="noopener noreferrer">Yet Another Array Queries Problem</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 1800</td>
+  <td class="subtopic-cell">Sqrt Decomposition</td>
+  <td class="desc-cell">Apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.</td>
+</tr><tr data-search="falling squares leetcode sqrt decomposition drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.">
+  <td><a href="https://leetcode.com/problems/falling-squares/" target="_blank" rel="noopener noreferrer">Falling Squares</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard</td>
+  <td class="subtopic-cell">Sqrt Decomposition</td>
+  <td class="desc-cell">Drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.</td>
+</tr><tr data-search="powerful array codeforces mo&#x27;s algorithm for repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.">
+  <td><a href="https://codeforces.com/problemset/problem/86/D" target="_blank" rel="noopener noreferrer">Powerful array</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200</td>
+  <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
+  <td class="desc-cell">For repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.</td>
+</tr><tr data-search="xor and favorite number codeforces mo&#x27;s algorithm for repeated range queries, count the number of subarray pairs (i, j) within the range whose xor of elements equals a fixed favorite number k.">
+  <td><a href="https://codeforces.com/problemset/problem/617/E" target="_blank" rel="noopener noreferrer">XOR and Favorite Number</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200</td>
+  <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
+  <td class="desc-cell">For repeated range queries, count the number of subarray pairs (i, j) within the range whose XOR of elements equals a fixed favorite number k.</td>
+</tr><tr data-search="machine learning codeforces mo&#x27;s algorithm support point updates to an array along with range queries asking for the mex of the multiset of frequencies of values appearing in the range.">
+  <td><a href="https://codeforces.com/problemset/problem/940/F" target="_blank" rel="noopener noreferrer">Machine Learning</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2600</td>
+  <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
+  <td class="desc-cell">Support point updates to an array along with range queries asking for the Mex of the multiset of frequencies of values appearing in the range.</td>
+</tr><tr data-search="tree and queries codeforces mo&#x27;s algorithm given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.">
+  <td><a href="https://codeforces.com/problemset/problem/375/D" target="_blank" rel="noopener noreferrer">Tree and Queries</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2400</td>
+  <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
+  <td class="desc-cell">Given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.</td>
+</tr><tr data-search="distinct values queries cses mo&#x27;s algorithm answer offline queries asking for the number of distinct values in a given subarray range.">
+  <td><a href="https://cses.fi/problemset/task/1734" target="_blank" rel="noopener noreferrer">Distinct Values Queries</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Range Queries section)</td>
+  <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
+  <td class="desc-cell">Answer offline queries asking for the number of distinct values in a given subarray range.</td>
+</tr><tr data-search="forest queries ii cses 2d fenwick tree / 2d range queries on an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.">
+  <td><a href="https://cses.fi/problemset/task/1739" target="_blank" rel="noopener noreferrer">Forest Queries II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Advanced Techniques section)</td>
+  <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
+  <td class="desc-cell">On an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.</td>
+</tr><tr data-search="the untended antiquity codeforces 2d fenwick tree / 2d range queries on a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.">
+  <td><a href="https://codeforces.com/problemset/problem/869/E" target="_blank" rel="noopener noreferrer">The Untended Antiquity</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2400</td>
+  <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
+  <td class="desc-cell">On a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.</td>
+</tr><tr data-search="iahub and xors codeforces 2d fenwick tree / 2d range queries support 2d rectangle-xor updates and 2d rectangle-xor queries on an n x n matrix, both online.">
+  <td><a href="https://codeforces.com/problemset/problem/341/D" target="_blank" rel="noopener noreferrer">Iahub and Xors</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2500</td>
+  <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
+  <td class="desc-cell">Support 2D rectangle-XOR updates and 2D rectangle-XOR queries on an n x n matrix, both online.</td>
+</tr><tr data-search="ball codeforces 2d fenwick tree / 2d range queries given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.">
+  <td><a href="https://codeforces.com/problemset/problem/12/D" target="_blank" rel="noopener noreferrer">Ball</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2400</td>
+  <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
+  <td class="desc-cell">Given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

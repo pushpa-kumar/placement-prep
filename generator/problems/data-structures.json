@@ -1,0 +1,236 @@
+[
+ {
+  "name": "New Year Tree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/620/E",
+  "difficulty": "2100",
+  "subtopic": "Segment Tree (lazy propagation with bitmask trick)",
+  "description": "On a rooted tree, repaint an entire subtree with a color or answer how many distinct colors appear in a subtree.",
+  "why_hard": "Requires flattening the tree with an Euler tour and running a segment tree whose lazy tag and node value are both bitmasks (colors packed into bits of a 64-bit int), a non-obvious lazy-propagation trick beyond plain range add/assign."
+ },
+ {
+  "name": "Hotel Queries",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1143",
+  "difficulty": "CSES (Range Queries, harder set)",
+  "subtopic": "Segment Tree (descent / binary search on tree)",
+  "description": "Given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.",
+  "why_hard": "The query is not a plain range max/sum — it requires walking down a segment-tree-of-maxima to find the leftmost leaf satisfying a threshold, an important segment-tree pattern distinct from simple range queries."
+ },
+ {
+  "name": "One Occurrence",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1000/F",
+  "difficulty": "2400",
+  "subtopic": "Persistent Segment Tree",
+  "description": "For each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.",
+  "why_hard": "The standard solution builds a persistent segment tree (one version per array index) storing, at each position, the index of the previous occurrence of that value, then does a min-query descent per version to find a position in [l, r] whose previous occurrence lies before l — a canonical, non-trivial persistent-segment-tree application."
+ },
+ {
+  "name": "Count of Smaller Numbers After Self",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/count-of-smaller-numbers-after-self/",
+  "difficulty": "Hard",
+  "subtopic": "Merge-sort Tree / offline order-statistics counting",
+  "description": "For every index i, count how many elements to its right are strictly smaller than nums[i].",
+  "why_hard": "The textbook solution augments merge sort to count cross-inversions while merging (a \"merge-sort tree\" counting technique), an alternative to a coordinate-compressed Fenwick tree — good for contrasting the two approaches to the same order-statistics problem."
+ },
+ {
+  "name": "Salary Queries",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1144",
+  "difficulty": "CSES (Range Queries, harder set)",
+  "subtopic": "Fenwick Tree / BIT (point update, range count with coordinate compression)",
+  "description": "Support raising/lowering an employee's salary and counting how many employees currently have a salary within a given range.",
+  "why_hard": "Salaries must be coordinate-compressed first (values up to 1e9), then maintained in a Fenwick tree with point updates and prefix-count queries — a step up from a static range-sum BIT."
+ },
+ {
+  "name": "Mishka and Interesting Sum",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/703/D",
+  "difficulty": "2100",
+  "subtopic": "Fenwick Tree / BIT (offline queries)",
+  "description": "For each range [l, r], compute the XOR of all values that occur an even number of times within that range.",
+  "why_hard": "Needs the identity (XOR of all elements in range) XOR (XOR of distinct elements in range) = XOR of even-occurrence elements, where the distinct-XOR part is computed offline with a Fenwick tree using a last-occurrence trick — a clever, non-obvious offline BIT pattern."
+ },
+ {
+  "name": "Friends and Subsequences",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/689/D",
+  "difficulty": "2100",
+  "subtopic": "Sparse Table (RMQ)",
+  "description": "Given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.",
+  "why_hard": "Relies on O(1) range max/min via sparse tables plus the monotonicity of max(a) and min(b) as the window grows, exploited with a two-pointer/binary-search sweep — a real fusion of sparse-table RMQ with a non-trivial counting argument."
+ },
+ {
+  "name": "Envy",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/891/C",
+  "difficulty": "2300",
+  "subtopic": "DSU / Union-Find (offline, grouped by weight)",
+  "description": "Given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.",
+  "why_hard": "Requires the cycle property of MSTs plus an offline DSU that resets/rebuilds per distinct edge weight across queries sorted appropriately — a genuinely tricky, non-standard use of union-find beyond basic connectivity."
+ },
+ {
+  "name": "Word Search II",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/word-search-ii/",
+  "difficulty": "Hard",
+  "subtopic": "Trie + backtracking",
+  "description": "Given a 2D board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.",
+  "why_hard": "Naive per-word DFS is too slow; the intended solution merges all dictionary words into a single trie and prunes the board DFS using trie nodes, requiring careful backtracking and duplicate-avoidance."
+ },
+ {
+  "name": "Vasiliy's Multiset",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/706/D",
+  "difficulty": "1800",
+  "subtopic": "Trie (binary/XOR trie)",
+  "description": "Maintain a multiset of integers supporting insertion, deletion, and \"find the maximum XOR of x with any element currently in the multiset.\"",
+  "why_hard": "Requires a bitwise (binary) trie over ~30-bit representations with per-node counts to support deletion, plus a greedy bit-by-bit descent to maximize XOR — the canonical binary-trie technique, distinct from string tries."
+ },
+ {
+  "name": "Sliding Window Maximum",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/sliding-window-maximum/",
+  "difficulty": "Hard",
+  "subtopic": "Monotonic Queue",
+  "description": "Given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.",
+  "why_hard": "The O(n) solution needs a monotonic deque that keeps candidate maxima in decreasing order and evicts indices that fall out of the window — the standard monotonic-queue pattern, easy to get wrong on eviction order and index bookkeeping."
+ },
+ {
+  "name": "GukiZ and GukiZiana",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/551/E",
+  "difficulty": "2500",
+  "subtopic": "Sqrt Decomposition",
+  "description": "On an array, support \"add a value to every element in a range\" and \"find the leftmost/rightmost index whose value equals v\" queries.",
+  "why_hard": "Classic block decomposition where each block keeps a sorted copy of its elements plus a pending lazy add, so value-lookup queries binary-search within blocks while range updates touch full blocks in O(1) and partial blocks by rebuilding — a canonical, tightly-tuned sqrt-decomposition design."
+ },
+ {
+  "name": "Anton and Permutation",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/785/E",
+  "difficulty": "CF rating 2200",
+  "subtopic": "Sqrt Decomposition",
+  "description": "Maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.",
+  "why_hard": "The classic sqrt-decomposition-of-a-permutation problem — split the array into O(sqrt n) blocks and maintain per-block sortedness so each swap/query costs O(sqrt n)."
+ },
+ {
+  "name": "Serega and Fun",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/455/D",
+  "difficulty": "CF rating 2700",
+  "subtopic": "Sqrt Decomposition",
+  "description": "Support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.",
+  "why_hard": "A canonical block-decomposition-with-deques problem — each block holds its elements in a deque plus a frequency map so shifts and counts are both handled in O(sqrt n)."
+ },
+ {
+  "name": "Holes",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/13/E",
+  "difficulty": "CF rating 2700",
+  "subtopic": "Sqrt Decomposition",
+  "description": "Each position on a line has a \"power\" that launches a ball forward by that amount; support updating a position's power and querying how many jumps and how far a ball launched from a position travels before leaving the row.",
+  "why_hard": "The original teaching example for sqrt decomposition with block \"jump pointers\" that are lazily recomputed only for the block containing an update, making updates and queries both O(sqrt n)."
+ },
+ {
+  "name": "Yet Another Array Queries Problem",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/863/D",
+  "difficulty": "CF rating 1800",
+  "subtopic": "Sqrt Decomposition",
+  "description": "Apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.",
+  "why_hard": "Solved offline by sqrt-decomposing time into blocks of sqrt(q) operations and simulating within each block, a less common but instructive \"decompose the query sequence\" variant of the technique."
+ },
+ {
+  "name": "Falling Squares",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/falling-squares/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "Sqrt Decomposition",
+  "description": "Drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.",
+  "why_hard": "With coordinates compressed, maintaining per-block maximum height over an array of O(n) compressed positions with range-max-query/range-update is a natural sqrt-decomposition exercise as an alternative to a segment tree."
+ },
+ {
+  "name": "Powerful array",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/86/D",
+  "difficulty": "CF rating 2200",
+  "subtopic": "Mo's Algorithm",
+  "description": "For repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.",
+  "why_hard": "The single most-cited introductory Mo's algorithm problem — add/remove-element transitions are O(1) with a frequency array, so sqrt-block query reordering is exactly what makes it feasible."
+ },
+ {
+  "name": "XOR and Favorite Number",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/617/E",
+  "difficulty": "CF rating 2200",
+  "subtopic": "Mo's Algorithm",
+  "description": "For repeated range queries, count the number of subarray pairs (i, j) within the range whose XOR of elements equals a fixed favorite number k.",
+  "why_hard": "Requires transforming the condition into a prefix-XOR frequency count first, then applying Mo's algorithm on top — a good test of recognizing when a problem reduces to a Mo's-friendly form."
+ },
+ {
+  "name": "Machine Learning",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/940/F",
+  "difficulty": "CF rating 2600",
+  "subtopic": "Mo's Algorithm",
+  "description": "Support point updates to an array along with range queries asking for the Mex of the multiset of frequencies of values appearing in the range.",
+  "why_hard": "A classic \"Mo's algorithm with updates\" (3D Mo's) problem — queries are sorted by block of l, block of r, and time, adding a third dimension to the usual technique."
+ },
+ {
+  "name": "Tree and Queries",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/375/D",
+  "difficulty": "CF rating 2400",
+  "subtopic": "Mo's Algorithm",
+  "description": "Given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.",
+  "why_hard": "Shows Mo's algorithm applied to a tree by flattening a subtree into a contiguous Euler-tour range, then running standard Mo's over that range — a nice bridge between the trees and Mo's-algorithm subtopics."
+ },
+ {
+  "name": "Distinct Values Queries",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1734",
+  "difficulty": "CSES (Range Queries section)",
+  "subtopic": "Mo's Algorithm",
+  "description": "Answer offline queries asking for the number of distinct values in a given subarray range.",
+  "why_hard": "The most standard possible Mo's-algorithm target (distinct-count with O(1) add/remove) and a good baseline before tackling the harder XOR/Mex variants above."
+ },
+ {
+  "name": "Forest Queries II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1739",
+  "difficulty": "CSES (Advanced Techniques section)",
+  "subtopic": "2D Fenwick Tree / 2D Range Queries",
+  "description": "On an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.",
+  "why_hard": "The direct CSES introduction to a 2D Fenwick (Binary Indexed) Tree, requiring the nested-BIT-of-BITs structure for point update / rectangle sum."
+ },
+ {
+  "name": "The Untended Antiquity",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/869/E",
+  "difficulty": "CF rating 2400",
+  "subtopic": "2D Fenwick Tree / 2D Range Queries",
+  "description": "On a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.",
+  "why_hard": "Reduces rectangle-containment queries to 2D range updates/point queries handled via a 2D Fenwick tree (using the standard 2D difference trick), combined with a segment tree over one dimension — a strong test of composing 2D BIT ideas with other structures."
+ },
+ {
+  "name": "Iahub and Xors",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/341/D",
+  "difficulty": "CF rating 2500",
+  "subtopic": "2D Fenwick Tree / 2D Range Queries",
+  "description": "Support 2D rectangle-XOR updates and 2D rectangle-XOR queries on an n x n matrix, both online.",
+  "why_hard": "Requires generalizing the 1D difference-array-plus-Fenwick-tree trick to two dimensions using four 2D BITs (analogous to the 1D range-update range-query trick), a genuinely non-obvious extension."
+ },
+ {
+  "name": "Ball",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/12/D",
+  "difficulty": "CF rating 2400",
+  "subtopic": "2D Fenwick Tree / 2D Range Queries",
+  "description": "Given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.",
+  "why_hard": "The classic \"3D dominance counting\" problem — sort by one dimension, sweep, and use a 2D Fenwick tree (or Fenwick tree over compressed second coordinate) to answer 2D dominance counts online, a staple pattern for offline dominance/partial-order problems."
+ }
+]

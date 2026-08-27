@@ -1,0 +1,227 @@
+[
+ {
+  "name": "Petya and Array",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1042/D",
+  "difficulty": "1800",
+  "subtopic": "prefix sums + counting (Fenwick tree)",
+  "description": "Count the number of subarrays of an array (which may contain negative numbers) whose sum is strictly less than a given t.",
+  "why_hard": "Negative elements break plain two-pointer/sliding-window counting, forcing the prefix-sum-plus-Fenwick-tree trick (count pairs of prefix sums within a range) — the standard escape hatch when two pointers fail."
+ },
+ {
+  "name": "Close Tuples (hard version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1462/E2",
+  "difficulty": "1700",
+  "subtopic": "two pointers + combinatorial counting",
+  "description": "Count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.",
+  "why_hard": "Requires sorting, then a two-pointer sliding window to bound each candidate \"maximum\" element's valid range, combined with nCr combinatorics to count subsequences per window — a clean fusion of two pointers with counting rather than plain search."
+ },
+ {
+  "name": "OpenStreetMap",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1195/E",
+  "difficulty": "2100",
+  "subtopic": "2D sliding window minimum (monotonic deque)",
+  "description": "Given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.",
+  "why_hard": "Naive per-submatrix scanning is too slow; it requires chaining a 1D sliding-window-minimum (monotonic deque) pass over rows and then over columns — a genuinely hard monotonic-structure sliding-window problem in 2D."
+ },
+ {
+  "name": "Subarray Sums II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1661",
+  "difficulty": "CSES",
+  "subtopic": "prefix sums + hashmap counting",
+  "description": "Count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.",
+  "why_hard": "Unlike the \"easy\" version restricted to non-negative values (solvable with a simple two-pointer window), negative values invalidate the sliding-window monotonicity, forcing a prefix-sum + hashmap-of-counts approach."
+ },
+ {
+  "name": "Maximum Subarray Sum II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1644",
+  "difficulty": "CSES",
+  "subtopic": "Kadane variant with length constraint (prefix sums + segment tree/deque)",
+  "description": "Find the maximum possible sum of a subarray whose length is between two given bounds a and b.",
+  "why_hard": "Plain Kadane's algorithm doesn't enforce a length window, so this needs prefix sums combined with a sliding-window-of-minimums structure (segment tree or monotonic deque) over the valid range of earlier prefix indices — a substantially harder Kadane variant."
+ },
+ {
+  "name": "Sliding Window Maximum",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/sliding-window-maximum/",
+  "difficulty": "Hard",
+  "subtopic": "sliding window with monotonic deque",
+  "description": "Given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.",
+  "why_hard": "The naive approach is O(nk); achieving O(n) requires maintaining a monotonic decreasing deque of indices, the canonical hard-sliding-window-with-monotonic-structure technique."
+ },
+ {
+  "name": "Shortest Subarray with Sum at Least K",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/",
+  "difficulty": "Hard",
+  "subtopic": "prefix sums + monotonic deque",
+  "description": "Given an integer array (possibly containing negative numbers) and integer K, find the length of the shortest contiguous subarray with sum at least K, or -1 if none exists.",
+  "why_hard": "Negative numbers break simple two-pointer/Kadane approaches, so the intended solution keeps a monotonic increasing deque of prefix-sum indices and pops/pushes carefully — a non-obvious combination of prefix sums with a monotonic-deque sliding window."
+ },
+ {
+  "name": "Number of Submatrices That Sum to Target",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/",
+  "difficulty": "Hard",
+  "subtopic": "2D prefix sums + hashmap",
+  "description": "Given a 2D matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.",
+  "why_hard": "Requires reducing the 2D problem to repeated 1D \"subarray sum equals k\" counting (via row-pair compression using 2D prefix sums) combined with hashmap counting — a genuine 2D-prefix-sum-and-difference-array-style trick, not a toy application."
+ },
+ {
+  "name": "Range Increments",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/174/C",
+  "difficulty": "1800",
+  "subtopic": "Difference Arrays",
+  "description": "Given the final array state (all elements start at 0), reconstruct the minimum number of `rangeIncrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.",
+  "why_hard": "It is the textbook difference-array problem — the answer is exactly the sum of positive jumps in the difference array, and reconstructing actual (l, r) calls requires a stack-based matching on top of the diff-array insight."
+ },
+ {
+  "name": "Too Many Segments (hard version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1249/D2",
+  "difficulty": "1800",
+  "subtopic": "Difference Arrays",
+  "description": "Given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.",
+  "why_hard": "Requires building a difference array of coverage counts, sweeping left to right, and greedily evicting the segment with the farthest right endpoint (via a multiset/heap) whenever the running coverage from the diff array exceeds k."
+ },
+ {
+  "name": "Clear the Multiset",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1400/E",
+  "difficulty": "2200",
+  "subtopic": "Difference Arrays",
+  "description": "Given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.",
+  "why_hard": "Generalizes the \"min ops = sum of positive differences in the difference array\" idea from Range Increments into a divide-and-conquer over the minimum value, making it a strong step up in difficulty while keeping the difference-array insight central."
+ },
+ {
+  "name": "Addition on Segments",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/981/E",
+  "difficulty": "2200",
+  "subtopic": "Difference Arrays",
+  "description": "Starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.",
+  "why_hard": "Combines difference-array range updates with a bitset subset-sum DP over \"how much can the max at each position be pushed up\", forcing you to reason about the interaction between range updates and reachability."
+ },
+ {
+  "name": "Minimum Operations to Make Array Equal to Target",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-operations-to-make-array-equal-to-target/",
+  "difficulty": "Hard (LeetCode #3454)",
+  "subtopic": "Difference Arrays",
+  "description": "Given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.",
+  "why_hard": "Direct generalization of the classic \"minimum range-increment operations\" difference-array problem to signed deltas, requiring you to track running sums of positive and negative jumps in the difference array of `target - nums`."
+ },
+ {
+  "name": "Array Partition",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1454/F",
+  "difficulty": "2100",
+  "subtopic": "Two-Pointer Partitioning",
+  "description": "Split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.",
+  "why_hard": "Solved by scanning prefix/suffix max and min arrays with pointers that advance the boundary positions in one pass, an in-place multi-region partition search analogous to Dutch-flag-style boundary maintenance."
+ },
+ {
+  "name": "Range and Partition",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1630/B",
+  "difficulty": "1800",
+  "subtopic": "Two-Pointer Partitioning",
+  "description": "Choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.",
+  "why_hard": "Requires partitioning the whole array into an \"inside/outside\" two-coloring driven by a chosen threshold range, then greedily walking the array with pointers to carve out valid subarrays — a direct extension of two-way in-place partitioning."
+ },
+ {
+  "name": "Recover the Original Array",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/recover-the-original-array/",
+  "difficulty": "Hard",
+  "subtopic": "Two-Pointer Partitioning",
+  "description": "Given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.",
+  "why_hard": "After sorting, you must partition the multiset into a \"low\" group and a \"high\" group that are a perfect k-shifted match of each other, using a two-pointer/multiset scan that mirrors the low/high region bookkeeping of Dutch-flag partitioning."
+ },
+ {
+  "name": "Partition Array Into Two Arrays to Minimize Sum Difference",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/",
+  "difficulty": "Hard",
+  "subtopic": "Two-Pointer Partitioning",
+  "description": "Partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.",
+  "why_hard": "Requires splitting the array into two balanced halves via meet-in-the-middle, then two-pointer scanning across sorted subset-sum lists to find the closest complementary partition — a genuine in-place partition-search problem at Hard difficulty."
+ },
+ {
+  "name": "Constrained Subsequence Sum",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/constrained-subsequence-sum/",
+  "difficulty": "Hard (LeetCode #1425)",
+  "subtopic": "Monotonic Deque",
+  "description": "Choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.",
+  "why_hard": "A DP where `dp[i] = a[i] + max(0, dp[i-k..i-1])` must be computed online, which is only fast with a monotonic deque holding the best dp value in the trailing window — a genuine deque-optimized DP."
+ },
+ {
+  "name": "Watching Fireworks is Fun",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/372/C",
+  "difficulty": "2100",
+  "subtopic": "Monotonic Deque",
+  "description": "You move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.",
+  "why_hard": "The DP transition for each firework is a sliding-window maximum over the previous DP row (window width grows with d·Δt), so the O(n·m) DP only becomes efficient once you maintain the window max with a monotonic deque."
+ },
+ {
+  "name": "Pictures with Kittens (hard version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1077/F2",
+  "difficulty": "2100",
+  "subtopic": "Monotonic Deque",
+  "description": "Choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.",
+  "why_hard": "The 2D DP `dp[i][j]` (best value picking j pictures from first i, last chosen within k of i) needs a sliding-window maximum over a fixed-size range per layer, a standard but non-trivial monotonic-deque DP optimization."
+ },
+ {
+  "name": "Data Stream as Disjoint Intervals",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/data-stream-as-disjoint-intervals/",
+  "difficulty": "Hard",
+  "subtopic": "Merge Intervals",
+  "description": "Design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.",
+  "why_hard": "Requires an online insert-and-merge-interval routine (find neighboring intervals to merge with a new point, splice them together) that must stay efficient across repeated insertions rather than a one-shot batch merge."
+ },
+ {
+  "name": "Range Module",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/range-module/",
+  "difficulty": "Hard",
+  "subtopic": "Merge Intervals",
+  "description": "Design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.",
+  "why_hard": "A direct generalization of \"merge intervals\" into a full mutable interval-set data structure supporting add/remove/query, forcing careful handling of partial overlaps and interval splitting, not just a static merge."
+ },
+ {
+  "name": "Count Integers in Intervals",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/count-integers-in-intervals/",
+  "difficulty": "Hard",
+  "subtopic": "Merge Intervals",
+  "description": "Design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).",
+  "why_hard": "Maintaining a dynamically merged set of intervals while tracking total covered length under repeated insertions is a harder, stateful version of the static \"merge intervals\" exercise."
+ },
+ {
+  "name": "Minimum Interval to Include Each Query",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
+  "difficulty": "Hard",
+  "subtopic": "Merge Intervals",
+  "description": "Given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.",
+  "why_hard": "Requires sorting intervals and queries together and sweeping with a min-heap keyed by interval size, a technique that builds directly on interval-sorting fundamentals but adds an offline sweep over queries."
+ },
+ {
+  "name": "The Union of k-Segments",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/612/D",
+  "difficulty": "1800",
+  "subtopic": "Merge Intervals",
+  "description": "Given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.",
+  "why_hard": "Combines a coverage-counting sweep (via segment endpoint events) with merging the resulting \"covered ≥ k times\" points back into a minimal list of maximal merged segments."
+ }
+]

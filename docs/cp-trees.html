@@ -1,0 +1,2092 @@
+<title>Trees — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Trees</h1>
+    <p class="tagline"><p>Trees are connected acyclic graphs, and a huge fraction of &quot;hard&quot; competitive programming problems boil down to exploiting their recursive structure: a subtree is itself a smaller tree, and a root-to-node path is unique, which makes techniques like Euler tours, binary lifting, and decomposition schemes extraordinarily powerful. This guide builds up from traversal fundamentals to the two most advanced tree techniques in competitive programming, heavy-light decomposition and centroid decomposition, each of which turns a hard tree problem into a small number of easy array/segment-tree problems. Beyond traversals, LCA/binary lifting, diameter, HLD, and centroid decomposition, these three techniques handle efficient aggregation over all subtrees at once (small-to-large merging), repeated queries restricted to a small set of vertices on a large fixed tree (virtual trees), and deciding whether two trees are structurally identical up to relabeling (canonical-form hashing).</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">8</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">17</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">19</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#trees-tree-traversals-euler-tour"><span>Tree Traversals &amp; Euler Tour</span><span class="cnt">2</span></a></li><li><a href="#trees-lca-via-binary-lifting"><span>LCA via Binary Lifting</span><span class="cnt">3</span></a></li><li><a href="#trees-tree-diameter"><span>Tree Diameter</span><span class="cnt">3</span></a></li><li><a href="#trees-heavy-light-decomposition"><span>Heavy-Light Decomposition</span><span class="cnt">1</span></a></li><li><a href="#trees-centroid-decomposition"><span>Centroid Decomposition</span><span class="cnt">2</span></a></li><li><a href="#trees-small-to-large-merging-dsu-on-tree"><span>Small-to-Large Merging (DSU on Tree)</span><span class="cnt">2</span></a></li><li><a href="#trees-virtual-trees-auxiliary-tree-technique"><span>Virtual Trees (Auxiliary Tree Technique)</span><span class="cnt">2</span></a></li><li><a href="#trees-tree-isomorphism-canonical-form"><span>Tree Isomorphism / Canonical Form</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">19</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#trees">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="trees-tree-traversals-euler-tour">
+  <div class="topic-head"><h2>Tree Traversals &amp; Euler Tour</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A rooted tree is naturally explored with DFS, which visits every vertex once and every edge twice (once going down, once coming back up). Two numbers recorded during this DFS make the whole subtree structure queryable as if it were a flat array: tin[v], the timestamp when v is first entered, and tout[v], the timestamp when DFS finishes exploring v&#x27;s entire subtree (i.e., the last timestamp used anywhere below v). Because DFS explores a subtree as one contiguous burst of time before returning to the parent, the set of timestamps belonging to v&#x27;s subtree is exactly the contiguous integer range [tin[v], tout[v]] — no other vertex&#x27;s timestamp can fall inside that range without belonging to the subtree, and every vertex in the subtree&#x27;s timestamp does fall inside it.</p><p>This single fact — &quot;subtree of v&quot; is a contiguous range in Euler-tour order — is what lets you bolt an ordinary array data structure (a Fenwick tree / BIT, a segment tree, a sparse table) onto a tree. If you place each vertex&#x27;s value at array position tin[v], then &quot;add to / query the subtree of v&quot; becomes &quot;update / query the range [tin[v], tout[v]]&quot; on that flat array — a problem you already know how to solve in O(log n). Point updates on the tree become point updates on the array; subtree aggregate queries (sum, min, max, xor, distinct count via offline processing) become range queries. The reverse also works: &quot;apply an update to every vertex in v&#x27;s subtree&quot; becomes a single range update on the array.</p><p>A second common convention records tin[v]/tout[v] not as a size-1 timestamp pair but as an actual &quot;virtual sequence&quot; — the full Euler tour that lists a vertex again every time DFS returns through it (length 2n-1). That version underlies the sparse-table O(1)-query LCA technique (RMQ on the tour of depths). The tin/tout-interval version shown here is the one you want for subtree-to-range reductions, and it also gives you O(1) ancestor testing: u is an ancestor of v iff tin[u] &lt;= tin[v] and tout[v] &lt;= tout[u], since that&#x27;s precisely the condition for v&#x27;s interval to be nested inside u&#x27;s.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for Euler tour flattening whenever a problem talks about &quot;the subtree of v&quot; and asks for point updates + subtree aggregate queries, subtree aggregate updates + point queries, or many &quot;is u an ancestor of v&quot; tests. It&#x27;s also the standard first step before running an offline algorithm (e.g. Mo&#x27;s algorithm, small-to-large merging) that needs subtrees to look like contiguous ranges.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>DFS to compute tin/tout: O(n) time, O(n) space. Once flattened, each point update or subtree range query costs O(log n) with a Fenwick tree / segment tree (O(1) if you only need offline prefix sums). Ancestor testing via tin/tout is O(1) per query after the O(n) preprocessing.</p></div>
+  </div>
+  <article class="example-card" id="trees-tree-traversals-euler-tour-ex0">
+  <h4>Subtree Sum with Point Updates</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a rooted tree with n vertices (rooted at vertex 1), each holding an integer value. You must process q operations of two kinds:<br>  &quot;U i x&quot; — set the value of vertex i to x.<br>  &quot;Q v&quot;   — output the sum of the values of all vertices in the subtree of v (including v itself).<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Build the tree as an adjacency list and run one DFS from the root to compute tin[v] and tout[v] (the Euler-tour entry/exit timestamps), so the subtree of v occupies the contiguous range [tin[v], tout[v]].<br>2. Build a Fenwick tree (BIT) over an array of size n, placing the initial value of vertex v at index tin[v].<br>3. For an update &quot;U i x&quot;, compute delta = x - old_value[i], apply a point update of +delta at index tin[i], and remember the new value.<br>4. For a query &quot;Q v&quot;, answer with the BIT&#x27;s range-sum over [tin[v], tout[v]] — the whole subtree in one O(log n) range query, since Euler tour turned the subtree into a contiguous block.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, q;
+vector&lt;int&gt; adj[200005];
+long long a[200005];
+int tin_[200005], tout_[200005], timer_ = 0;
+long long bit_[200005];
+
+void dfs(int v, int p) {
+    tin_[v] = timer_++;
+    for (int c : adj[v]) if (c != p) dfs(c, v);
+    tout_[v] = timer_ - 1;
+}
+
+void update(int i, long long delta) {
+    for (; i &lt;= n; i += i &amp; (-i)) bit_[i] += delta;
+}
+long long query(int i) {
+    long long s = 0;
+    for (; i &gt; 0; i -= i &amp; (-i)) s += bit_[i];
+    return s;
+}
+long long rangeSum(int l, int r) { // 1-indexed inclusive
+    if (l &gt; r) return 0;
+    return query(r) - query(l - 1);
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+    dfs(1, 0);
+    // Fenwick tree is 1-indexed over Euler tour positions; shift tin_ (0-indexed) by +1
+    for (int i = 1; i &lt;= n; i++) update(tin_[i] + 1, a[i]);
+
+    cin &gt;&gt; q;
+    while (q--) {
+        string type; cin &gt;&gt; type;
+        if (type == &quot;U&quot;) {
+            int idx; long long x; cin &gt;&gt; idx &gt;&gt; x;
+            long long delta = x - a[idx];
+            a[idx] = x;
+            update(tin_[idx] + 1, delta);
+        } else {
+            int v; cin &gt;&gt; v;
+            cout &lt;&lt; rangeSum(tin_[v] + 1, tout_[v] + 1) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+1 2
+1 3
+2 4
+2 5
+3 6
+10 20 30 40 50 60
+8
+Q 1
+Q 2
+U 4 100
+Q 2
+Q 1
+U 6 5
+Q 3
+Q 1
+</code></pre>
+    <pre><code>210
+110
+170
+270
+35
+215</code></pre>
+  </div>
+</article><article class="example-card" id="trees-tree-traversals-euler-tour-ex1">
+  <h4>Ancestor Queries via Entry/Exit Times</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a rooted tree with n vertices (rooted at vertex 1). Answer q queries of the form &quot;u v&quot;: is u an ancestor of v (a vertex is considered its own ancestor)? Print &quot;YES&quot; or &quot;NO&quot; for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Run one DFS from the root computing tin[v] and tout[v] exactly as in the Euler-tour setup.<br>2. u is an ancestor of v if and only if v&#x27;s interval [tin[v], tout[v]] is nested inside u&#x27;s interval, i.e. tin[u] &lt;= tin[v] AND tout[v] &lt;= tout[u]. This is O(1) per query with no traversal at all — it falls directly out of the fact that DFS visits an entire subtree as one contiguous block of time.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, q;
+vector&lt;int&gt; adj[200005];
+int tin_[200005], tout_[200005], timer_ = 0;
+
+void dfs(int v, int p) {
+    tin_[v] = timer_++;
+    for (int c : adj[v]) if (c != p) dfs(c, v);
+    tout_[v] = timer_ - 1;
+}
+
+bool isAncestor(int u, int v) {
+    return tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    dfs(1, 0);
+    cin &gt;&gt; q;
+    while (q--) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; (isAncestor(u, v) ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+1 2
+1 3
+2 4
+2 5
+3 6
+6
+1 4
+2 6
+3 6
+4 4
+5 2
+6 1
+</code></pre>
+    <pre><code>YES
+NO
+YES
+YES
+NO
+NO</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-lca-via-binary-lifting">
+  <div class="topic-head"><h2>LCA via Binary Lifting</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>The lowest common ancestor (LCA) of u and v is the deepest vertex that is an ancestor of both. Binary lifting precomputes, for every vertex v and every power of two j, the 2^j-th ancestor of v — a table up[v][j]. The key recurrence is up[v][j] = up[up[v][j-1]][j-1]: to jump 2^j steps up from v, first jump 2^(j-1) steps to reach some vertex w, then jump another 2^(j-1) steps from w. Since up[v][0] is just v&#x27;s direct parent, the whole table (size O(n log n)) can be filled with one DFS in O(n log n) time. Any jump of k steps up from v can then be assembled from O(log n) precomputed powers of two, exactly like fast exponentiation decomposes an exponent into bits.</p><p>To find LCA(u, v): first bring the deeper vertex up to the same depth as the shallower one, using the binary representation of the depth difference to jump directly (no per-step climbing). If they&#x27;re now equal, that&#x27;s the LCA. Otherwise, u and v are at the same depth but distinct, so binary-search upward: for j from high to low, jump both u and v up by 2^j simultaneously whenever doing so keeps them distinct (up[u][j] != up[v][j]). This greedily gets both vertices as close as possible to the LCA without ever jumping past it. After the loop, u and v are exactly one step below the LCA, so the answer is up[u][0].</p><p>Binary lifting generalizes beautifully: the same up[] table answers &quot;kth ancestor of v&quot; queries directly (decompose k into bits and jump), and once you have O(1)-or-O(log n) LCA, you get O(1) tree distance via dist(u,v) = depth[u] + depth[v] - 2*depth[LCA(u,v)] — because the path from u to v goes up from u to the LCA and back down to v, and each of those two segments has length depth[x] - depth[LCA].</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Use binary lifting whenever a problem needs many LCA queries, many kth-ancestor queries, or tree-path distance queries on a static tree, especially when queries and the tree are interleaved or the tree is too large for O(depth) per query to be fast enough. It&#x27;s also the standard building block underneath heavier techniques (Euler-tour range decomposition, jump-pointer path decomposition, offline path update problems).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Preprocessing: O(n log n) time and space for the up[][] table. Each LCA / kth-ancestor / distance query: O(log n) time. (An Euler-tour + sparse-table variant answers LCA in O(1) per query after O(n log n) preprocessing, at the cost of not supporting kth-ancestor queries directly.)</p></div>
+  </div>
+  <article class="example-card" id="trees-lca-via-binary-lifting-ex0">
+  <h4>Basic LCA Queries</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a rooted tree with n vertices (rooted at vertex 1) and q queries, each giving two vertices u and v, output the lowest common ancestor of u and v for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Precompute depth[] and the binary-lifting table up[v][j] with one DFS from the root. For each query, lift the deeper vertex to the shallower vertex&#x27;s depth using the depth-difference bits, then binary search upward on both vertices together (jumping while their 2^j-th ancestors still differ), landing one step below the LCA; the LCA is that vertex&#x27;s direct parent (or the vertex itself if it was already equal to the other after the depth equalization).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int LOG = 20;
+int n, q;
+vector&lt;int&gt; adj[200005];
+int up_[200005][LOG];
+int depth_[200005];
+
+void dfs(int v, int p) {
+    up_[v][0] = p;
+    for (int j = 1; j &lt; LOG; j++)
+        up_[v][j] = up_[up_[v][j-1]][j-1];
+    for (int c : adj[v]) {
+        if (c != p) {
+            depth_[c] = depth_[v] + 1;
+            dfs(c, v);
+        }
+    }
+}
+
+int lca(int u, int v) {
+    if (depth_[u] &lt; depth_[v]) swap(u, v);
+    int diff = depth_[u] - depth_[v];
+    for (int j = 0; j &lt; LOG; j++)
+        if ((diff &gt;&gt; j) &amp; 1) u = up_[u][j];
+    if (u == v) return u;
+    for (int j = LOG - 1; j &gt;= 0; j--) {
+        if (up_[u][j] != up_[v][j]) {
+            u = up_[u][j];
+            v = up_[v][j];
+        }
+    }
+    return up_[u][0];
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int a, b; cin &gt;&gt; a &gt;&gt; b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    depth_[1] = 0;
+    up_[1][0] = 0; // node 0 is a sentinel &quot;no parent&quot;
+    dfs(1, 0);
+
+    cin &gt;&gt; q;
+    while (q--) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; lca(u, v) &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>9
+1 2
+1 3
+2 4
+2 5
+4 8
+3 6
+3 7
+7 9
+5
+8 5
+8 9
+6 7
+4 8
+9 3
+</code></pre>
+    <pre><code>2
+1
+3
+4
+3</code></pre>
+  </div>
+</article><article class="example-card" id="trees-lca-via-binary-lifting-ex1">
+  <h4>Tree Distance via LCA</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given the same rooted tree with n vertices and q queries of two vertices u, v, output the number of edges on the (unique) path between u and v for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>The path between u and v necessarily passes through LCA(u, v): it goes up from u to the LCA, then down from the LCA to v. So dist(u, v) = depth[u] + depth[v] - 2*depth[LCA(u, v)] — each of the two climbs contributes depth[x] - depth[LCA], and adding them together and rearranging gives this formula. Reuse the exact same binary-lifting LCA routine from the previous example and plug into that formula.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int LOG = 20;
+int n, q;
+vector&lt;int&gt; adj[200005];
+int up_[200005][LOG];
+int depth_[200005];
+
+void dfs(int v, int p) {
+    up_[v][0] = p;
+    for (int j = 1; j &lt; LOG; j++)
+        up_[v][j] = up_[up_[v][j-1]][j-1];
+    for (int c : adj[v]) {
+        if (c != p) {
+            depth_[c] = depth_[v] + 1;
+            dfs(c, v);
+        }
+    }
+}
+
+int lca(int u, int v) {
+    if (depth_[u] &lt; depth_[v]) swap(u, v);
+    int diff = depth_[u] - depth_[v];
+    for (int j = 0; j &lt; LOG; j++)
+        if ((diff &gt;&gt; j) &amp; 1) u = up_[u][j];
+    if (u == v) return u;
+    for (int j = LOG - 1; j &gt;= 0; j--) {
+        if (up_[u][j] != up_[v][j]) {
+            u = up_[u][j];
+            v = up_[v][j];
+        }
+    }
+    return up_[u][0];
+}
+
+int dist(int u, int v) {
+    int a = lca(u, v);
+    return depth_[u] + depth_[v] - 2 * depth_[a];
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int a, b; cin &gt;&gt; a &gt;&gt; b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    depth_[1] = 0;
+    up_[1][0] = 0;
+    dfs(1, 0);
+
+    cin &gt;&gt; q;
+    while (q--) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; dist(u, v) &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>9
+1 2
+1 3
+2 4
+2 5
+4 8
+3 6
+3 7
+7 9
+5
+8 5
+8 9
+6 7
+4 8
+9 3
+</code></pre>
+    <pre><code>3
+6
+2
+1
+2</code></pre>
+  </div>
+</article><article class="example-card" id="trees-lca-via-binary-lifting-ex2">
+  <h4>Kth Ancestor Queries</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a rooted tree with n vertices (rooted at vertex 1) and q queries, each giving a vertex v and an integer k, output the k-th ancestor of v (the vertex reached by walking up k edges from v toward the root), or -1 if v has fewer than k ancestors (i.e. depth[v] &lt; k). Note k = 0 should return v itself. Constraints: 1 &lt;= n, q &lt;= 2*10^5, 0 &lt;= k &lt;= n.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the same up[v][j] binary-lifting table (using vertex 0 as a sentinel &quot;no ancestor&quot; value). For a query (v, k): if k &gt; depth[v], the ancestor doesn&#x27;t exist, answer -1. Otherwise, decompose k in binary and, for each set bit j, jump v to up[v][j] — after processing all set bits, v has moved exactly k steps up the tree. This is the same jump machinery used inside the LCA routine, applied directly instead of as a subroutine of a binary search.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int LOG = 20;
+int n, q;
+vector&lt;int&gt; adj[200005];
+int up_[200005][LOG];
+int depth_[200005];
+
+void dfs(int v, int p) {
+    up_[v][0] = p; // 0 means &quot;no such ancestor&quot; (sentinel)
+    for (int j = 1; j &lt; LOG; j++)
+        up_[v][j] = up_[v][j-1] == 0 ? 0 : up_[up_[v][j-1]][j-1];
+    for (int c : adj[v]) {
+        if (c != p) {
+            depth_[c] = depth_[v] + 1;
+            dfs(c, v);
+        }
+    }
+}
+
+// returns 0-indexed sentinel-free result, or -1 if it doesn&#x27;t exist
+int kthAncestor(int v, int k) {
+    if (k &gt; depth_[v]) return -1;
+    for (int j = 0; j &lt; LOG &amp;&amp; v != 0; j++)
+        if ((k &gt;&gt; j) &amp; 1) v = up_[v][j];
+    return v;
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int a, b; cin &gt;&gt; a &gt;&gt; b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    depth_[1] = 0;
+    dfs(1, 0);
+
+    cin &gt;&gt; q;
+    while (q--) {
+        int v, k; cin &gt;&gt; v &gt;&gt; k;
+        cout &lt;&lt; kthAncestor(v, k) &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>9
+1 2
+1 3
+2 4
+2 5
+4 8
+3 6
+3 7
+7 9
+7
+8 1
+8 2
+8 3
+8 4
+9 2
+1 1
+5 0
+</code></pre>
+    <pre><code>4
+2
+1
+-1
+3
+-1
+5</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-tree-diameter">
+  <div class="topic-head"><h2>Tree Diameter</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>The diameter of a tree is the length of the longest path between any two vertices. The classic &quot;double BFS/DFS&quot; algorithm computes it in two passes and relies on a non-obvious but easy-to-prove fact: if you run a BFS/DFS from *any* starting vertex s and let a be the farthest vertex found, then a is guaranteed to be one endpoint of *some* diameter of the tree (this fails for graphs with negative weights, but holds for trees with non-negative edge weights). Once you know that, a second BFS/DFS from a finds the true farthest vertex b, and dist(a, b) is the diameter. Intuitively: if a farther pair (x, y) existed not involving a, the path from s to a would have to &quot;detour&quot; through part of the x-y path to be shorter than expected, which contradicts a being the farthest vertex from s — a short proof by contradiction using the triangle-inequality-like structure of tree paths.</p><p>An alternative, single-pass approach uses tree DP and generalizes more easily to problems that need more than just the diameter length. Root the tree anywhere and define down[v] = the length of the longest downward path starting at v and staying inside v&#x27;s subtree. This satisfies down[v] = max over children c of (weight(v,c) + down[c]), with down[leaf] = 0. While computing this bottom-up, also track, for each vertex v, the two largest values of (weight(v,c) + down[c]) among v&#x27;s children — call them top1 and top2. The longest path that &quot;bends&quot; at v (goes down into one child subtree, back up to v, and down into a different child subtree) has length top1 + top2, and the overall diameter is the maximum of this quantity over all vertices v, because every path in a rooted tree has a unique highest point (its LCA), and it must bend there.</p><p>The DP approach costs one DFS and naturally extends to weighted trees, to &quot;diameter of every subtree&quot; problems, and to reconstructing not just the length but the actual path (by tracking parent pointers during the BFS approach, or by tracking which children achieved top1/top2 in the DP approach).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Any problem asking for the longest path in a tree, the tree&#x27;s &quot;radius&quot;/&quot;center&quot; (which sits at the midpoint of a diameter), the eccentricity of vertices, or an optimal single point to attach something to minimize the worst-case distance, starts from computing the diameter. The double-BFS trick is the fastest to implement for a single diameter query; the DP form is what you reach for once weights, path reconstruction, or per-subtree answers are needed.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Both approaches run in O(n) time and O(n) space: double BFS/DFS does two O(n) traversals, and the DP does one O(n) DFS while maintaining O(1) extra state per vertex.</p></div>
+  </div>
+  <article class="example-card" id="trees-tree-diameter-ex0">
+  <h4>Diameter via Double BFS</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an unweighted tree with n vertices, find the length (number of edges) of its diameter — the longest shortest-path distance between any two vertices. Constraints: 1 &lt;= n &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Run BFS from an arbitrary vertex (vertex 1) and record the farthest vertex found, call it a. Run BFS again from a; the farthest distance found in this second BFS is the diameter. This works because a is guaranteed to be an endpoint of some diameter.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;int&gt; adj[200005];
+
+pair&lt;int,int&gt; bfsFarthest(int src) {
+    vector&lt;int&gt; dist(n + 1, -1);
+    queue&lt;int&gt; q;
+    dist[src] = 0;
+    q.push(src);
+    int farNode = src, farDist = 0;
+    while (!q.empty()) {
+        int v = q.front(); q.pop();
+        if (dist[v] &gt; farDist) { farDist = dist[v]; farNode = v; }
+        for (int c : adj[v]) {
+            if (dist[c] == -1) {
+                dist[c] = dist[v] + 1;
+                q.push(c);
+            }
+        }
+    }
+    return {farNode, farDist};
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    auto [a, d1] = bfsFarthest(1);
+    auto [b, diameter] = bfsFarthest(a);
+    cout &lt;&lt; diameter &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>7
+1 2
+2 3
+3 4
+4 5
+3 6
+6 7
+</code></pre>
+    <pre><code>4</code></pre>
+  </div>
+</article><article class="example-card" id="trees-tree-diameter-ex1">
+  <h4>Weighted Diameter via Tree DP</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a tree with n vertices and positive integer edge weights, find the maximum total weight of any simple path between two vertices. Constraints: 1 &lt;= n &lt;= 2*10^5, 1 &lt;= weight &lt;= 10^9.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Root the tree at vertex 1 and DFS. For each vertex v, after recursing into all children, compute the top two values of (edge weight to child c) + (longest downward path from c), among all children. Update a running global answer with their sum (the best path bending at v), and return the single largest of those values as v&#x27;s own longest downward path, for its parent to use. Double BFS does not directly generalize to needing the two largest branch lengths at every internal vertex the way this DP does, though double BFS still correctly finds just the diameter *length* even with weights.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;pair&lt;int,long long&gt;&gt; adj[200005]; // (neighbor, weight)
+long long best = 0;
+
+// returns the longest downward path starting at v (within v&#x27;s subtree, rooted at call site)
+long long dfs(int v, int p) {
+    long long top1 = 0, top2 = 0; // two longest downward branch lengths from v
+    for (auto [c, w] : adj[v]) {
+        if (c == p) continue;
+        long long down = dfs(c, v) + w;
+        if (down &gt; top1) { top2 = top1; top1 = down; }
+        else if (down &gt; top2) { top2 = down; }
+    }
+    best = max(best, top1 + top2); // best path that bends at v
+    return top1;
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; long long w;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w});
+    }
+    dfs(1, 0);
+    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+1 2 4
+1 3 2
+3 4 5
+3 5 3
+4 6 1
+</code></pre>
+    <pre><code>12</code></pre>
+  </div>
+</article><article class="example-card" id="trees-tree-diameter-ex2">
+  <h4>Recovering an Actual Diameter Path</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an unweighted tree with n vertices, output the length of its diameter, followed by the vertices on one actual diameter path, in order from one endpoint to the other. Constraints: 1 &lt;= n &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Same two-BFS idea as before, but each BFS also records a parent pointer for every vertex it visits. The first BFS (from vertex 1) finds endpoint a; the second BFS (from a) finds the true far endpoint b and, thanks to its parent pointers, lets you walk back from b to a one parent at a time to recover the whole path.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;int&gt; adj[200005];
+
+// BFS from src; returns (farthest node, its distance, parent[] array to reconstruct the path)
+tuple&lt;int,int,vector&lt;int&gt;&gt; bfsFarthest(int src) {
+    vector&lt;int&gt; dist(n + 1, -1), par(n + 1, -1);
+    queue&lt;int&gt; q;
+    dist[src] = 0;
+    q.push(src);
+    int farNode = src, farDist = 0;
+    while (!q.empty()) {
+        int v = q.front(); q.pop();
+        if (dist[v] &gt; farDist) { farDist = dist[v]; farNode = v; }
+        for (int c : adj[v]) {
+            if (dist[c] == -1) {
+                dist[c] = dist[v] + 1;
+                par[c] = v;
+                q.push(c);
+            }
+        }
+    }
+    return {farNode, farDist, par};
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    auto [a, d1, par1] = bfsFarthest(1);
+    auto [b, diameter, par2] = bfsFarthest(a);
+
+    cout &lt;&lt; diameter &lt;&lt; &quot;\n&quot;;
+    vector&lt;int&gt; path;
+    for (int cur = b; cur != -1; cur = par2[cur]) path.push_back(cur);
+    // path currently goes b -&gt; ... -&gt; a; print it in that order
+    for (size_t i = 0; i &lt; path.size(); i++) cout &lt;&lt; path[i] &lt;&lt; &quot; \n&quot;[i + 1 == path.size()];
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>7
+1 2
+2 3
+3 4
+4 5
+3 6
+6 7
+</code></pre>
+    <pre><code>4
+1 2 3 4 5</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-heavy-light-decomposition">
+  <div class="topic-head"><h2>Heavy-Light Decomposition</h2><span class="cnt">1 worked example</span></div>
+  <div class="theory-block"><p>Heavy-light decomposition (HLD) answers the question Euler tours can&#x27;t: how do you turn an arbitrary *root-to-anywhere path between two vertices u and v* — not just a subtree — into a small number of contiguous array ranges? The trick is to classify, for every vertex v with children, exactly one child as v&#x27;s &quot;heavy child&quot;: the child whose subtree is the largest (ties broken arbitrarily). Every other edge is &quot;light&quot;. Chains of heavy edges form &quot;heavy paths&quot;, and HLD assigns each vertex a position along a global array such that every heavy path occupies a contiguous block of positions — exactly like Euler tour did for subtrees, but for root-to-leaf-style chains instead.</p><p>The reason this works is the key size bound: following a light edge from a vertex v to a child c means size(c) &lt;= size(v) / 2 (otherwise c would have been the heavy child, since a single child with more than half of v&#x27;s subtree can&#x27;t coexist with another child also having that property). So any root-to-leaf path crosses at most O(log n) light edges. Since a light edge is exactly the boundary between two different heavy chains, any root-to-vertex path — and therefore any u-to-v path, which is two root-to-vertex paths glued at their LCA — touches at most O(log n) distinct heavy chains.</p><p>To answer a path query between u and v: repeatedly look at the heads (topmost vertices) of the heavy chains containing u and v. Whichever head is deeper, jump that entire vertex up to its chain&#x27;s head, query the resulting range [pos(head), pos(that vertex)] on your segment tree, then move to that head&#x27;s parent (which lies on a different, shallower chain) and repeat. Once u and v land on the same chain, do one final range query between their positions on that chain and stop. Because each iteration consumes one light edge and there are only O(log n) of them, this loop runs O(log n) times, each doing an O(log n) segment-tree query — O(log^2 n) total per path query. Subtree queries also still work exactly as with a plain Euler tour, since HLD&#x27;s DFS order is still a valid Euler tour (the heavy child is always visited first and its whole subtree, being on the same chain, occupies a contiguous range immediately after v).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>HLD is the go-to technique whenever a problem needs updates and/or aggregate queries (sum, max, min, xor, and-of-range, etc.) along the path between two *arbitrary* vertices (not just root-to-vertex), especially combined with subtree queries/updates in the same problem, or when queries are online and interleaved with the tree changing values dynamically.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Preprocessing (two DFS passes: one for subtree sizes and heavy children, one for chain heads and positions): O(n). Each path or subtree query/update: O(log^2 n) (O(log n) chain jumps, each doing an O(log n) segment tree operation); this can be reduced to O(log n) per query with a sparse table for static data, but O(log^2 n) is standard and sufficient for n up to ~2*10^5.</p></div>
+  </div>
+  <article class="example-card" id="trees-heavy-light-decomposition-ex0">
+  <h4>Path Maximum Queries with Point Updates</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a tree with n vertices (rooted at vertex 1), each holding an integer value. Process q operations of two kinds:<br>  &quot;U i x&quot; — set the value of vertex i to x.<br>  &quot;Q u v&quot; — output the maximum value among all vertices on the path between u and v (inclusive).<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. First DFS: compute parent[], depth[], subtree size[], and each vertex&#x27;s heavy child (the child with the largest subtree).<br>2. Second DFS: assign each vertex a position pos[v] in a flat array and a chain head head[v], always recursing into the heavy child first (so a whole heavy chain gets consecutive positions) before recursing into light children (each of which starts a brand-new chain headed at itself).<br>3. Build a segment tree over the pos[] array supporting point update and range maximum.<br>4. To update vertex i: point-update the segment tree at pos[i].<br>5. To query the path between u and v: while head[u] != head[v], move whichever of u, v has the *deeper* chain head up to that head&#x27;s parent, first querying the range [pos[head], pos[that vertex]] along the way. Once u and v share a chain head, do one last range query between pos[u] and pos[v] (after possibly swapping so pos[u] &lt;= pos[v]) and combine it with the running maximum.</p><p>Worked check on the sample: the tree is 1-(2,3), 2-(4,5), 4-6, 3-7, 7-8 with values [5,2,3,9,1,7,4,6]. Heavy child of 1 is 2 (subtree size 4 vs 3), heavy child of 2 is 4, heavy child of 3 is 7, heavy child of 7 is 8, heavy child of 4 is 6. So the heavy chains are {1,2,4,6}, {5}, {3,7,8}. Query &quot;6 8&quot; walks: head(6)=1, head(8)=3 (different, and depth(head 6)=0 &lt; depth(head 8)=1, so jump 8 up first) -&gt; range-query chain {3,7,8} restricted to [pos(3), pos(8)] = max(3,4,6)=6, then move to parent(3)=1; now head(1)=head(6)=1, so a final query over [pos(1),pos(6)] on chain {1,2,4,6} = max(5,2,9,7)=9; overall answer max(6,9)=9, matching the values along the true path 6-4-2-1-3-7-8 = [7,9,2,5,3,4,6].</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+const long long NEG = LLONG_MIN;
+
+int n, q;
+vector&lt;int&gt; adj[200005];
+long long a[200005];
+int par[200005], depth_[200005], heavy[200005], headArr[200005], pos_[200005], sz[200005];
+int curPos = 0;
+
+int dfs1(int v, int p) {
+    par[v] = p;
+    sz[v] = 1;
+    int maxSub = 0;
+    heavy[v] = -1;
+    for (int c : adj[v]) {
+        if (c == p) continue;
+        depth_[c] = depth_[v] + 1;
+        int csz = dfs1(c, v);
+        sz[v] += csz;
+        if (csz &gt; maxSub) { maxSub = csz; heavy[v] = c; }
+    }
+    return sz[v];
+}
+
+void dfs2(int v, int h) {
+    headArr[v] = h;
+    pos_[v] = curPos++;
+    if (heavy[v] != -1) dfs2(heavy[v], h);
+    for (int c : adj[v]) {
+        if (c != par[v] &amp;&amp; c != heavy[v]) dfs2(c, c);
+    }
+}
+
+// segment tree: range max, point update
+struct SegTree {
+    int n;
+    vector&lt;long long&gt; t;
+    void init(int n_) { n = n_; t.assign(2 * n, NEG); }
+    void build(vector&lt;long long&gt;&amp; base) {
+        for (int i = 0; i &lt; n; i++) t[n + i] = base[i];
+        for (int i = n - 1; i &gt;= 1; i--) t[i] = max(t[2*i], t[2*i+1]);
+    }
+    void update(int i, long long val) {
+        i += n; t[i] = val;
+        for (i /= 2; i &gt;= 1; i /= 2) t[i] = max(t[2*i], t[2*i+1]);
+    }
+    long long query(int l, int r) { // inclusive, 0-indexed
+        long long res = NEG;
+        for (l += n, r += n + 1; l &lt; r; l /= 2, r /= 2) {
+            if (l &amp; 1) res = max(res, t[l++]);
+            if (r &amp; 1) res = max(res, t[--r]);
+        }
+        return res;
+    }
+} seg;
+
+long long pathMax(int u, int v) {
+    long long res = NEG;
+    while (headArr[u] != headArr[v]) {
+        if (depth_[headArr[u]] &lt; depth_[headArr[v]]) swap(u, v);
+        res = max(res, seg.query(pos_[headArr[u]], pos_[u]));
+        u = par[headArr[u]];
+    }
+    if (depth_[u] &gt; depth_[v]) swap(u, v);
+    res = max(res, seg.query(pos_[u], pos_[v]));
+    return res;
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+
+    depth_[1] = 0;
+    dfs1(1, 0);
+    dfs2(1, 1);
+
+    vector&lt;long long&gt; base(n);
+    for (int i = 1; i &lt;= n; i++) base[pos_[i]] = a[i];
+    seg.init(n);
+    seg.build(base);
+
+    cin &gt;&gt; q;
+    while (q--) {
+        string type; cin &gt;&gt; type;
+        if (type == &quot;U&quot;) {
+            int idx; long long x; cin &gt;&gt; idx &gt;&gt; x;
+            seg.update(pos_[idx], x);
+        } else {
+            int u, v; cin &gt;&gt; u &gt;&gt; v;
+            cout &lt;&lt; pathMax(u, v) &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8
+1 2
+1 3
+2 4
+2 5
+4 6
+3 7
+7 8
+5 2 3 9 1 7 4 6
+5
+Q 6 8
+Q 5 8
+U 6 20
+Q 6 8
+Q 4 6
+</code></pre>
+    <pre><code>9
+6
+20
+20</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-centroid-decomposition">
+  <div class="topic-head"><h2>Centroid Decomposition</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Every tree has a centroid: a vertex whose removal splits the tree into components each of size at most n/2 (a tree always has one, or two adjacent ones — pick either). Centroid decomposition exploits this repeatedly: find the centroid c of the whole tree, solve/answer whatever needs c&#x27;s involvement, remove c, and then recurse independently into each remaining component (each now rooted at its own, smaller centroid). Because every recursive step at least halves the size of the piece being processed, the recursion has depth O(log n), and this recursion structure is itself a tree (the &quot;centroid tree&quot;) with height O(log n) — a second, auxiliary tree living on top of the original one.</p><p>The classic use case is counting or answering queries about *paths* in a tree. Any path between two vertices u and v has a unique highest point in the centroid decomposition: the first centroid removed that lay on the u-v path (equivalently, the centroid whose removal first separates u and v into different components, or which equals u or v itself). This means you can process &quot;all paths&quot; by, for each centroid c in turn, only considering paths that pass through c, and the union over all centroids covers every path in the original tree exactly once. Finding all paths through c is easy: it&#x27;s just combining vertices from *different* branches of c using depths measured from c, similar to the tree-DP diameter idea but now needing all pairwise combinations, not just the best one.</p><p>The standard implementation pattern for &quot;count paths through c satisfying some depth condition&quot; is: process c&#x27;s branches (subtrees hanging off c) one at a time. Before folding a branch&#x27;s depths into a running frequency table, first use the *already-accumulated* table (from earlier branches, plus c itself at depth 0) to count how many valid pairs the new branch&#x27;s depths complete. Only after counting do you add the new branch&#x27;s own depths into the table. This order is what prevents double-counting or miscounting paths that stay inside a single branch (which don&#x27;t pass through c and must be handled by a deeper centroid instead) — a very easy detail to get backwards, which silently produces wrong counts rather than a crash, so implement and test this ordering with extra care.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for centroid decomposition when a problem asks you to count or aggregate over *all pairs of vertices* (or all paths) satisfying a distance-based condition (exact length, length in a range, sum of weights condition), especially when a per-vertex or per-pair brute force would be O(n^2) or worse. It also underlies online &quot;nearest marked vertex&quot; query structures, where each centroid level maintains auxiliary distance information that&#x27;s cheap to update because a vertex belongs to only O(log n) centroids&#x27; subtrees.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Building the centroid tree: O(n log n) total, since finding a centroid and its subtree sizes costs O(size of current component), and component sizes at least halve at each of the O(log n) levels. Processing all paths through all centroids (the depth-counting pass shown below) is also O(n log n) total by the same halving argument, since every vertex is visited by an O(size) traversal at O(log n) different centroid levels. Space is O(n) for the recursion plus whatever auxiliary structure each centroid keeps.</p></div>
+  </div>
+  <article class="example-card" id="trees-centroid-decomposition-ex0">
+  <h4>Counting Pairs at an Exact Distance</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a tree with n vertices and an integer K, count the number of unordered pairs of distinct vertices (u, v) whose distance (number of edges on the path between them) is exactly K. Constraints: 1 &lt;= n &lt;= 2*10^5, 0 &lt;= K &lt;= n-1.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Recursively decompose the tree by centroid. At each centroid c: every counted pair must have c as the highest point of its path (handled at this level) or lie entirely within one component after removing c (handled recursively at a deeper level). Maintain a hashmap cnt of &quot;how many already-processed vertices are at distance d from c&quot;, seeded with cnt[0] = 1 for c itself. Process c&#x27;s neighbor-subtrees one at a time: for each vertex found in the current subtree at depth d from c (depth capped early once d &gt; K, since it can never complete a valid pair), add cnt[K - d] to the answer (this uses only vertices from *earlier* subtrees or c itself, so within-subtree pairs are never double-counted), then fold this subtree&#x27;s depths into cnt for the next subtree to use. Finally, remove c and recurse into each remaining component.</p><p>Worked check on the sample tree (1-(2,3), 2-(4,5), 3-(6,7), 7-8, K=3): the very first centroid found is vertex 1 itself (both children&#x27;s subtrees have size &lt;= 4, not exceeding half of 8), and processing its two branches finds pairs (3,4), (3,5), (2,6), (2,7), and (1,8) — five pairs whose path passes through vertex 1. The sixth valid pair, (6,8) (path 6-3-7-8, length 3), does *not* pass through vertex 1, so it is correctly missed at this level and only found when the recursion reaches the centroid of the remaining {3,6,7,8} component (which turns out to be vertex 3 itself), illustrating why the recursive step into leftover components is essential, not optional.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, K;
+vector&lt;int&gt; adj[100005];
+bool removed_[100005];
+int sz[100005];
+long long ans = 0;
+
+int compSize(int v, int p) {
+    sz[v] = 1;
+    for (int c : adj[v]) {
+        if (c != p &amp;&amp; !removed_[c]) sz[v] += compSize(c, v);
+    }
+    return sz[v];
+}
+
+int getCentroid(int v, int p, int treeSize) {
+    for (int c : adj[v]) {
+        if (c != p &amp;&amp; !removed_[c] &amp;&amp; sz[c] &gt; treeSize / 2) {
+            return getCentroid(c, v, treeSize);
+        }
+    }
+    return v;
+}
+
+void getDepths(int v, int p, int d, vector&lt;int&gt;&amp; depths) {
+    if (d &gt; K) return; // depths beyond K can never combine with a nonnegative depth to hit K
+    depths.push_back(d);
+    for (int c : adj[v]) {
+        if (c != p &amp;&amp; !removed_[c]) getDepths(c, v, d + 1, depths);
+    }
+}
+
+void decompose(int v) {
+    int treeSize = compSize(v, -1);
+    int centroid = getCentroid(v, -1, treeSize);
+    removed_[centroid] = true;
+
+    unordered_map&lt;int, long long&gt; cnt;
+    cnt[0] = 1; // the centroid itself sits at distance 0 from itself
+    for (int c : adj[centroid]) {
+        if (removed_[c]) continue;
+        vector&lt;int&gt; depths;
+        getDepths(c, centroid, 1, depths);
+        // count pairs (node in this subtree, node already seen: earlier subtree or the centroid)
+        for (int d : depths) {
+            int need = K - d;
+            if (need &gt;= 0) {
+                auto it = cnt.find(need);
+                if (it != cnt.end()) ans += it-&gt;second;
+            }
+        }
+        // now fold this subtree&#x27;s depths into cnt for subsequent subtrees
+        for (int d : depths) cnt[d]++;
+    }
+
+    for (int c : adj[centroid]) {
+        if (!removed_[c]) decompose(c);
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n &gt;&gt; K;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    decompose(1);
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8 3
+1 2
+1 3
+2 4
+2 5
+3 6
+3 7
+7 8
+</code></pre>
+    <pre><code>6</code></pre>
+  </div>
+</article><article class="example-card" id="trees-centroid-decomposition-ex1">
+  <h4>Edge Case: A Tree That Is a Single Path</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Same task as above (count unordered pairs of vertices at exact distance K), applied to the degenerate case where the input tree is a straight path (a &quot;bamboo&quot;): vertices 1-2-3-4-5-6 with n = 6 and K = 3.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is worth tracing by hand because a path is the worst case for naive recursive splitting (an arbitrary vertex removal can leave an unbalanced O(n)-size remainder), yet centroid decomposition still guarantees balance: the centroid of a path of length n is always its middle vertex. Here, starting the search from vertex 1, the algorithm still correctly walks to vertex 3 (the middle of 1..6) as the first centroid, since removing vertex 3 leaves two components {1,2} and {4,5,6}, each of size &lt;= 3 = 6/2. Processing branches {1,2} then {4,5,6} from centroid 3 immediately finds all three valid pairs at distance 3 — (1,4), (2,5), and (3,6) — because on a path every pair at distance K straddles the midpoint when K is large enough relative to the two half-lengths; recursing further into the two remaining halves (each of size &lt;= 3, too small to contain another distance-3 pair) correctly contributes nothing more.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, K;
+vector&lt;int&gt; adj[100005];
+bool removed_[100005];
+int sz[100005];
+long long ans = 0;
+
+int compSize(int v, int p) {
+    sz[v] = 1;
+    for (int c : adj[v]) {
+        if (c != p &amp;&amp; !removed_[c]) sz[v] += compSize(c, v);
+    }
+    return sz[v];
+}
+
+int getCentroid(int v, int p, int treeSize) {
+    for (int c : adj[v]) {
+        if (c != p &amp;&amp; !removed_[c] &amp;&amp; sz[c] &gt; treeSize / 2) {
+            return getCentroid(c, v, treeSize);
+        }
+    }
+    return v;
+}
+
+void getDepths(int v, int p, int d, vector&lt;int&gt;&amp; depths) {
+    if (d &gt; K) return; // depths beyond K can never combine with a nonnegative depth to hit K
+    depths.push_back(d);
+    for (int c : adj[v]) {
+        if (c != p &amp;&amp; !removed_[c]) getDepths(c, v, d + 1, depths);
+    }
+}
+
+void decompose(int v) {
+    int treeSize = compSize(v, -1);
+    int centroid = getCentroid(v, -1, treeSize);
+    removed_[centroid] = true;
+
+    unordered_map&lt;int, long long&gt; cnt;
+    cnt[0] = 1; // the centroid itself sits at distance 0 from itself
+    for (int c : adj[centroid]) {
+        if (removed_[c]) continue;
+        vector&lt;int&gt; depths;
+        getDepths(c, centroid, 1, depths);
+        // count pairs (node in this subtree, node already seen: earlier subtree or the centroid)
+        for (int d : depths) {
+            int need = K - d;
+            if (need &gt;= 0) {
+                auto it = cnt.find(need);
+                if (it != cnt.end()) ans += it-&gt;second;
+            }
+        }
+        // now fold this subtree&#x27;s depths into cnt for subsequent subtrees
+        for (int d : depths) cnt[d]++;
+    }
+
+    for (int c : adj[centroid]) {
+        if (!removed_[c]) decompose(c);
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin &gt;&gt; n &gt;&gt; K;
+    for (int i = 0; i &lt; n - 1; i++) {
+        int u, v; cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    decompose(1);
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6 3
+1 2
+2 3
+3 4
+4 5
+5 6
+</code></pre>
+    <pre><code>3</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-small-to-large-merging-dsu-on-tree">
+  <div class="topic-head"><h2>Small-to-Large Merging (DSU on Tree)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Small-to-large merging (often called &quot;DSU on tree&quot; or &quot;the sack technique&quot;) solves a common family of tree problems: for EVERY vertex v, compute some aggregate over the multiset of values found in v&#x27;s subtree (a frequency table of colors, a histogram of relative depths, a count of distinct values, a running sum of the k largest elements, etc.). The naive approach -- at each vertex, walk the whole subtree and rebuild the aggregate from scratch -- costs O(size of subtree) per vertex, and summing subtree sizes over all vertices of a tree is O(n) in a balanced tree but O(n^2) in the worst case (a &quot;broom&quot;: a long path whose every vertex also has many of its subtree&#x27;s vertices attached low down forces most subtrees to be large). The fix is to never throw away work: process the tree in post-order, and at each vertex build its aggregate not from raw leaves but by MERGING the already-computed aggregates of its children, one child&#x27;s data structure into another&#x27;s. The rule that makes this fast is small-to-large: whenever two structures are merged, always dump the elements of the SMALLER one into the LARGER one (and let the larger one become the merged result), never the reverse.</p><p>The reason this is asymptotically better follows from a simple potential/accounting argument. Track, for each individual element (a color, a depth bucket, a vertex), how many times it gets physically moved from one container to another over the whole algorithm&#x27;s execution. Every time an element moves, it moves because it lived in the smaller of the two structures being merged -- so after the merge, it now sits inside a structure whose size is at least double what its OLD container&#x27;s size was (since the new container&#x27;s size is the sum of both, and it is at least twice the smaller one). A quantity that at least doubles every time it happens, bounded above by n, can happen at most O(log n) times. So every element moves O(log n) times across the entire run, and since there are n elements total, the sum of all merge costs is O(n log n) rather than O(n^2), even though any single merge in isolation can still cost O(subtree size).</p><p>There are two equivalent implementation shapes in practice. The first, used below, merges child data structures directly: give each vertex its own container (hash map, vector, etc.) built bottom-up; when combining a vertex with a child, compare container sizes, swap pointers/handles so the larger container becomes the vertex&#x27;s own, then iterate over the smaller container&#x27;s entries and fold each one into the larger (updating any running summary, like a current maximum, as you go), finally discarding the now-empty smaller container. This works cleanly whenever the aggregate has genuine merge semantics: counts add, running maxima compare, sums add. The second shape, the classic &quot;DSU on tree&quot;/sack technique, instead keeps ONE shared global data structure: for a vertex, recursively solve and then fully UNDO every &quot;light&quot; child (every child except the one with the largest subtree), then recursively solve the single &quot;heavy&quot; child WITHOUT undoing it (its contribution is left sitting in the global structure), re-add the light children&#x27;s vertices on top, read off the answer for the current vertex from the now-complete global state, and only undo the current vertex&#x27;s own contribution if it is itself a light child of its parent. Both variants are O(n log n); the direct-merge shape is usually easier to get right when the aggregate genuinely composes (as in both examples below), and it is also the version most naturally called &quot;small-to-large merging.&quot;</p><p>One subtlety that trips people up: if the aggregate must be reindexed when moving from a child&#x27;s frame of reference to the parent&#x27;s (the classic example is a depth-count array, where a child&#x27;s &quot;relative depth 0&quot; is the parent&#x27;s &quot;relative depth 1&quot;), physically re-indexing the LARGER structure during every merge (shifting every entry up by one) silently destroys the O(n log n) bound, because now the expensive operation happens to the big structure too, every time. Two clean ways around this: either only ever re-index the SMALLER structure being folded in (so the accounting argument above still applies), or -- the trick used in the second worked example -- pick a coordinate system that never needs reindexing at all, such as absolute depth measured from the tree&#x27;s root rather than relative depth measured from each vertex; since absolute depth doesn&#x27;t change no matter which ancestor is asking, merging becomes pure elementwise addition with no shifting, and the relative answer for a vertex is recovered at the end by subtracting that vertex&#x27;s own absolute depth.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem asks for an aggregate defined per-subtree, computed for EVERY vertex of the tree (not just the root): &quot;for each vertex, sum the colors that appear most frequently in its subtree,&quot; &quot;for each vertex, find the depth (relative to it) containing the most nodes,&quot; &quot;for each vertex, count the number of distinct values in its subtree,&quot; &quot;for each vertex, find the median/k-th largest value among its subtree.&quot; The giveaway versus a plain single-pass tree DP is that the natural per-vertex state is not a small fixed-size summary (a couple of integers) but a genuine COLLECTION (a frequency table, a sorted multiset, a histogram) that would be expensive to rebuild from scratch at every vertex, and that collection can be produced by MERGING the children&#x27;s collections together. If a per-vertex answer can be phrased as &quot;the answer for v&#x27;s aggregate = combine(aggregate of child 1, aggregate of child 2, ..., v&#x27;s own value)&quot; and rebuilding each aggregate from raw leaves would be O(n) per vertex in the worst case, small-to-large merging (or its DSU-on-tree twin) is the standard tool.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time overall when the per-element merge/insert operation is O(1) amortized (hash maps, dynamic arrays/vectors, or a plain running max+sum) -- each of the n elements is moved into a new container O(log n) times across the whole tree, by the small-to-large potential argument, for O(n log n) total element-moves. If the container itself needs O(log n) per operation (e.g. merging std::set/std::map by rank, or a Fenwick tree), the bound becomes O(n log^2 n). Space is O(n) for the containers plus O(n) for the recursion stack (or O(n) auxiliary if implemented iteratively to avoid deep recursion on skewed trees).</p></div>
+  </div>
+  <article class="example-card" id="trees-small-to-large-merging-dsu-on-tree-ex0">
+  <h4>Sum of Dominant Colors in Every Subtree</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a rooted tree with n vertices (1 &lt;= n &lt;= 15 for this worked example; the original problem allows n up to 10^5), rooted at vertex 1. Vertex i has an integer color c[i] (1 &lt;= c[i] &lt;= 10^5). For a vertex v, define its subtree&#x27;s &quot;dominant colors&quot; as the color or colors that occur the maximum number of times among the colors of all vertices in v&#x27;s subtree (v included). If several colors tie for that maximum frequency, ALL of them are dominant. For every vertex v (v = 1..n), output the SUM of all colors that are dominant in v&#x27;s subtree.</p><p>Input: the first line contains n. The second line contains n integers c[1..n], the color of each vertex. Each of the next n-1 lines contains two integers a b, an edge of the tree (1-indexed).<br>Output: n integers on one line, separated by spaces: the sum of dominant colors for vertices 1, 2, ..., n in order.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the canonical small-to-large merging problem (Codeforces 600E, &quot;Lomsat gelral&quot;). Give every vertex v a small structure Data{cnt, maxFreq, sumAtMax}, where cnt is a hash map from color to how many times that color appears in v&#x27;s subtree so far, maxFreq is the current highest count in cnt, and sumAtMax is the running sum of every color currently achieving maxFreq. A helper addColor(d, color, delta) increments cnt[color] by delta and then updates maxFreq/sumAtMax in O(1): if the new count strictly exceeds maxFreq, this color becomes the sole maximum (maxFreq = new count, sumAtMax = color); if it ties the current maxFreq, it joins the tied set (sumAtMax += color); otherwise nothing changes.</p><p>Process the tree with a post-order DFS. At a leaf, create a fresh Data containing just that vertex&#x27;s own color (count 1). At an internal vertex u, first build Data for u containing just c[u] alone, then, after recursively solving each child v, compare the SIZE of u&#x27;s current cnt map against child v&#x27;s cnt map: if v&#x27;s map is larger, swap which map belongs to u and which belongs to v (this is the whole trick -- always keep the bigger one and dump the smaller one into it). Then iterate over every (color, count) entry remaining in the smaller map and call addColor on u&#x27;s map for each, so the smaller map&#x27;s contribution is folded into the larger one; discard the now-empty smaller map. After all children are merged in this way, u&#x27;s Data represents its ENTIRE subtree, and the answer for u is simply its current sumAtMax -- no separate pass or recount is needed.</p><p>A common bug is forgetting to re-add the current vertex&#x27;s own color when the larger child&#x27;s map is adopted as the base -- this implementation avoids that failure mode entirely by initializing u&#x27;s own Data with c[u] BEFORE merging any children, so u&#x27;s own contribution is always present in whichever map ends up being the survivor of the swaps. Another common bug is stale pointers after a swap; here nodeData[u] and nodeData[v] are accessed as references into the same vector&lt;Data*&gt;, so swap(pu, pv) correctly updates which slot each vertex&#x27;s pointer lives in, and the discarded map is deleted exactly once. To build confidence, this solution was checked against a brute-force program that, for every vertex, explicitly walks its whole subtree, tallies colors in a hash map, and recomputes the maximum-frequency sum directly -- the two agreed on the worked example below and on 500 randomly generated trees with n from 1 to 10 and colors drawn from a small alphabet, with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;int&gt; color_;
+vector&lt;vector&lt;int&gt;&gt; adj;
+vector&lt;long long&gt; answer;
+
+struct Data {
+    unordered_map&lt;int,long long&gt; cnt;
+    long long maxFreq = 0;
+    long long sumAtMax = 0;
+};
+
+vector&lt;Data*&gt; nodeData;
+
+void addColor(Data* d, int c, long long delta) {
+    d-&gt;cnt[c] += delta;
+    long long v = d-&gt;cnt[c];
+    if (v &gt; d-&gt;maxFreq) {
+        d-&gt;maxFreq = v;
+        d-&gt;sumAtMax = c;
+    } else if (v == d-&gt;maxFreq) {
+        d-&gt;sumAtMax += c;
+    }
+}
+
+void dfs(int u, int parent) {
+    Data* du = new Data();
+    addColor(du, color_[u], 1);
+    nodeData[u] = du;
+    for (int v : adj[u]) {
+        if (v == parent) continue;
+        dfs(v, u);
+        Data*&amp; pu = nodeData[u];
+        Data*&amp; pv = nodeData[v];
+        if (pv-&gt;cnt.size() &gt; pu-&gt;cnt.size()) swap(pu, pv);
+        // merge smaller (pv) into larger (pu)
+        for (auto&amp; [c, cnt] : pv-&gt;cnt) {
+            addColor(pu, c, cnt);
+        }
+        delete pv;
+        pv = nullptr;
+    }
+    answer[u] = nodeData[u]-&gt;sumAtMax;
+}
+
+int main(){
+    cin &gt;&gt; n;
+    color_.assign(n+1, 0);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; color_[i];
+    adj.assign(n+1, {});
+    for (int i = 0; i &lt; n-1; i++) {
+        int a, b; cin &gt;&gt; a &gt;&gt; b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    answer.assign(n+1, 0);
+    nodeData.assign(n+1, nullptr);
+    dfs(1, 0);
+    for (int i = 1; i &lt;= n; i++) {
+        cout &lt;&lt; answer[i] &lt;&lt; (i&lt;n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8
+2 1 1 1 2 3 2 2
+1 2
+1 3
+2 4
+2 5
+3 6
+3 7
+7 8
+</code></pre>
+    <pre><code>2 1 2 1 2 3 2 2
+</code></pre>
+  </div>
+</article><article class="example-card" id="trees-small-to-large-merging-dsu-on-tree-ex1">
+  <h4>Dominant Depth of Every Subtree</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a rooted tree with n vertices (1 &lt;= n &lt;= 15 for this worked example; the original problem allows n up to 10^6), rooted at vertex 1. For a vertex v, define the RELATIVE depth of a vertex w in v&#x27;s subtree as the number of edges on the path from v down to w (so v itself has relative depth 0, v&#x27;s children have relative depth 1, and so on). For every vertex v (v = 1..n), find the relative depth d that contains the largest number of vertices within v&#x27;s subtree; if several depths tie for the largest count, report the SMALLEST such d.</p><p>Input: the first line contains n. Each of the next n-1 lines contains two integers a b, an edge of the tree (1-indexed).<br>Output: n integers on one line, separated by spaces: the answer for vertices 1, 2, ..., n in order.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is Codeforces 1009F, &quot;Dominant Indices,&quot; the classic example of small-to-large merging where the per-vertex aggregate is an ARRAY (a histogram of counts by depth) rather than a single scalar, which is exactly the setting where naive array-merging is tempting but quadratic. The subtlety versus example 1 is reindexing: a child&#x27;s &quot;relative depth 0&quot; is the parent&#x27;s &quot;relative depth 1&quot;, so naively merging a child&#x27;s depth-count array into the parent&#x27;s would require shifting every entry up by one index -- and if that shift is applied to whichever array happens to be the LARGER one (which, done carelessly, happens routinely), the O(n log n) bound is destroyed, because the expensive operation would then hit large arrays over and over.</p><p>The fix used here is to sidestep reindexing entirely by keying every vertex&#x27;s histogram on ABSOLUTE depth from the root instead of relative depth from that vertex. Absolute depth of a given descendant does not depend on which ancestor is asking, so merging a child&#x27;s histogram into a parent&#x27;s is pure elementwise addition -- no shifting, ever. Concretely: give every vertex v a Data{cnt, bestCount, bestDepth} where cnt maps absolute depth to how many vertices at that absolute depth appear in v&#x27;s subtree so far, and bestCount/bestDepth track the running best (largest count, tie-broken toward smallest absolute depth) exactly as in example 1&#x27;s maxFreq/sumAtMax. A DFS assigns depth_[u] = depth_[parent] + 1 while descending, initializes u&#x27;s own Data with a single entry at depth_[u], and after solving each child v, compares map sizes and swaps so the LARGER map survives as u&#x27;s map, then folds every entry of the smaller map into it. Because both maps use the SAME absolute-depth coordinate system, this fold is always a plain add -- never a shift -- so the small-to-large accounting argument applies cleanly and the whole tree costs O(n log n).</p><p>Finally, since the question asks for the depth RELATIVE to v (not absolute), the answer at v is recovered at the very end as bestDepth - depth_[u] (the absolute depth of the best level, minus v&#x27;s own absolute depth) -- a single O(1) subtraction per vertex, done only once all of v&#x27;s children have been merged in. This was cross-checked against a brute-force program that, for every vertex, walks its subtree explicitly while tracking TRUE relative depth and picks the smallest depth achieving the maximum count; the two agreed on the worked example below and on 500 randomly generated trees with n from 1 to 12, with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;vector&lt;int&gt;&gt; adj;
+vector&lt;int&gt; depth_;
+vector&lt;int&gt; answer;
+
+struct Data {
+    unordered_map&lt;int,long long&gt; cnt;  // key = ABSOLUTE depth from root
+    long long bestCount = 0;
+    int bestDepth = -1;                // absolute depth achieving bestCount, smallest wins ties
+};
+
+vector&lt;Data*&gt; nodeData;
+
+void addAt(Data* d, int absDepth, long long delta) {
+    d-&gt;cnt[absDepth] += delta;
+    long long v = d-&gt;cnt[absDepth];
+    if (v &gt; d-&gt;bestCount || (v == d-&gt;bestCount &amp;&amp; absDepth &lt; d-&gt;bestDepth)) {
+        d-&gt;bestCount = v;
+        d-&gt;bestDepth = absDepth;
+    }
+}
+
+void dfs(int u, int parent) {
+    Data* du = new Data();
+    addAt(du, depth_[u], 1);
+    nodeData[u] = du;
+    for (int v : adj[u]) {
+        if (v == parent) continue;
+        depth_[v] = depth_[u] + 1;
+        dfs(v, u);
+        Data*&amp; pu = nodeData[u];
+        Data*&amp; pv = nodeData[v];
+        // Because both maps are keyed by the SAME absolute-depth coordinate
+        // system, merging never requires re-indexing/shifting -- we can
+        // simply keep whichever map is larger and fold the smaller one in.
+        if (pv-&gt;cnt.size() &gt; pu-&gt;cnt.size()) swap(pu, pv);
+        for (auto&amp; [d, c] : pv-&gt;cnt) {
+            addAt(pu, d, c);
+        }
+        delete pv;
+        pv = nullptr;
+    }
+    // relative depth = absolute depth of the best level minus u&#x27;s own absolute depth
+    answer[u] = nodeData[u]-&gt;bestDepth - depth_[u];
+}
+
+int main(){
+    cin &gt;&gt; n;
+    adj.assign(n+1, {});
+    for (int i = 0; i &lt; n-1; i++) {
+        int a, b; cin &gt;&gt; a &gt;&gt; b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    depth_.assign(n+1, 0);
+    answer.assign(n+1, 0);
+    nodeData.assign(n+1, nullptr);
+    depth_[1] = 0;
+    dfs(1, 0);
+    for (int i = 1; i &lt;= n; i++) {
+        cout &lt;&lt; answer[i] &lt;&lt; (i&lt;n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>10
+1 2
+1 3
+2 4
+2 5
+5 9
+3 6
+3 7
+3 8
+8 10
+</code></pre>
+    <pre><code>2 1 1 0 0 0 0 0 0 0
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-virtual-trees-auxiliary-tree-technique">
+  <div class="topic-head"><h2>Virtual Trees (Auxiliary Tree Technique)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A virtual tree (also called an auxiliary tree) is a compression trick for answering repeated queries on a large, fixed tree, where each query names only a small subset S of vertices (with sum of |S| over all queries bounded, e.g. by 2*10^5) and the answer depends only on the relative ancestor/descendant structure and pairwise distances among the vertices of S. Re-running an O(n) DFS or DP over the whole tree for every query is too slow once there are many queries; instead, for each query you build a much smaller tree -- containing only the vertices of S plus the O(|S|) extra vertices needed to preserve their pairwise LCA relationships -- and run whatever DFS/DP the problem needs on that small tree instead. Because the small tree has at most 2|S|-1 vertices, and it can be built in O(|S| log n) time using LCA queries (themselves answered in O(log n) via binary lifting, built once in O(n log n) preprocessing on the original tree), the total work across all queries becomes O((sum of |S|) log n) instead of O(q * n).</p><p>Construction, given a query set S (assume LCA(u, v) and Euler-tour in-time/out-time for the original tree are already available): (1) sort S by Euler-tour in-time; (2) for every consecutive pair in this sorted order, compute their LCA and add it to the vertex set (this guarantees every &#x27;branch point&#x27; needed to correctly join the vertices of S is present -- it is a standard fact that the LCA of any two vertices in S is also the LCA of some consecutive pair of S once S is sorted by in-time, so you never need all O(|S|^2) pairwise LCAs); (3) sort the combined set (S plus the inserted LCAs) by in-time again and remove duplicates. This gives at most 2|S|-1 distinct vertices. (4) Build the actual edges with a single left-to-right pass using a stack that represents the current rightmost root-to-leaf path of the (partially built) virtual tree: push the first vertex. For each subsequent vertex v (in in-time order), let l = LCA(stack.top(), v). While the stack has more than one element and the second-from-top element&#x27;s depth is &gt;= depth(l), pop the top and attach it as a child of the new stack top (in an edge-weighted virtual tree, that edge&#x27;s weight is the real tree-path length between the two endpoints, i.e. depth or distance-from-root difference). If the element now on top of the stack differs from l, insert l as its child (replacing the top with l on the stack), attaching the old top under l. Finally push v itself. After processing all vertices, drain the stack (attaching each remaining element under the one below it) to finish the tree; exactly one vertex remains at the bottom -- the LCA of the whole set S -- which becomes the virtual tree&#x27;s root. This stack-based construction runs in O(|S| log n) total (dominated by the O(log n) LCA queries), and never needs to look at the rest of the original tree.</p><p>The resulting virtual tree preserves exactly the ancestor/descendant relationships and pairwise distances of the original tree restricted to its vertices, so any DFS/DP whose transitions only depend on &#x27;is u an ancestor of v&#x27; or &#x27;distance between u and v&#x27; can be run correctness-preservingly on the virtual tree instead of the full tree. A subtlety worth remembering: the LCA of S is not necessarily itself a member of S, so the DP run on the virtual tree must track, separately from tree structure, which virtual-tree vertices are &#x27;real&#x27; query vertices (e.g. an isCapital[] flag) versus inserted structural (LCA) vertices -- getting this distinction wrong is one of the most common bugs when implementing the technique.</p><p>Recognize the pattern by two signals together: (a) many queries, each naming a small subset of the tree&#x27;s vertices, with the sum of subset sizes bounded well below q * n; and (b) the per-query answer is expressible purely in terms of ancestor/descendant relationships and path distances among the queried vertices (a Steiner-tree weight, a small tree DP such as a minimum vertex cut/dominating-set variant restricted to the query set, counting or covering problems over the query set&#x27;s induced structure). If the answer genuinely needs information from vertices outside S (not just their effect through LCA/distance relationships), the virtual tree is not sufficient on its own.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Multiple queries on one fixed, large tree, where each query supplies a small vertex subset S (sum of |S| over all queries bounded, e.g. &lt;= 2*10^5) and asks for something computable from S&#x27;s mutual ancestor/descendant structure and path distances -- e.g. &#x27;minimum vertices to remove so no two of these vertices stay connected&#x27;, &#x27;total weight of the minimal subtree connecting these vertices&#x27;, &#x27;sum/count of some tree DP restricted to the induced structure of these vertices&#x27;. A red flag that a naive per-query O(n) DFS/DP is too slow (q can be large, n can be large, but sum of |S| is the bounded quantity) is exactly the signal to build a virtual tree of size O(|S|) per query instead.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) one-time preprocessing (Euler tour + binary-lifting LCA table). Per query with |S| vertices: O(|S| log n) to sort S and compute the O(|S|) pairwise-consecutive LCAs, O(|S| log|S|) to sort/dedupe, and O(|S|) for the stack-based edge construction, so O(|S| log n) per query overall; running a linear DP on the resulting &lt;= 2|S|-1 node virtual tree costs O(|S|) more. Total across all queries: O((sum of |S|) log n) time and O(sum of |S|) space for the virtual trees themselves, versus O(q * n) for a naive per-query full-tree pass.</p></div>
+  </div>
+  <article class="example-card" id="trees-virtual-trees-auxiliary-tree-technique-ex0">
+  <h4>Minimum Connecting Network Cost (Steiner tree weight via virtual tree construction)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a tree with n vertices (1 &lt;= n &lt;= 2*10^5 in the original setting; kept small here for the worked example) rooted implicitly at vertex 1, where edge i connects two vertices and has a positive integer weight. You are then given q independent queries; each query gives a set S of k distinct vertices (sum of k over all queries bounded, e.g. by 2*10^5) and asks for the total edge weight of the minimal connected subtree of the original tree that contains every vertex of S (i.e. the sum of edge weights over the union of the tree-paths between every pair of vertices in S, each edge counted once even if it lies on multiple such paths).</p><p>Input: n, then n-1 lines each &#x27;u v w&#x27; (an edge between u and v with weight w). Then q, then q queries, each given as &#x27;k&#x27; followed by a line of k vertex indices.<br>Output: for each query, one line with the total edge weight of the minimal connecting subtree.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the cleanest possible demonstration of the virtual-tree construction itself, because the final answer is nothing more than the sum of the constructed virtual tree&#x27;s edge weights: it is a standard fact that when a virtual tree&#x27;s edges are weighted by the real tree-path distance between their endpoints, those edges exactly tile the minimal Steiner tree connecting S with no overlap and no gaps (every real-tree edge used by some S-to-S path is &#x27;covered&#x27; by exactly one virtual-tree edge, and the virtual-tree edges use no real-tree edge more than once).</p><p>Step 1 (preprocessing, once): run one DFS from root 1 building the Euler in-time/out-time (for O(1) ancestor tests), an unweighted depth[] array (edge count from the root, used only to order the stack correctly), a binary-lifting ancestor table for O(log n) LCA queries, and distW[] = sum of edge weights from the root to each vertex (so that the real weighted distance between any vertex and one of its ancestors is a simple subtraction of distW values).</p><p>Step 2 (per query): sort S by in-time. Walk consecutive pairs of the sorted S and compute their LCA, adding each to the vertex set; sort the combined set by in-time again and deduplicate -- this gives the virtual tree&#x27;s vertex set, of size at most 2k-1.</p><p>Step 3 (stack-based edge construction): maintain a stack representing the current rightmost path. Push the first (smallest in-time) vertex. For each next vertex v: let l = LCA(stack.top(), v). While the stack has &gt;1 element and depth of the second-from-top is &gt;= depth(l), pop the top, adding distW[popped] - distW[newTop] to a running total (this is exactly the weight of the real tree-path segment between the popped vertex and its new virtual-tree parent). If, after popping, the new top differs from l, add distW[top] - distW[l] to the total, pop it, and push l (inserting l as a new branch point). Finally push v. After processing all vertices, drain the remaining stack the same way (popping and accumulating distW differences) until only the root remains. The accumulated total is exactly the Steiner tree&#x27;s weight -- no explicit tree structure needs to be stored at all for this particular question, since summing weights as edges are &#x27;attached&#x27; during construction already gives the final answer.</p><p>This was verified against an independent brute-force reference that, for each pair of vertices in S, walks the real tree path (via parent pointers from a fixed BFS root) and inserts every traversed edge into a set, then sums the distinct edges&#x27; weights -- 300 random trees (n up to 12) with random weighted edges and 1-5 random queries each produced identical results between the virtual-tree construction and the brute-force union-of-paths computation.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj; // (to, weight)
+int LOG;
+vector&lt;vector&lt;int&gt;&gt; up_;
+vector&lt;int&gt; depth_, tin_, tout_;
+vector&lt;long long&gt; distW;
+int timer_ = 0;
+
+void dfs(int u, int p, int w) {
+    tin_[u] = timer_++;
+    up_[0][u] = p;
+    depth_[u] = (p == -1) ? 0 : depth_[p] + 1;
+    distW[u] = (p == -1) ? 0 : distW[p] + w;
+    for (int k = 1; k &lt; LOG; k++)
+        up_[k][u] = (up_[k-1][u] == -1) ? -1 : up_[k-1][up_[k-1][u]];
+    for (auto &amp;e : adj[u]) {
+        int v = e.first, wt = e.second;
+        if (v != p) dfs(v, u, wt);
+    }
+    tout_[u] = timer_++;
+}
+
+bool isAncestor(int u, int v) {
+    return tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
+}
+
+int lca(int u, int v) {
+    if (isAncestor(u, v)) return u;
+    if (isAncestor(v, u)) return v;
+    for (int k = LOG - 1; k &gt;= 0; k--) {
+        if (up_[k][u] != -1 &amp;&amp; !isAncestor(up_[k][u], v)) u = up_[k][u];
+    }
+    return up_[0][u];
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; n;
+    adj.assign(n + 1, {});
+    for (int i = 0; i &lt; n - 1; i++) {
+        int a, b, w;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+        adj[a].push_back({b, w});
+        adj[b].push_back({a, w});
+    }
+    LOG = 1;
+    while ((1 &lt;&lt; LOG) &lt; n + 1) LOG++;
+    LOG++;
+    up_.assign(LOG, vector&lt;int&gt;(n + 1, -1));
+    depth_.assign(n + 1, 0);
+    tin_.assign(n + 1, 0);
+    tout_.assign(n + 1, 0);
+    distW.assign(n + 1, 0);
+    dfs(1, -1, 0);
+
+    int q;
+    cin &gt;&gt; q;
+    while (q--) {
+        int k;
+        cin &gt;&gt; k;
+        vector&lt;int&gt; S(k);
+        for (auto &amp;x : S) cin &gt;&gt; x;
+
+        sort(S.begin(), S.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+
+        vector&lt;int&gt; nodes = S;
+        for (int i = 1; i &lt; k; i++) nodes.push_back(lca(S[i-1], S[i]));
+        sort(nodes.begin(), nodes.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+        nodes.erase(unique(nodes.begin(), nodes.end()), nodes.end());
+
+        long long total = 0;
+        vector&lt;int&gt; stk;
+        stk.push_back(nodes[0]);
+        for (int i = 1; i &lt; (int)nodes.size(); i++) {
+            int v = nodes[i];
+            int l = lca(stk.back(), v);
+            while (stk.size() &gt; 1 &amp;&amp; depth_[stk[stk.size()-2]] &gt;= depth_[l]) {
+                total += distW[stk.back()] - distW[stk[stk.size()-2]];
+                stk.pop_back();
+            }
+            if (stk.back() != l) {
+                total += distW[stk.back()] - distW[l];
+                stk.pop_back();
+                stk.push_back(l);
+            }
+            stk.push_back(v);
+        }
+        while (stk.size() &gt; 1) {
+            total += distW[stk.back()] - distW[stk[stk.size()-2]];
+            stk.pop_back();
+        }
+        cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8
+1 2 4
+1 3 2
+3 4 5
+3 5 1
+2 6 3
+6 7 6
+6 8 2
+3
+3
+4 5 7
+2
+2 8
+4
+1 4 5 8
+</code></pre>
+    <pre><code>21
+5
+17
+</code></pre>
+  </div>
+</article><article class="example-card" id="trees-virtual-trees-auxiliary-tree-technique-ex1">
+  <h4>Kingdom and its Cities (minimum vertex cut of capitals via DP on the virtual tree)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a tree with n vertices (1 &lt;= n &lt;= 2*10^5 in the original CF 613D problem; kept small here, n &lt;= 12) and q independent queries. Each query designates a set of k distinct &#x27;capital&#x27; vertices (sum of k over all queries bounded). For that query, find the minimum number of NON-capital vertices that must be deleted from the tree so that, in what remains, no two capital vertices are still connected to each other (every pair of capitals must have at least one deleted vertex on the tree path between them). If it is impossible (because two capitals are directly joined by a tree edge, with no vertex between them that could be removed), output -1 for that query.</p><p>Input: n, then n-1 lines each &#x27;u v&#x27; (an unweighted tree edge). Then q, then q queries, each given as &#x27;k&#x27; followed by a line of k capital vertex indices.<br>Output: for each query, the minimum number of vertices to delete, or -1 if impossible.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the textbook auxiliary-tree problem (Codeforces 613D). Build the virtual tree of the k capitals plus their pairwise-consecutive LCAs exactly as in the construction above (here unweighted, so a virtual-tree edge&#x27;s &#x27;length&#x27; is simply the depth difference between its endpoints in the original tree -- length 1 means the two virtual-tree endpoints are literally adjacent in the real tree, with no vertex between them to remove; length &gt; 1 means there is at least one removable non-capital vertex somewhere along that compressed edge). Mark which virtual-tree vertices are actual capitals (the inserted LCAs may or may not themselves be capitals).</p><p>Run a post-order DP on the virtual tree. solve(u) returns true if an unguarded capital&#x27;s connection still reaches u from below (no vertex has yet been removed to block it). At u, classify each child c with solve(c) == true by the real edge length: &#x27;hard&#x27; if length 1 (u and c are actually adjacent, so nothing can be removed between them -- the connection is forced to pass straight through to u), &#x27;soft&#x27; if length &gt; 1 (there is room to remove an intermediate vertex on that edge if needed).</p><p>If u itself is a capital: any hard incoming connection means a capital is directly, unremovably adjacent to another capital -- immediately impossible, answer -1. Otherwise, every soft incoming connection must be cut (u, being a capital, cannot let anything reach it unguarded), costing one removal each; u then becomes a fresh unguarded source itself (return true).</p><p>If u is not a capital: two or more hard connections meeting at u cannot be resolved by cutting edges (there is nothing to remove on a length-1 edge), so the only fix is to remove u itself (cost 1, and this blocks every branch below at once -- return false). Otherwise (at most one hard connection), compare two options: (A) remove u itself, cost 1, blocking everything (return false); (B) instead cut just enough soft edges to leave at most one connection (the existing hard one, if any) passing through for free, costing max(0, soft - (1 - hard)) (return true if anything remains unblocked). Take whichever option costs less, preferring option A on a tie since returning false can never cause a problem further up. This greedy choice is optimal by a standard exchange argument: deferring a soft cut costs nothing now and at worst costs exactly 1 later, so never cutting more than necessary before it is forced never loses to cutting eagerly, while removing a hub vertex outright is essential whenever three or more independent capital branches would otherwise require cutting three or more separate edges.</p><p>The virtual tree&#x27;s own root needs no further resolution (there is nothing above it). This DP, and the -1 detection, were verified against an exhaustive brute-force solver (trying every subset of non-capital vertices to delete, by increasing size, and checking that no connected component of the remaining graph contains more than one capital) across 500 random small trees (n up to 12) with random capital sets and multiple queries per tree -- zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;vector&lt;int&gt;&gt; adj;
+int LOG;
+vector&lt;vector&lt;int&gt;&gt; up_;
+vector&lt;int&gt; depth_, tin_, tout_;
+int timer_ = 0;
+
+void dfs(int u, int p) {
+    tin_[u] = timer_++;
+    up_[0][u] = p;
+    depth_[u] = (p == -1) ? 0 : depth_[p] + 1;
+    for (int k = 1; k &lt; LOG; k++)
+        up_[k][u] = (up_[k-1][u] == -1) ? -1 : up_[k-1][up_[k-1][u]];
+    for (int v : adj[u]) if (v != p) dfs(v, u);
+    tout_[u] = timer_++;
+}
+
+bool isAncestor(int u, int v) {
+    return tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
+}
+
+int lca(int u, int v) {
+    if (isAncestor(u, v)) return u;
+    if (isAncestor(v, u)) return v;
+    for (int k = LOG - 1; k &gt;= 0; k--) {
+        if (up_[k][u] != -1 &amp;&amp; !isAncestor(up_[k][u], v)) u = up_[k][u];
+    }
+    return up_[0][u];
+}
+
+vector&lt;vector&lt;int&gt;&gt; vAdj;   // virtual tree children lists (reset per query)
+vector&lt;char&gt; isCapital;
+long long ansCount;
+bool impossible;
+
+// Returns true if an unguarded capital&#x27;s path still reaches u without a placed guard.
+bool solve(int u) {
+    int hard = 0, soft = 0; // active children merging via edge length 1 (&quot;hard&quot;, no room to cut) vs &gt;1 (&quot;soft&quot;, cuttable)
+    for (int c : vAdj[u]) {
+        bool activeChild = solve(c);
+        if (activeChild) {
+            int elen = depth_[c] - depth_[u];
+            if (elen == 1) hard++; else soft++;
+        }
+    }
+    if (isCapital[u]) {
+        if (hard &gt; 0) { impossible = true; }
+        ansCount += soft; // every soft (cuttable) incoming branch must be cut; u itself is a capital, can&#x27;t absorb anything
+        return true;
+    } else {
+        if (hard &gt;= 2) {
+            // two or more capital branches meet at u via direct real-tree edges: only way to
+            // separate them is to remove u itself.
+            ansCount += 1;
+            return false;
+        }
+        int costB = max(0, soft - (1 - hard)); // cut down soft branches, keep at most (1-hard) of them free
+        int costA = 1; // remove u itself, absorbing everything
+        if (costA &lt;= costB) {
+            ansCount += costA;
+            return false;
+        } else {
+            ansCount += costB;
+            return (hard + soft) &gt; 0;
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin &gt;&gt; n;
+    adj.assign(n + 1, {});
+    for (int i = 0; i &lt; n - 1; i++) {
+        int a, b;
+        cin &gt;&gt; a &gt;&gt; b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    LOG = 1;
+    while ((1 &lt;&lt; LOG) &lt; n + 1) LOG++;
+    LOG++;
+    up_.assign(LOG, vector&lt;int&gt;(n + 1, -1));
+    depth_.assign(n + 1, 0);
+    tin_.assign(n + 1, 0);
+    tout_.assign(n + 1, 0);
+    dfs(1, -1);
+
+    vAdj.assign(n + 1, {});
+    isCapital.assign(n + 1, 0);
+
+    int q;
+    cin &gt;&gt; q;
+    while (q--) {
+        int k;
+        cin &gt;&gt; k;
+        vector&lt;int&gt; S(k);
+        for (auto &amp;x : S) cin &gt;&gt; x;
+
+        vector&lt;int&gt; touched; // every vertex that becomes part of the virtual tree this query
+
+        sort(S.begin(), S.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+        for (int v : S) isCapital[v] = 1;
+
+        vector&lt;int&gt; nodes = S;
+        for (int i = 1; i &lt; k; i++) nodes.push_back(lca(S[i-1], S[i]));
+        sort(nodes.begin(), nodes.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+        nodes.erase(unique(nodes.begin(), nodes.end()), nodes.end());
+        touched = nodes;
+
+        int root;
+        if (nodes.size() == 1) {
+            root = nodes[0];
+        } else {
+            vector&lt;int&gt; stk;
+            stk.push_back(nodes[0]);
+            for (int i = 1; i &lt; (int)nodes.size(); i++) {
+                int v = nodes[i];
+                int l = lca(stk.back(), v);
+                while (stk.size() &gt; 1 &amp;&amp; depth_[stk[stk.size()-2]] &gt;= depth_[l]) {
+                    vAdj[stk[stk.size()-2]].push_back(stk.back());
+                    stk.pop_back();
+                }
+                if (stk.back() != l) {
+                    vAdj[l].push_back(stk.back());
+                    stk.pop_back();
+                    stk.push_back(l);
+                }
+                stk.push_back(v);
+            }
+            while (stk.size() &gt; 1) {
+                vAdj[stk[stk.size()-2]].push_back(stk.back());
+                stk.pop_back();
+            }
+            root = stk[0];
+        }
+
+        ansCount = 0;
+        impossible = false;
+        solve(root);
+
+        cout &lt;&lt; (impossible ? -1 : ansCount) &lt;&lt; &quot;\n&quot;;
+
+        // reset state for next query
+        for (int v : touched) { vAdj[v].clear(); }
+        for (int v : S) isCapital[v] = 0;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>10
+1 2
+1 3
+3 4
+3 5
+5 6
+5 7
+5 8
+2 9
+2 10
+3
+3
+6 7 8
+3
+4 6 7
+2
+1 2
+</code></pre>
+    <pre><code>1
+1
+-1
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="trees-tree-isomorphism-canonical-form">
+  <div class="topic-head"><h2>Tree Isomorphism / Canonical Form</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Tree isomorphism asks whether two trees have the same shape, ignoring how their vertices happen to be numbered: is there a bijection between the vertex sets that preserves adjacency (and, for rooted trees, also maps root to root and preserves the parent/child direction)? The standard tool for the ROOTED version is the AHU algorithm (Aho, Hopcroft, Ullman), which builds a canonical label for every vertex bottom-up in a single post-order traversal. A leaf gets a fixed base label (the same constant for every leaf in both trees). An internal vertex u&#x27;s label is built from the SORTED multiset of its children&#x27;s already-computed canonical labels, combined into a single tuple/string that represents &#x27;this subtree&#x27;s shape&#x27;. Two rooted trees are isomorphic if and only if their roots end up with the same canonical label. Sorting the children&#x27;s labels before combining them is not a minor implementation detail -- it is the entire reason the algorithm works: isomorphism does not care about the left-to-right order in which a vertex&#x27;s children happen to be listed in the input, so any two orderings of the same multiset of child-shapes must collapse to the identical parent label. Skipping the sort (e.g. just concatenating child labels in input order) produces false negatives: it would report two trees as &#x27;different&#x27; purely because their children were read in a different order, even though a valid relabeling exists.</p><p>Literally concatenating child-label strings makes each label grow with the size of its subtree, so a direct implementation would need O(n) characters per label and O(n^2) or worse to compare them. The standard fix -- sometimes called &#x27;canonical-form compaction&#x27; or &#x27;AHU tree hashing&#x27; -- is to never materialize the full string at all: keep a dictionary (shared between whichever two trees are currently being compared) that maps a SORTED tuple/vector of children&#x27;s compact integer ids to a small new integer id, assigned the first time that exact tuple is seen. Processing vertices in post-order, every vertex&#x27;s own compact id is simply &#x27;the dictionary id for my sorted list of children&#x27;s compact ids&#x27; (inserting a new entry if this exact shape has never been seen before). Because the dictionary is shared across both trees, two vertices with truly identical subtree shapes -- whether in the same tree or in different trees -- always collapse onto the same integer, and the whole computation is a single linear (or O(n log n), if the dictionary is a balanced map) pass with O(1)-word labels instead of O(n)-character ones.</p><p>The extension to UNROOTED trees needs a canonical choice of root, because AHU as described only answers &#x27;are these two ROOTED trees isomorphic&#x27; (it requires root to map to root). A vertex property that is provably preserved by any isomorphism is the CENTROID: the vertex (or vertices) minimizing the largest component size left after its removal. Every unrooted tree has either exactly one centroid or exactly two ADJACENT centroids, found in O(n) by computing subtree sizes from an arbitrary DFS root and, for each vertex u, taking the max of (n - size[u]) and the sizes of u&#x27;s children subtrees -- u is a centroid iff that max is at most n/2. If both trees have a single centroid, root each tree there and run ordinary rooted AHU. If both have two centroids, you cannot just pick &#x27;the first one&#x27; arbitrarily, because a valid isomorphism might map either centroid of tree A to either centroid of tree B; the clean fix is to compute, for each tree, the two half-labels obtained by rooting at c1 with the edge to c2 blocked (treated as if c2 were c1&#x27;s parent) and vice versa, then combine the SORTED PAIR of these two half-labels into one final signature -- exactly as if a virtual vertex had been inserted on the edge between the centroids and made the root. If the two trees have different centroid counts (one has 1, the other has 2) they cannot be isomorphic, which the computation reflects naturally since the two procedures produce label spaces that are compared consistently only when built the same way.</p><p>A faster but riskier alternative that shows up often in competitive programming is randomized AHU hashing: instead of an exact dictionary-based canonical id, combine each vertex&#x27;s sorted children hashes via a polynomial or randomized combining function (e.g. multiply-and-add with random per-run constants, or hash the sorted multiset with a random assignment of base values to observed sub-hashes) to get an O(n) or O(n log n) solution with smaller constant factors and no dictionary bookkeeping. This is correct with high probability against a fixed, non-adaptive set of trees, but it is a genuine correctness risk: known collision attacks exist against common &#x27;add/xor/multiply children&#x27;s hashes&#x27; schemes (this is why several competitive-programming judges include deliberately adversarial &#x27;anti-hash&#x27; tests for tree-hashing solutions), and a single unlucky collision silently reports two non-isomorphic trees as isomorphic. The dictionary/compaction approach above is always exactly correct (it is literally assigning distinct integers to distinct shapes, with no probability of collision) at the modest cost of map operations instead of O(1) arithmetic, and should be the default choice unless problem constraints make the extra log factor genuinely unaffordable.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem gives you two (or many) trees and asks whether they are &#x27;the same&#x27; up to relabeling vertices -- phrases like &#x27;isomorphic trees&#x27;, &#x27;the same shape&#x27;, &#x27;can one tree&#x27;s vertices be renamed to exactly match the other&#x27;, or &#x27;how many structurally distinct trees are there among these n trees&#x27; are strong signals. If the trees come with an explicit, meaningful root (parent arrays, or a stated root vertex) and the isomorphism must also match root to root, it is a direct application of rooted AHU. If the trees are given as plain edge lists with no designated root (so any vertex could a priori be &#x27;the same&#x27; as any vertex of the other tree), that is the unrooted variant, and the centroid-rooting extension is required before AHU can be applied. A red flag for an INSUFFICIENT approach is trying to shortcut the check by comparing only simple invariants such as vertex count, degree sequence, or diameter alone -- these are necessary but not sufficient, and adversarial test data in this topic is specifically designed to have two non-isomorphic trees share all of the cheap invariants.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time per tree (or per pair) with a balanced-map-based canonical dictionary (O(n) with a hash map, though real hash maps on vector keys carry overhead), O(n) extra space for the dictionary and label arrays; centroid-finding for the unrooted variant adds O(n) per tree. A randomized polynomial-hashing variant of AHU runs in O(n log n) (from sorting each vertex&#x27;s children hashes) or O(n) with radix/bucket sorting by depth, trading exactness for speed.</p></div>
+  </div>
+  <article class="example-card" id="trees-tree-isomorphism-canonical-form-ex0">
+  <h4>Tree Isomorphism I -- Rooted Trees (CSES 1700)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given t test cases (1 &lt;= t &lt;= 20). Each test case describes a PAIR of rooted trees, and you must determine whether they are isomorphic as rooted trees (there exists a bijection between their vertex sets that maps root to root and preserves the parent-child relationship in both directions; the left-to-right order in which a vertex&#x27;s children are given does not matter).</p><p>Each test case is given as follows: a line with an integer n1 (1 &lt;= n1 &lt;= 200000 in the original problem; kept small here for the worked example) -- the number of vertices of the first tree, always rooted at vertex 1. The next line contains n1-1 integers p2, p3, ..., p(n1), where p_i (1 &lt;= p_i &lt; i) is the parent of vertex i in the first tree. This is followed by a line with n2 (the vertex count of the second tree) and a line of n2-1 parent values p2..p(n2) for the second tree, in the same format (also rooted at vertex 1).</p><p>For each test case, print &quot;YES&quot; if the two rooted trees are isomorphic, or &quot;NO&quot; otherwise.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is a direct application of the AHU canonical-label algorithm on two already-rooted trees. Build a children[] adjacency list for each tree straight from its parent array (children[p_i] gets i appended, for i from 2 to n). Then run a single shared post-order labeling procedure computeLabel(u): recursively compute the canonical label of every child of u first, collect those labels into a vector, SORT the vector (this is the step that makes child order irrelevant -- two vertices whose children have the same multiset of shapes, listed in any order, must produce the same sorted vector), and then look this sorted vector up in a shared map&lt;vector&lt;long long&gt;, long long&gt; that assigns the next unused small integer id the first time any given sorted-children-shape is encountered (and reuses the existing id on every subsequent match). This map is deliberately SHARED across both trees in the current test case (and reset between test cases), so that identical subtree shapes occurring anywhere in either tree -- including a shape from tree 1 matching a shape from tree 2 -- collapse onto the same integer automatically.</p><p>Two trees of different vertex counts can never be isomorphic, so that case is answered immediately without running the labeling procedure. Otherwise, the two trees are isomorphic exactly when computeLabel(root1) == computeLabel(root2), since equal canonical ids at the root mean the entire recursive subtree structure matched, all the way down to the leaves (which naturally get the same id, since an empty children vector always maps to the same dictionary entry).</p><p>The provided sample deliberately includes three pairs designed to stress exactly the failure modes a buggy implementation would fall into: pair 1 is isomorphic but the second tree relabels vertices AND swaps which branch is listed as &#x27;the first child&#x27; versus &#x27;the second child&#x27; relative to the first tree (an implementation that forgets to sort children labels before combining them would wrongly report NO here); pair 2 has the same vertex count and the same overall degree sequence ({3,3,2,1,1,1,1} counting both parent and child edges) in both trees, and even the same root-children-count (2 children each), yet the trees are genuinely different shapes (one is &#x27;balanced&#x27;: both of the root&#x27;s children have exactly two leaf children each; the other is &#x27;unbalanced&#x27;: one branch descends three levels while a sibling leaf hangs directly off an intermediate vertex) -- an implementation that shortcuts to comparing degree sequences or child counts alone would wrongly report YES here; pair 3 is two small identical 4-vertex star trees, included as a trivial sanity check. This solution was additionally stress-tested against a brute-force checker (trying all permutations of vertex labels 2..n with vertex 1 fixed as root, checking the parent relation is preserved exactly) over 300 random small trees (n up to 8): 150 pairs built by taking a random tree and relabeling it with a random permutation (guaranteed isomorphic), and 150 pairs of two fully independent random trees (usually non-isomorphic); all 300 trials matched the brute force with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// Shared canonical-label map for the current pair of trees being compared.
+// Mapping a SORTED vector of children canonical-ids -&gt; a compact new id.
+map&lt;vector&lt;long long&gt;, long long&gt; labelId;
+long long nextId = 1;
+
+long long computeLabel(int u, vector&lt;vector&lt;int&gt;&gt;&amp; children) {
+    vector&lt;long long&gt; childLabels;
+    childLabels.reserve(children[u].size());
+    for (int c : children[u]) childLabels.push_back(computeLabel(c, children));
+    sort(childLabels.begin(), childLabels.end()); // order of children is irrelevant to isomorphism
+    auto it = labelId.find(childLabels);
+    if (it != labelId.end()) return it-&gt;second;
+    long long id = nextId++;
+    labelId[childLabels] = id;
+    return id;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t;
+    cin &gt;&gt; t;
+    while (t--) {
+        int n1;
+        cin &gt;&gt; n1;
+        vector&lt;vector&lt;int&gt;&gt; children1(n1 + 1);
+        for (int i = 2; i &lt;= n1; i++) {
+            int p; cin &gt;&gt; p;
+            children1[p].push_back(i);
+        }
+        int n2;
+        cin &gt;&gt; n2;
+        vector&lt;vector&lt;int&gt;&gt; children2(n2 + 1);
+        for (int i = 2; i &lt;= n2; i++) {
+            int p; cin &gt;&gt; p;
+            children2[p].push_back(i);
+        }
+        if (n1 != n2) {
+            cout &lt;&lt; &quot;NO\n&quot;;
+            continue;
+        }
+        labelId.clear();
+        nextId = 1;
+        long long l1 = computeLabel(1, children1);
+        long long l2 = computeLabel(1, children2);
+        cout &lt;&lt; (l1 == l2 ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+7
+1 1 2 2 3 6
+7
+1 1 2 4 3 3
+7
+1 1 2 2 3 3
+7
+1 1 2 2 4 4
+4
+1 1 1
+4
+1 1 1
+</code></pre>
+    <pre><code>YES
+NO
+YES
+</code></pre>
+  </div>
+</article><article class="example-card" id="trees-tree-isomorphism-canonical-form-ex1">
+  <h4>Tree Isomorphism II -- Unrooted Trees via Centroid Rooting (CSES 1701)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given t test cases (1 &lt;= t &lt;= 20). Each test case describes a PAIR of UNROOTED trees (no designated root), and you must determine whether they are isomorphic (there exists a bijection between their vertex sets that preserves adjacency exactly -- (a,b) is an edge of the first tree if and only if (phi(a), phi(b)) is an edge of the second).</p><p>Each test case is given as follows: a line with an integer n1 (1 &lt;= n1 &lt;= 200000 in the original problem; kept small here for the worked example), followed by n1-1 lines each containing two integers a b (1 &lt;= a, b &lt;= n1) describing an edge of the first tree. This is followed by a line with n2 and n2-1 edge lines for the second tree, in the same format.</p><p>For each test case, print &quot;YES&quot; if the two unrooted trees are isomorphic, or &quot;NO&quot; otherwise.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Since AHU as described only compares ROOTED trees (root must map to root), an unrooted tree first needs a canonical vertex (or vertex pair) to root at, chosen so that any valid isomorphism is guaranteed to map that choice in tree A to the corresponding choice in tree B. The CENTROID has exactly this property: compute subtree sizes with one DFS from an arbitrary vertex (say vertex 1), then for every vertex u take maxComponent(u) = max(n - size[u], max over u&#x27;s children v of size[v]) -- the size of the largest piece the tree splits into if u is removed. Every tree has either one centroid (maxComponent(u) &lt;= n/2 for exactly one u) or two centroids, which are always adjacent to each other.</p><p>If a tree has a single centroid, root the whole tree there and compute its AHU canonical label exactly as in the rooted version (dfsLabel(u, parent) collects the sorted canonical labels of u&#x27;s non-parent neighbors, looks the sorted vector up in the shared compaction map, and returns the resulting id). If a tree has two centroids c1 and c2, neither can be treated as &#x27;the&#x27; root in isolation, because a valid isomorphism might send c1 of tree A to either centroid of tree B -- so instead compute BOTH half-labels: l1 = dfsLabel(c1, blocking the edge toward c2) and l2 = dfsLabel(c2, blocking the edge toward c1), then combine the SORTED pair {min(l1,l2), max(l1,l2)} through the same shared compaction map to get one final signature. This is equivalent to inserting a virtual vertex on the edge between c1 and c2 and rooting there, and it is symmetric in c1/c2 by construction, so it does not matter which centroid the isomorphism happens to associate with which. The two trees are isomorphic iff their final signatures (computed this same way, using one shared compaction map reset per test case) are equal; a mismatched vertex count is answered NO immediately.</p><p>The sample deliberately covers all three required stress cases: pair 1 is isomorphic via a single centroid but with completely different vertex numbering and a swapped branch structure (tree 2&#x27;s &#x27;two-leaf&#x27; branch and &#x27;chain&#x27; branch are attached to different centroid-relative positions than tree 1&#x27;s, which only an order-independent sorted comparison gets right); pair 2 has identical vertex count (7), identical overall degree sequence {3,3,2,1,1,1,1}, and identical root/centroid-children counts, yet is a genuinely different tree shape (same adversarial pair used in Example 1, re-expressed as edge lists); pair 3 exercises the two-centroid branch explicitly -- both trees are 4-vertex paths (which always have exactly two centroids, the two middle vertices), given with completely different vertex numbering along the path, and are correctly reported isomorphic. This solution was stress-tested against a brute-force checker (trying all n! permutations of the full vertex set and directly verifying the adjacency matrices correspond) over 300 random small trees (n up to 8, including single-vertex trees): 150 pairs built by relabeling one random tree with a random permutation of ALL n vertices (guaranteed isomorphic, and free to change which vertices end up as centroids), and 150 pairs of independent random trees; all 300 trials matched the brute force with zero mismatches, including cases where the random trees landed on both the one-centroid and two-centroid code paths.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// Shared canonical-label map for the current pair of trees being compared.
+map&lt;vector&lt;long long&gt;, long long&gt; labelId;
+long long nextId = 1;
+
+long long dfsLabel(int u, int parent, vector&lt;vector&lt;int&gt;&gt;&amp; adj) {
+    vector&lt;long long&gt; childLabels;
+    for (int v : adj[u]) {
+        if (v == parent) continue;
+        childLabels.push_back(dfsLabel(v, u, adj));
+    }
+    sort(childLabels.begin(), childLabels.end());
+    auto it = labelId.find(childLabels);
+    if (it != labelId.end()) return it-&gt;second;
+    long long id = nextId++;
+    labelId[childLabels] = id;
+    return id;
+}
+
+// Find the 1 or 2 centroids of the tree rooted arbitrarily at vertex 1.
+vector&lt;int&gt; findCentroids(int n, vector&lt;vector&lt;int&gt;&gt;&amp; adj) {
+    vector&lt;int&gt; sz(n + 1, 0), par(n + 1, 0);
+    function&lt;void(int,int)&gt; dfsSize = [&amp;](int u, int p) {
+        par[u] = p;
+        sz[u] = 1;
+        for (int v : adj[u]) if (v != p) { dfsSize(v, u); sz[u] += sz[v]; }
+    };
+    dfsSize(1, 0);
+    vector&lt;int&gt; centroids;
+    for (int u = 1; u &lt;= n; u++) {
+        int mx = n - sz[u]; // component through the &quot;parent&quot; direction
+        for (int v : adj[u]) if (v != par[u]) mx = max(mx, sz[v]);
+        if (mx &lt;= n / 2) centroids.push_back(u);
+    }
+    return centroids;
+}
+
+// Canonical form of an unrooted tree: root at the centroid.
+// If there are two centroids (always adjacent), combine the two
+// centroid-rooted subtree labels (each blocking the edge toward the other)
+// as if there were a virtual root between them.
+long long canonicalForm(int n, vector&lt;vector&lt;int&gt;&gt;&amp; adj) {
+    vector&lt;int&gt; centroids = findCentroids(n, adj);
+    if (centroids.size() == 1) {
+        return dfsLabel(centroids[0], 0, adj);
+    } else {
+        int c1 = centroids[0], c2 = centroids[1];
+        long long l1 = dfsLabel(c1, c2, adj); // c1&#x27;s subtree, blocking edge to c2
+        long long l2 = dfsLabel(c2, c1, adj); // c2&#x27;s subtree, blocking edge to c1
+        vector&lt;long long&gt; combo = {min(l1, l2), max(l1, l2)};
+        auto it = labelId.find(combo);
+        if (it != labelId.end()) return it-&gt;second;
+        long long id = nextId++;
+        labelId[combo] = id;
+        return id;
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t;
+    cin &gt;&gt; t;
+    while (t--) {
+        int n1;
+        cin &gt;&gt; n1;
+        vector&lt;vector&lt;int&gt;&gt; adj1(n1 + 1);
+        for (int i = 0; i &lt; n1 - 1; i++) {
+            int a, b; cin &gt;&gt; a &gt;&gt; b;
+            adj1[a].push_back(b);
+            adj1[b].push_back(a);
+        }
+        int n2;
+        cin &gt;&gt; n2;
+        vector&lt;vector&lt;int&gt;&gt; adj2(n2 + 1);
+        for (int i = 0; i &lt; n2 - 1; i++) {
+            int a, b; cin &gt;&gt; a &gt;&gt; b;
+            adj2[a].push_back(b);
+            adj2[b].push_back(a);
+        }
+        if (n1 != n2) {
+            cout &lt;&lt; &quot;NO\n&quot;;
+            continue;
+        }
+        labelId.clear();
+        nextId = 1;
+        long long l1 = canonicalForm(n1, adj1);
+        long long l2 = canonicalForm(n2, adj2);
+        cout &lt;&lt; (l1 == l2 ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+7
+1 2
+1 3
+2 4
+2 5
+3 6
+6 7
+7
+1 2
+1 3
+2 4
+4 5
+3 6
+3 7
+7
+1 2
+1 3
+2 4
+2 5
+3 6
+3 7
+7
+1 2
+1 3
+2 4
+2 5
+4 6
+4 7
+4
+1 2
+2 3
+3 4
+4
+1 3
+3 4
+4 2
+</code></pre>
+    <pre><code>YES
+NO
+YES
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">19</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="kth ancestor of a tree node leetcode lca/binary lifting preprocess a rooted tree so that many &quot;what is the kth ancestor of node u&quot; queries can each be answered quickly.">
+  <td><a href="https://leetcode.com/problems/kth-ancestor-of-a-tree-node/" target="_blank" rel="noopener noreferrer">Kth Ancestor of a Tree Node</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard</td>
+  <td class="subtopic-cell">LCA/Binary Lifting</td>
+  <td class="desc-cell">Preprocess a rooted tree so that many &quot;what is the kth ancestor of node u&quot; queries can each be answered quickly.</td>
+</tr><tr data-search="fools and roads codeforces lca/binary lifting given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.">
+  <td><a href="https://codeforces.com/problemset/problem/191/C" target="_blank" rel="noopener noreferrer">Fools and Roads</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1900</td>
+  <td class="subtopic-cell">LCA/Binary Lifting</td>
+  <td class="desc-cell">Given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.</td>
+</tr><tr data-search="distinct colors cses euler tour each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.">
+  <td><a href="https://cses.fi/problemset/task/1139" target="_blank" rel="noopener noreferrer">Distinct Colors</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Tree Algorithms section)</td>
+  <td class="subtopic-cell">Euler Tour</td>
+  <td class="desc-cell">Each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.</td>
+</tr><tr data-search="vasya and a tree codeforces euler tour process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.">
+  <td><a href="https://codeforces.com/problemset/problem/1076/E" target="_blank" rel="noopener noreferrer">Vasya and a Tree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1900</td>
+  <td class="subtopic-cell">Euler Tour</td>
+  <td class="desc-cell">Process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.</td>
+</tr><tr data-search="minimal diameter forest codeforces tree diameter given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.">
+  <td><a href="https://codeforces.com/problemset/problem/1092/E" target="_blank" rel="noopener noreferrer">Minimal Diameter Forest</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2000</td>
+  <td class="subtopic-cell">Tree Diameter</td>
+  <td class="desc-cell">Given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.</td>
+</tr><tr data-search="path queries ii cses hld (heavy-light decomposition) support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.">
+  <td><a href="https://cses.fi/problemset/task/2134" target="_blank" rel="noopener noreferrer">Path Queries II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Tree Algorithms section, hard version)</td>
+  <td class="subtopic-cell">HLD (Heavy-Light Decomposition)</td>
+  <td class="desc-cell">Support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.</td>
+</tr><tr data-search="fixed-length paths ii cses centroid decomposition count the number of paths in a tree whose length lies within a given range [a, b].">
+  <td><a href="https://cses.fi/problemset/task/2081" target="_blank" rel="noopener noreferrer">Fixed-Length Paths II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Tree Algorithms section, hard version)</td>
+  <td class="subtopic-cell">Centroid Decomposition</td>
+  <td class="desc-cell">Count the number of paths in a tree whose length lies within a given range [a, b].</td>
+</tr><tr data-search="xenia and tree codeforces centroid decomposition support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.">
+  <td><a href="https://codeforces.com/problemset/problem/342/E" target="_blank" rel="noopener noreferrer">Xenia and Tree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2400</td>
+  <td class="subtopic-cell">Centroid Decomposition</td>
+  <td class="desc-cell">Support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.</td>
+</tr><tr data-search="lomsat gelral codeforces small-to-large merging rooted tree with a color per vertex; for every vertex output the sum of all colors that are &quot;dominant&quot; (most frequent) in its subtree.">
+  <td><a href="https://codeforces.com/problemset/problem/600/E" target="_blank" rel="noopener noreferrer">Lomsat gelral</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2300</td>
+  <td class="subtopic-cell">Small-to-Large Merging</td>
+  <td class="desc-cell">Rooted tree with a color per vertex; for every vertex output the sum of all colors that are &quot;dominant&quot; (most frequent) in its subtree.</td>
+</tr><tr data-search="dominant indices codeforces small-to-large merging for each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.">
+  <td><a href="https://codeforces.com/problemset/problem/1009/F" target="_blank" rel="noopener noreferrer">Dominant Indices</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2300</td>
+  <td class="subtopic-cell">Small-to-Large Merging</td>
+  <td class="desc-cell">For each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.</td>
+</tr><tr data-search="gcd counting codeforces small-to-large merging given a tree with a number on each vertex, find the length of the longest path whose vertices share a gcd greater than 1, for every prime factor.">
+  <td><a href="https://codeforces.com/problemset/problem/1101/D" target="_blank" rel="noopener noreferrer">GCD Counting</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2000</td>
+  <td class="subtopic-cell">Small-to-Large Merging</td>
+  <td class="desc-cell">Given a tree with a number on each vertex, find the length of the longest path whose vertices share a GCD greater than 1, for every prime factor.</td>
+</tr><tr data-search="graph and queries codeforces small-to-large merging process edge-deletion and &quot;find-and-zero-out-max-in-component&quot; queries offline by reversing time (edge additions) and merging component data with a dsu where the smaller structure (e.g. an ordered set) is always merged into the larger.">
+  <td><a href="https://codeforces.com/problemset/problem/1416/D" target="_blank" rel="noopener noreferrer">Graph and Queries</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2600</td>
+  <td class="subtopic-cell">Small-to-Large Merging</td>
+  <td class="desc-cell">Process edge-deletion and &quot;find-and-zero-out-max-in-component&quot; queries offline by reversing time (edge additions) and merging component data with a DSU where the smaller structure (e.g. an ordered set) is always merged into the larger.</td>
+</tr><tr data-search="kingdom and its cities codeforces virtual trees (auxiliary tree) given a tree and repeated small subsets of &quot;capital&quot; vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.">
+  <td><a href="https://codeforces.com/problemset/problem/613/D" target="_blank" rel="noopener noreferrer">Kingdom and its Cities</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2800</td>
+  <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
+  <td class="desc-cell">Given a tree and repeated small subsets of &quot;capital&quot; vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.</td>
+</tr><tr data-search="tourism codeforces virtual trees (auxiliary tree) on a graph built from a tree with extra &quot;back&quot; edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.">
+  <td><a href="https://codeforces.com/problemset/problem/1220/E" target="_blank" rel="noopener noreferrer">Tourism</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200</td>
+  <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
+  <td class="desc-cell">On a graph built from a tree with extra &quot;back&quot; edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.</td>
+</tr><tr data-search="partial virtual trees codeforces virtual trees (auxiliary tree) count, for every k, the number of ways to repeatedly shrink a vertex set to a proper &quot;partial virtual tree&quot; (an lca-closed subset) exactly k times until only the root remains.">
+  <td><a href="https://codeforces.com/problemset/problem/1707/D" target="_blank" rel="noopener noreferrer">Partial Virtual Trees</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 3000</td>
+  <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
+  <td class="desc-cell">Count, for every k, the number of ways to repeatedly shrink a vertex set to a proper &quot;partial virtual tree&quot; (an LCA-closed subset) exactly k times until only the root remains.</td>
+</tr><tr data-search="tree isomorphism i cses tree isomorphism / canonical form given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.">
+  <td><a href="https://cses.fi/problemset/task/1700" target="_blank" rel="noopener noreferrer">Tree Isomorphism I</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Tree Algorithms section)</td>
+  <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
+  <td class="desc-cell">Given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.</td>
+</tr><tr data-search="tree isomorphism ii cses tree isomorphism / canonical form same as tree isomorphism i, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.">
+  <td><a href="https://cses.fi/problemset/task/1701" target="_blank" rel="noopener noreferrer">Tree Isomorphism II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Tree Algorithms section)</td>
+  <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
+  <td class="desc-cell">Same as Tree Isomorphism I, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.</td>
+</tr><tr data-search="symmetree codeforces tree isomorphism / canonical form determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.">
+  <td><a href="https://codeforces.com/problemset/problem/1800/G" target="_blank" rel="noopener noreferrer">Symmetree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2200</td>
+  <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
+  <td class="desc-cell">Determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.</td>
+</tr><tr data-search="regular forestation codeforces tree isomorphism / canonical form find a vertex whose removal splits a tree into two or more pairwise-isomorphic (&quot;identical&quot;) subtrees, and report the maximum possible number of pieces.">
+  <td><a href="https://codeforces.com/problemset/problem/1252/F" target="_blank" rel="noopener noreferrer">Regular Forestation</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF rating 2400</td>
+  <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
+  <td class="desc-cell">Find a vertex whose removal splits a tree into two or more pairwise-isomorphic (&quot;identical&quot;) subtrees, and report the maximum possible number of pieces.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

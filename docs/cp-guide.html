@@ -1,0 +1,366 @@
+<title>CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">Competitive Programming &amp; DSA</p>
+    <h1>CP / DSA Guide</h1>
+    <p class="tagline">A comprehensive, placement-exam-oriented guide across 14 major CP/DSA topics &mdash; theory, hand-verified solved examples (every one compiled and run), and curated hard practice problems from Codeforces, CSES, and LeetCode.</p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">14</div><div class="l">Topics</div></div>
+      <div class="stat-tile"><div class="n">230</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">318</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+  <div class="app" style="padding-top:28px;">
+    <section class="topic-section" id="roadmap">
+  <div class="topic-head"><h2>Suggested Study Order</h2></div>
+  <p class="topic-desc">A prerequisite-aware path through all 14 topics (and the most relevant C++ Concepts pages) if you're not sure where to start. At every stage, once you've worked through a topic's solved examples and a few practice problems, dip into the <a href="index.html">Interview Q&amp;A + MCQ Bank</a> for that area to consolidate it for actual interview settings.</p>
+  <div class="roadmap-grid"><div class="roadmap-stage">
+  <div class="roadmap-num">0</div>
+  <div class="roadmap-body">
+    <h3>C++ Foundations</h3>
+    <p class="roadmap-goal">Skim these alongside everything else below — you&#x27;ll lean on value categories/move semantics and RAII constantly once you start writing real solutions, and OOP mechanics comes up in interviews even outside CP.</p>
+    <ul class="nav-list roadmap-items"><li><a href="concepts-value-categories.html"><span>Value Categories &amp; Move Semantics</span></a></li><li><a href="concepts-raii-resources.html"><span>RAII &amp; Resource Management</span></a></li><li><a href="concepts-oop-mechanics.html"><span>OOP Mechanics &amp; Polymorphism</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">1</div>
+  <div class="roadmap-body">
+    <h3>Core Patterns</h3>
+    <p class="roadmap-goal">Build fluency with the basic &quot;vocabulary&quot; of CP before layering on DP or graphs. Don&#x27;t rush this stage — most harder topics are built directly on top of it.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-arrays-strings.html"><span>Arrays &amp; Strings</span></a></li><li><a href="cp-sorting-searching.html"><span>Sorting &amp; Binary Search</span></a></li><li><a href="cp-recursion-backtracking.html"><span>Recursion &amp; Backtracking</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">2</div>
+  <div class="roadmap-body">
+    <h3>Foundational DP &amp; Greedy</h3>
+    <p class="roadmap-goal">Start with Dynamic Programming&#x27;s core subtopics (Fundamentals, Linear/1D, 2D Grid, Knapsack, Interval, String DP) — save Bitmask/Tree/Digit DP and DP optimization for Stage 5. DP is the single highest-leverage topic on this whole site; expect to revisit its page many times.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-dynamic-programming.html"><span>Dynamic Programming (core subtopics)</span></a></li><li><a href="cp-greedy.html"><span>Greedy Algorithms</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">3</div>
+  <div class="roadmap-body">
+    <h3>Graphs &amp; Trees</h3>
+    <p class="roadmap-goal">Graph and tree code leans heavily on pointers/references and generic adjacency representations — the Templates and Compile-Time Concepts pages are handy references if anything there feels shaky.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-graphs.html"><span>Graph Algorithms</span></a></li><li><a href="cp-trees.html"><span>Trees (traversals, LCA, diameter — skip HLD/centroid decomposition for now)</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">4</div>
+  <div class="roadmap-body">
+    <h3>Data Structures for CP</h3>
+    <p class="roadmap-goal">This unlocks the harder Graph/Tree/DP problems you may have skipped earlier — once done, go back and retry a few Stage 2-3 problems using segment trees / BIT / DSU where relevant.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-data-structures.html"><span>Data Structures for CP</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">5</div>
+  <div class="roadmap-body">
+    <h3>Advanced DP &amp; Math</h3>
+    <p class="roadmap-goal">This is where CP gets genuinely hard — budget the most time here. Return to the Dynamic Programming page for its Bitmask, Tree DP, Digit DP, DP on DAGs, Game-theory DP, Probability/EV DP, and DP-optimization subtopics.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-dynamic-programming.html"><span>Dynamic Programming (advanced subtopics)</span></a></li><li><a href="cp-number-theory.html"><span>Number Theory &amp; Combinatorics</span></a></li><li><a href="cp-bit-manipulation.html"><span>Bit Manipulation</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">6</div>
+  <div class="roadmap-body">
+    <h3>Strings &amp; Game Theory</h3>
+    <p class="roadmap-goal">Reasonably self-contained — you could pull this stage earlier if you prefer, but it builds cleanly on Stage 4&#x27;s trie/DSU work and Stage 5&#x27;s bitmask-adjacent DP thinking.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-string-algorithms.html"><span>String Algorithms</span></a></li><li><a href="cp-game-theory.html"><span>Game Theory</span></a></li></ul>
+  </div>
+</div><div class="roadmap-stage">
+  <div class="roadmap-num">7</div>
+  <div class="roadmap-body">
+    <h3>Optional / Advanced</h3>
+    <p class="roadmap-goal">Rarely needed for placement-level OAs — treat these as a CF-rating-climbing / ICPC-style extension once the rest is solid, not a prerequisite for interviews.</p>
+    <ul class="nav-list roadmap-items"><li><a href="cp-network-flow.html"><span>Network Flow &amp; Matching</span></a></li><li><a href="cp-fft-ntt.html"><span>FFT / NTT</span></a></li><li><a href="cp-trees.html"><span>Trees — HLD &amp; Centroid Decomposition sections</span></a></li></ul>
+  </div>
+</div></div>
+</section>
+    <div class="topic-head" style="margin-top:8px;"><h2>All Topics</h2></div>
+    <div class="hub-grid"><a class="hub-card" href="cp-arrays-strings.html">
+  <h3>Arrays &amp; Strings</h3>
+  <p>Two pointers, sliding window, prefix sums, Kadane&#x27;s algorithm.</p>
+  <div class="meta">20 solved examples &middot; 25 practice problems</div>
+</a><a class="hub-card" href="cp-sorting-searching.html">
+  <h3>Sorting &amp; Binary Search</h3>
+  <p>Sorting tradeoffs, binary search, and binary search on the answer.</p>
+  <div class="meta">13 solved examples &middot; 21 practice problems</div>
+</a><a class="hub-card" href="cp-recursion-backtracking.html">
+  <h3>Recursion &amp; Backtracking</h3>
+  <p>Permutation/subset generation, pruning, meet-in-the-middle.</p>
+  <div class="meta">12 solved examples &middot; 17 practice problems</div>
+</a><a class="hub-card" href="cp-dynamic-programming.html">
+  <h3>Dynamic Programming</h3>
+  <p>The full DP toolkit: linear, grid, knapsack, interval, bitmask, tree, digit, game-theory, probability, string DP, and optimization techniques.</p>
+  <div class="meta">39 solved examples &middot; 65 practice problems</div>
+</a><a class="hub-card" href="cp-greedy.html">
+  <h3>Greedy Algorithms</h3>
+  <p>Exchange-argument correctness proofs, interval scheduling, greedy + data structures.</p>
+  <div class="meta">13 solved examples &middot; 13 practice problems</div>
+</a><a class="hub-card" href="cp-graphs.html">
+  <h3>Graph Algorithms</h3>
+  <p>Shortest paths, MST, topological sort, SCC, bridges/articulation points, bipartite check.</p>
+  <div class="meta">24 solved examples &middot; 35 practice problems</div>
+</a><a class="hub-card" href="cp-trees.html">
+  <h3>Trees</h3>
+  <p>Traversals, Euler tour, LCA/binary lifting, diameter, HLD, centroid decomposition.</p>
+  <div class="meta">17 solved examples &middot; 19 practice problems</div>
+</a><a class="hub-card" href="cp-data-structures.html">
+  <h3>Data Structures for CP</h3>
+  <p>Segment tree (incl. persistent), Fenwick tree, sparse table, DSU, trie, monotonic stack/queue.</p>
+  <div class="meta">21 solved examples &middot; 26 practice problems</div>
+</a><a class="hub-card" href="cp-number-theory.html">
+  <h3>Number Theory &amp; Combinatorics</h3>
+  <p>GCD/extended Euclid, modular arithmetic, sieves, primality at scale, combinatorics.</p>
+  <div class="meta">20 solved examples &middot; 23 practice problems</div>
+</a><a class="hub-card" href="cp-string-algorithms.html">
+  <h3>String Algorithms</h3>
+  <p>KMP, Z-function, string hashing, Manacher&#x27;s, tries, suffix arrays.</p>
+  <div class="meta">19 solved examples &middot; 23 practice problems</div>
+</a><a class="hub-card" href="cp-bit-manipulation.html">
+  <h3>Bit Manipulation</h3>
+  <p>Subset enumeration, SOS DP, XOR properties, linear basis.</p>
+  <div class="meta">10 solved examples &middot; 14 practice problems</div>
+</a><a class="hub-card" href="cp-game-theory.html">
+  <h3>Game Theory</h3>
+  <p>Nim, the XOR winning condition, and the Sprague-Grundy theorem.</p>
+  <div class="meta">8 solved examples &middot; 9 practice problems</div>
+</a><a class="hub-card" href="cp-network-flow.html">
+  <h3>Network Flow &amp; Matching</h3>
+  <p>Max flow (Edmonds-Karp), min cut, bipartite matching (Kuhn&#x27;s algorithm).</p>
+  <div class="meta">10 solved examples &middot; 18 practice problems</div>
+</a><a class="hub-card" href="cp-fft-ntt.html">
+  <h3>FFT / NTT</h3>
+  <p>Polynomial multiplication via FFT, exact convolution via NTT.</p>
+  <div class="meta">4 solved examples &middot; 10 practice problems</div>
+</a></div>
+    <div class="topic-head" style="margin-top:40px;"><h2>Further Reading</h2></div>
+    <p class="topic-desc">Curated, verified Codeforces blog posts per topic &mdash; tutorials, uncommon tricks, and paths to more problems, straight from the CP community.</p>
+    <div class="hub-grid">
+      <a class="hub-card" href="cp-further-reading.html"><h3>Further Reading: Codeforces Blogs</h3><p>Real, verified blog posts organized by topic, with a one-line takeaway for each.</p></a>
+    </div>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

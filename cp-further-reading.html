@@ -1,0 +1,780 @@
+<title>Further Reading: Codeforces Blogs</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide &mdash; Further Reading</p>
+    <h1>Further Reading: Codeforces Blogs</h1>
+    <p class="tagline">Real, verified Codeforces blog posts organized by topic &mdash; tutorials, uncommon tricks, and paths to more problems, straight from the competitive-programming community. Every entry was fetched and confirmed real before inclusion, not invented.</p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">118</div><div class="l">Blog Posts</div></div>
+      <div class="stat-tile"><div class="n">14</div><div class="l">Topics Covered</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#arrays-strings"><span>Arrays &amp; Strings</span><span class="cnt">11</span></a></li><li><a href="#sorting-searching"><span>Sorting &amp; Binary Search</span><span class="cnt">11</span></a></li><li><a href="#recursion-backtracking"><span>Recursion &amp; Backtracking</span><span class="cnt">7</span></a></li><li><a href="#dynamic-programming"><span>Dynamic Programming</span><span class="cnt">6</span></a></li><li><a href="#greedy"><span>Greedy Algorithms</span><span class="cnt">7</span></a></li><li><a href="#graphs"><span>Graph Algorithms</span><span class="cnt">7</span></a></li><li><a href="#trees"><span>Trees</span><span class="cnt">9</span></a></li><li><a href="#data-structures"><span>Data Structures for CP</span><span class="cnt">8</span></a></li><li><a href="#number-theory"><span>Number Theory &amp; Combinatorics</span><span class="cnt">9</span></a></li><li><a href="#string-algorithms"><span>String Algorithms</span><span class="cnt">12</span></a></li><li><a href="#bit-manipulation"><span>Bit Manipulation</span><span class="cnt">6</span></a></li><li><a href="#game-theory"><span>Game Theory</span><span class="cnt">7</span></a></li><li><a href="#network-flow"><span>Network Flow &amp; Matching</span><span class="cnt">10</span></a></li><li><a href="#fft-ntt"><span>FFT / NTT</span><span class="cnt">8</span></a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide Hub</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+      </ul>
+    </aside>
+    <main><section class="topic-section" id="arrays-strings">
+  <div class="topic-head"><h2>Arrays &amp; Strings</h2><span class="cnt">11 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Arrays &amp; Strings &mdash; jump to the <a href="https://claude.ai/code/artifact/c156ae68-4c74-47c9-912a-ad2d47b93c49">Arrays &amp; Strings guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/77127" target="_blank" rel="noopener noreferrer">Two Pointers Algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by code_tle</span> </div>
+  <div class="ex-explain"><p>Explains the classic opposite-ends two-pointer technique for sorted arrays (O(n) pair-sum search by moving pointers based on whether the current sum is above/below target), then extends it to closest-pair-sum, merging two sorted arrays, and 3-sum-style triplet problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/71687" target="_blank" rel="noopener noreferrer">Minimum in sliding window: two different but similar solutions</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by oversolver</span> </div>
+  <div class="ex-explain"><p>Gives two O(n) approaches to sliding-window minimum — the standard monotonic deque, and a lesser-known two-stack (prefix/suffix) trick — worth reading specifically to see that the deque isn&#x27;t the only clean way to do it.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/13713" target="_blank" rel="noopener noreferrer">Kadane&#x27;s Algorithm — (Dynamic Programming) — For new Solvers!</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Binary_ToothLess</span> </div>
+  <div class="ex-explain"><p>A clean, beginner-oriented derivation of Kadane&#x27;s algorithm for maximum subarray sum in O(n) by tracking &quot;best sum ending here&quot; versus &quot;best sum overall.&quot;</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/78762" target="_blank" rel="noopener noreferrer">An Introduction To Difference Arrays</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by arujbansal</span> </div>
+  <div class="ex-explain"><p>Shows how difference arrays support O(1) range updates (with a single O(n) prefix-sum pass to materialize final values) and generalizes to 2D — the natural companion/inverse trick to prefix sums for range-update-heavy problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/81123" target="_blank" rel="noopener noreferrer">prefix sum</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Noob_Coder_Anti</span> </div>
+  <div class="ex-explain"><p>Generalizes the prefix-sum idea beyond addition to any associative binary operator, useful for range queries (e.g. range XOR) where naive &quot;PreSum[R] - PreSum[L-1]&quot; subtraction needs an inverse operation to exist.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/86420" target="_blank" rel="noopener noreferrer">[Tutorial] 1D and 2D constant time per query range updates (a.k.a difference arrays)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by the_algorithmic_eye</span> <span class="judge-badge">Difference Arrays</span></div>
+  <div class="ex-explain"><p>Builds up the difference-array trick from 1D constant-range-add, to range-add-of-an-arithmetic-progression, to a DP+range-update combination, to the 2D grid version, each with a motivating problem and code.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/88474" target="_blank" rel="noopener noreferrer">Video about prefix sums, difference array and the power of half-closed intervals</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by peltorator</span> <span class="judge-badge">Difference Arrays</span></div>
+  <div class="ex-explain"><p>A follow-up/advanced companion to the standard difference-array tutorial, emphasizing why half-open interval conventions ([l, r+1)) avoid off-by-one bugs in range-update code.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/94534" target="_blank" rel="noopener noreferrer">[Tutorial] Quick Sort</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Rainbow_IQ</span> <span class="judge-badge">Two-Pointer Partitioning</span></div>
+  <div class="ex-explain"><p>Walks through the Hoare/Lomuto in-place partition-around-a-pivot mechanics that Dutch-National-Flag-style three-way partitioning generalizes, including why a poor pivot choice degrades to O(n^2).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/122003" target="_blank" rel="noopener noreferrer">[Tutorial] Minimum Deque</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by k1r1t0</span> <span class="judge-badge">Monotonic Deque</span></div>
+  <div class="ex-explain"><p>Derives the monotonic-deque technique from first principles by building a &quot;Minimum Stack&quot; then a &quot;Minimum Queue&quot; from two stacks, then a &quot;Minimum Deque&quot; supporting push/pop from both ends while tracking the running minimum in O(1) amortized.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/98629" target="_blank" rel="noopener noreferrer">[Tutorial] Solving Interval Problems with Geometry</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Monogon</span> <span class="judge-badge">Merge Intervals</span></div>
+  <div class="ex-explain"><p>Reframes a collection of intervals as 2D points (l, r) that &quot;see&quot; down-and-right, turning interval-covering and interval-merging problems into 2D dominance/geometry queries.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/20377" target="_blank" rel="noopener noreferrer">How to sweep like a Sir</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by DanAlex</span> <span class="judge-badge">Merge Intervals</span></div>
+  <div class="ex-explain"><p>Introduces the linear sweep technique with the classic &quot;union of rectangles&#x27; area&quot; example, directly relevant to computing the length/area covered by a merged set of intervals.</p></div>
+</div>
+</section><section class="topic-section" id="sorting-searching">
+  <div class="topic-head"><h2>Sorting &amp; Binary Search</h2><span class="cnt">11 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Sorting &amp; Binary Search &mdash; jump to the <a href="https://claude.ai/code/artifact/12a16e00-c911-4e45-a3c2-27b16db6b805">Sorting &amp; Binary Search guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/67509" target="_blank" rel="noopener noreferrer">The most comprehensive Binary Search lecture</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> </div>
+  <div class="ex-explain"><p>A widely-cited, from-scratch treatment of binary search aimed at removing boundary/off-by-one guesswork, including binary search on monotonic predicates and on mountain-shaped (bitonic) arrays.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/9901" target="_blank" rel="noopener noreferrer">Binary search implementation</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by pllk</span> </div>
+  <div class="ex-explain"><p>Presents an unusual step-halving binary search implementation (treat it like linear search but with exponentially shrinking steps n, n/2, n/4, ..., 1) that sidesteps fiddly bound adjustments and adapts cleanly to counting duplicate occurrences.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/63085" target="_blank" rel="noopener noreferrer">Binary search on real values</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Maxim</span> </div>
+  <div class="ex-explain"><p>A precision trick for binary-searching over floating-point answers: reinterpret the float/double&#x27;s bit pattern as an integer and binary search on that integer directly, avoiding the usual epsilon-vs-iteration-count tradeoff.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/76182" target="_blank" rel="noopener noreferrer">An alternative and very interesting approach on binary search</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Pankin</span> </div>
+  <div class="ex-explain"><p>When the two branches of a binary search have very different costs, splits the range in a tuned 1:D ratio (solving D·ln(D) = K) rather than always halving, minimizing total work instead of just the number of steps.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/45578" target="_blank" rel="noopener noreferrer">Parallel Binary Search [tutorial]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by himanshujaju</span> </div>
+  <div class="ex-explain"><p>Explains how to answer many independent &quot;binary search on the answer&quot; queries at once by advancing all of their search ranges together level-by-level, turning O(Q log Q · log M) redundant work into a single O(Q log Q log M) sweep.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/80983" target="_blank" rel="noopener noreferrer">Minimum swaps to sort an array</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by GRAYRHINO</span> </div>
+  <div class="ex-explain"><p>Derives the minimum-swap-count-to-sort via cycle decomposition of the target permutation (for distinct elements), and discusses why the problem becomes much harder — related to the NP-complete Feedback Arc Set — once duplicates are allowed.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/60702" target="_blank" rel="noopener noreferrer">Tutorial On Tof (Ternary Search)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Mahdi_Jfri</span> <span class="judge-badge">Ternary Search on Unimodal Functions</span></div>
+  <div class="ex-explain"><p>A from-scratch introduction to ternary search for finding the extremum of a unimodal function, including the standard iterative implementation and common pitfalls (e.g. off-by-one in the shrinking interval).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/135892" target="_blank" rel="noopener noreferrer">[Tutorial] Non-unimodal ternary search</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by polosatic</span> <span class="judge-badge">Ternary Search on Unimodal Functions</span></div>
+  <div class="ex-explain"><p>Extends ternary search beyond strictly unimodal functions, showing when and how the technique can still be salvaged (or must be replaced) for functions with flat regions or multiple local extrema.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/63533" target="_blank" rel="noopener noreferrer">Lecture #3 — Exchange arguments (sorting with dp)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> <span class="judge-badge">Custom Comparators &amp; Multi-Key Sorting</span></div>
+  <div class="ex-explain"><p>Teaches how to derive and prove a custom multi-key comparator via exchange arguments (showing any two adjacent out-of-order elements can be swapped without hurting the answer), the rigorous justification behind greedy sort-based solutions.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/11080" target="_blank" rel="noopener noreferrer">C++ STL: Policy based data structures</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by adamant</span> <span class="judge-badge">Order Statistics / Quickselect</span></div>
+  <div class="ex-explain"><p>Introduces GNU PBDS <code>tree</code> (an order-statistics tree) supporting <code>find_by_order</code> and <code>order_of_key</code> in O(log n), the standard competitive-programming shortcut for k-th-order-statistic queries on a dynamic set.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/95575" target="_blank" rel="noopener noreferrer">Building my own Custom Order-Statistic Tree using RB-Trees!</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Rajveer_100</span> <span class="judge-badge">Order Statistics / Quickselect</span></div>
+  <div class="ex-explain"><p>Walks through implementing an order-statistic tree from scratch on top of a red-black tree, useful for understanding what PBDS abstracts away and for environments where PBDS isn&#x27;t available.</p></div>
+</div>
+</section><section class="topic-section" id="recursion-backtracking">
+  <div class="topic-head"><h2>Recursion &amp; Backtracking</h2><span class="cnt">7 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Recursion &amp; Backtracking &mdash; jump to the <a href="https://claude.ai/code/artifact/0316847a-185e-46fa-b2ce-adf55d0710cd">Recursion &amp; Backtracking guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/131470" target="_blank" rel="noopener noreferrer">Backtracking [Guide]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by AlRntn</span> </div>
+  <div class="ex-explain"><p>A genuine ground-up backtracking tutorial covering the check/generate-choices/recurse/undo template, worked through string generation, counting knight moves on a board, and a probability-based &quot;WiFi&quot; problem.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/95571" target="_blank" rel="noopener noreferrer">Meet in the Middle (Topic Stream)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> </div>
+  <div class="ex-explain"><p>Walks through meet-in-the-middle across seven problems, showing how splitting a brute-force search space into two halves turns an infeasible O(2^n) into O(2^(n/2)), pushing feasible n from ~20 up to ~40.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/105404" target="_blank" rel="noopener noreferrer">Algorithm Tour: Meet in the Middle</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by mingisminion</span> </div>
+  <div class="ex-explain"><p>Explains meet-in-the-middle concretely via the XOR-Paths problem — computing partial results from both endpoints toward a common midpoint and combining them — with accompanying C++ implementation.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/81516" target="_blank" rel="noopener noreferrer">Introduction to DP with Bitmasking</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by kartik8800</span> </div>
+  <div class="ex-explain"><p>Covers representing subsets as bitmasks and enumerating/transitioning between them for exponential state-space search (TSP, job assignment) — the subset-generation half of bitmask-driven backtracking/DP.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/88283" target="_blank" rel="noopener noreferrer">Tips and tricks for solving permutation problems</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by peltorator</span> </div>
+  <div class="ex-explain"><p>An informal but genuinely useful mental trick from an LGM: track permutation swaps visually (physical cards / redrawn cycle diagrams) instead of pure index algebra, which helps avoid common bugs when generating or backtracking over permutations.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/66176" target="_blank" rel="noopener noreferrer">Derangement Generation of an Array [Tutorial]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by lazyneuron</span> </div>
+  <div class="ex-explain"><p>A constructive O(n log n) way to generate a derangement (no element stays in its original position) via sort-with-index-tracking plus a rotation by the maximum frequency — avoids generate-and-reject backtracking entirely.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/128693" target="_blank" rel="noopener noreferrer">[Incoherent Rambling] Optimal strategy in game theory</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Monogon</span> <span class="judge-badge">Minimax with Alpha-Beta Pruning</span></div>
+  <div class="ex-explain"><p>Discusses how to reason about and search for optimal strategies in adversarial two-player games, the general minimax framing that underlies CP problems like Letter Picking and Game on Sum even when explicit alpha-beta pruning code isn&#x27;t needed at CF&#x27;s typical state-space sizes. - No verifiable Codeforces blog specifically about Divide and Conquer (master theorem / closest-pair-of-points style D&amp;C, as distinct from D&amp;C DP optimization) was found after checking the blog lists of several authors known for algorithmic tutorials (adamant, Errichto, Radewoosh, Um_nik, pajenegod, Monogon, TheScrasse, and others) via the Codeforces API. WebSearch quota was exhausted mid-task, and Bing-via-jina.ai proxy searches did not surface a usable direct blog link for this topic. - No verifiable Codeforces blog specifically about Huffman Coding &amp; Optimal Merge was found through the same handle-by-handle API search; this appears to be a topic more commonly covered in textbooks/GeeksforGeeks-style articles than in Codeforces blog entries. - No genuine misère-play-specific Codeforces problem (i.e., &quot;last player to move loses,&quot; as opposed to the standard normal-play &quot;player who cannot move loses&quot; convention) was found among the game-theory problems checked; misère Nim&#x27;s edge-case rule appears to be treated as a purely theoretical topic in the CP community rather than the direct subject of judge problems on Codeforces, CSES, or LeetCode. The Sprague-Grundy blog above discusses the theory but the problems curated in the companion file all use normal play.</p></div>
+</div>
+</section><section class="topic-section" id="dynamic-programming">
+  <div class="topic-head"><h2>Dynamic Programming</h2><span class="cnt">6 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Dynamic Programming &mdash; jump to the <a href="https://claude.ai/code/artifact/1c4e103e-c945-47f3-a855-7fc0f5281fc2">Dynamic Programming guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/47764" target="_blank" rel="noopener noreferrer">[Tutorial] Non-trivial DP Tricks and Techniques</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by zscoder</span> <span class="judge-badge">fundamentals / bitmask DP / general tricks</span></div>
+  <div class="ex-explain"><p>A grab-bag of intermediate DP tricks — bitmask DP for subset states, pruning unreachable states to cut memory/time, &quot;changing the object you DP over&quot; when the natural state is infeasible, and binary-decomposition tricks for handling huge parameter ranges.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/45223" target="_blank" rel="noopener noreferrer">SOS Dynamic Programming [Tutorial]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by usaxena95</span> <span class="judge-badge">bitmask DP (Sum over Subsets)</span></div>
+  <div class="ex-explain"><p>Derives SOS DP step by step from a brute-force O(4^N) subset-sum-over-subsets solution, through an O(3^N) improvement, to the O(N·2^N) SOS DP that processes one bit position at a time.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/53960" target="_blank" rel="noopener noreferrer">Digit DP</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by flash_7</span> <span class="judge-badge">digit DP</span></div>
+  <div class="ex-explain"><p>Introduces digit DP via the classic &quot;count numbers in [a,b] where a digit appears exactly k times&quot; problem, explaining the digit-by-digit construction with a tight/bound-tracking flag and reducing range queries to F(b) - F(a-1).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/63257" target="_blank" rel="noopener noreferrer">Dp On Trees</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by AghaTizi</span> <span class="judge-badge">tree DP</span></div>
+  <div class="ex-explain"><p>Shows how to solve &quot;count subtrees of size ≤ K&quot; style tree DPs in O(nK) instead of O(nK^2) by only ever iterating the merge up to min(K, current subtree size), since states beyond the actual subtree size are always zero.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/124286" target="_blank" rel="noopener noreferrer">The Ultimate Reroot Template</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by pajenegod</span> <span class="judge-badge">tree DP / rerooting technique</span></div>
+  <div class="ex-explain"><p>Presents a general &quot;black box&quot; template for rerooting DP (computing an answer rooted at every node) that reduces the usual case-heavy rerooting logic to a single reusable structure, achieving O(n log n).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/8219" target="_blank" rel="noopener noreferrer">Dynamic Programming Optimizations</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by indy256</span> <span class="judge-badge">DP optimization (Convex Hull Trick, Divide &amp; Conquer optimization, Knuth&#x27;s optimization)</span></div>
+  <div class="ex-explain"><p>A reference table of classic DP-speedup techniques — two variants of Convex Hull optimization, D&amp;C optimization, and Knuth&#x27;s optimization — each with its recurrence form, applicability condition, and resulting complexity improvement.</p></div>
+</div>
+</section><section class="topic-section" id="greedy">
+  <div class="topic-head"><h2>Greedy Algorithms</h2><span class="cnt">7 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Greedy Algorithms &mdash; jump to the <a href="https://claude.ai/code/artifact/00f83d03-9d23-4a2c-a704-cd676a3b4ce0">Greedy Algorithms guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/69287" target="_blank" rel="noopener noreferrer">[Tutorial] Matroid intersection in simple words</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by ATSTNG</span> <span class="judge-badge">matroid theory / greedy correctness proofs</span></div>
+  <div class="ex-explain"><p>Explains matroids, bases, and circuits, then the Rado-Edmonds greedy algorithm for minimum-weight bases, and extends to matroid intersection via exchange graphs and augmenting paths — the general theory underlying why many greedy strategies are provably optimal.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/106346" target="_blank" rel="noopener noreferrer">On &quot;is this greedy or DP&quot;, forcing and rubber bands</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> <span class="judge-badge">greedy vs. DP problem recognition</span></div>
+  <div class="ex-explain"><p>Warns against the &quot;forcing fallacy&quot; of prematurely labeling a problem as greedy or DP; argues for deriving structural observations about the optimal solution first and letting the right technique fall out of that analysis.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/63533" target="_blank" rel="noopener noreferrer">Lecture #3 — Exchange arguments (sorting with dp)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> <span class="judge-badge">exchange argument technique</span></div>
+  <div class="ex-explain"><p>Shows the classic exchange-argument pattern: derive a comparator for the optimal order of items by comparing two adjacent swapped elements, sort by it, then (optionally) run a DP over the sorted order.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/150612" target="_blank" rel="noopener noreferrer">Beginner&#x27;s Guide to Greedy</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by dominique38</span> <span class="judge-badge">greedy proof techniques</span></div>
+  <div class="ex-explain"><p>Focuses on rigorously proving greedy choices are optimal using proof by contradiction and induction, comparing the greedy solution against a hypothetical optimal one to show equivalence or non-inferiority.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/145048" target="_blank" rel="noopener noreferrer">Greedy or Not? How to Identify Greedy Algorithms in Problems</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by AsLegend</span> <span class="judge-badge">greedy recognition heuristics / exchange arguments</span></div>
+  <div class="ex-explain"><p>Lists concrete signals that a problem is greedy (sortable data, choices independent of future decisions, local optimality implying global optimality) and recommends exchange arguments to prove correctness, especially when a DP solution is too slow.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/106346" target="_blank" rel="noopener noreferrer">On &quot;is this greedy or DP&quot;, forcing and rubber bands</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> <span class="judge-badge">Fractional vs. 0/1 Greedy Recognition</span></div>
+  <div class="ex-explain"><p>Discusses concrete heuristics (&quot;forcing&quot; moves and &quot;rubber band&quot; exchange arguments) for recognizing when a problem that looks like it needs DP actually admits a provably-correct greedy solution — directly the skill this subtopic targets.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/63533" target="_blank" rel="noopener noreferrer">Lecture #3 — Exchange arguments (sorting with dp)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> <span class="judge-badge">Fractional vs. 0/1 Greedy Recognition</span></div>
+  <div class="ex-explain"><p>Walks through the exchange-argument proof technique for justifying that sorting by a particular key is optimal, the same style of reasoning that certifies when a fractional-relaxation-style greedy choice generalizes correctly to the discrete/0-1 case.</p></div>
+</div>
+</section><section class="topic-section" id="graphs">
+  <div class="topic-head"><h2>Graph Algorithms</h2><span class="cnt">7 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Graph Algorithms &mdash; jump to the <a href="https://claude.ai/code/artifact/815d3fc1-3172-4d4b-9ceb-680f85b2b8b1">Graph Algorithms guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/68138" target="_blank" rel="noopener noreferrer">[Tutorial] The DFS tree and its applications: how I found out I really didn&#x27;t understand bridges</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> </div>
+  <div class="ex-explain"><p>Builds intuition for bridges and articulation points by classifying edges (tree/back edges) in a DFS tree, generalizing the classic low-link approach to a range of structural graph problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/131187" target="_blank" rel="noopener noreferrer">[Tutorial] Directed DFS trees (and the Tarjan algorithm for Strongly Connected Components)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by de_sousa</span> </div>
+  <div class="ex-explain"><p>Derives Tarjan&#x27;s SCC algorithm from first principles by studying edge classification in directed DFS trees, making the stack-based low-link recurrence feel like a natural consequence rather than a memorized trick.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/22276" target="_blank" rel="noopener noreferrer">0-1 BFS [Tutorial]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by himanshujaju</span> </div>
+  <div class="ex-explain"><p>Shows how to compute shortest paths in O(V+E) on graphs with only 0/1 edge weights using a deque (push front on 0-weight relaxation, push back on 1-weight), avoiding the log factor of Dijkstra&#x27;s heap.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/77760" target="_blank" rel="noopener noreferrer">[Tutorial] Boruvka&#x27;s Algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by RockyB</span> </div>
+  <div class="ex-explain"><p>Explains Boruvka&#x27;s MST algorithm (each component finds its cheapest outgoing edge per round, halving the component count every round) and its use in non-standard MST variants like XOR-MST where edges aren&#x27;t explicitly listed.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/16221" target="_blank" rel="noopener noreferrer">Algorithm Gym :: Graph Algorithms</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by PrinceOfPersia</span> </div>
+  <div class="ex-explain"><p>A broad reference compilation covering DFS/BFS, Dijkstra/Bellman-Ford/Floyd-Warshall/SPFA shortest paths, Kruskal/Prim MST, max-flow (Edmonds-Karp, Dinic), and bipartite matching/LCA, useful as a single-stop refresher across topological/shortest-path/MST/matching subtopics.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/107810" target="_blank" rel="noopener noreferrer">Rethink the Dijkstra algorithm -- Let&#x27;s go deeper</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by CristianoPenaldo</span> </div>
+  <div class="ex-explain"><p>Generalizes Dijkstra&#x27;s correctness argument to any &quot;relaxation function&quot; satisfying an induction base, extension, and DP property, showing it applies beyond plain sum/max shortest-path formulations.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/95106" target="_blank" rel="noopener noreferrer">The Ultimate Topic List (with Resources, Problems and Templates)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by YouKn0wWho</span> <span class="judge-badge">2-SAT / Euler Path / Euler Circuit / 0/1 BFS &amp; Multi-Source BFS / Functional Graphs (all four — general index)</span></div>
+  <div class="ex-explain"><p>Verified via the Codeforces API (blogEntryId 95106, author YouKn0wWho) as a real, highly-upvoted CF blog post; note that the post itself is a short pointer/index — the actual per-topic tutorial links and problem lists (covering 2-SAT, Eulerian tours, and binary lifting on functional graphs among dozens of other topics) live on the external site it links to (youkn0wwho.academy/topic-list), not in the CF post body itself. - Could not verify dedicated single-subject Codeforces blog posts for 2-SAT, Euler Path/Circuit, 0/1 BFS, or Functional Graphs specifically via <code>blogEntry.view</code> — attempts included scanning the full blog-entry lists of ~10 well-known algorithmic-tutorial authors for title keyword matches (&quot;2-SAT&quot;, &quot;Euler&quot;, &quot;functional graph&quot;, &quot;binary lifting&quot;, &quot;0-1 BFS&quot;), none of which turned up a matching real entry. - Codeforces&#x27;s own site search (<code>/search?searchQuery=...</code>) and catalog filter pages render results client-side via JavaScript, which is not visible through static fetches (direct curl is blocked by Cloudflare on codeforces.com problem/blog pages; the <code>r.jina.ai</code> proxy renders the page shell but not the JS-populated search results). - Cross-verified, via cp-algorithms.com&#x27;s own 2-SAT reference page, that Codeforces problems 776D, 1215F, and 1971H are legitimately cited practice problems for 2-SAT — this corroborates the problem list in <code>cp-guide-graphs-extra.md</code> even though it did not yield a Codeforces *blog* link. - Given the above, this file intentionally contains only 1 verified blog rather than the requested 1-2 per subtopic; all problem-side findings (16-24 problems, listed in <code>cp-guide-graphs-extra.md</code>) were fully achievable and verified via the Codeforces public API and direct CSES/LeetCode fetches.</p></div>
+</div>
+</section><section class="topic-section" id="trees">
+  <div class="topic-head"><h2>Trees</h2><span class="cnt">9 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Trees &mdash; jump to the <a href="https://claude.ai/code/artifact/aedd06db-fdcf-479b-97bc-247e9734e77e">Trees guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/12239" target="_blank" rel="noopener noreferrer">Heavy-light decompositon — it can be simple!</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Vladyslav</span> </div>
+  <div class="ex-explain"><p>Presents a simplified way to implement heavy-light decomposition so that any root-to-node path crosses O(log N) chains, enabling path queries/updates via an auxiliary segment tree.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/81661" target="_blank" rel="noopener noreferrer">Hybrid Tutorial #-2: Centroid Decomposition</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by galen_colin</span> </div>
+  <div class="ex-explain"><p>Builds a centroid decomposition tree of logarithmic height and demonstrates it on &quot;Xenia and Tree,&quot; illustrating how repeatedly removing centroids turns path-counting queries into an O(log N)-layer divide-and-conquer.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/44351" target="_blank" rel="noopener noreferrer">[Tutorial] Sack (dsu on tree)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Arpa</span> </div>
+  <div class="ex-explain"><p>Explains &quot;small-to-large merging&quot; (DSU on tree / Sack) for answering subtree-aggregate queries (e.g., distinct colors in a subtree) in O(n log n) by reusing the heavy child&#x27;s data structure instead of rebuilding it.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/100826" target="_blank" rel="noopener noreferrer">[Tutorial] Binary lifting</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by AlexLuchianov</span> </div>
+  <div class="ex-explain"><p>Covers binary lifting for O(log N) K-th ancestor and LCA queries via precomputed 2^h-ancestor jump tables, plus extensions for path-aggregate queries (e.g., max edge weight on a path).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/101271" target="_blank" rel="noopener noreferrer">[Tutorial] Diameter of a tree and its applications</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by TheScrasse</span> </div>
+  <div class="ex-explain"><p>Explains the two-DFS/BFS method for finding tree diameter and shows how bounding a node&#x27;s distance to the diameter endpoints solves a series of increasingly advanced CP problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/81527" target="_blank" rel="noopener noreferrer">Algorithms Thread 8: Tree Basics (+ Gym Contest)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by SecondThread</span> </div>
+  <div class="ex-explain"><p>Covers core tree fundamentals in one place — diameter computation, binary lifting for ancestor queries, and Euler tour flattening of a tree into an array so subtree queries can be answered with a segment tree.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/44351" target="_blank" rel="noopener noreferrer">[Tutorial] Sack (dsu on tree)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Arpa</span> <span class="judge-badge">Small-to-Large Merging (DSU on Tree)</span></div>
+  <div class="ex-explain"><p>One of the most-referenced original explanations of the &quot;sack&quot; (dsu on tree) technique, including complexity proof and a worked example.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/67696" target="_blank" rel="noopener noreferrer">[Explanation] dsu on trees (small to large)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by rewhile</span> <span class="judge-badge">Small-to-Large Merging (DSU on Tree)</span></div>
+  <div class="ex-explain"><p>A more beginner-friendly re-explanation of the same technique (explicitly written as a companion/expansion to Arpa&#x27;s original blog), with clearer pseudocode for the heavy-child-first traversal order.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/76955" target="_blank" rel="noopener noreferrer">Tutorial on Virtual/Auxiliary Trees and YouTube channel</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by radoslav11</span> <span class="judge-badge">Virtual Trees (Auxiliary Tree Technique)</span></div>
+  <div class="ex-explain"><p>A tutorial specifically on building and using virtual/auxiliary trees (LCA-closure of a queried vertex subset) to solve subtree-DP-style problems in near-linear total time.</p></div>
+</div>
+</section><section class="topic-section" id="data-structures">
+  <div class="topic-head"><h2>Data Structures for CP</h2><span class="cnt">8 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Data Structures for CP &mdash; jump to the <a href="https://claude.ai/code/artifact/a4b10d9b-cdd8-4f6d-93fe-9aae23b56638">Data Structures for CP guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/18051" target="_blank" rel="noopener noreferrer">Efficient and easy segment trees</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Al.Cash</span> </div>
+  <div class="ex-explain"><p>Introduces a compact, fully iterative (non-recursive) segment tree using only 2n memory laid out as a flat array, covering point-update/range-query, range-update/point-query, and lazy propagation variants without recursive overhead.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/82413" target="_blank" rel="noopener noreferrer">EDU: DSU</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Aksenov239</span> </div>
+  <div class="ex-explain"><p>Official ITMO Academy lecture on Disjoint Set Union, covering union by rank/size and path compression to achieve near-constant amortized time per operation.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/101083" target="_blank" rel="noopener noreferrer">[Tutorial] Sparse table</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by AlexLuchianov</span> </div>
+  <div class="ex-explain"><p>Details the sparse table construction for O(N log N) preprocessing and O(1) idempotent range queries (min/max/gcd) by splitting any interval into two overlapping power-of-two-length pieces.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/79669" target="_blank" rel="noopener noreferrer">AlgorithmsThread 5: Persistent Data Structures</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by SecondThread</span> </div>
+  <div class="ex-explain"><p>Explains how persistent segment trees keep a full version history by only reallocating the O(log N) nodes on the path touched by each update, enabling queries like &quot;k-th smallest in array range across historical versions&quot; and persistent queues.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/49446" target="_blank" rel="noopener noreferrer">using merging segment tree to solve problems about sorted list</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by TLE</span> </div>
+  <div class="ex-explain"><p>Describes implicit &quot;merge sort tree&quot; style segment trees over dynamic sorted sets, supporting merge/split of sorted tiles and k-th-smallest queries by lazily allocating nodes only when needed for O(n log n) total complexity.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/83248" target="_blank" rel="noopener noreferrer">[Tutorial] Square root decomposition and applications</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by box</span> </div>
+  <div class="ex-explain"><p>Comprehensive guide to sqrt decomposition — splitting an array of size N into O(sqrt N) blocks to get sqrt N per-operation cost — covering offline/online query processing, Mo&#x27;s algorithm ordering, and block-based lazy rebuilding.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/43230" target="_blank" rel="noopener noreferrer">Mo&#x27;s Algorithm on Trees [Tutorial]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by animeshf</span> <span class="judge-badge">Mo&#x27;s Algorithm (applied to trees)</span></div>
+  <div class="ex-explain"><p>Explains flattening subtree/path queries into array ranges via Euler tour so that standard Mo&#x27;s algorithm can answer offline tree queries, bridging the trees and Mo&#x27;s-algorithm subtopics.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/20032" target="_blank" rel="noopener noreferrer">On &quot;Mo&#x27;s algorithm&quot;</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by mnbvmar</span> <span class="judge-badge">Mo&#x27;s Algorithm</span></div>
+  <div class="ex-explain"><p>A concise treatment of Mo&#x27;s algorithm&#x27;s offline sqrt-block query reordering, complexity analysis, and common pitfalls (e.g. correct block size choice, handling l/r movement order). - WebSearch was exhausted for this session (200/200 budget used) before blog research began, so all blog discovery relied on the Codeforces <code>blogEntry.view</code> API with guessed/recalled blog IDs plus <code>user.blogEntries</code> lookups for known tutorial authors (adamant, SecondThread, pajenegod, mnbvmar, Um_nik, ko_osaga, anudeep2011, etc.) rather than free-text blog search — direct HTML fetches of <code>codeforces.com/blog/entry/...</code> are Cloudflare-blocked, but the JSON API endpoint is not. - No qualifying Codeforces blog was found and verified for **Tree Isomorphism / Canonical Form**, **Sqrt Decomposition**, or **2D Fenwick Tree / 2D Range Queries** within the available search budget. These techniques are more commonly documented on cp-algorithms.com, USACO Guide, or as sections inside larger &quot;data structures gym&quot; blogs (e.g. CF blog 15729, &quot;Algorithm Gym :: Data structures&quot; by PrinceOfPersia, which is a broad survey blog touching partial sums and DSU but was not confirmed to have a dedicated sqrt-decomposition or 2D-BIT section) rather than as their own standalone, unambiguously-titled Codeforces blog posts that could be positively identified without further guessing.</p></div>
+</div>
+</section><section class="topic-section" id="number-theory">
+  <div class="topic-head"><h2>Number Theory &amp; Combinatorics</h2><span class="cnt">9 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Number Theory &amp; Combinatorics &mdash; jump to the <a href="https://claude.ai/code/artifact/ad30c2df-1f61-4bc2-8169-8dfa3507993c">Number Theory &amp; Combinatorics guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/97623" target="_blank" rel="noopener noreferrer">Essentials of Elementary Number Theory</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Everule</span> </div>
+  <div class="ex-explain"><p>Builds elementary number theory from divisibility up through GCD/Bezout&#x27;s identity, Fermat&#x27;s little theorem, CRT, and Miller-Rabin primality testing, with an emphasis on intuition over rote formulas.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/54090" target="_blank" rel="noopener noreferrer">[Tutorial] Math note — linear sieve</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Nisiyama_Suzune</span> </div>
+  <div class="ex-explain"><p>Explains the O(n) linear sieve (vs. the O(n log log n) Sieve of Eratosthenes) and how it simultaneously computes multiplicative functions like phi and mu for every number up to n.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/106851" target="_blank" rel="noopener noreferrer">[Tutorial] Euler&#x27;s phi function, its properties, and how to compute it</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by kamilszymczak1</span> </div>
+  <div class="ex-explain"><p>Proves phi&#x27;s multiplicativity and prime-power formula via CRT, then shows how to compute phi(n) fast via prime factorization, useful for many modular-arithmetic counting problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/78873" target="_blank" rel="noopener noreferrer">Problem Solving Guide to Modular Combinatorics and Exponentiation</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by jeqcho</span> </div>
+  <div class="ex-explain"><p>Walks through fast modular exponentiation, modular inverses via Fermat&#x27;s little theorem, and computing nCr mod a large prime for n, k up to 10^6.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/64625" target="_blank" rel="noopener noreferrer">[Tutorial] Inclusion-Exclusion Principle</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Roundgod</span> </div>
+  <div class="ex-explain"><p>Covers the generalized inclusion-exclusion principle with formal derivation and a set of practice problems showing how to alternate-sum over overlapping &quot;bad&quot; conditions.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/23365" target="_blank" rel="noopener noreferrer">Short modular inverse</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by _h_</span> </div>
+  <div class="ex-explain"><p>A compact one-line recursive modular-inverse routine derived from the extended Euclidean algorithm&#x27;s recurrence, handy as a code-golf-style alternative to Fermat-based inverses.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/61290" target="_blank" rel="noopener noreferrer">[Tutorial] Chinese Remainder Theorem</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Valiors</span> <span class="judge-badge">Chinese Remainder Theorem</span></div>
+  <div class="ex-explain"><p>Walks through the CRT construction (including the non-coprime-moduli generalization) with worked derivations, useful as the canonical reference before attempting CRT-tagged problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/121012" target="_blank" rel="noopener noreferrer">Lucas Theorem is not an equation, it&#x27;s an operation!</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Everule</span> <span class="judge-badge">Lucas&#x27; Theorem</span></div>
+  <div class="ex-explain"><p>Reframes Lucas&#x27; theorem as a digit-wise operation on base-p representations, giving sharper intuition for why C(n,k) mod p decomposes the way it does.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/53925" target="_blank" rel="noopener noreferrer">[Tutorial] Math note — Möbius inversion</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Nisiyama_Suzune</span> <span class="judge-badge">Möbius Inversion</span></div>
+  <div class="ex-explain"><p>Concise formal derivation of the Möbius inversion formula and its use for converting gcd/divisor-sum counting problems into computable divisor sums.</p></div>
+</div>
+</section><section class="topic-section" id="string-algorithms">
+  <div class="topic-head"><h2>String Algorithms</h2><span class="cnt">12 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for String Algorithms &mdash; jump to the <a href="https://claude.ai/code/artifact/34e4f4f9-6d88-4afd-9426-e243421356c1">String Algorithms guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/4898" target="_blank" rel="noopener noreferrer">Anti-hash test.</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Zlobober</span> </div>
+  <div class="ex-explain"><p>Constructs a recursive &quot;ABBA...&quot; string (S, then S + NOT(S)) whose complementary-substring hash difference is divisible by 2^(Q(Q-1)/2), guaranteeing collisions for any polynomial hash taken mod 2^64 — the canonical weapon for hacking overflow-based hashing.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/60442" target="_blank" rel="noopener noreferrer">On the mathematics behind rolling hashes and anti-hash tests</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by dacin21</span> </div>
+  <div class="ex-explain"><p>Formalizes two provably reliable randomization schemes for rolling-hash parameters (random base with fixed large prime, or random prime with fixed base) and catalogs real attacks (Thue-Morse sequences, birthday attacks, lattice reduction) against weak seeding.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/20861" target="_blank" rel="noopener noreferrer">A short guide to suffix automata</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by quasisphere</span> </div>
+  <div class="ex-explain"><p>Concise online, linear-time suffix automaton construction built on suffix links between equivalence classes of end-position sets; shows that most SAM applications reduce to a DP over the automaton&#x27;s DAG.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/14854" target="_blank" rel="noopener noreferrer">Aho-Corasick algorithm. Construction</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by adamant</span> </div>
+  <div class="ex-explain"><p>Builds the Aho-Corasick automaton as a trie augmented with KMP-style failure/suffix links computed via BFS, enabling simultaneous multi-pattern matching in linear time.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/155241" target="_blank" rel="noopener noreferrer">Manacher&#x27;s Algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by utpalsen</span> </div>
+  <div class="ex-explain"><p>Unifies odd- and even-length palindrome cases with a <code>!z</code> bit trick and shows why the algorithm&#x27;s right boundary pointer only ever moves forward, bounding total work to O(n); also covers an online variant.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/146191" target="_blank" rel="noopener noreferrer">The Automaton Interpretation for the KMP Algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by arthur_9548</span> </div>
+  <div class="ex-explain"><p>Reframes the KMP prefix function as a deterministic finite automaton over the pattern, clarifying why prefix-function transitions are well-defined and simplifying related proofs/extensions (e.g., Aho-Corasick).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/20861" target="_blank" rel="noopener noreferrer">A short guide to suffix automata</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by quasisphere</span> <span class="judge-badge">Suffix Automaton</span></div>
+  <div class="ex-explain"><p>A concise, widely-cited construction walkthrough of the suffix automaton (equivalence classes / endpos sets, transitions, and suffix links) aimed at people who found e-maxx&#x27;s version too dense.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/20764" target="_blank" rel="noopener noreferrer">Understanding Suffix Automaton in depth</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Safrout</span> <span class="judge-badge">Suffix Automaton</span></div>
+  <div class="ex-explain"><p>A deeper, more intuition-driven follow-up explanation of why SAM states correspond to endpos-equivalence classes, useful once the short-guide construction mechanics already make sense.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/14854" target="_blank" rel="noopener noreferrer">Aho-Corasick algorithm. Construction</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by adamant</span> <span class="judge-badge">Aho-Corasick Multi-Pattern Matching</span></div>
+  <div class="ex-explain"><p>A rigorous construction-focused writeup of the Aho-Corasick automaton (trie + fail links via BFS) from one of Codeforces&#x27; most trusted algorithm-blog authors, framing it explicitly as &quot;just the start&quot; of what the automaton enables.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/10725" target="_blank" rel="noopener noreferrer">Aho-Corasick with additions</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by 1k_trash</span> <span class="judge-badge">Aho-Corasick Multi-Pattern Matching</span></div>
+  <div class="ex-explain"><p>Covers extending the basic Aho-Corasick automaton to handle incremental/dynamic pattern additions — directly relevant background for problems like CF 710F &quot;String Set Queries.&quot;</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/13958" target="_blank" rel="noopener noreferrer">Palindromic tree</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by ADJA</span> <span class="judge-badge">Palindromic Tree (Eertree)</span></div>
+  <div class="ex-explain"><p>The original Codeforces introduction of the palindromic tree (Eertree) data structure — two suffix-linked trees (for even/odd-length palindromes) built incrementally in amortized O(n).</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/13959" target="_blank" rel="noopener noreferrer">Palindromic tree: behind the scenes</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by adamant</span> <span class="judge-badge">Palindromic Tree (Eertree)</span></div>
+  <div class="ex-explain"><p>A follow-up deep dive answering &quot;why does the O(n) amortized bound hold,&quot; explaining the internal series/suffix-link jumping that makes Eertree insertion efficient rather than just presenting the algorithm as a black box.</p></div>
+</div>
+</section><section class="topic-section" id="bit-manipulation">
+  <div class="topic-head"><h2>Bit Manipulation</h2><span class="cnt">6 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Bit Manipulation &mdash; jump to the <a href="https://claude.ai/code/artifact/f254df5f-5086-479e-b80b-2011d428d5e6">Bit Manipulation guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/45223" target="_blank" rel="noopener noreferrer">SOS Dynamic Programming [Tutorial]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by usaxena95</span> </div>
+  <div class="ex-explain"><p>Derives the O(n·2^n) Sum-over-Subsets DP by progressively improving from brute force O(4^n) and submask-iteration O(3^n), the standard technique for subset-sum aggregation over bitmasks.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/68953" target="_blank" rel="noopener noreferrer">A Beautiful Technique for Some XOR Related Problems</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by DrSwad</span> </div>
+  <div class="ex-explain"><p>Frames XOR as vector addition over Z_2 and shows how building a linear (XOR) basis lets you count/find achievable XOR-sums across subsets efficiently, worked through six example problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/100066" target="_blank" rel="noopener noreferrer">XOR basis without linear algebra</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Everule</span> </div>
+  <div class="ex-explain"><p>Reconstructs the XOR-basis algorithm from first principles using elementary DP/greedy reasoning about bit positions, avoiding formal linear-algebra vocabulary.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/98376" target="_blank" rel="noopener noreferrer">Linear Basis (Xor Basis Extended)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by errorgorn</span> </div>
+  <div class="ex-explain"><p>Generalizes the classical XOR basis to maintain a basis of vectors over (Z/mZ)^d for non-prime m, extending the technique beyond pure XOR to modular vector spaces.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/73490" target="_blank" rel="noopener noreferrer">Bitwise operations for beginners</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> <span class="judge-badge">Bit Tricks &amp; Gray Code</span></div>
+  <div class="ex-explain"><p>Covers foundational bit tricks (extracting/setting/clearing bits, x &amp; -x for the lowest set bit, iterating over submasks) that underlie techniques like Gray code generation and popcount manipulation.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/73558" target="_blank" rel="noopener noreferrer">Bitwise operations 2 — popcount &amp; bitsets</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Errichto</span> <span class="judge-badge">Bitset Optimization for Brute-Force Speedup</span></div>
+  <div class="ex-explain"><p>Explains __builtin_popcount and std::bitset mechanics and shows how bitset operations (AND/OR/XOR/shift) can turn an O(n^2) brute-force loop into an O(n^2/64) one — the exact mechanism behind problems like GCD Counting and Dasha and cyclic table.</p></div>
+</div>
+</section><section class="topic-section" id="game-theory">
+  <div class="topic-head"><h2>Game Theory</h2><span class="cnt">7 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Game Theory &mdash; jump to the <a href="https://claude.ai/code/artifact/2dc80eb5-e35f-4079-bb93-351ceae8c683">Game Theory guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/63054" target="_blank" rel="noopener noreferrer">A blog on the Sprague-Grundy Theorem</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by sirknightingfail</span> </div>
+  <div class="ex-explain"><p>A rigorous, math-club-style handout that formally defines impartial games and derives the Sprague-Grundy theorem, including its reduction of arbitrary impartial games to equivalent Nim heaps.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/66040" target="_blank" rel="noopener noreferrer">The Intuition Behind NIM and Grundy Numbers in Combinatorial Game Theory</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Shisuko</span> </div>
+  <div class="ex-explain"><p>Builds intuition for why XOR determines the winner in Nim and why the mex (minimum excludant) operation produces Grundy numbers, rather than presenting them as memorized rules.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/85984" target="_blank" rel="noopener noreferrer">[Tutorial] Slight Generalization of Grundy Numbers</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by emorgan</span> </div>
+  <div class="ex-explain"><p>Introduces &quot;Grundy polynomials&quot; to analyze games with infinitely many states/positions, extending standard Grundy theory to cascading Nim-like games.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/103785" target="_blank" rel="noopener noreferrer">Nimbers and Sprague-Grundy theorem</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by adamant</span> </div>
+  <div class="ex-explain"><p>Recaps Sprague-Grundy formally, then covers the rarely-discussed nimber product (multiplication of Grundy values as a field operation) and its meaning for games like turning/diminishing-rectangle games.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/44651" target="_blank" rel="noopener noreferrer">Intro to Staircase Nim + Editorial for HackerRank &quot;Move the Coins&quot;</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Shafaet</span> </div>
+  <div class="ex-explain"><p>Introduces Staircase Nim, a Nim variant where stones move down a staircase instead of being removed, and shows the reduction to a standard XOR-based Nim analysis on odd-indexed steps.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/3657" target="_blank" rel="noopener noreferrer">Nim (Algorithmic Game)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by paladin8</span> </div>
+  <div class="ex-explain"><p>A classic, concise explanation of the game of Nim and the proof that the XOR (nim-sum) of pile sizes determines whether the position is winning or losing.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/103785" target="_blank" rel="noopener noreferrer">Nimbers and Sprague-Grundy theorem</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by adamant</span> <span class="judge-badge">Combinatorial Game Sums &amp; Misère Play</span></div>
+  <div class="ex-explain"><p>A rigorous derivation of the Sprague-Grundy theorem showing why any impartial game decomposes into a nimber, and why the Grundy value of a sum of independent games is the XOR of their individual Grundy values.</p></div>
+</div>
+</section><section class="topic-section" id="network-flow">
+  <div class="topic-head"><h2>Network Flow &amp; Matching</h2><span class="cnt">10 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for Network Flow &amp; Matching &mdash; jump to the <a href="https://claude.ai/code/artifact/69f48d09-8ce7-495b-9b95-530c827d9af6">Network Flow &amp; Matching guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/104960" target="_blank" rel="noopener noreferrer">[Tutorial] My way of understanding Dinitz&#x27;s (&quot;Dinic&#x27;s&quot;) algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> </div>
+  <div class="ex-explain"><p>Frames flow augmentation as moving between vertices of a convex polytope of valid flows, giving geometric intuition for why layered BFS graphs + blocking-flow DFS make Dinic an O(n^2·m) improvement over Edmonds-Karp.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/105330" target="_blank" rel="noopener noreferrer">[Tutorial] Minimum cost (maximum) flow</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> </div>
+  <div class="ex-explain"><p>Proves that repeatedly augmenting along shortest (cheapest) residual paths preserves a no-negative-cycle invariant, which is exactly why successive shortest augmenting paths yields a globally optimal min-cost flow.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/105658" target="_blank" rel="noopener noreferrer">[Tutorial] More about minimum cost flows: potentials and Dinitz</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> </div>
+  <div class="ex-explain"><p>Introduces vertex potentials (Johnson&#x27;s reweighting) combined with Dijkstra and a Dinic-style blocking flow to push MCMF performance close to plain max-flow speeds.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/92339" target="_blank" rel="noopener noreferrer">[Tutorial] Blossom Algorithm for General Matching in O(n^3)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Monogon</span> </div>
+  <div class="ex-explain"><p>Explains how odd cycles (&quot;blossoms&quot;) break naive augmenting-path search on general (non-bipartite) graphs, and how contracting/lifting blossoms restores correctness for O(n^3) general matching.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/128703" target="_blank" rel="noopener noreferrer">[Tutorial] Hungarian algorithm in Õ(mn) or O(n^3)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> </div>
+  <div class="ex-explain"><p>Derives the Hungarian algorithm from LP duality and complementary slackness, using vertex potentials plus incremental DFS over &quot;tight&quot; edges to find minimum-cost perfect bipartite matching.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/94190" target="_blank" rel="noopener noreferrer">[Tutorial] Network simplex</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by brunovsky</span> </div>
+  <div class="ex-explain"><p>Presents the simplex-method specialization for min-cost flow on spanning trees as a practical alternative to successive-shortest-path methods for certain flow and assignment problems.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/95823" target="_blank" rel="noopener noreferrer">[Tutorial] Graph Potentials, Johnson&#x27;s Algorithm, and Min Cost Max Flow</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Monogon</span> <span class="judge-badge">Min-Cost Max-Flow (MCMF)</span></div>
+  <div class="ex-explain"><p>Explains the Johnson potential trick that lets MCMF use Dijkstra instead of Bellman-Ford on graphs with negative-cost edges, the key implementation detail behind fast MCMF.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/105330" target="_blank" rel="noopener noreferrer">[Tutorial] Minimum cost (maximum) flow</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> <span class="judge-badge">Min-Cost Max-Flow (MCMF)</span></div>
+  <div class="ex-explain"><p>A from-scratch, implementation-focused MCMF tutorial covering both SPFA-based and Dijkstra-with-potentials variants.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/128703" target="_blank" rel="noopener noreferrer">[Tutorial] Hungarian algorithm in Õ(mn) or O(n^3)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> <span class="judge-badge">Hungarian Algorithm</span></div>
+  <div class="ex-explain"><p>Derives the Hungarian algorithm via the same successive-shortest-augmenting-path / potential framework used for MCMF, giving both the classic O(n^3) and a faster O(mn log n)-style variant.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/78596" target="_blank" rel="noopener noreferrer">Algorithms Dead Episode 0: Hungarian Algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by SecondThread</span> <span class="judge-badge">Hungarian Algorithm</span></div>
+  <div class="ex-explain"><p>An accessible, example-driven walkthrough of the assignment problem and the Hungarian algorithm aimed at competitive programmers seeing it for the first time.</p></div>
+</div>
+</section><section class="topic-section" id="fft-ntt">
+  <div class="topic-head"><h2>FFT / NTT</h2><span class="cnt">8 blogs</span></div>
+  <p class="topic-desc">Real, verified Codeforces blog posts for FFT / NTT &mdash; jump to the <a href="https://claude.ai/code/artifact/ca5bf18b-b4fe-400b-a702-edccd442732d">FFT / NTT guide page</a> for theory and solved examples.</p>
+  <div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/111371" target="_blank" rel="noopener noreferrer">[Tutorial] FFT</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by -is-this-fft-</span> </div>
+  <div class="ex-explain"><p>Covers the coefficient/point-value duality and Cooley-Tukey FFT, plus the NTT variant under modulus 998244353, with applications to convolution and fuzzy string matching.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/43499" target="_blank" rel="noopener noreferrer">Tutorial on FFT/NTT — The tough made simple. (Part 1)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by sidhant</span> </div>
+  <div class="ex-explain"><p>Builds FFT from first principles via divide-and-conquer on even/odd coefficient subsets evaluated at complex roots of unity, proving the key root-of-unity lemmas needed for correctness.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/48798" target="_blank" rel="noopener noreferrer">Tutorial on FFT/NTT — The tough made simple. (Part 2)</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by sidhant</span> </div>
+  <div class="ex-explain"><p>Gives visual/recursive intuition for the FFT butterfly structure and completes the round trip: coefficient form to point-value form (FFT), O(n) pointwise multiply, then back via inverse FFT.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/75326" target="_blank" rel="noopener noreferrer">Notes on FFT / NTT, and the &quot;ultimate&quot; NTT with modulus &gt; 9 * 10^18</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Spheniscine</span> </div>
+  <div class="ex-explain"><p>Proposes a single huge-modulus NTT (m ≈ 9223372036737335297, just under 2^63) with Barrett reduction to avoid CRT-merging or floating-point-precision workarounds when convolution outputs overflow 64-bit integers.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/149880" target="_blank" rel="noopener noreferrer">[Tutorial] Bostan-Mori algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by Spheniscine</span> </div>
+  <div class="ex-explain"><p>Uses generating-function manipulation (splitting even/odd terms of a rational power series) to compute the k-th term of a linear recurrence in O(d log d log k) time via NTT-based polynomial multiplication.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/129600" target="_blank" rel="noopener noreferrer">Montgomery/Barret reduction and NTT [Performance optimization]</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by alexvim</span> </div>
+  <div class="ex-explain"><p>Shows how Montgomery and Barrett modular-multiplication tricks eliminate slow division in the inner loop of NTT butterfly operations, giving a significant constant-factor speedup.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/61306" target="_blank" rel="noopener noreferrer">Linear Recurrence and Berlekamp-Massey Algorithm</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by TLE</span> <span class="judge-badge">Matrix Exponentiation / Linear Recurrences via Polynomials</span></div>
+  <div class="ex-explain"><p>Explains how to recover an unknown linear recurrence from a sequence of terms and then evaluate far-out terms, bridging plain matrix-exponentiation thinking into the polynomial/Kitamasa toolbox.</p></div>
+</div><div class="example-box">
+  <div class="ex-title"><a href="https://codeforces.com/blog/entry/97627" target="_blank" rel="noopener noreferrer">[Tutorial] Solving Linear Recurrences with various methods, Including O(N logN logK) using FFT</a></div>
+  <div class="meta-row" style="margin-bottom:8px;"><span class="src">by demoralizer</span> <span class="judge-badge">Linear Recurrences via Polynomials (Kitamasa&#x27;s method / Bostan-Mori)</span></div>
+  <div class="ex-explain"><p>Surveys multiple approaches to the k-th-term-of-a-linear-recurrence problem, culminating in the polynomial/FFT-based method that generalizes Kitamasa&#x27;s method for large recurrence orders.</p></div>
+</div>
+</section></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

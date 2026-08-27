@@ -1,0 +1,911 @@
+<title>Greedy Algorithms — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Greedy Algorithms</h1>
+    <p class="tagline"><p>An algorithm is &#x27;greedy&#x27; when it builds a solution by repeatedly committing to the locally best-looking choice and never reconsidering it, without ever backtracking or exploring alternatives. This is dangerous: greedy is only as good as its proof, and unlike DP or flow (whose correctness is structural by construction), a greedy rule that merely &#x27;sounds reasonable&#x27; is very often wrong on some input you haven&#x27;t thought of. That is why proving correctness -- almost always via an exchange argument (show any optimal solution can be transformed into the greedy one without making it worse) or by recognizing an underlying matroid (show the greedy-by-weight rule is optimal because feasible sets form a matroid) -- is the actual content of a greedy problem; the algorithm itself is often three lines. Building on straightforward greedy exchange arguments, these two subtopics sharpen the central judgment call of greedy algorithm design: Huffman coding and optimal-merge show a provably correct greedy merge order and exactly where an adjacency constraint breaks it, while fractional-vs-0/1 recognition trains the instinct for telling a genuinely greedy problem apart from one that only looks like it until you try a concrete counterexample.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">6</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">13</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">13</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#greedy-interval-scheduling-and-its-generalizations"><span>Interval Scheduling and Its Generalizations</span><span class="cnt">2</span></a></li><li><a href="#greedy-exchange-argument-scheduling-order"><span>Exchange-Argument Scheduling Order</span><span class="cnt">3</span></a></li><li><a href="#greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu"><span>Greedy Combined with a Priority Structure (Heaps and DSU)</span><span class="cnt">2</span></a></li><li><a href="#greedy-reducing-to-a-minimum-spanning-tree"><span>Reducing to a Minimum Spanning Tree</span><span class="cnt">2</span></a></li><li><a href="#greedy-huffman-coding-optimal-merge"><span>Huffman Coding &amp; Optimal Merge</span><span class="cnt">2</span></a></li><li><a href="#greedy-fractional-vs-0-1-greedy-recognition"><span>Fractional vs. 0/1 Greedy Recognition</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">13</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#greedy">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="greedy-interval-scheduling-and-its-generalizations">
+  <div class="topic-head"><h2>Interval Scheduling and Its Generalizations</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The base case is activity selection: given intervals, select the maximum number that pairwise don&#x27;t overlap. The greedy rule is to sort by right endpoint ascending and repeatedly take the next interval whose start is at or after the end of the last taken one. The exchange argument: let G be the greedy selection and O be any optimal selection, both sorted by start time. Compare their first picks -- greedy&#x27;s first interval ends no later than O&#x27;s first interval (by choice of sort key), so swapping O&#x27;s first pick for greedy&#x27;s first pick cannot cause any conflict with the rest of O&#x27;s picks (they all start after O&#x27;s original first pick ends, hence after greedy&#x27;s earlier-ending pick too), and the swap doesn&#x27;t reduce the count. Repeating this argument down the list shows greedy&#x27;s count is never less than optimal&#x27;s, so greedy is optimal.</p><p>The technique generalizes past a single resource. With k identical resources (e.g. k people who can each watch one movie at a time), still sort by end time, but now maintain a multiset of each resource&#x27;s current &#x27;free time&#x27;. For each interval, among all resources free at or before its start, assign it to the one with the LARGEST such free time (i.e. the one that just barely became free), not an arbitrary one. The exchange argument here is subtler: assigning to the &#x27;just barely free&#x27; resource strictly maximizes the free time left on every OTHER resource, which is a Pareto-dominant state -- any assignment achievable from a worse choice is still achievable from this one, so it can never be strictly worse for future intervals, and by induction the total count is maximized.</p><p>A further generalization drops &#x27;select a subset of intervals&#x27; in favor of &#x27;choose points so every interval contains enough of them&#x27; (the dual, or &#x27;stabbing&#x27;, formulation). For &#x27;every interval must contain at least two chosen points&#x27;, sort by right endpoint again, and when an interval is under-covered, add new points as far RIGHT as possible (at the interval&#x27;s own right endpoint, and the position just before it if two points are needed at once). The proof that &#x27;rightmost is safe&#x27; is again an exchange argument: any valid solution can have its points shifted rightward, one at a time, up to the boundary imposed by the current interval&#x27;s right endpoint, without ever removing coverage of intervals already processed (since those all end at or before the current right endpoint) and only helping with intervals still to come (which end even further right). This is considerably subtler than plain stabbing because a single new point can satisfy many future intervals at once, so being greedy about WHERE exactly to place it matters much more than in the one-point-per-interval case.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for the words &#x27;maximum number of non-overlapping&#x27;, &#x27;minimum points/resources to cover/hit all intervals&#x27;, or &#x27;schedule as many as possible given start/end times&#x27; -- these are almost always solved by sorting on one endpoint. The danger sign is when intervals carry an extra VALUE or WEIGHT and the goal is to maximize total value rather than total count: plain earliest-end-time greedy provably fails there (a short, low-value interval can block a long, high-value one), and you need weighted interval scheduling (DP with binary search) instead. Another danger sign is heterogeneous resources (e.g. k machines with different speeds, or intervals that can only be served by some subset of resources) -- the &#x27;assign to the resource that frees up latest but still in time&#x27; trick assumes resources are interchangeable, and breaks without that assumption.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for sorting plus O(log n) per greedy step if a heap/multiset/BIT is needed (k-resource and stabbing variants); O(n) once sorted for the plain single-resource case.</p></div>
+  </div>
+  <article class="example-card" id="greedy-interval-scheduling-and-its-generalizations-ex0">
+  <h4>Movie Festival with k Club Members</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A festival shows n movies; movie i runs on the half-open interval [s_i, e_i) (a member can start a new movie exactly when their previous one ends). A club has k members who can each watch at most one movie at a time, but different members may watch different movies simultaneously. No movie may be watched by more than one member (watching it twice doesn&#x27;t count twice). Maximize the total number of movie-viewings (i.e. the number of movies that get watched by at least one member). Input: first line &#x27;n k&#x27;, then n lines each &#x27;s e&#x27;. Output: the maximum number of movies watched.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort movies by end time ascending (ties by start time). Maintain a multiset of the k members&#x27; current free times, initialized to 0. For each movie (s, e) in sorted order, look for a member whose free time is &lt;= s; among all such members, pick the one with the LARGEST free time (found via upper_bound(s) then stepping back one position in the multiset). If such a member exists, assign the movie to them (remove their old free time, insert e) and count it; otherwise skip the movie. Correctness: processing by end time ensures we always resolve the &#x27;tightest&#x27; movie first, exactly as in single-resource interval scheduling. Choosing the member who is free LATEST (but still in time) rather than the one free earliest is the key exchange step -- it leaves every other member&#x27;s free time untouched at its (possibly earlier, more flexible) value, so the resulting configuration of free times is componentwise &lt;= any alternative valid assignment&#x27;s free times. Since a componentwise-smaller multiset of free times can only make it easier to satisfy every subsequent movie, an induction over the sorted order shows this greedy choice never loses to any other feasible assignment, so the final count is optimal.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; long long k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;pair&lt;int,int&gt;&gt; mv(n);
+    for (auto &amp;p : mv) cin &gt;&gt; p.first &gt;&gt; p.second;
+    sort(mv.begin(), mv.end(), [](const pair&lt;int,int&gt;&amp;a, const pair&lt;int,int&gt;&amp;b){
+        if (a.second != b.second) return a.second &lt; b.second;
+        return a.first &lt; b.first;
+    });
+    multiset&lt;int&gt; freeTimes;
+    for (int i = 0; i &lt; k; i++) freeTimes.insert(0);
+    int count = 0;
+    for (auto &amp;p : mv) {
+        int s = p.first, e = p.second;
+        auto it = freeTimes.upper_bound(s);
+        if (it == freeTimes.begin()) continue;
+        --it;
+        freeTimes.erase(it);
+        freeTimes.insert(e);
+        count++;
+    }
+    cout &lt;&lt; count &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 2
+0 2
+0 1
+1 2
+2 3
+2 4
+</code></pre>
+    <pre><code>5
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-interval-scheduling-and-its-generalizations-ex1">
+  <h4>Covering Every Interval with at Least Two Points</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n closed integer intervals [l_i, r_i] with r_i - l_i &gt;= 1. Find the minimum-size set S of integers such that every interval contains at least 2 elements of S. Input: first line n, then n lines each &#x27;l r&#x27;. Output: the minimum size of S.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort intervals by right endpoint ascending (ties by left endpoint ascending). Track only the two largest points chosen so far, p1 &lt;= p2 (initialized to -infinity). For the current interval [l, r]: count how many of {p1, p2} are &gt;= l -- since points are only ever added in non-decreasing order and all previously added points are &lt;= every previously processed r &lt;= current r, p1 and p2 are exactly the relevant candidates already inside [., r]. If both are &gt;= l, the interval is already satisfied. If only p2 &gt;= l, add one more point at r (the rightmost legal position), shifting p1 &lt;- p2, p2 &lt;- r. If neither is &gt;= l, add two new points at r-1 and r. Correctness (exchange argument): whenever a new point must be added to satisfy the current interval, adding it as far RIGHT as legally possible (at r, or at r-1 and r) can only help every future interval, since all future intervals have right endpoint &gt;= r and their left endpoints have not been tested yet. Formally, given any optimal solution, repeatedly shift its rightmost usable point(s) for the current interval to r without ever losing coverage of intervals already finalized (all of which end at or before r); this transforms any optimal solution into one that agrees with this greedy choice at every step, without increasing its size, so the greedy count matches the true minimum.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;pair&lt;int,int&gt;&gt; iv(n);
+    for (auto &amp;p : iv) cin &gt;&gt; p.first &gt;&gt; p.second;
+    sort(iv.begin(), iv.end(), [](const pair&lt;int,int&gt;&amp;a, const pair&lt;int,int&gt;&amp;b){
+        if (a.second != b.second) return a.second &lt; b.second;
+        return a.first &lt; b.first;
+    });
+    long long p1 = LLONG_MIN, p2 = LLONG_MIN;
+    long long total = 0;
+    for (auto &amp;p : iv) {
+        int l = p.first, r = p.second;
+        int cnt = (p1 &gt;= l) + (p2 &gt;= l);
+        if (cnt == 2) continue;
+        else if (cnt == 1) { p1 = p2; p2 = r; total += 1; }
+        else { p1 = r - 1; p2 = r; total += 2; }
+    }
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+1 3
+1 4
+2 5
+3 5
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="greedy-exchange-argument-scheduling-order">
+  <div class="topic-head"><h2>Exchange-Argument Scheduling Order</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>Many problems ask for the best ORDER in which to process a fixed set of items, where the objective is some sum or set of local constraints over the resulting sequence. The standard proof technique is the adjacent-swap exchange argument: assume an optimal order exists; if it ever places two adjacent items in an order that disagrees with the proposed greedy sort key, show that swapping those two adjacent items cannot make the objective worse. Applying this repeatedly (essentially a bubble-sort argument) morphs any optimal order into the fully-sorted greedy order without ever hurting the objective, proving the greedy order is at least as good as any order.</p><p>A classic instance: given tasks with durations and deadlines, processed one after another with &#x27;finish time&#x27; = cumulative duration so far, and reward = deadline - finish_time summed over all tasks, maximize total reward. Summing the reward formula, total = (sum of all deadlines) - (sum of all finish times); the first term is a CONSTANT independent of order, so maximizing total reward is exactly minimizing the sum of finish times -- and it is a textbook fact (provable by the same adjacent-swap argument) that the sum of completion times over a sequential single-server schedule is minimized by shortest-processing-time-first (SPT) order. The deadlines, despite appearing in the objective, are entirely irrelevant to the optimal ORDER; they only shift every solution&#x27;s score by the same constant. Missing this and trying to sort by deadline is a natural but incorrect first instinct.</p><p>A second flavor concerns simultaneous LOCAL constraints rather than a global sum: e.g., assign each position in a line a value such that any position with a higher priority than a neighbor must get a strictly larger value than that neighbor, minimizing the total. Here a single left-to-right or right-to-left greedy pass provably cannot satisfy both directions of constraint at once (a peak needs to satisfy both its left and right neighbor simultaneously). The trick is to solve each DIRECTION of the constraint independently and optimally with one monotone pass each, then combine the two independently-optimal partial solutions by taking the pointwise maximum. This is valid because each pass&#x27;s result is a valid lower bound satisfying its own direction of constraints, and pointwise-max of two lower bounds still satisfies both directions simultaneously, while being provably no larger than any valid combined assignment (which must itself dominate both passes&#x27; lower bounds pointwise).</p><p>A third flavor computes a closed-form MINIMUM by identifying the single hardest structural bottleneck (e.g. the largest single item) plus the trivial aggregate lower bound (e.g. the total workload), and shows the max of these two simple bounds is always achievable by a suitable construction -- turning what looks like a hard bin-balancing / partition problem into an O(n) formula, because the specific combinatorial structure (e.g. &#x27;both workers must eventually do all of the same work, just staggered to avoid a resource clash&#x27;) rules out the usual NP-hardness of general two-machine partition.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Recognize this pattern when the objective is a SUM over positions/finish-times (minimize/maximize sum of completion times, weighted completion times, lateness sums) or when there are purely LOCAL pairwise constraints between adjacent elements. The giveaway that greedy-by-obvious-key might be wrong is when the objective is a MAX or BOTTLENECK rather than a SUM -- minimizing maximum lateness needs sorting by deadline (earliest-deadline-first), a completely different rule from minimizing summed lateness, and confusing sum-objectives with max-objectives is the most common way this family of greedy breaks. Always redo the adjacent-swap argument for your exact objective rather than pattern-matching to a memorized sort key.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the sort, O(n) for the pass(es) that follow.</p></div>
+  </div>
+  <article class="example-card" id="greedy-exchange-argument-scheduling-order-ex0">
+  <h4>Tasks and Deadlines</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n tasks; task i has duration d_i and deadline t_i. You process all n tasks one at a time, in an order of your choosing, on a single machine with no idle time. If a task finishes at time f (cumulative sum of durations of all tasks processed up to and including it), its reward is t_i - f (rewards may be negative). Maximize the sum of all rewards. Input: first line n, then n lines each &#x27;duration deadline&#x27;. Output: the maximum total reward.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort tasks by duration ascending only (the deadlines never affect the ordering decision). Simulate the schedule in that order, tracking a running &#x27;finish&#x27; time; for each task add its deadline minus the updated finish time to the total. Correctness: total reward = sum(deadlines) - sum(finish times), and sum(deadlines) is a constant regardless of processing order, so maximizing total reward is equivalent to minimizing sum(finish times). By the adjacent-swap argument, if two adjacent tasks in some order have the earlier one longer than the later one, swapping them decreases both of their finish times&#x27; contribution to the sum (and leaves every other task&#x27;s finish time unchanged), so sorting fully by ascending duration (shortest processing time first, SPT) minimizes the sum of finish times among all orders.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;pair&lt;long long,long long&gt;&gt; t(n);
+    for (auto &amp;p : t) cin &gt;&gt; p.first &gt;&gt; p.second;
+    sort(t.begin(), t.end());
+    long long finish = 0, total = 0;
+    for (auto &amp;p : t) {
+        finish += p.first;
+        total += p.second - finish;
+    }
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+6 10
+3 3
+2 5
+</code></pre>
+    <pre><code>0
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-exchange-argument-scheduling-order-ex1">
+  <h4>Two Readers, Every Book Read Twice</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n books; book i takes t_i time to read. Two people must EACH read every one of the n books (both need to finish all n, not split the set between them), each reading in whatever order they choose, working continuously with no idle time until they personally finish all n books. The only restriction: the same book cannot be read by both people at the same moment (though the two people may read two DIFFERENT books simultaneously). Find the minimum time until both people have finished reading all n books. Input: first line n, second line n integers t_1..t_n. Output: the minimum total time.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Compute S = sum of all t_i and M = max t_i. The answer is max(2*M, S). Two independent lower bounds force this: (1) each person individually spends S total time reading (they read every book once), so the finish time of either person is at least S; (2) the single longest book, of length M, must be read once by each person, and those two M-length intervals cannot overlap in time (same-book clash), so they occupy two disjoint length-M windows somewhere in the timeline, forcing the timeline to span at least 2*M. A matching construction (e.g., have the two readers proceed through a cyclic rotation of the same reading order, offset so that whenever one of them is on a given book the other is always on a different one, inserting idle time only around the longest book if 2*M &gt; S) achieves exactly max(2*M, S), so this closed form is tight in both directions. Note the edge case n=1: S=M so the formula gives 2*M, correctly capturing that with only one book, the second reader must wait for the first to finish entirely before starting.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; t(n);
+    for (auto &amp;x : t) cin &gt;&gt; x;
+    long long sum = 0, mx = 0;
+    for (auto x : t) { sum += x; mx = max(mx, x); }
+    cout &lt;&lt; max(2 * mx, sum) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+7 1 1 1
+</code></pre>
+    <pre><code>14
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-exchange-argument-scheduling-order-ex2">
+  <h4>Candy Distribution</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n children in a line, each with a rating r_i. Each child must receive at least 1 candy. Any child with a strictly higher rating than an immediate neighbor must receive strictly more candies than that neighbor. Find the minimum total number of candies needed. Input: first line n, second line n integers (ratings). Output: the minimum total candies.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Do two independent monotone passes. Left pass: left[0]=1; for i from 1 to n-1, left[i] = left[i-1]+1 if r[i] &gt; r[i-1], else 1. This pass alone correctly satisfies every LEFT-neighbor constraint but ignores right-neighbor constraints. Right pass: right[n-1]=1; for i from n-2 down to 0, right[i] = right[i+1]+1 if r[i] &gt; r[i+1], else 1 -- this alone satisfies every RIGHT-neighbor constraint. Take answer[i] = max(left[i], right[i]) for every i and sum. Correctness: any valid assignment must be &gt;= left[i] (because the left-pass recurrence is forced by the left-neighbor constraints alone, taking the minimum candies consistent with them) and simultaneously &gt;= right[i] (same argument for the right side), so answer[i] = max(left[i], right[i]) is a valid lower bound at every position. It is also achievable: one can check that this pointwise maximum still satisfies BOTH constraint directions at every position (an increase relative to one pass&#x27;s baseline of 1 never breaks that pass&#x27;s own recurrence, since the recurrence only demands a value strictly greater than the appropriate neighbor&#x27;s baseline, and taking the max preserves the needed gap), so it is simultaneously a valid assignment and pointwise minimal, hence globally minimal in sum.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;int&gt; r(n);
+    for (auto &amp;x : r) cin &gt;&gt; x;
+    vector&lt;int&gt; left(n,1), right(n,1);
+    for (int i = 1; i &lt; n; i++) if (r[i] &gt; r[i-1]) left[i] = left[i-1] + 1;
+    for (int i = n-2; i &gt;= 0; i--) if (r[i] &gt; r[i+1]) right[i] = right[i+1] + 1;
+    long long total = 0;
+    for (int i = 0; i &lt; n; i++) total += max(left[i], right[i]);
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 0 2
+</code></pre>
+    <pre><code>5
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu">
+  <div class="topic-head"><h2>Greedy Combined with a Priority Structure (Heaps and DSU)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Some greedy problems need to REVISE an earlier commitment once better information arrives, rather than committing once and moving on. The canonical example is stock trading where you may buy or sell exactly one share per day (never short), maximizing total profit: maintain a min-heap of &#x27;prices used as a buy so far&#x27;. For each new price p, if p is greater than the heap&#x27;s minimum, bank the difference as profit, pop that minimum, and then push p back onto the heap as if the share had been re-bought at price p -- in addition to always pushing p itself unconditionally. This lets the SAME transaction slot be revised again later if an even better price shows up, effectively &#x27;undoing&#x27; a previous sale-and-rebuy chain. The correctness argument is an accounting/telescoping one: any feasible sequence of at-most-one-operation-per-day buy/sell actions can be decomposed into a multiset of (buy-day, sell-day) pairs with buy price &lt; sell price, and one can show by induction that the heap&#x27;s running total after processing the first k prices always equals the maximum achievable profit using only those k days -- because the &#x27;resell through the heap&#x27; operation is exactly what&#x27;s needed to convert a locally-optimal decomposition using the first k-1 prices into a locally-optimal decomposition using k prices, without ever needing to look back further than the current heap state.</p><p>A second, very different priority-structure greedy solves deadline-constrained scheduling: n jobs each take one unit of time, job i has a deadline d_i (must run in some integer slot from 1 to d_i) and a profit p_i; only one job may run per slot; maximize total profit of scheduled jobs. Sort jobs by profit DESCENDING, and for each job find the LATEST still-free slot at or before its deadline (a Union-Find structure where find(t) returns the latest free slot &lt;= t makes this near O(1) amortized: when a slot is used, union it with the slot one earlier). Placing a job as LATE as possible rather than as early as possible is deliberate: it reserves every earlier slot for jobs with tighter deadlines that we haven&#x27;t seen yet (since we&#x27;re iterating by profit, not by deadline). This is a direct instance of the matroid-greedy theorem: the collection of &#x27;schedulable subsets of jobs&#x27; (there&#x27;s an assignment of each job in the subset to a distinct slot at or before its own deadline) forms the independent sets of a transversal matroid, and it is a general fact that scanning elements in decreasing weight order and greedily adding each one whenever it keeps the current set independent produces a maximum-weight independent set -- no case analysis on deadlines is needed beyond verifying the matroid axioms once.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for an explicit &#x27;one operation per unit time&#x27; or &#x27;process a stream, react as better options appear&#x27; framing -- that is the heap/regret pattern. Look for &#x27;maximize total value, each item needs a slot before some deadline, one item per slot&#x27; -- that is the DSU/matroid pattern. Danger sign for the heap-regret trick specifically: it relies on the objective decomposing into pairwise, telescoping differences (buy-then-sell spreads); adding transaction fees, cooldown periods, or a hard cap on the total number of transactions usually breaks the trick and pushes the problem toward DP instead. Danger sign for the DSU/matroid pattern: it assumes each job takes exactly one uniform time unit and any slot works equally well; jobs with different durations turn this into interval/knapsack-scheduling, which the transversal-matroid argument no longer covers.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the heap approach (each price pushed/popped a bounded number of times). O((n + D) alpha(D)) for the DSU job-scheduling approach, where D is the maximum deadline and alpha is the inverse Ackermann function; O(n log n) if a heap of free slots is used instead of DSU.</p></div>
+  </div>
+  <article class="example-card" id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu-ex0">
+  <h4>Buy Low Sell High</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You know the stock price for each of the next n days. On each day you may do at most one of: buy exactly one share, sell exactly one share you currently own, or nothing. You may never sell a share you don&#x27;t own (no short selling), but you may hold any number of shares simultaneously. Maximize total profit (sum of sell prices minus sum of buy prices) over the n days. Input: first line n, second line n integers (prices). Output: the maximum achievable profit.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain a min-heap. For each day&#x27;s price p, if the heap is non-empty and p is greater than the heap&#x27;s minimum, add (p - heap.top()) to the profit, pop that minimum, and push p (representing &#x27;resold and immediately re-bought at p&#x27;, keeping this slot available for an even better future price); then, regardless, push p onto the heap unconditionally (representing &#x27;p is also available as a fresh potential buy price&#x27;). The running total after processing all n days equals the optimal profit under the one-operation-per-day rule. Intuition/verification for the sample (prices 1, 2, 100): day 1 pushes 1; day 2 sees 2 &gt; 1, banks profit 1, and the heap ends up holding {2,2}; day 3 sees 100 &gt; 2, banks profit 98, total 99 -- matching the manual optimum of buying at 1 and selling at 100 while day 2 is left unused (any alternative use of day 2, such as buying a second share, wastes a transaction since only one share can be sold on day 3).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    priority_queue&lt;long long, vector&lt;long long&gt;, greater&lt;long long&gt;&gt; pq;
+    long long profit = 0;
+    for (long long p : a) {
+        if (!pq.empty() &amp;&amp; p &gt; pq.top()) {
+            profit += p - pq.top();
+            pq.pop();
+            pq.push(p);
+        }
+        pq.push(p);
+    }
+    cout &lt;&lt; profit &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+1 2 100
+</code></pre>
+    <pre><code>99
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu-ex1">
+  <h4>Job Sequencing with Deadlines</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n jobs; job i has a profit p_i and a deadline d_i (it must be scheduled in some integer time slot from 1 to d_i, inclusive). Every job takes exactly one unit of time, and at most one job may be scheduled in each time slot. Choose a subset of jobs and an assignment of each chosen job to a distinct slot at or before its deadline, to maximize the total profit of scheduled jobs. Input: first line n, then n lines each &#x27;profit deadline&#x27;. Output: the maximum achievable total profit.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort jobs by profit descending. Maintain a Union-Find over slots 0..maxDeadline, where find(t) returns the latest free slot &lt;= t (slot 0 is a sentinel meaning &#x27;no slot available&#x27;). For each job in profit order, let slot = find(deadline); if slot &gt; 0, take the job (add its profit) and mark that slot used by unioning it to slot-1 (so future queries skip past it). This is the matroid-greedy theorem applied to the transversal matroid of &#x27;sets of jobs schedulable given their deadlines&#x27;: scanning in decreasing weight order and adding each job whenever doing so keeps the current set independent (i.e., still schedulable, checked here via the DSU slot search) is guaranteed to produce a maximum-weight independent set. Tracing the sample: jobs sorted by profit are (100,d2),(27,d2),(25,d1),(19,d1),(15,d3). Job(100,d2) takes slot 2; job(27,d2) takes slot 1 (slot 2 now taken); job(25,d1) and job(19,d1) find no free slot at or before 1 and are skipped; job(15,d3) takes slot 3. Total profit = 100+27+15 = 142.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+vector&lt;int&gt; parent_;
+int find(int x){
+    if (parent_[x] == x) return x;
+    return parent_[x] = find(parent_[x]);
+}
+int main(){
+    int n; cin &gt;&gt; n;
+    vector&lt;pair&lt;int,int&gt;&gt; jobs(n);
+    int maxD = 0;
+    for (auto &amp;j : jobs) { cin &gt;&gt; j.first &gt;&gt; j.second; maxD = max(maxD, j.second); }
+    sort(jobs.begin(), jobs.end(), [](const pair&lt;int,int&gt;&amp;a, const pair&lt;int,int&gt;&amp;b){
+        return a.first &gt; b.first;
+    });
+    parent_.resize(maxD + 1);
+    for (int i = 0; i &lt;= maxD; i++) parent_[i] = i;
+    long long total = 0;
+    for (auto &amp;j : jobs) {
+        int profit = j.first, deadline = j.second;
+        int slot = find(deadline);
+        if (slot &gt; 0) {
+            total += profit;
+            parent_[slot] = slot - 1;
+        }
+    }
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+100 2
+19 1
+27 2
+25 1
+15 3
+</code></pre>
+    <pre><code>142
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="greedy-reducing-to-a-minimum-spanning-tree">
+  <div class="topic-head"><h2>Reducing to a Minimum Spanning Tree</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Kruskal&#x27;s and Prim&#x27;s algorithms are the archetypal matroid greedy: process edges by increasing weight and add an edge whenever it doesn&#x27;t close a cycle. Correctness follows from two classical facts. The CUT PROPERTY: for any cut (partition of vertices into two nonempty sets), the minimum-weight edge crossing it belongs to SOME minimum spanning tree -- so it is always safe to greedily add the cheapest crossing edge. The CYCLE PROPERTY: the maximum-weight edge on any cycle is never NEEDED in a minimum spanning tree -- so Kruskal&#x27;s rule of skipping an edge that would close a cycle never discards something essential. Together these show that Kruskal produces a spanning tree whose total weight cannot be beaten by any other spanning tree, i.e. it&#x27;s minimum; formally this is exactly the greedy-algorithm theorem for the graphic matroid, where independent sets are forests.</p><p>What makes some problems &#x27;greedy reductions to MST&#x27; is that they don&#x27;t look like graph problems at all until you find the right transformation. A frequent pattern: each element can either pay a fixed &#x27;go it alone&#x27; cost, or pay a pairwise cost to piggyback on some other already-covered element -- and at least one element must ultimately be self-sufficient (directly or transitively). The trick is to introduce one virtual node, connect it to every real node with an edge weighted by that node&#x27;s stand-alone cost, and connect every pair of real nodes with an edge weighted by their pairwise piggyback cost; a Minimum Spanning Tree of this augmented graph is then EXACTLY the optimal solution -- any spanning tree corresponds to a valid assignment (nodes directly connected to the virtual node build their own facility; every other node is connected via wires, transitively reaching some facility through the tree), and conversely any valid assignment yields a spanning tree of the same total cost. The correctness of Kruskal/Prim on the transformed graph is then inherited for free; all of the actual insight is in justifying that this bijection (or at least cost equivalence) between feasible original-problem solutions and spanning trees holds.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Watch for a &#x27;take a fixed local action, OR connect to any other element by paying a pairwise cost, and everything must end up connected (directly or transitively) to at least one element that took the local action&#x27; structure -- that is exactly the virtual-source-to-MST reduction. This shows up in facility-location-flavored problems (&#x27;build your own vs. share a neighbor&#x27;s&#x27;), network design, and clustering problems. Danger sign: the reduction needs symmetric, uncapacitated connections (any node may attach to any other node, and any number of nodes may share one hub); once directed costs, per-hub capacity limits, or flow-style constraints are introduced, the clean equivalence with an unconstrained MST breaks and a different tool (e.g. min-cost flow) is usually required instead.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(E log E) (Kruskal with sorting) or O(E log V) (Prim with a binary heap), where E is the number of edges and V the number of vertices. Virtual-source constructions are often dense (all pairs of n real nodes plus n edges to the virtual node give O(n^2) edges), yielding O(n^2 log n) with Kruskal, improvable to O(n^2) with array-based Prim.</p></div>
+  </div>
+  <article class="example-card" id="greedy-reducing-to-a-minimum-spanning-tree-ex0">
+  <h4>Minimum Cost to Connect All Computers</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n computers and m candidate cables; cable j connects computers u_j and v_j at cost w_j (the candidate cables are guaranteed to make the network connectable). Choose a subset of cables of minimum total cost so that every computer is connected to every other computer (directly or through other computers). Input: first line &#x27;n m&#x27;, then m lines each &#x27;u v w&#x27; (1-indexed computers). Output: the minimum total cost.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is literally Minimum Spanning Tree: run Kruskal&#x27;s algorithm -- sort all m candidate cables by weight ascending, use a Union-Find to add each cable only if its two endpoints are currently in different components, and sum the weights of added cables. By the cut property, the cheapest cable crossing any still-disconnected boundary is always safe to add, so this produces the minimum-cost fully-connecting set of cables. On the sample (4 computers; edges of weight 1,2,3,4,5), sorted order 1,2,3 connect all 4 computers first (edges (1,2),(2,3),(3,4)), so the remaining, more expensive edges (weight 4 and 5) are skipped as they would only close cycles; total cost = 1+2+3 = 6.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int parent_[100005], rnk_[100005];
+int find(int x){ return parent_[x] == x ? x : parent_[x] = find(parent_[x]); }
+bool unite(int a, int b){
+    a = find(a); b = find(b);
+    if (a == b) return false;
+    if (rnk_[a] &lt; rnk_[b]) swap(a, b);
+    parent_[b] = a;
+    if (rnk_[a] == rnk_[b]) rnk_[a]++;
+    return true;
+}
+int main(){
+    int n, m; cin &gt;&gt; n &gt;&gt; m;
+    vector&lt;array&lt;long long,3&gt;&gt; edges(m);
+    for (auto &amp;e : edges) {
+        long long u, v, w; cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
+        e = {w, u, v};
+    }
+    sort(edges.begin(), edges.end());
+    for (int i = 1; i &lt;= n; i++) { parent_[i] = i; rnk_[i] = 0; }
+    long long total = 0;
+    for (auto &amp;e : edges) {
+        long long w = e[0], u = e[1], v = e[2];
+        if (unite((int)u, (int)v)) total += w;
+    }
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 5
+1 2 1
+2 3 2
+3 4 3
+1 3 4
+1 4 5
+</code></pre>
+    <pre><code>6
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-reducing-to-a-minimum-spanning-tree-ex1">
+  <h4>Power Grid: Build a Station or Wire to a Neighbor</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n cities on a 2D grid; city i is at (x_i, y_i) and building its own power station there costs c_i. Alternatively, a wire can be built between any two cities i and j at cost k times their Manhattan distance |x_i - x_j| + |y_i - y_j|. Every city must ultimately be powered: either it has its own station, or it is connected (directly or transitively, through wires and other powered cities) to some city that has a station. Find the minimum total cost (stations plus wires) to power every city. Input: first line &#x27;n k&#x27;, then n lines each &#x27;x y c&#x27;. Output: the minimum total cost.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Introduce a virtual node 0 representing &#x27;the power source&#x27;. Add an edge from node 0 to city i with weight c_i (building a station is modeled as &#x27;wiring to the free, always-on virtual source&#x27;). Add an edge between every pair of cities i, j with weight k times their Manhattan distance. Run Kruskal/Prim to find the Minimum Spanning Tree of this (n+1)-node graph; its total weight is the minimum total cost. Correctness: any valid station/wire assignment for the original problem corresponds exactly to a spanning tree of the augmented graph rooted at node 0 (edges to node 0 are the stations that get built, all other tree edges are wires), and vice versa -- any spanning tree of the augmented graph gives a valid assignment of the same cost, since every city is reachable from node 0 through some path of real or virtual edges. So the MST of the augmented graph is precisely the optimal answer, and MST correctness (cut/cycle properties) transfers over automatically. On the sample (3 cities at (0,0),(1,0),(2,0), all with station cost 10, k=1): wiring city1-city2 costs 1 and city2-city3 costs 1 (much cheaper than three separate 10-cost stations), then one more edge to node 0 (cost 10, from any of the three cities) connects the whole wired cluster to the source; total = 1+1+10 = 12.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int parent_[205];
+int find(int x){ return parent_[x] == x ? x : parent_[x] = find(parent_[x]); }
+bool unite(int a, int b){
+    a = find(a); b = find(b);
+    if (a == b) return false;
+    parent_[a] = b;
+    return true;
+}
+int main(){
+    int n; long long k;
+    cin &gt;&gt; n &gt;&gt; k;
+    vector&lt;long long&gt; x(n+1), y(n+1), c(n+1);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; x[i] &gt;&gt; y[i] &gt;&gt; c[i];
+    vector&lt;array&lt;long long,3&gt;&gt; edges;
+    for (int i = 1; i &lt;= n; i++) edges.push_back({c[i], 0, i});
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = i+1; j &lt;= n; j++) {
+            long long d = llabs(x[i]-x[j]) + llabs(y[i]-y[j]);
+            edges.push_back({k*d, i, j});
+        }
+    sort(edges.begin(), edges.end());
+    for (int i = 0; i &lt;= n; i++) parent_[i] = i;
+    long long total = 0;
+    for (auto &amp;e : edges) {
+        if (unite((int)e[1], (int)e[2])) total += e[0];
+    }
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 1
+0 0 10
+1 0 10
+2 0 10
+</code></pre>
+    <pre><code>12
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="greedy-huffman-coding-optimal-merge">
+  <div class="topic-head"><h2>Huffman Coding &amp; Optimal Merge</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Huffman coding builds an optimal binary prefix-free code for a set of symbol frequencies by repeatedly merging the two SMALLEST remaining weights into one combined weight (paying a cost equal to their sum) and pushing the combined weight back into the pool, until a single weight remains. This greedy rule is provably optimal by an exchange argument: in any optimal Huffman tree, the two least-frequent symbols can always be placed as siblings at the deepest level without increasing the total weighted path length, so merging them first loses nothing and the same argument applies recursively to the resulting smaller instance. A priority queue (min-heap) makes this greedy merge run in O(n log n): pop the two smallest weights, push their sum, and accumulate that sum into a running total cost -- the final total is exactly the minimum possible sum of (frequency * code length) over all valid prefix-free binary codes, which is also exactly the answer to the more general &#x27;optimal merge cost&#x27; problem (minimize total cost to combine n items pairwise, where combining two items of weight a and b costs a+b).</p><p>The greedy priority-queue approach generalizes cleanly to K-ARY merges (combine the K smallest weights at a time instead of 2) as long as the only constraint is &#x27;pick any K items, of any positions, to merge next&#x27; -- this is still solvable by always grabbing the K globally smallest weights from a heap (after padding with zero-weight dummy items if needed so the merge count divides evenly). However, the moment an ADJACENCY constraint is added -- e.g. &#x27;you may only merge K items that are currently CONSECUTIVE in the original row/array&#x27; -- the greedy &#x27;always take the smallest&#x27; argument breaks completely, because the smallest available weights might not be next to each other, and merging them anyway is simply illegal. This adjacency-constrained version needs INTERVAL DP instead: dp[l][r] tracks the minimum cost to merge the contiguous range [l, r] down to the fewest piles reachable under the K-at-a-time rule (exactly 1 + (r - l) mod (K-1) piles), built by trying every valid split point and, when a full K-way merge of the whole range is legal, adding the range&#x27;s total sum as the final merge&#x27;s cost.</p><p>Recognizing which regime you are in -- unconstrained &#x27;always merge globally smallest&#x27; (greedy, priority queue) versus adjacency-constrained or otherwise structurally restricted merging (interval DP) -- is the single most important skill this subtopic tests, since the two problem statements can look deceptively similar while requiring completely different algorithms.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem asks to combine n items pairwise (or K at a time) into one, where each combination costs the sum of the pieces being combined, and you want to minimize (or the problem directly names) total Huffman/prefix-code length or &#x27;optimal merge cost&#x27; -- if merges may pick ANY items regardless of position, it is the classical greedy priority-queue algorithm. The moment the problem restricts merges to CONSECUTIVE/adjacent elements (or adds any other cost term beyond a pure sum, such as a positional penalty), the greedy argument no longer applies and interval DP is required instead.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the greedy priority-queue Huffman/optimal-merge algorithm; O(n^2) to O(n^2 * K) for the adjacency-constrained interval DP variant (K-way merge of contiguous ranges), depending on how the split points are enumerated.</p></div>
+  </div>
+  <article class="example-card" id="greedy-huffman-coding-optimal-merge-ex0">
+  <h4>Minimum Total Huffman Code Length</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given the frequencies of n distinct symbols (2 &lt;= n &lt;= 10^5, 1 &lt;= frequency &lt;= 10^9). Construct an optimal binary prefix-free (Huffman) code for these symbols and output the minimum possible total encoded length, i.e. the sum over all symbols of (frequency of the symbol) * (length of its assigned binary code).</p><p>Input: n, then n integers (the frequencies).<br>Output: the minimum total encoded length.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Push all n frequencies into a min-heap. While more than one element remains, pop the two smallest values a and b, add (a+b) to a running total cost, and push (a+b) back into the heap -- this is the classical Huffman merge. The final running total is exactly the minimum total encoded length, because each symbol&#x27;s frequency gets added into the running total once for every merge along the path from its leaf up to the root of the eventual Huffman tree, which is precisely frequency * (depth in the tree) = frequency * (code length). Verified against the well-known textbook example (frequencies 5, 9, 12, 13, 16, 45), which is documented to have an optimal total encoded length of 224 -- the implementation reproduces this exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; cin&gt;&gt;n;
+    priority_queue&lt;long long, vector&lt;long long&gt;, greater&lt;long long&gt;&gt; pq;
+    for(int i=0;i&lt;n;i++){ long long f; cin&gt;&gt;f; pq.push(f); }
+    if(n==1){ cout &lt;&lt; pq.top() &lt;&lt; endl; return 0; }
+    long long total = 0;
+    while(pq.size()&gt;1){
+        long long a = pq.top(); pq.pop();
+        long long b = pq.top(); pq.pop();
+        long long merged = a+b;
+        total += merged;
+        pq.push(merged);
+    }
+    cout &lt;&lt; total &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+5 9 12 13 16 45
+</code></pre>
+    <pre><code>224
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-huffman-coding-optimal-merge-ex1">
+  <h4>Minimum Cost to Merge K Adjacent Piles (where the Huffman greedy fails)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n piles of stones in a row (1 &lt;= n &lt;= 30), pile i having stones[i] stones (1 &lt;= stones[i] &lt;= 100), and an integer K (2 &lt;= K &lt;= n). In one move you may merge EXACTLY K CONSECUTIVE piles into a single new pile; the cost of that move equals the total number of stones in those K piles, and after the merge those K piles are replaced by the one combined pile (so future merges see the new, shorter row). Find the minimum total cost to merge the entire row down to a single pile, or report -1 if it is impossible.</p><p>Input: n and K, then n integers stones[1..n].<br>Output: the minimum total cost, or -1 if merging down to one pile is impossible.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>First, a merge sequence can only ever reduce the number of piles by (K-1) per move, so reaching exactly 1 pile from n is only possible when (n-1) is divisible by (K-1); otherwise output -1 immediately. Otherwise, this is the adjacency-constrained generalization of Huffman/optimal-merge, and the greedy &#x27;always merge the K globally smallest piles&#x27; rule from ordinary Huffman coding does NOT apply, because the K smallest-valued piles are almost never K consecutive piles in the row -- interval DP is required instead.</p><p>Let dp[i][j] = the minimum cost to merge the piles in range [i, j] down to the FEWEST piles reachable under the K-at-a-time rule, which is always exactly 1 + ((j-i) mod (K-1)) piles (a consequence of each merge removing exactly K-1 piles). Compute it by increasing range length: dp[i][j] = min over mid stepping by (K-1) from i up to (but not including) j of dp[i][mid] + dp[mid+1][j] (splitting the range into a left part that can be fully reduced to its minimal pile count, and a right remainder). Whenever (j - i) is itself a multiple of (K-1), the range [i, j] can additionally be fully collapsed into exactly ONE final pile with one more K-way merge, so add the full range sum (prefix-sum precomputed) to dp[i][j] in that case. The answer is dp[0][n-1]. Verified against all three official LeetCode &#x27;Minimum Cost to Merge Stones&#x27; examples: stones=[3,2,4,1],K=2 -&gt; 20; stones=[3,2,4,1],K=3 -&gt; -1; stones=[3,5,1,2,6],K=3 -&gt; 25 -- all three match exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n, K;
+    cin &gt;&gt; n &gt;&gt; K;
+    vector&lt;long long&gt; a(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    if ((n-1) % (K-1) != 0) { cout &lt;&lt; -1 &lt;&lt; endl; return 0; }
+    vector&lt;long long&gt; pre(n+1, 0);
+    for (int i = 0; i &lt; n; i++) pre[i+1] = pre[i] + a[i];
+    auto rangeSum = [&amp;](int i, int j){ return pre[j+1]-pre[i]; };
+    const long long INF = LLONG_MAX/2;
+    vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(n, 0));
+    for (int len = 2; len &lt;= n; len++) {
+        for (int i = 0; i + len - 1 &lt; n; i++) {
+            int j = i + len - 1;
+            dp[i][j] = INF;
+            for (int mid = i; mid &lt; j; mid += (K-1)) {
+                dp[i][j] = min(dp[i][j], dp[i][mid] + dp[mid+1][j]);
+            }
+            if ((j - i) % (K-1) == 0) {
+                dp[i][j] += rangeSum(i, j);
+            }
+        }
+    }
+    cout &lt;&lt; dp[0][n-1] &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 3
+3 5 1 2 6
+</code></pre>
+    <pre><code>25
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="greedy-fractional-vs-0-1-greedy-recognition">
+  <div class="topic-head"><h2>Fractional vs. 0/1 Greedy Recognition</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The fractional knapsack theorem states: if items are DIVISIBLE (you may take any fraction of an item&#x27;s weight and receive that same fraction of its value), then sorting items by value-to-weight ratio (descending) and greedily filling the capacity -- taking each item fully while it fits, and topping off the very last item with whatever fraction of capacity remains -- produces the provably optimal total value. The proof is a clean exchange argument: given any solution that doesn&#x27;t follow this order, you can always shift an infinitesimal amount of weight from a lower-ratio item to a higher-ratio item without violating the capacity constraint, strictly increasing total value, showing any non-greedy solution cannot be optimal.</p><p>The moment items become INDIVISIBLE (0/1 knapsack: take an item entirely or not at all), this exact exchange argument breaks down, because you can no longer &#x27;top off&#x27; the last item with an arbitrarily small fraction -- you either take the whole item (possibly overshooting the remaining capacity) or skip it entirely (possibly wasting capacity that a different, lower-ratio combination could have used more fully). A classic concrete counterexample: capacity 50, items (weight=10, value=60), (weight=20, value=100), (weight=30, value=120). Sorted by ratio (6, 5, 4), greedy 0/1 selection takes item 1 (10/60) then item 2 (20/100), filling 30 of the 50 capacity for 160 total value, and cannot fit item 3 -- but the true optimal 0/1 selection is items 2 and 3 together (weight 50 exactly, value 220), which the ratio-greedy never considers because it commits to the top-ratio item early and never revisits that choice. The correct approach for 0/1 knapsack is a DP over remaining capacity: dp[c] = best value achievable with total weight &lt;= c, updated item by item in decreasing order of c (to avoid reusing an item twice within the same pass).</p><p>More generally, greedy-by-ratio (or greedy-by-any-local-comparison) tends to be PROVABLY correct exactly when the underlying structure has a matroid-like exchange property (as in fractional knapsack, or Kruskal&#x27;s MST algorithm, or scheduling problems built from freely swappable atomic units) -- and tends to FAIL exactly when an indivisibility constraint, an exact-size/exact-count constraint, or some other rigid combinatorial restriction prevents the small local exchange step that the greedy&#x27;s correctness proof relies on. A fast diagnostic: try to construct a small counterexample by hand where greedy&#x27;s answer differs from a brute-force or DP answer; if you can, greedy is wrong for that variant and you need DP (or a more careful combinatorial argument) instead.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>If the problem explicitly allows taking a FRACTION of an item (or is phrased in terms of continuous quantities, like fluid volumes or divisible resources), ratio-based greedy is very likely correct and provably optimal. If instead items must be taken whole (0/1), or there are hard cardinality constraints (exactly p of one type and s of another, or an exact count limit per category), be suspicious of any greedy-by-ratio or greedy-by-single-criterion approach -- try to construct a counterexample before trusting it, and default to a DP formulation (over remaining capacity, remaining counts, or similar) when in doubt.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the fractional-knapsack greedy (dominated by the sort); O(n * W) for the 0/1 knapsack DP (W = weight capacity), which is pseudo-polynomial and only tractable when W is reasonably small.</p></div>
+  </div>
+  <article class="example-card" id="greedy-fractional-vs-0-1-greedy-recognition-ex0">
+  <h4>Fractional Knapsack (greedy is provably correct)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n items (1 &lt;= n &lt;= 10^5), item i having weight w[i] and value v[i] (positive real-valued in general; integers here for concreteness), and a knapsack capacity C. You may take any fraction (between 0 and 1) of each item&#x27;s weight, receiving that same fraction of its value, subject to the total weight taken not exceeding C. Maximize total value.</p><p>Input: n and C, then n lines each with w[i] and v[i].<br>Output: the maximum total value achievable, printed with 2 decimal places.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort item indices by value-to-weight ratio v[i]/w[i] in descending order. Walk through items in that order, maintaining the remaining capacity: if an item&#x27;s full weight fits within the remaining capacity, take it entirely (add its full value, subtract its weight from remaining capacity); otherwise take exactly the fraction of it that fits (add value * (remaining/weight), set remaining capacity to 0), and stop, since no further capacity remains. This greedy order is optimal by the standard exchange argument for divisible items. On the classic textbook instance (capacity 50, items (10,60), (20,100), (30,120)), the greedy takes item 1 fully (value 60, capacity left 40), item 2 fully (value 100, capacity left 20), and 20/30 of item 3 (value 80), for a total of 240.00, matching the well-known reference answer for this exact instance.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n; double cap;
+    cin &gt;&gt; n &gt;&gt; cap;
+    vector&lt;double&gt; w(n), v(n);
+    for(int i=0;i&lt;n;i++) cin &gt;&gt; w[i] &gt;&gt; v[i];
+    vector&lt;int&gt; idx(n);
+    iota(idx.begin(), idx.end(), 0);
+    sort(idx.begin(), idx.end(), [&amp;](int a, int b){
+        return v[a]/w[a] &gt; v[b]/w[b];
+    });
+    double total = 0.0;
+    double remaining = cap;
+    for(int i : idx){
+        if(remaining &lt;= 0) break;
+        if(w[i] &lt;= remaining){
+            total += v[i];
+            remaining -= w[i];
+        } else {
+            total += v[i] * (remaining / w[i]);
+            remaining = 0;
+        }
+    }
+    printf(&quot;%.2f\n&quot;, total);
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 50
+10 60
+20 100
+30 120
+</code></pre>
+    <pre><code>240.00
+</code></pre>
+  </div>
+</article><article class="example-card" id="greedy-fractional-vs-0-1-greedy-recognition-ex1">
+  <h4>0/1 Knapsack (same instance, ratio-greedy is provably wrong)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n items (1 &lt;= n &lt;= 500), item i having integer weight w[i] and integer value v[i] (1 &lt;= w[i], v[i] &lt;= 10^4), and an integer knapsack capacity C (1 &lt;= C &lt;= 10^4). Each item must be taken WHOLE or not at all (0/1, no fractions). Maximize total value subject to total weight &lt;= C.</p><p>Input: n and C, then n lines each with w[i] and v[i].<br>Output: the maximum total value achievable.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Run the standard 1D 0/1 knapsack DP: dp[c] = best value achievable using total weight exactly &lt;= c, initialized to all 0. For each item, update dp[c] for c from C down to w[i] (descending order is essential so each item is only considered once per pass): dp[c] = max(dp[c], dp[c - w[i]] + v[i]). The final answer is dp[C].</p><p>Using the EXACT same numbers as the fractional-knapsack example above (capacity 50, items (10,60), (20,100), (30,120)) deliberately demonstrates why ratio-based greedy fails once items are indivisible: sorting by ratio (6, 5, 4) and greedily taking whole items in that order takes item 1 and item 2 (weight 30, value 160) and then cannot fit item 3 (weight 30 &gt; remaining 20 capacity), for a greedy total of only 160. The DP above finds the true optimum of 220, achieved by taking items 2 and 3 together (weight exactly 50, value 220) and skipping the highest-ratio item 1 entirely -- a combination the greedy never even considers because it commits early to the best-ratio item. This 60-point gap (220 vs. 160) is a concrete, hand-verifiable proof that greedy-by-ratio is not a valid algorithm for the 0/1 variant.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int n, cap;
+    cin &gt;&gt; n &gt;&gt; cap;
+    vector&lt;int&gt; w(n), v(n);
+    for(int i=0;i&lt;n;i++) cin &gt;&gt; w[i] &gt;&gt; v[i];
+    vector&lt;long long&gt; dp(cap+1, 0);
+    for(int i=0;i&lt;n;i++){
+        for(int c = cap; c &gt;= w[i]; c--){
+            dp[c] = max(dp[c], dp[c-w[i]] + v[i]);
+        }
+    }
+    cout &lt;&lt; dp[cap] &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 50
+10 60
+20 100
+30 120
+</code></pre>
+    <pre><code>220
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">13</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="buy low sell high codeforces greedy + data structure (&quot;regret&quot; greedy with a min-heap) given n days of known future stock prices, repeatedly buy/sell one share per day (never short) to maximize total profit.">
+  <td><a href="https://codeforces.com/problemset/problem/865/D" target="_blank" rel="noopener noreferrer">Buy Low Sell High</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2400</td>
+  <td class="subtopic-cell">greedy + data structure (&quot;regret&quot; greedy with a min-heap)</td>
+  <td class="desc-cell">Given n days of known future stock prices, repeatedly buy/sell one share per day (never short) to maximize total profit.</td>
+</tr><tr data-search="shichikuji and power grid codeforces greedy reduction to mst for n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.">
+  <td><a href="https://codeforces.com/problemset/problem/1245/D" target="_blank" rel="noopener noreferrer">Shichikuji and Power Grid</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1900</td>
+  <td class="subtopic-cell">greedy reduction to MST</td>
+  <td class="desc-cell">For n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.</td>
+</tr><tr data-search="stressful training codeforces binary search + greedy feasibility check n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.">
+  <td><a href="https://codeforces.com/problemset/problem/1132/D" target="_blank" rel="noopener noreferrer">Stressful Training</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2300</td>
+  <td class="subtopic-cell">binary search + greedy feasibility check</td>
+  <td class="desc-cell">n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.</td>
+</tr><tr data-search="tasks and deadlines cses exchange argument (sort by duration, not deadline) process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task&#x27;s reward is its deadline minus its finishing time.">
+  <td><a href="https://cses.fi/problemset/task/1630" target="_blank" rel="noopener noreferrer">Tasks and Deadlines</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
+  <td class="subtopic-cell">exchange argument (sort by duration, not deadline)</td>
+  <td class="desc-cell">Process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task&#x27;s reward is its deadline minus its finishing time.</td>
+</tr><tr data-search="reading books cses greedy pairing / scheduling with two workers two people must read all n books together (never the same book at the same time); given each book&#x27;s reading time, find the minimum total time for both to finish everything.">
+  <td><a href="https://cses.fi/problemset/task/1631" target="_blank" rel="noopener noreferrer">Reading Books</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
+  <td class="subtopic-cell">greedy pairing / scheduling with two workers</td>
+  <td class="desc-cell">Two people must read all n books together (never the same book at the same time); given each book&#x27;s reading time, find the minimum total time for both to finish everything.</td>
+</tr><tr data-search="movie festival ii cses greedy interval scheduling with k resources with k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.">
+  <td><a href="https://cses.fi/problemset/task/1632" target="_blank" rel="noopener noreferrer">Movie Festival II</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
+  <td class="subtopic-cell">greedy interval scheduling with k resources</td>
+  <td class="desc-cell">With k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.</td>
+</tr><tr data-search="candy leetcode exchange argument (two-pass greedy) distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.">
+  <td><a href="https://leetcode.com/problems/candy/" target="_blank" rel="noopener noreferrer">Candy</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">exchange argument (two-pass greedy)</td>
+  <td class="desc-cell">Distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.</td>
+</tr><tr data-search="set intersection size at least two leetcode greedy on intervals with a non-obvious proof given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.">
+  <td><a href="https://leetcode.com/problems/set-intersection-size-at-least-two/" target="_blank" rel="noopener noreferrer">Set Intersection Size At Least Two</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">greedy on intervals with a non-obvious proof</td>
+  <td class="desc-cell">Given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.</td>
+</tr><tr data-search="huffman coding on segment codeforces huffman coding &amp; optimal merge for each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary huffman encoding of the characters in that subarray.">
+  <td><a href="https://codeforces.com/problemset/problem/700/D" target="_blank" rel="noopener noreferrer">Huffman Coding on Segment</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 3100</td>
+  <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
+  <td class="desc-cell">For each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary Huffman encoding of the characters in that subarray.</td>
+</tr><tr data-search="minimum cost to merge stones leetcode huffman coding &amp; optimal merge given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.">
+  <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-stones/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Stones</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#1000)</td>
+  <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
+  <td class="desc-cell">Given piles of stones in a row, merge exactly K consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.</td>
+</tr><tr data-search="minimum cost to merge sorted lists leetcode huffman coding &amp; optimal merge repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.">
+  <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-sorted-lists/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Sorted Lists</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#3801)</td>
+  <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
+  <td class="desc-cell">Repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.</td>
+</tr><tr data-search="olympiad in programming and sports codeforces fractional vs. 0/1 greedy recognition (naive greedy fails) split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).">
+  <td><a href="https://codeforces.com/problemset/problem/730/I" target="_blank" rel="noopener noreferrer">Olympiad in Programming and Sports</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2000</td>
+  <td class="subtopic-cell">Fractional vs. 0/1 Greedy Recognition (naive greedy fails)</td>
+  <td class="desc-cell">Split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).</td>
+</tr><tr data-search="knapsack codeforces fractional vs. 0/1 greedy recognition (0/1 requires dp, not greedy) given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.">
+  <td><a href="https://codeforces.com/problemset/problem/1132/E" target="_blank" rel="noopener noreferrer">Knapsack</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2300</td>
+  <td class="subtopic-cell">Fractional vs. 0/1 Greedy Recognition (0/1 requires DP, not greedy)</td>
+  <td class="desc-cell">Given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

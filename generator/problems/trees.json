@@ -1,0 +1,173 @@
+[
+ {
+  "name": "Kth Ancestor of a Tree Node",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/kth-ancestor-of-a-tree-node/",
+  "difficulty": "LeetCode Hard",
+  "subtopic": "LCA/Binary Lifting",
+  "description": "Preprocess a rooted tree so that many \"what is the kth ancestor of node u\" queries can each be answered quickly.",
+  "why_hard": "Climbing ancestor-by-ancestor per query is too slow at the given constraints, forcing the binary lifting sparse-ancestor-table technique (O(n log n) preprocessing, O(log n) per query)."
+ },
+ {
+  "name": "Fools and Roads",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/191/C",
+  "difficulty": "CF 1900",
+  "subtopic": "LCA/Binary Lifting",
+  "description": "Given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.",
+  "why_hard": "Each path must be split at its LCA into two upward paths, applied as point updates that are only resolved into per-edge counts via a subsequent subtree-sum (difference-array) DFS — a two-step technique built on top of LCA."
+ },
+ {
+  "name": "Distinct Colors",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1139",
+  "difficulty": "CSES (Tree Algorithms section)",
+  "subtopic": "Euler Tour",
+  "description": "Each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.",
+  "why_hard": "A naive per-node subtree scan is O(n^2); an efficient solution needs either small-to-large merging of subtree sets or an Euler-tour-based offline reduction (e.g., Mo's algorithm on the tour), both nontrivial."
+ },
+ {
+  "name": "Vasya and a Tree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1076/E",
+  "difficulty": "CF 1900",
+  "subtopic": "Euler Tour",
+  "description": "Process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.",
+  "why_hard": "\"Subtree AND bounded depth\" must be encoded via Euler tour entry/exit times combined with a per-depth difference-array trick, a step beyond the standard single-dimension Euler tour + Fenwick tree pattern."
+ },
+ {
+  "name": "Minimal Diameter Forest",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1092/E",
+  "difficulty": "CF 2000",
+  "subtopic": "Tree Diameter",
+  "description": "Given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.",
+  "why_hard": "Requires knowing that the optimal connection point in each tree is its center (not an arbitrary node) and deriving the resulting diameter from both trees' original diameters — well beyond a plain double-BFS diameter computation."
+ },
+ {
+  "name": "Path Queries II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2134",
+  "difficulty": "CSES (Tree Algorithms section, hard version)",
+  "subtopic": "HLD (Heavy-Light Decomposition)",
+  "description": "Support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.",
+  "why_hard": "Arbitrary node-to-node path queries (not just root-to-node or subtree queries) on a general tree require heavy-light decomposition to break each path into O(log n) contiguous segment-tree ranges."
+ },
+ {
+  "name": "Fixed-Length Paths II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2081",
+  "difficulty": "CSES (Tree Algorithms section, hard version)",
+  "subtopic": "Centroid Decomposition",
+  "description": "Count the number of paths in a tree whose length lies within a given range [a, b].",
+  "why_hard": "Requires full centroid decomposition to enumerate, for every centroid, all paths passing through it in aggregate O(n log n) time, plus careful inclusion-exclusion to avoid double-counting paths through the same centroid."
+ },
+ {
+  "name": "Xenia and Tree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/342/E",
+  "difficulty": "CF 2400",
+  "subtopic": "Centroid Decomposition",
+  "description": "Support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.",
+  "why_hard": "It is the canonical online centroid-decomposition problem — nearest-marked-vertex queries must be answered by maintaining auxiliary minimum-distance data at every level of the centroid decomposition tree, updated online after every repaint."
+ },
+ {
+  "name": "Lomsat gelral",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/600/E",
+  "difficulty": "CF rating 2300",
+  "subtopic": "Small-to-Large Merging",
+  "description": "Rooted tree with a color per vertex; for every vertex output the sum of all colors that are \"dominant\" (most frequent) in its subtree.",
+  "why_hard": "The canonical introductory problem for the technique — naive per-vertex counting is O(n^2), and small-to-large merging of child color-count maps gets it to O(n log n)."
+ },
+ {
+  "name": "Dominant Indices",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1009/F",
+  "difficulty": "CF rating 2300",
+  "subtopic": "Small-to-Large Merging",
+  "description": "For each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.",
+  "why_hard": "Requires merging depth-count arrays across children — the classic setting where \"small-to-large\" beats naive array merging, since arrays being merged can be swapped/pointer-merged instead of copied."
+ },
+ {
+  "name": "GCD Counting",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1101/D",
+  "difficulty": "CF rating 2000",
+  "subtopic": "Small-to-Large Merging",
+  "description": "Given a tree with a number on each vertex, find the length of the longest path whose vertices share a GCD greater than 1, for every prime factor.",
+  "why_hard": "Combines small-to-large merging of per-prime depth information with tree DP; a good example of merging non-trivial per-vertex maps rather than simple counters. (Mirrored at CF 990G, rating 2400.)"
+ },
+ {
+  "name": "Graph and Queries",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1416/D",
+  "difficulty": "CF rating 2600",
+  "subtopic": "Small-to-Large Merging",
+  "description": "Process edge-deletion and \"find-and-zero-out-max-in-component\" queries offline by reversing time (edge additions) and merging component data with a DSU where the smaller structure (e.g. an ordered set) is always merged into the larger.",
+  "why_hard": "Shows small-to-large merging generalized beyond trees — merging balanced BSTs/sets across DSU components in reverse-time processing, a step up from the standard subtree-only setting."
+ },
+ {
+  "name": "Kingdom and its Cities",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/613/D",
+  "difficulty": "CF rating 2800",
+  "subtopic": "Virtual Trees (Auxiliary Tree)",
+  "description": "Given a tree and repeated small subsets of \"capital\" vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.",
+  "why_hard": "The textbook auxiliary-tree problem — building the virtual tree (via LCA-closure) of only the queried vertices each time is what makes the total work near-linear in the sum of query sizes instead of O(n) per query."
+ },
+ {
+  "name": "Tourism",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1220/E",
+  "difficulty": "CF rating 2200",
+  "subtopic": "Virtual Trees (Auxiliary Tree)",
+  "description": "On a graph built from a tree with extra \"back\" edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.",
+  "why_hard": "Requires condensing cycles and building auxiliary/virtual-tree-style structures over a reduced vertex set to make an otherwise quadratic DP tractable."
+ },
+ {
+  "name": "Partial Virtual Trees",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1707/D",
+  "difficulty": "CF rating 3000",
+  "subtopic": "Virtual Trees (Auxiliary Tree)",
+  "description": "Count, for every k, the number of ways to repeatedly shrink a vertex set to a proper \"partial virtual tree\" (an LCA-closed subset) exactly k times until only the root remains.",
+  "why_hard": "The problem statement literally defines the auxiliary/virtual tree closure property (LCA-closed subsets) and turns counting over that structure into a combinatorics + tree-DP exercise, making it an unusually direct test of understanding the technique's core definition."
+ },
+ {
+  "name": "Tree Isomorphism I",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1700",
+  "difficulty": "CSES (Tree Algorithms section)",
+  "subtopic": "Tree Isomorphism / Canonical Form",
+  "description": "Given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.",
+  "why_hard": "The direct introduction to canonical-form hashing (AHU algorithm) — recursively computing a sorted-children canonical label per subtree and comparing root labels."
+ },
+ {
+  "name": "Tree Isomorphism II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1701",
+  "difficulty": "CSES (Tree Algorithms section)",
+  "subtopic": "Tree Isomorphism / Canonical Form",
+  "description": "Same as Tree Isomorphism I, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.",
+  "why_hard": "Forces the extra insight that unrooted-tree isomorphism needs a canonical rooting (via centroid, since a tree has at most 2 centroids) before AHU-style hashing is even well-defined."
+ },
+ {
+  "name": "Symmetree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1800/G",
+  "difficulty": "CF rating 2200",
+  "subtopic": "Tree Isomorphism / Canonical Form",
+  "description": "Determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.",
+  "why_hard": "A disguised isomorphism check — a subtree is \"symmetric\" iff it is isomorphic to its own mirror image, so it directly tests canonical-form hashing plus matching canonical forms in pairs among siblings."
+ },
+ {
+  "name": "Regular Forestation",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1252/F",
+  "difficulty": "CF rating 2400",
+  "subtopic": "Tree Isomorphism / Canonical Form",
+  "description": "Find a vertex whose removal splits a tree into two or more pairwise-isomorphic (\"identical\") subtrees, and report the maximum possible number of pieces.",
+  "why_hard": "The problem statement explicitly defines tree isomorphism via a bijection preserving adjacency, then requires efficiently comparing many candidate subtrees for isomorphism using canonical hashing rather than brute-force bijection search."
+ }
+]

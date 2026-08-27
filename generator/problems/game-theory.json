@@ -1,0 +1,83 @@
+[
+ {
+  "name": "Industrial Nim",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/15/C",
+  "difficulty": "CF 2000",
+  "subtopic": "Nim",
+  "description": "n quarries each produce an arithmetic run of pile sizes (x_i, x_i+1, ..., x_i+m_i-1); playing standard Nim over the union of all these piles, determine the winner under optimal play.",
+  "why_hard": "With up to 10^5 ranges of up to 10^16 piles each, you cannot XOR piles individually — you must derive and apply the closed-form formula for the XOR of a full range of consecutive integers (based on the range length mod 4), then combine across ranges."
+ },
+ {
+  "name": "Thanos Nim",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1147/C",
+  "difficulty": "CF 1700",
+  "subtopic": "Nim",
+  "description": "With n (even) piles, each move a player must choose exactly n/2 nonempty piles and remove any positive number of stones from each independently; the player who cannot move (fewer than n/2 nonempty piles remain) loses — determine the winner.",
+  "why_hard": "The move rule breaks the standard XOR-of-piles Nim theory entirely; the actual winning condition is a slick parity argument on how many piles hold the current maximum value, which must be discovered rather than looked up."
+ },
+ {
+  "name": "Stair Game",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1099",
+  "difficulty": "CSES",
+  "subtopic": "Nim (Staircase Nim)",
+  "description": "Balls sit on n numbered stairs; a move takes any positive number of balls from a stair k != 1 down to stair k-1, and the player who moves last wins — determine the winner for a given starting configuration.",
+  "why_hard": "This is the classic Staircase Nim reduction — the game is equivalent to ordinary Nim played only on the odd-numbered stairs (XOR of their ball counts), a non-obvious equivalence that must be proven and applied."
+ },
+ {
+  "name": "Not a Nim Problem",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/2004/E",
+  "difficulty": "CF 2100",
+  "subtopic": "Sprague-Grundy",
+  "description": "n piles of stones; a move removes y stones from a pile of size x only if gcd(x, y) = 1, and the player unable to move loses — determine the winner.",
+  "why_hard": "The move restriction (only coprime removals allowed) means standard Nim XOR doesn't directly apply; you must compute the Grundy number of each pile size from its smallest prime factor structure and only then XOR them together."
+ },
+ {
+  "name": "Game of Stones",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/768/E",
+  "difficulty": "CF 2100",
+  "subtopic": "Sprague-Grundy",
+  "description": "n independent piles (sizes up to 60); a move removes any positive number of stones from a pile, but the exact same removal amount can never be reused on that same pile again — determine the winner.",
+  "why_hard": "The \"no repeated move size per pile\" constraint means a pile's Grundy number depends on its whole history of prior moves, not just its current size, requiring a bitmask/DP formulation of each pile's Grundy value before XOR-combining the independent games."
+ },
+ {
+  "name": "Mojtaba and Arpa's game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/850/C",
+  "difficulty": "CF 2200",
+  "subtopic": "Sprague-Grundy",
+  "description": "Given a list of numbers, a move picks a prime power p^k dividing at least one number, and divides every number in the list divisible by p^k by p^k; the player unable to move loses — determine the winner.",
+  "why_hard": "Each number's prime factorization decomposes into independent per-prime subgames whose Grundy values must be derived from number-theoretic structure (exponent vectors), then combined via Sprague-Grundy XOR across primes and list elements — a genuinely layered application of the theorem."
+ },
+ {
+  "name": "Grundy's Game",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2207",
+  "difficulty": "CSES",
+  "subtopic": "Sprague-Grundy",
+  "description": "A heap of n coins; a move splits one heap into two nonempty heaps of different sizes, and the player who makes the last possible move wins — determine the winner.",
+  "why_hard": "Directly named for the theorem it teaches — computing the Grundy number of a heap requires recursively taking the mex over all ways to split it into two unequal heaps, the textbook mex/Grundy-number computation."
+ },
+ {
+  "name": "Nim Game II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1098",
+  "difficulty": "CSES",
+  "subtopic": "Combinatorial Game Sums & Misère Play (Sprague-Grundy sum of games)",
+  "description": "With n heaps of sticks where a move removes 1, 2, or 3 sticks from one heap, and the player who removes the last stick wins, determine the winner under optimal play.",
+  "why_hard": "Each heap is a distinct subtraction game whose Grundy value (x mod 4) must first be computed independently, then the Sprague-Grundy theorem combines them via XOR — a direct test of the \"sum of independent games\" principle beyond plain Nim, where the per-heap game itself isn't standard Nim."
+ },
+ {
+  "name": "Another Game",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2208",
+  "difficulty": "CSES",
+  "subtopic": "Combinatorial Game Sums & Misère Play (non-XOR game sum)",
+  "description": "With n heaps of coins where a move selects any subset of nonempty heaps and removes one coin from each, and the player who removes the last coin wins, determine the winner under optimal play.",
+  "why_hard": "This move rule (remove from many heaps simultaneously) is not standard Nim and the naive Sprague-Grundy XOR-of-piles rule does not directly apply; the correct analysis works bit-by-bit across the binary representations of the heap sizes, testing whether the solver understands the limits of the basic Nim-sum shortcut and can derive the right combination rule from first principles."
+ }
+]

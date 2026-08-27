@@ -1,0 +1,406 @@
+<title>Value Categories &amp; Move Semantics — C++ Concepts</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">C++ Concepts Reference</p>
+    <h1>Value Categories &amp; Move Semantics</h1>
+    <p class="tagline"><p>This is the machinery underneath every copy vs. move decision the compiler makes. Interviewers probe it heavily at HFT/quant-dev firms because avoiding needless copies on a hot path is one of the cheapest, highest-leverage latency wins in C++ — and it&#x27;s genuinely easy to get subtly wrong.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">5</div><div class="l">Concepts</div></div>
+      <div class="stat-tile"><div class="n">10</div><div class="l">Worked Examples</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#value-categories-lvalue-prvalue-xvalue"><span>Value categories: lvalue, prvalue, xvalue</span></a></li><li><a href="#move-semantics"><span>Move semantics</span></a></li><li><a href="#std-move-vs-std-forward"><span>std::move vs std::forward</span></a></li><li><a href="#universal-forwarding-references"><span>Universal / forwarding references</span></a></li><li><a href="#copy-elision-rvo-nrvo"><span>Copy elision / RVO &amp; NRVO</span></a></li></ul>
+      <h2>Other concept groups</h2>
+      <ul class="nav-list"><li><a href="concepts-oop-mechanics.html">Object-Oriented Mechanics &amp; Polymorphism</a></li><li><a href="concepts-raii-resources.html">RAII &amp; Resource Management</a></li><li><a href="concepts-templates.html">Templates &amp; Generic Programming</a></li><li><a href="concepts-compile-time.html">Compile-Time Constructs &amp; Program Structure</a></li><li><a href="concepts-concurrency-memory.html">Concurrency, Memory Model &amp; Low-Level Layout</a></li><li><a href="concepts-modern-cpp.html">Modern C++ (17/20) &amp; STL Utilities</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="concepts.html">All C++ Concepts</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+      </ul>
+    </aside>
+    <main><article class="concept-card" id="value-categories-lvalue-prvalue-xvalue">
+  <h3>Value categories: lvalue, prvalue, xvalue</h3>
+  <div class="intro"><p>Every C++ expression — not just every variable, every *expression* — has a value category, and that category is what overload resolution actually keys off of when deciding whether a copy or a move constructor runs. This trips people up because it feels like it should be about types, but it&#x27;s about expressions.</p><p>An **lvalue** names an object with identity: something you can take the address of, that persists beyond the expression evaluating it. A named variable is the classic example. A **prvalue** (&quot;pure rvalue&quot;) is a temporary that *initializes* an object and has no identity of its own — a literal like <code>42</code>, or the result of a function returning by value before it&#x27;s bound to anything. An **xvalue** (&quot;eXpiring value&quot;) is the interesting middle case: it denotes an object that *does* have identity, but whose resources are about to go away, so it&#x27;s safe to plunder them — the result of <code>std::move(x)</code>, or a function returning <code>T&amp;&amp;</code>.</p><p>Two umbrella terms tie these together: a **glvalue** (lvalue or xvalue) is anything with identity; an **rvalue** (prvalue or xvalue) is anything that can be moved from. The whole lattice exists for exactly one reason: to give the compiler a principled way to decide, at every single expression, whether it&#x27;s looking at something with a name and a future, or something that&#x27;s either brand new or on its way out.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Identifying the category of each subexpression</div>
+  <pre><code>int x = 10;        // x is an lvalue (it has identity, you can do &amp;x)
+int y = x + 1;      // (x + 1) is a prvalue: a temporary, no identity
+int&amp;&amp; r = std::move(x); // std::move(x) is an xvalue: names x, but &quot;expiring&quot;
+
+int* p = &amp;x;   // OK: x is an lvalue
+// int* p2 = &amp;(x + 1); // ERROR: can&#x27;t take the address of a prvalue</code></pre>
+  <div class="ex-explain"><p><code>&amp;x</code> compiles because x is an lvalue — it lives somewhere with a real address. <code>&amp;(x+1)</code> does not compile, because <code>x+1</code> is a prvalue: a value that exists only for the duration of the expression, with no address the standard promises you can take.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why the category — not the type — decides which overload runs</div>
+  <pre><code>void f(const std::string&amp; s) { std::cout &lt;&lt; &quot;lvalue ref overload\n&quot;; }
+void f(std::string&amp;&amp; s)      { std::cout &lt;&lt; &quot;rvalue ref overload\n&quot;; }
+
+std::string name = &quot;Alice&quot;;
+f(name);              // name is an lvalue -&gt; calls f(const string&amp;)
+f(std::string(&quot;Bob&quot;)); // a prvalue temporary -&gt; calls f(string&amp;&amp;)
+f(std::move(name));    // an xvalue -&gt; calls f(string&amp;&amp;)</code></pre>
+  <div class="ex-explain"><p>Both overloads take a <code>std::string</code>, so the TYPE alone can&#x27;t distinguish them — it&#x27;s the value category of the argument expression that overload resolution uses to pick between the lvalue-reference and rvalue-reference overload.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming a named rvalue-reference variable is itself an rvalue: <code>void f(T&amp;&amp; x) { g(x); }</code> — inside <code>f</code>, <code>x</code> is a named variable, so it&#x27;s an LVALUE even though its declared type is <code>T&amp;&amp;</code>. Passing it on to <code>g</code> without <code>std::move(x)</code> calls <code>g</code>&#x27;s lvalue overload, silently defeating the move you thought you set up.</p></li><li><p>Trying to take the address of a prvalue (a plain temporary) and being confused when it doesn&#x27;t compile — remember only glvalues (lvalues/xvalues) have addresses you can rely on.</p></li></ul></div>
+  <p class="why-box"><p>This is the single most commonly probed C++ fundamentals question at trading firms — usually as &quot;what&#x27;s the difference between lvalue and rvalue&quot; followed immediately by &quot;so why does calling std::move(x) inside a function and then using x again still compile, and what state is x in?&quot;</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#move-semantics" data-related-href="#move-semantics">Move semantics</a><a class="related-tag" href="#std-move-vs-std-forward" data-related-href="#std-move-vs-std-forward">std::move vs std::forward</a><a class="related-tag" href="#universal-forwarding-references" data-related-href="#universal-forwarding-references">Universal / forwarding references</a></div>
+</article><article class="concept-card" id="move-semantics">
+  <h3>Move semantics</h3>
+  <div class="intro"><p>Move construction and move assignment let an object TRANSFER ownership of a resource — a heap buffer, a file descriptor, a socket — from a source object to a destination, instead of deep-copying it. The source is left in a valid-but-unspecified state (usually empty/null), and the destination now owns what the source used to own.</p><p>What makes this possible is purely a matter of overload resolution: if a class declares an rvalue-reference overload of its constructor/assignment operator (<code>T(T&amp;&amp; other)</code>), and the argument expression is an rvalue (a prvalue temporary or an xvalue from <code>std::move</code>), that overload is selected instead of the copy constructor. The move constructor&#x27;s body is then free to &quot;steal&quot; the other object&#x27;s internals — pointer-swap instead of memcpy — because the standard guarantees nobody else cares about the moved-from object&#x27;s exact value afterward.</p><p>The payoff is enormous for anything holding a heap allocation: returning a <code>std::vector</code> or <code>std::string</code> by value, or reallocating a growing vector, becomes a pointer-swap instead of an O(n) copy.</p></div>
+  <div class="example-box">
+  <div class="ex-title">A move constructor and move-assignment operator that actually steal, not copy</div>
+  <pre><code>class Buffer {
+    size_t n;
+    int* data;
+public:
+    Buffer(size_t n) : n(n), data(new int[n]) {}
+
+    // Move constructor: steal the other&#x27;s pointer, null it out
+    Buffer(Buffer&amp;&amp; other) noexcept : n(other.n), data(other.data) {
+        other.data = nullptr;
+        other.n = 0;
+    }
+
+    // Move assignment: release our own resource first, then steal
+    Buffer&amp; operator=(Buffer&amp;&amp; other) noexcept {
+        if (this != &amp;other) {
+            delete[] data;
+            data = other.data;
+            n = other.n;
+            other.data = nullptr;
+            other.n = 0;
+        }
+        return *this;
+    }
+
+    ~Buffer() { delete[] data; }
+};</code></pre>
+  <div class="ex-explain"><p>Notice there&#x27;s no <code>new</code>/copy loop anywhere in the move operations — just pointer reassignment and nulling the source. That&#x27;s the entire point: O(1) transfer instead of O(n) duplication. The <code>noexcept</code> is not decorative — see the pitfall below.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why std::vector cares whether your move constructor is noexcept</div>
+  <pre><code>std::vector&lt;Buffer&gt; v;
+v.reserve(2);
+v.emplace_back(1000000); // fills capacity
+v.emplace_back(1000000); // triggers a reallocation of the vector&#x27;s storage</code></pre>
+  <div class="ex-explain"><p>When <code>v</code> reallocates, it must move (or copy) every existing <code>Buffer</code> into the new, larger block. If <code>Buffer</code>&#x27;s move constructor is <code>noexcept</code>, std::vector uses it directly — O(1) per element. If it is NOT noexcept, std::vector conservatively falls back to COPYING every element instead, because a throwing move partway through reallocation could leave the vector in a corrupted state with no way to roll back. Forgetting <code>noexcept</code> silently turns your &quot;optimization&quot; back into the copies you were trying to avoid.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Omitting <code>noexcept</code> on the move constructor/assignment — as shown above, this makes std::vector (and other standard containers) silently prefer copying over moving during reallocation, defeating the entire point.</p></li><li><p>Using a moved-from object as if it still holds its old value. The standard guarantee is only &quot;valid but unspecified state&quot; — you can destroy it or assign a new value to it safely, but reading its old contents is not guaranteed to work.</p></li><li><p>Forgetting to null out the source&#x27;s pointer in the move constructor — if you copy the pointer but don&#x27;t clear the source, BOTH objects&#x27; destructors will try to free the same memory (double-free).</p></li></ul></div>
+  <p class="why-box"><p>Move semantics is arguably THE defining feature that separates &quot;modern C++&quot; performance characteristics from C++03 — expect at least one question about it in any serious C++ interview, often phrased as &quot;walk me through what happens when a std::vector reallocates.&quot;</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a><a class="related-tag" href="concepts-raii-resources.html#rule-of-zero-three-five" data-related-href="concepts-raii-resources.html#rule-of-zero-three-five">Rule of Zero / Three / Five</a><a class="related-tag" href="#copy-elision-rvo-nrvo" data-related-href="#copy-elision-rvo-nrvo">Copy elision / RVO &amp; NRVO</a><a class="related-tag" href="#std-move-vs-std-forward" data-related-href="#std-move-vs-std-forward">std::move vs std::forward</a></div>
+</article><article class="concept-card" id="std-move-vs-std-forward">
+  <h3>std::move vs std::forward</h3>
+  <div class="intro"><p>These two are constantly confused because they look similar (&quot;cast something to an rvalue reference-ish thing&quot;) but they solve opposite problems. <code>std::move</code> UNCONDITIONALLY casts its argument to an rvalue reference — it doesn&#x27;t move anything itself, it just makes the argument eligible to be moved from by whatever receives it. <code>std::forward</code> CONDITIONALLY casts: inside a template function taking a forwarding reference, it preserves whatever value category the caller originally used, forwarding an lvalue as an lvalue and an rvalue as an rvalue. This is &quot;perfect forwarding&quot; — passing an argument through a layer of indirection without losing information about how it was passed in.</p></div>
+  <div class="example-box">
+  <div class="ex-title">std::move: turning a named lvalue back into something move-able</div>
+  <pre><code>std::string s = &quot;hello&quot;;
+std::string t = std::move(s); // s is an lvalue; std::move casts it to string&amp;&amp;
+// t now owns &quot;hello&quot;&#x27;s buffer; s is valid-but-unspecified (commonly empty)</code></pre>
+  <div class="ex-explain"><p>Without std::move, <code>t = s</code> would copy (s is a named variable, hence an lvalue). std::move is purely a cast — <code>static_cast&lt;std::string&amp;&amp;&gt;(s)</code> — that makes the move constructor&#x27;s overload the one selected.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">std::forward: preserving the caller&#x27;s value category through a wrapper</div>
+  <pre><code>template &lt;class T&gt;
+void wrapper(T&amp;&amp; arg) {
+    target(std::forward&lt;T&gt;(arg)); // forwards arg AS the caller originally passed it
+}
+
+std::string s = &quot;hi&quot;;
+wrapper(s);                 // T deduced as string&amp;  -&gt; forwards as lvalue -&gt; target copies
+wrapper(std::string(&quot;hi&quot;)); // T deduced as string    -&gt; forwards as rvalue -&gt; target moves</code></pre>
+  <div class="ex-explain"><p>If <code>wrapper</code> used <code>std::move(arg)</code> instead of <code>std::forward&lt;T&gt;(arg)</code>, it would ALWAYS move — even when the caller passed an lvalue they still needed afterward. std::forward is what lets a single generic wrapper correctly replicate whatever the caller intended.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Using std::move on a const object: <code>std::move(const_string)</code> still compiles and returns <code>const string&amp;&amp;</code>, but no move constructor will bind to a const rvalue reference — it silently falls back to copying. std::move can&#x27;t undo const.</p></li><li><p>Using std::forward outside of a template with a genuine forwarding-reference parameter — it only does the right thing when T is actually deduced per-call; using it on a fixed (non-template) <code>T&amp;&amp;</code> parameter is just a confusing way to write std::move.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#universal-forwarding-references" data-related-href="#universal-forwarding-references">Universal / forwarding references</a><a class="related-tag" href="#move-semantics" data-related-href="#move-semantics">Move semantics</a><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
+</article><article class="concept-card" id="universal-forwarding-references">
+  <h3>Universal / forwarding references</h3>
+  <div class="intro"><p>A parameter written as <code>T&amp;&amp;</code> is NOT always an rvalue reference — it depends entirely on whether <code>T</code> is a template parameter being deduced right there. When <code>T</code> is deduced (e.g. <code>template&lt;class T&gt; void f(T&amp;&amp; x)</code>), <code>x</code> is a **forwarding reference**: it will bind to both lvalues and rvalues, with <code>T</code> deduced as <code>U&amp;</code> for an lvalue argument (collapsing <code>T&amp;&amp; = U&amp; &amp;&amp; = U&amp;</code> via C++&#x27;s reference-collapsing rules) and as plain <code>U</code> for an rvalue argument. When <code>T</code> is a fixed, concrete type — <code>void f(Widget&amp;&amp; x)</code> — there is no deduction happening, and <code>x</code> is simply an ordinary rvalue reference that will only bind to rvalues.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Forwarding reference vs. plain rvalue reference, side by side</div>
+  <pre><code>template &lt;class T&gt;
+void forwarding(T&amp;&amp; x) { /* T deduced: forwarding reference */ }
+
+void plainRvalueRef(Widget&amp;&amp; x) { /* Widget is fixed: NOT a forwarding reference */ }
+
+Widget w;
+forwarding(w);            // OK: T deduced as Widget&amp;, x binds to the lvalue w
+forwarding(Widget());     // OK: T deduced as Widget,  x binds to the rvalue temporary
+
+plainRvalueRef(w);        // ERROR: an lvalue cannot bind to Widget&amp;&amp;
+plainRvalueRef(Widget()); // OK: a plain rvalue reference binds to an rvalue</code></pre>
+  <div class="ex-explain"><p>The syntax <code>T&amp;&amp;</code> looks identical in both cases, but only the templated version with a genuinely deducible <code>T</code> gets the special &quot;binds to anything&quot; forwarding-reference behavior.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">auto&amp;&amp; is also a forwarding reference</div>
+  <pre><code>for (auto&amp;&amp; elem : container) {
+    // elem is a forwarding reference here too — auto plays the role of T
+}</code></pre>
+  <div class="ex-explain"><p>This is exactly why range-based for loops commonly use <code>auto&amp;&amp;</code>: it correctly binds to whatever value category the container&#x27;s iterator produces (an lvalue reference for most containers, but potentially an rvalue for some proxy-iterator containers), without forcing an unwanted copy or an invalid binding.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming any <code>T&amp;&amp;</code> in a function signature means &quot;this is for rvalues only&quot; — always check whether T is actually being deduced at that call site before concluding it&#x27;s a forwarding reference vs. a plain rvalue reference.</p></li><li><p>Writing <code>template&lt;class T&gt; void f(std::vector&lt;T&gt;&amp;&amp; x)</code> and thinking this is a forwarding reference — it is NOT, because T is not deduced directly as the parameter&#x27;s whole type (it&#x27;s nested inside <code>vector&lt;T&gt;</code>); this is a plain rvalue reference to a vector.</p></li></ul></div>
+  <p class="why-box"><p>A classic interview trap question: &quot;is <code>T&amp;&amp;</code> always an rvalue reference?&quot; — the expected answer distinguishes forwarding references from plain rvalue references, which is exactly the nuance above.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#std-move-vs-std-forward" data-related-href="#std-move-vs-std-forward">std::move vs std::forward</a><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
+</article><article class="concept-card" id="copy-elision-rvo-nrvo">
+  <h3>Copy elision / RVO &amp; NRVO</h3>
+  <div class="intro"><p>Return Value Optimization is the compiler constructing a returned object directly in the CALLER&#x27;s storage, skipping an intermediate copy or move entirely. Since C++17, elision of a prvalue returned directly (<code>return T(args);</code> or <code>return makeT();</code>) is not just an optimization the compiler is ALLOWED to do — it&#x27;s mandated by the standard; there is no copy/move constructor call at all in that case, and the type doesn&#x27;t even need to be copyable or movable. Named RVO — returning a named local variable (<code>T t; ... return t;</code>) — is a different, older case: it&#x27;s still only an optional-but-near-universally-implemented optimization, not guaranteed by the standard, because the compiler has to prove no other code path returns a different named variable.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Guaranteed elision (C++17+) vs. optional NRVO</div>
+  <pre><code>struct Big {
+    Big()               { std::cout &lt;&lt; &quot;ctor &quot;; }
+    Big(const Big&amp;)      { std::cout &lt;&lt; &quot;copy &quot;; }
+    Big(Big&amp;&amp;) noexcept  { std::cout &lt;&lt; &quot;move &quot;; }
+};
+
+Big makeGuaranteed() {
+    return Big();      // C++17: MANDATORY elision. Prints only &quot;ctor &quot; — no copy/move at all.
+}
+
+Big makeNamed() {
+    Big b;
+    return b;          // NRVO: an optimization, not guaranteed. In practice, almost every
+}                       // modern compiler elides this too, printing just &quot;ctor &quot;.</code></pre>
+  <div class="ex-explain"><p>Both functions typically print just &quot;ctor &quot; on any modern compiler, but only <code>makeGuaranteed</code>&#x27;s elision is something the STANDARD requires — <code>makeNamed</code>&#x27;s elision is compiler generosity you can rely on in practice but shouldn&#x27;t design correctness around.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">When NRVO can&#x27;t happen: multiple different named returns</div>
+  <pre><code>Big pick(bool cond) {
+    Big a, b;
+    if (cond) return a;
+    else      return b;   // two DIFFERENT named locals returned from two paths
+}                          // the compiler generally CANNOT elide here -&gt; falls back to a move</code></pre>
+  <div class="ex-explain"><p>NRVO requires the compiler to be certain, statically, which single local object is being returned so it can construct it directly in the caller&#x27;s slot from the start. With two different candidate locals on different branches, that certainty is gone, so the compiler instead falls back to moving the chosen object out — still cheap thanks to move semantics, but not free like true elision.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Explicitly writing <code>return std::move(localVar);</code> — this actually DEFEATS NRVO on most compilers, because wrapping the return in std::move turns it into an xvalue expression that the compiler&#x27;s elision analysis doesn&#x27;t recognize as &quot;the one guaranteed-unique named local&quot; anymore. Just <code>return localVar;</code> and let the compiler decide is almost always better.</p></li><li><p>Assuming NRVO always happens and therefore skipping the move constructor entirely (making it deleted, or private) — since NRVO isn&#x27;t guaranteed, this can break on a compiler/optimization-level combination where NRVO doesn&#x27;t kick in.</p></li></ul></div>
+  <p class="why-box"><p>Explains why returning large objects by value is often completely free in modern C++, removing the old C++03-era instinct to use output parameters &quot;for performance.&quot;</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#move-semantics" data-related-href="#move-semantics">Move semantics</a><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
+</article></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

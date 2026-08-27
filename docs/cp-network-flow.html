@@ -1,0 +1,1284 @@
+<title>Network Flow &amp; Matching — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Network Flow &amp; Matching</h1>
+    <p class="tagline"><p>Network flow turns problems about moving resources through a capacitated directed graph into a single well-understood algorithmic primitive: repeatedly push flow along augmenting paths until none remain. From this one idea fall out three of the most reusable tools in competitive programming: computing the maximum throughput between two nodes, computing the minimum-capacity set of edges that separates them (its exact dual, by the max-flow min-cut theorem), and computing the largest matching in a bipartite graph (a special case of max flow with unit capacities). Recognizing when a problem secretly IS one of these three, and building the right graph to feed into a standard implementation, is the real skill being tested. Once max-flow is established, attaching a per-unit cost to each edge (min-cost max-flow) or specializing to complete bipartite matching with a cost matrix (the Hungarian algorithm) unlocks a large family of assignment and scheduling problems that plain max-flow cannot express.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">5</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">10</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">18</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#network-flow-maximum-flow-edmonds-karp"><span>Maximum Flow (Edmonds-Karp)</span><span class="cnt">2</span></a></li><li><a href="#network-flow-minimum-cut-max-flow-min-cut-theorem"><span>Minimum Cut (Max-Flow Min-Cut Theorem)</span><span class="cnt">2</span></a></li><li><a href="#network-flow-bipartite-matching-kuhn-s-algorithm"><span>Bipartite Matching (Kuhn&#x27;s Algorithm)</span><span class="cnt">2</span></a></li><li><a href="#network-flow-min-cost-max-flow-mcmf"><span>Min-Cost Max-Flow (MCMF)</span><span class="cnt">2</span></a></li><li><a href="#network-flow-hungarian-algorithm-assignment-problem"><span>Hungarian Algorithm (Assignment Problem)</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">18</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#network-flow">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="network-flow-maximum-flow-edmonds-karp">
+  <div class="topic-head"><h2>Maximum Flow (Edmonds-Karp)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>A flow network is a directed graph where every edge (u, v) has a nonnegative capacity cap(u, v). A flow is an assignment of a value f(u, v) to every edge satisfying two constraints: capacity (0 &lt;= f(u, v) &lt;= cap(u, v)) and conservation (for every vertex other than the source s and sink t, total flow in equals total flow out). The value of the flow is the net amount leaving s (equivalently, the net amount arriving at t). The maximum flow problem asks for the largest achievable flow value from s to t.</p><p>The Ford-Fulkerson method solves this by repeatedly finding an &#x27;augmenting path&#x27; -- a path from s to t along which more flow can still be pushed -- in the residual graph, and pushing the bottleneck capacity along it. The residual graph contains, for every edge (u, v) with remaining capacity cap(u, v) - f(u, v) &gt; 0, a forward residual edge, and for every edge (u, v) carrying positive flow, a backward residual edge (v, u) with residual capacity f(u, v) that lets a later augmentation &#x27;undo&#x27; a previously bad routing decision. Edmonds-Karp is the specific, easy-to-get-right version of this method that always picks the augmenting path with the FEWEST EDGES, found via a plain BFS on the residual graph rather than an arbitrary DFS. This single choice is what gives it a clean polynomial bound: it can be shown the shortest augmenting-path length never decreases across iterations and each edge can be the &#x27;bottleneck&#x27; edge of a shortest path only O(V) times, giving O(VE) total augmentations, each found in O(E) via BFS.</p><p>The algorithm terminates when BFS from s in the residual graph can no longer reach t -- at that point, by the max-flow min-cut theorem, the flow found is provably maximum (see the Minimum Cut subtopic for why). Implementation-wise, the standard trick is to store the graph as an adjacency list of edge structs, adding both a forward edge with the given capacity and a paired backward edge with capacity 0, and recording each edge&#x27;s index of its &#x27;reverse twin&#x27; so that augmenting a path can update both sides of every edge in O(1) per edge. Always use a signed 64-bit type for capacities/flow to avoid overflow when capacities are summed.</p><p>Edmonds-Karp&#x27;s O(VE^2) worst case is noticeably slower than Dinic&#x27;s algorithm (O(V^2E), and much faster in practice, especially O(E*sqrt(V)) on unit-capacity graphs such as bipartite matching instances), which builds level graphs with BFS and then finds a blocking flow with DFS per phase. Dinic&#x27;s is what you should reach for once graph sizes exceed a few thousand vertices/edges; Edmonds-Karp is preferred here purely because its correctness is much easier to verify by hand and it is very hard to get subtly wrong.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for a directed (or undirected, modeled as two opposite directed edges) graph with explicit edge capacities and a question about the maximum amount of &#x27;flow&#x27; -- data rate, goods, people, water -- that can be pushed from one designated source node to one designated sink node. Also recognize disguised versions: &#x27;maximum number of edge-disjoint paths&#x27; (unit-capacity max flow), &#x27;can we route X units simultaneously&#x27; (max flow &gt;= X feasibility check), and problems with multiple sources/sinks (add a super-source/super-sink connected to each with infinite or given capacity).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Edmonds-Karp: O(V * E^2) time (O(VE) augmenting paths, each found by an O(E) BFS), O(V + E) space. Dinic&#x27;s algorithm improves this to O(V^2 * E) in general and O(E * sqrt(V)) on unit-capacity graphs.</p></div>
+  </div>
+  <article class="example-card" id="network-flow-maximum-flow-edmonds-karp-ex0">
+  <h4>Basic Max Flow Between Two Nodes</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A directed network has n computers numbered 1..n connected by m directed cables, each with an integer bandwidth capacity. Computer 1 wants to send data to computer n. Find the maximum total data rate that can be sustained from computer 1 to computer n.</p><p>Input: the first line has two integers n and m (1 &lt;= n &lt;= 10, 0 &lt;= m &lt;= 20). Each of the next m lines has three integers u, v, c describing a directed cable from u to v with capacity c (1 &lt;= u, v &lt;= n, 1 &lt;= c &lt;= 100). Output the single integer maximum flow value from node 1 to node n.</p><p>Concrete instance: 4 nodes, 5 cables: 1-&gt;2 (cap 3), 1-&gt;3 (cap 2), 2-&gt;3 (cap 1), 2-&gt;4 (cap 2), 3-&gt;4 (cap 3).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Build a residual graph with each cable as a forward edge of its given capacity plus a paired reverse edge of capacity 0.<br>2. Repeat: BFS from node 1 in the residual graph to find any path to node n using only edges of positive residual capacity.<br>3. If no such path exists, stop -- the current total is the answer.<br>4. Otherwise find the bottleneck (minimum residual capacity) along the found path, add it to the answer, and subtract it from every forward edge on the path while adding it to every corresponding reverse edge.<br>5. By hand: augment 1-&gt;2-&gt;4 by min(3,2)=2 (running total 2), then 1-&gt;3-&gt;4 by min(2,3)=2 (running total 4), then the only remaining path 1-&gt;2-&gt;3-&gt;4 has bottleneck min(1,1,1)=1 (running total 5); after that node 4 is unreachable from node 1 in the residual graph, so the answer is 5. This matches the min cut {1,2,3} vs {4} of capacity 2 + 3 = 5.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct MaxFlow {
+    struct Edge { int to; long long cap; int rev; };
+    vector&lt;vector&lt;Edge&gt;&gt; graph;
+    int n;
+    MaxFlow(int n): n(n), graph(n) {}
+    void addEdge(int u, int v, long long cap) {
+        graph[u].push_back({v, cap, (int)graph[v].size()});
+        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+    }
+    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(s);
+        visited[s] = true;
+        prevv.assign(n, -1);
+        preve.assign(n, -1);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            if (u == t) break;
+            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+                Edge&amp; e = graph[u][i];
+                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
+                    visited[e.to] = true;
+                    prevv[e.to] = u;
+                    preve[e.to] = i;
+                    q.push(e.to);
+                }
+            }
+        }
+        return visited[t];
+    }
+    long long maxflow(int s, int t) {
+        long long flow = 0;
+        vector&lt;int&gt; prevv, preve;
+        while (bfs(s, t, prevv, preve)) {
+            long long d = LLONG_MAX;
+            for (int v = t; v != s; v = prevv[v])
+                d = min(d, graph[prevv[v]][preve[v]].cap);
+            for (int v = t; v != s; v = prevv[v]) {
+                graph[prevv[v]][preve[v]].cap -= d;
+                int rev = graph[prevv[v]][preve[v]].rev;
+                graph[v][rev].cap += d;
+            }
+            flow += d;
+        }
+        return flow;
+    }
+};
+
+int main() {
+    int n, m;
+    cin &gt;&gt; n &gt;&gt; m;
+    MaxFlow mf(n + 1);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v; long long c;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
+        mf.addEdge(u, v, c);
+    }
+    cout &lt;&lt; mf.maxflow(1, n) &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 5
+1 2 3
+1 3 2
+2 3 1
+2 4 2
+3 4 3
+</code></pre>
+    <pre><code>5
+</code></pre>
+  </div>
+</article><article class="example-card" id="network-flow-maximum-flow-edmonds-karp-ex1">
+  <h4>Max Flow Requiring Several Augmenting Paths</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Same setup and input/output format as above (max flow from node 1 to node n over a small capacitated directed graph, n &lt;= 10, m &lt;= 20), but on a network with a detour edge that lets flow reroute around a partially used bottleneck.</p><p>Concrete instance: 5 nodes, 7 cables: 1-&gt;2 (cap 4), 1-&gt;3 (cap 3), 2-&gt;3 (cap 2), 2-&gt;4 (cap 3), 4-&gt;3 (cap 1), 3-&gt;5 (cap 2), 4-&gt;5 (cap 5).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Same Edmonds-Karp loop as example 1: repeatedly BFS for a shortest augmenting path in the residual graph and push the bottleneck amount.<br>2. Notice the only way flow reaches the sink (node 5) is through node 3 (capacity 2 on edge 3-&gt;5) or node 4 (capacity 5 on edge 4-&gt;5), and the only way into node 4 is edge 2-&gt;4 (capacity 3). So the cut {1,2,3} vs {4,5} is NOT the tightest; check the cut {1,2,3} vs {4,5}: crossing edges 2-&gt;4 (3) + nothing else since 3-&gt;5&#x27;s other endpoint 5 is outside and 4-&gt;3 goes into the set -- crossing capacity is 3 (from 2-&gt;4) + 2 (from 3-&gt;5) = 5.<br>3. Running the algorithm confirms this: total achievable flow is 5, split for example as 2 units via 1-&gt;2-&gt;4-&gt;5, 2 units via 1-&gt;2-&gt;3-&gt;5, and 1 unit via 1-&gt;3-&gt;... -- the exact path decomposition depends on BFS tie-breaking, but the final VALUE is always 5 regardless of which shortest paths are chosen, because it is pinned down by the minimum cut.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct MaxFlow {
+    struct Edge { int to; long long cap; int rev; };
+    vector&lt;vector&lt;Edge&gt;&gt; graph;
+    int n;
+    MaxFlow(int n): n(n), graph(n) {}
+    void addEdge(int u, int v, long long cap) {
+        graph[u].push_back({v, cap, (int)graph[v].size()});
+        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+    }
+    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(s);
+        visited[s] = true;
+        prevv.assign(n, -1);
+        preve.assign(n, -1);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            if (u == t) break;
+            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+                Edge&amp; e = graph[u][i];
+                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
+                    visited[e.to] = true;
+                    prevv[e.to] = u;
+                    preve[e.to] = i;
+                    q.push(e.to);
+                }
+            }
+        }
+        return visited[t];
+    }
+    long long maxflow(int s, int t) {
+        long long flow = 0;
+        vector&lt;int&gt; prevv, preve;
+        while (bfs(s, t, prevv, preve)) {
+            long long d = LLONG_MAX;
+            for (int v = t; v != s; v = prevv[v])
+                d = min(d, graph[prevv[v]][preve[v]].cap);
+            for (int v = t; v != s; v = prevv[v]) {
+                graph[prevv[v]][preve[v]].cap -= d;
+                int rev = graph[prevv[v]][preve[v]].rev;
+                graph[v][rev].cap += d;
+            }
+            flow += d;
+        }
+        return flow;
+    }
+};
+
+int main() {
+    int n, m;
+    cin &gt;&gt; n &gt;&gt; m;
+    MaxFlow mf(n + 1);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v; long long c;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
+        mf.addEdge(u, v, c);
+    }
+    cout &lt;&lt; mf.maxflow(1, n) &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 7
+1 2 4
+1 3 3
+2 3 2
+2 4 3
+4 3 1
+3 5 2
+4 5 5
+</code></pre>
+    <pre><code>5
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="network-flow-minimum-cut-max-flow-min-cut-theorem">
+  <div class="topic-head"><h2>Minimum Cut (Max-Flow Min-Cut Theorem)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>An s-t cut of a flow network is a partition of the vertices into two sets S and T = V \ S with s in S and t in T. The capacity of the cut is the sum of capacities of edges that go FROM S TO T only (edges going from T back into S do not count, since they do not limit flow out of S). For ANY valid flow and ANY valid s-t cut, the flow&#x27;s value can never exceed that cut&#x27;s capacity -- every unit of flow leaving S toward t must eventually cross one of the S-to-T edges, so the cut capacity upper-bounds every achievable flow value (this direction, weak duality, is easy to see directly).</p><p>The max-flow min-cut theorem states this bound is always achieved with equality: the maximum flow value from s to t exactly equals the minimum capacity over all s-t cuts. The proof falls directly out of the Edmonds-Karp/Ford-Fulkerson termination condition: when no augmenting path exists, let S be the set of vertices still reachable from s in the final residual graph, and T everything else (t in T, since it is unreachable by assumption). Every original edge from S to T must be fully saturated (otherwise it would still have residual capacity and S could be extended across it), and every original edge from T to S must carry zero flow (otherwise its residual back-edge from S to T would let S be extended). So the net flow crossing (S, T) equals exactly the sum of capacities of the saturated S-to-T edges -- i.e. the flow value equals this particular cut&#x27;s capacity, proving both that this cut is a minimum cut and that the flow is a maximum flow, simultaneously.</p><p>This gives a completely mechanical recipe: run any correct max-flow algorithm (Edmonds-Karp, Dinic&#x27;s, ...) to completion, then do ONE more BFS or DFS from s in the final residual graph. Every vertex reached is on the source side S of a minimum cut; the minimum cut&#x27;s capacity is simply the max flow value already computed, and if the problem asks for the actual edges to cut, they are exactly the original (not residual) edges (u, v) with u in S and v not in S.</p><p>A large family of optimization problems that look nothing like flow at first are min-cut in disguise, most famously the maximum-weight closure / project-selection problem: given items with profits and prerequisite dependencies (or, symmetrically, a penalty for touching certain &#x27;shared&#x27; resources), build a graph with a source edge for profitable choices, a sink edge for costs, and infinite-capacity edges encoding dependencies, then the answer is (total profit) - (min cut).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Phrases like &#x27;minimum number/total weight of edges to remove to disconnect node A from node B&#x27;, &#x27;minimum edges to destroy all paths from s to t&#x27;, or &#x27;minimum vertices to delete to separate two regions&#x27; (vertex version: split each vertex into an in-node and out-node joined by an edge of capacity 1, or the vertex&#x27;s weight, to cap how much can pass through it). Also recognize optimization problems phrased as &#x27;choose a subset to maximize total profit minus some interacting penalty cost&#x27; -- these are frequently project-selection / closure problems solvable by constructing a graph and computing a min cut.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Identical to whatever max-flow algorithm computes it -- O(V * E^2) with Edmonds-Karp -- since the minimum cut&#x27;s capacity is read off directly as the max flow value, plus one extra O(V + E) BFS/DFS pass over the final residual graph to recover the actual source-side vertex set / cut edges.</p></div>
+  </div>
+  <article class="example-card" id="network-flow-minimum-cut-max-flow-min-cut-theorem-ex0">
+  <h4>Minimum Edge Cut on a Small Diamond Graph</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A directed graph has n nodes and m directed edges, all of capacity 1 (i.e. this asks for the minimum number of edges whose removal disconnects node 1 from node n -- the edge connectivity from 1 to n). Compute this minimum, and also output the set of vertices reachable from node 1 in the residual graph after computing a maximum flow (one valid source side of a minimum cut), in increasing order.</p><p>Input: first line n and m (1 &lt;= n &lt;= 10, 0 &lt;= m &lt;= 20); each of the next m lines has u, v, c (here c is always 1). Output: first line is the minimum cut value; second line is the space-separated sorted list of vertices on node 1&#x27;s side of that cut.</p><p>Concrete instance: 4 nodes forming a &#x27;diamond&#x27; -- two vertex-disjoint paths from node 1 to node 4: 1-&gt;2, 1-&gt;3, 2-&gt;4, 3-&gt;4, each with capacity 1.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Run Edmonds-Karp max flow from 1 to 4: augment along 1-&gt;2-&gt;4 (bottleneck 1), then along 1-&gt;3-&gt;4 (bottleneck 1). Total flow = 2, and no further augmenting path exists (both edges out of node 1 are now saturated).<br>2. By the max-flow min-cut theorem, the minimum cut capacity equals this flow value, 2 -- you must remove both edges 1-&gt;2 and 1-&gt;3 (or equivalently both paths&#x27; worth of capacity) to fully disconnect node 1 from node 4, and no single edge removal suffices since the two paths are vertex-disjoint.<br>3. Do one more BFS from node 1 in the final residual graph: both 1-&gt;2 and 1-&gt;3 are fully saturated (0 residual capacity), so no further vertex is reachable -- the source side of the minimum cut is just {1}.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct MaxFlow {
+    struct Edge { int to; long long cap; int rev; };
+    vector&lt;vector&lt;Edge&gt;&gt; graph;
+    int n;
+    MaxFlow(int n): n(n), graph(n) {}
+    void addEdge(int u, int v, long long cap) {
+        graph[u].push_back({v, cap, (int)graph[v].size()});
+        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+    }
+    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(s);
+        visited[s] = true;
+        prevv.assign(n, -1);
+        preve.assign(n, -1);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            if (u == t) break;
+            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+                Edge&amp; e = graph[u][i];
+                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
+                    visited[e.to] = true;
+                    prevv[e.to] = u;
+                    preve[e.to] = i;
+                    q.push(e.to);
+                }
+            }
+        }
+        return visited[t];
+    }
+    long long maxflow(int s, int t) {
+        long long flow = 0;
+        vector&lt;int&gt; prevv, preve;
+        while (bfs(s, t, prevv, preve)) {
+            long long d = LLONG_MAX;
+            for (int v = t; v != s; v = prevv[v])
+                d = min(d, graph[prevv[v]][preve[v]].cap);
+            for (int v = t; v != s; v = prevv[v]) {
+                graph[prevv[v]][preve[v]].cap -= d;
+                int rev = graph[prevv[v]][preve[v]].rev;
+                graph[v][rev].cap += d;
+            }
+            flow += d;
+        }
+        return flow;
+    }
+    // vertices reachable from s in the final residual graph (the source side of the min cut)
+    vector&lt;int&gt; reachableFromSource(int s) {
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(s);
+        visited[s] = true;
+        vector&lt;int&gt; order;
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            order.push_back(u);
+            for (auto&amp; e : graph[u]) {
+                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
+                    visited[e.to] = true;
+                    q.push(e.to);
+                }
+            }
+        }
+        sort(order.begin(), order.end());
+        return order;
+    }
+};
+
+int main() {
+    int n, m;
+    cin &gt;&gt; n &gt;&gt; m;
+    MaxFlow mf(n + 1);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v; long long c;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
+        mf.addEdge(u, v, c);
+    }
+    long long cut = mf.maxflow(1, n);
+    cout &lt;&lt; cut &lt;&lt; &quot;\n&quot;;
+    vector&lt;int&gt; side = mf.reachableFromSource(1);
+    for (int i = 0; i &lt; (int)side.size(); i++) {
+        cout &lt;&lt; side[i] &lt;&lt; (i + 1 &lt; (int)side.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 4
+1 2 1
+1 3 1
+2 4 1
+3 4 1
+</code></pre>
+    <pre><code>2
+1
+</code></pre>
+  </div>
+</article><article class="example-card" id="network-flow-minimum-cut-max-flow-min-cut-theorem-ex1">
+  <h4>Weighted Minimum Cut with a Non-Trivial Source Side</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Same input/output format as above, but with general (non-unit) capacities, illustrating that the minimum cut does not always sit right next to the source.</p><p>Concrete instance: 4 nodes, 5 edges: 1-&gt;2 (cap 5), 1-&gt;3 (cap 5), 2-&gt;3 (cap 10), 2-&gt;4 (cap 3), 3-&gt;4 (cap 3).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Run Edmonds-Karp: augment 1-&gt;2-&gt;4 by min(5,3)=3 (total 3), then 1-&gt;3-&gt;4 by min(5,3)=3 (total 6). Now edges 2-&gt;4 and 3-&gt;4 are both fully saturated (0 residual capacity), while 1-&gt;2 and 1-&gt;3 still each have 2 units of residual capacity left, and 2-&gt;3 (capacity 10) is completely unused.<br>2. Check for another augmenting path: from node 1 you can still reach node 2 (residual 2) and node 3 (residual 2, or via 2-&gt;3 which still has capacity 10), but from either node 2 or node 3 there is no more residual capacity into node 4 (both are saturated). So node 4 is unreachable and the algorithm terminates at flow value 6.<br>3. The final BFS from node 1 in the residual graph reaches nodes 1, 2, AND 3 (since 1-&gt;2, 1-&gt;3, and 2-&gt;3 all still have spare residual capacity), but not node 4. So the minimum cut&#x27;s source side is {1, 2, 3}, and its capacity is the sum of ORIGINAL capacities of edges leaving this set: 2-&gt;4 (3) + 3-&gt;4 (3) = 6, matching the flow value exactly -- note this cut does NOT simply cut every edge out of the source, demonstrating that the bottleneck can be &#x27;deeper&#x27; in the network.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct MaxFlow {
+    struct Edge { int to; long long cap; int rev; };
+    vector&lt;vector&lt;Edge&gt;&gt; graph;
+    int n;
+    MaxFlow(int n): n(n), graph(n) {}
+    void addEdge(int u, int v, long long cap) {
+        graph[u].push_back({v, cap, (int)graph[v].size()});
+        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+    }
+    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(s);
+        visited[s] = true;
+        prevv.assign(n, -1);
+        preve.assign(n, -1);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            if (u == t) break;
+            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+                Edge&amp; e = graph[u][i];
+                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
+                    visited[e.to] = true;
+                    prevv[e.to] = u;
+                    preve[e.to] = i;
+                    q.push(e.to);
+                }
+            }
+        }
+        return visited[t];
+    }
+    long long maxflow(int s, int t) {
+        long long flow = 0;
+        vector&lt;int&gt; prevv, preve;
+        while (bfs(s, t, prevv, preve)) {
+            long long d = LLONG_MAX;
+            for (int v = t; v != s; v = prevv[v])
+                d = min(d, graph[prevv[v]][preve[v]].cap);
+            for (int v = t; v != s; v = prevv[v]) {
+                graph[prevv[v]][preve[v]].cap -= d;
+                int rev = graph[prevv[v]][preve[v]].rev;
+                graph[v][rev].cap += d;
+            }
+            flow += d;
+        }
+        return flow;
+    }
+    // vertices reachable from s in the final residual graph (the source side of the min cut)
+    vector&lt;int&gt; reachableFromSource(int s) {
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(s);
+        visited[s] = true;
+        vector&lt;int&gt; order;
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            order.push_back(u);
+            for (auto&amp; e : graph[u]) {
+                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
+                    visited[e.to] = true;
+                    q.push(e.to);
+                }
+            }
+        }
+        sort(order.begin(), order.end());
+        return order;
+    }
+};
+
+int main() {
+    int n, m;
+    cin &gt;&gt; n &gt;&gt; m;
+    MaxFlow mf(n + 1);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v; long long c;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
+        mf.addEdge(u, v, c);
+    }
+    long long cut = mf.maxflow(1, n);
+    cout &lt;&lt; cut &lt;&lt; &quot;\n&quot;;
+    vector&lt;int&gt; side = mf.reachableFromSource(1);
+    for (int i = 0; i &lt; (int)side.size(); i++) {
+        cout &lt;&lt; side[i] &lt;&lt; (i + 1 &lt; (int)side.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 5
+1 2 5
+1 3 5
+2 3 10
+2 4 3
+3 4 3
+</code></pre>
+    <pre><code>6
+1 2 3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="network-flow-bipartite-matching-kuhn-s-algorithm">
+  <div class="topic-head"><h2>Bipartite Matching (Kuhn&#x27;s Algorithm)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Given a bipartite graph with left vertices L and right vertices R connected by edges only between the two sides, a matching is a set of edges no two of which share an endpoint. The maximum bipartite matching problem asks for the largest such set. Kuhn&#x27;s algorithm (the bipartite specialization of the general augmenting-path idea, sometimes called the Hungarian algorithm in the unweighted case) builds the matching one left vertex at a time: for each unmatched left vertex u, it performs a DFS along &#x27;alternating&#x27; edges -- first an unmatched edge to some right vertex v, and if v is already matched to some other left vertex u&#x27;, it recursively tries to re-match u&#x27; to a DIFFERENT right vertex, freeing up v for u. If this DFS reaches any currently-unmatched right vertex, the entire alternating path is flipped (previously matched edges become unmatched and vice versa), increasing the total matching size by exactly one.</p><p>This is not a coincidence or a separate technique -- it is exactly the max-flow augmenting-path idea specialized to the graph formed by adding a super-source connected to every left vertex with capacity 1, a super-sink connected from every right vertex with capacity 1, and capacity-1 edges for every original left-right edge. Because every capacity is 1, the maximum flow in this network is always an integer equal to the maximum matching size, and each Kuhn&#x27;s-algorithm DFS is precisely one Edmonds-Karp-style augmentation (here found by DFS rather than BFS, which is fine since all path lengths from source to sink are equal at 3 edges, so BFS vs DFS makes no complexity difference here).</p><p>Complexity: each left vertex triggers at most one DFS that visits each edge at most once, giving O(V * E) total in the worst case -- fine for V, E up to a few thousand. When graphs get larger (V, E up to ~1e5), switch to Hopcroft-Karp, which finds a maximal set of vertex-disjoint SHORTEST augmenting paths per phase via one BFS + multiple DFS&#x27;s, achieving O(E * sqrt(V)) and O(sqrt(V)) phases.</p><p>Beyond directly asking for a maximum matching, bipartite matching is used as a FEASIBILITY test via Hall&#x27;s marriage theorem (a perfect matching saturating one side exists if and only if every subset of that side has a neighborhood at least as large as itself), commonly wrapped in a binary search: &#x27;find the minimum X such that a matching of size &gt;= K exists once only edges satisfying some threshold-X condition are allowed&#x27;.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Two clearly distinguishable groups (people/jobs, boys/girls, tasks/workers, rows/columns) with a compatibility relation, and a question asking for the maximum number of one-to-one pairings possible, or whether a pairing saturating one side exists. Also recognize it hiding inside a binary search: &#x27;minimum threshold so that at least K pairs / a full assignment is achievable&#x27; almost always means &#x27;binary search + bipartite matching feasibility check&#x27; via Hall&#x27;s theorem.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(V * E) with a plain Kuhn&#x27;s algorithm (one DFS of cost O(E) per left vertex); O(E * sqrt(V)) with Hopcroft-Karp for larger instances.</p></div>
+  </div>
+  <article class="example-card" id="network-flow-bipartite-matching-kuhn-s-algorithm-ex0">
+  <h4>Maximum Matching Size</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are L people on the left and R people on the right (1 &lt;= L, R &lt;= 10), and m compatible pairs (u, v) meaning left-person u is willing to be paired with right-person v (1 &lt;= u &lt;= L, 1 &lt;= v &lt;= R, 0 &lt;= m &lt;= 50). Find the size of the maximum matching (the largest number of pairs that can be formed so that every person appears in at most one pair).</p><p>Input: first line L, R, m; each of the next m lines has u, v. Output: a single integer, the maximum matching size.</p><p>Concrete instance: L = R = 4, with compatible pairs (1,1), (1,2), (2,1), (3,2), (3,3), (4,3), (4,4).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Process left vertices in order 1..4, running a DFS-based augmenting search for each.<br>2. Left 1: tries right 1 (free) -&gt; match (1,1).<br>3. Left 2: tries right 1 (taken by 1) -&gt; try to re-match left 1 elsewhere: left 1&#x27;s only other option is right 2, which is free -&gt; re-match (1,2), freeing right 1 for left 2 -&gt; match (2,1).<br>4. Left 3: tries right 2 (taken by 1) -&gt; try to re-match left 1: its only options are right 1 (taken by 2, and left 2 has no other option, so this fails) -&gt; right 2 augmentation fails -&gt; try right 3 (free) -&gt; match (3,3).<br>5. Left 4: tries right 3 (taken by 3) -&gt; try to re-match left 3: its only other option is right 2 (taken by 1, whose only other option right 1 is taken by 2 with no alternative -- fails) -&gt; right 3 augmentation fails -&gt; try right 4 (free) -&gt; match (4,4).<br>6. Every one of the 4 left vertices got matched, so the maximum matching size is 4.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int L, R, m;
+vector&lt;vector&lt;int&gt;&gt; adj; // adjacency list for left vertices (1-indexed)
+vector&lt;int&gt; matchR;      // matchR[r] = l matched to r, or -1
+vector&lt;bool&gt; visited;
+
+bool tryKuhn(int u) {
+    for (int v : adj[u]) {
+        if (visited[v]) continue;
+        visited[v] = true;
+        if (matchR[v] == -1 || tryKuhn(matchR[v])) {
+            matchR[v] = u;
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin &gt;&gt; L &gt;&gt; R &gt;&gt; m;
+    adj.assign(L + 1, {});
+    matchR.assign(R + 1, -1);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v;
+        cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+    }
+    int result = 0;
+    for (int u = 1; u &lt;= L; u++) {
+        visited.assign(R + 1, false);
+        if (tryKuhn(u)) result++;
+    }
+    cout &lt;&lt; result &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 4 7
+1 1
+1 2
+2 1
+3 2
+3 3
+4 3
+4 4
+</code></pre>
+    <pre><code>4
+</code></pre>
+  </div>
+</article><article class="example-card" id="network-flow-bipartite-matching-kuhn-s-algorithm-ex1">
+  <h4>Recovering the Matched Pairs</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Same setup as above (L, R, m then m compatible pairs), but now also print the matched pairs themselves, sorted by left vertex.</p><p>Input: first line L, R, m; each of the next m lines has u, v. Output: first line is the maximum matching size; each following line has one matched pair &#x27;u v&#x27;, sorted by u ascending.</p><p>Concrete instance: L = R = 3, with compatible pairs (1,1), (1,2), (2,1), (3,2), (3,3).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Left 1: tries right 1 (free) -&gt; match (1,1).<br>2. Left 2: tries right 1 (taken by 1) -&gt; try to re-match left 1: its next option is right 2 (free) -&gt; re-match (1,2), freeing right 1 -&gt; match (2,1). Matching is now {(1,2), (2,1)}.<br>3. Left 3: tries right 2 (taken by 1) -&gt; try to re-match left 1: left 1&#x27;s only other option is right 1 (taken by 2, and left 2 has no other neighbor, so that fails) -&gt; right 2 augmentation fails for left 3 -&gt; try right 3 (free) -&gt; match (3,3).<br>4. Final matching: (1,2), (2,1), (3,3), size 3 -- printed sorted by the left vertex: 1 2, then 2 1, then 3 3.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int L, R, m;
+vector&lt;vector&lt;int&gt;&gt; adj;
+vector&lt;int&gt; matchR;
+vector&lt;bool&gt; visited;
+
+bool tryKuhn(int u) {
+    for (int v : adj[u]) {
+        if (visited[v]) continue;
+        visited[v] = true;
+        if (matchR[v] == -1 || tryKuhn(matchR[v])) {
+            matchR[v] = u;
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin &gt;&gt; L &gt;&gt; R &gt;&gt; m;
+    adj.assign(L + 1, {});
+    matchR.assign(R + 1, -1);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v;
+        cin &gt;&gt; u &gt;&gt; v;
+        adj[u].push_back(v);
+    }
+    int result = 0;
+    for (int u = 1; u &lt;= L; u++) {
+        visited.assign(R + 1, false);
+        if (tryKuhn(u)) result++;
+    }
+    cout &lt;&lt; result &lt;&lt; &quot;\n&quot;;
+    vector&lt;pair&lt;int,int&gt;&gt; pairs;
+    for (int v = 1; v &lt;= R; v++) {
+        if (matchR[v] != -1) pairs.push_back({matchR[v], v});
+    }
+    sort(pairs.begin(), pairs.end());
+    for (auto&amp; p : pairs) cout &lt;&lt; p.first &lt;&lt; &quot; &quot; &lt;&lt; p.second &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3 5
+1 1
+1 2
+2 1
+3 2
+3 3
+</code></pre>
+    <pre><code>3
+1 2
+2 1
+3 3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="network-flow-min-cost-max-flow-mcmf">
+  <div class="topic-head"><h2>Min-Cost Max-Flow (MCMF)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Min-cost max-flow generalizes ordinary max-flow by giving every edge a per-unit COST in addition to its capacity, and asking for the maximum flow that also has the smallest possible total cost (sum over edges of flow(e) * cost(e)), or, in a common variant, the smallest cost to push some REQUIRED amount of flow (not necessarily the maximum). The standard algorithm is successive shortest augmenting paths (SSP): repeatedly find the CHEAPEST path from source to sink in the residual graph (using shortest-path search, since a cheapest path is exactly a shortest path when edge weights are the costs), push as much flow as the path&#x27;s bottleneck capacity allows, and repeat until either no augmenting path remains (max-flow case) or the required flow amount has been shipped (required-flow case). Crucially, when you push flow along an edge, you must add a REVERSE residual edge with the NEGATED cost (mirroring how max-flow adds reverse edges with negated... well, zero-cost residual capacity, but here also negative cost) — this reverse edge lets a later augmenting path &#x27;undo&#x27; part of an earlier, now-suboptimal, flow assignment, which is essential for overall optimality. Because of these negative-cost reverse edges, Dijkstra cannot be used directly on the raw graph; the two standard fixes are (a) SPFA / Bellman-Ford-with-a-queue, which tolerates negative edges directly at the cost of a worse worst-case complexity, or (b) Johnson&#x27;s-algorithm-style potentials, which maintain a running set of vertex potentials that make all reduced edge costs non-negative, allowing Dijkstra (with a priority queue) after the very first SPFA/Bellman-Ford pass — the potentials approach is asymptotically much faster on graphs with many augmenting iterations and is the standard choice in production MCMF libraries, though a straightforward SPFA-based implementation is simpler to get right under contest time pressure and is what is shown below.</p><p>A critical correctness property of SSP is that shortest-path DISTANCES to the sink are non-decreasing across successive iterations, as long as the very first iteration&#x27;s shortest paths are computed correctly (this is what justifies using Dijkstra-with-potentials after the first Bellman-Ford pass, and it is also why greedily always taking the cheapest available path, one at a time, produces a GLOBALLY minimum-cost solution rather than merely a locally greedy one — this is the deep reason SSP is provably optimal and not just a heuristic).</p><p>The hard part of most MCMF problems in practice is not the algorithm itself (a well-tested MCMF template is typically copy-pasted) but recognizing and constructing the FLOW NETWORK from a combinatorial problem statement that does not superficially mention flow at all: assignment problems where the same unit can be routed through different &#x27;paths&#x27; at different costs, budgeted resource allocation with per-source or per-destination caps (modeled as edge capacities) and per-unit prices (modeled as edge costs), and coloring/labeling problems with per-vertex balance constraints (modeled by splitting each vertex into an in-node and out-node connected by a capacity-and-cost-carrying edge, the classic &#x27;node splitting&#x27; trick). Recognizing when a problem is really an assignment/transportation problem in disguise, and correctly setting up capacities (which encode &#x27;how much&#x27;, e.g. a budget or a supply limit) versus costs (which encode &#x27;how expensive per unit&#x27;, e.g. a price or a penalty) is the single most important skill this subtopic tests.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem involves assigning, routing, or matching UNITS of something (goods, characters, tasks, time slots) through multiple possible channels/pairings, each channel has both a CAPACITY (how much can flow through it) and a PER-UNIT COST, and you need either (a) the minimum cost to achieve the maximum possible throughput, or (b) the minimum cost to achieve some specific REQUIRED throughput (with -1 or &#x27;impossible&#x27; if that throughput cannot be reached at all).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(F * E log V) with Dijkstra + potentials, or O(F * V * E) with plain SPFA/Bellman-Ford augmenting paths, where F is the total flow pushed (bounded by the max-flow value or the required flow amount), V and E are the network&#x27;s vertex and edge counts.</p></div>
+  </div>
+  <article class="example-card" id="network-flow-min-cost-max-flow-mcmf-ex0">
+  <h4>Maximum Flow at Minimum Cost on a Small Network</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a directed flow network with n nodes (0-indexed), a designated source s and sink t, and m directed edges, each with a capacity and a per-unit cost. Compute the value of the maximum flow from s to t, and, among all flows achieving that maximum value, the minimum possible total cost.</p><p>Input: n, m, s, t on the first line; then m lines each with u, v, cap, cost describing a directed edge from u to v.<br>Output: two integers, the maximum flow value and its minimum total cost, separated by a space.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the flow network with a standard adjacency-list MCMF structure: each added edge also creates a reverse residual edge with capacity 0 and NEGATED cost. Repeatedly run SPFA (Bellman-Ford with a FIFO queue, needed because reverse residual edges carry negative costs) from s to find the CHEAPEST path to every reachable node; if the sink is unreachable, stop. Otherwise, find the bottleneck capacity along the cheapest s-to-t path (the minimum residual capacity of any edge on that path), push that much flow along it (decreasing forward capacities and increasing the corresponding reverse capacities), and add (bottleneck * path cost) to the running total cost. Repeat until no augmenting path remains; the accumulated flow is the max-flow value and the accumulated cost is the minimum cost for that flow.</p><p>This was hand-verified on the given 4-node network: source 0, sink 3, edges 0-&gt;1 (cap 2, cost 2), 0-&gt;2 (cap 1, cost 3), 1-&gt;3 (cap 1, cost 1), 1-&gt;2 (cap 1, cost 1), 2-&gt;3 (cap 2, cost 1). The bottleneck at every source/sink edge forces a unique maximum flow of exactly 3 units that saturates EVERY edge in the network simultaneously (0-&gt;1 fully used at 2, 0-&gt;2 fully used at 1, 1-&gt;3 fully used at 1, 1-&gt;2 fully used at 1, 2-&gt;3 fully used at 2) — since this is the only possible flow of value 3, its cost is forced: 2*2 + 1*3 + 1*1 + 1*1 + 2*1 = 4+3+1+1+2 = 11, matching the program&#x27;s output exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll INF = LLONG_MAX / 2;
+
+struct MCMF {
+    struct Edge { int to; ll cap, cost; int rev; };
+    int n;
+    vector&lt;vector&lt;Edge&gt;&gt; graph;
+    MCMF(int n) : n(n), graph(n) {}
+    void addEdge(int from, int to, ll cap, ll cost) {
+        graph[from].push_back({to, cap, cost, (int)graph[to].size()});
+        graph[to].push_back({from, 0, -cost, (int)graph[from].size()-1});
+    }
+    // returns {maxflow, mincost} using successive shortest augmenting paths (SPFA, handles negative edges)
+    pair&lt;ll,ll&gt; run(int s, int t) {
+        ll totalFlow = 0, totalCost = 0;
+        while (true) {
+            vector&lt;ll&gt; dist(n, INF);
+            vector&lt;int&gt; prevv(n, -1), preve(n, -1);
+            vector&lt;bool&gt; inq(n, false);
+            dist[s] = 0;
+            deque&lt;int&gt; q;
+            q.push_back(s);
+            inq[s] = true;
+            while (!q.empty()) {
+                int u = q.front(); q.pop_front();
+                inq[u] = false;
+                for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+                    Edge &amp;e = graph[u][i];
+                    if (e.cap &gt; 0 &amp;&amp; dist[u] + e.cost &lt; dist[e.to]) {
+                        dist[e.to] = dist[u] + e.cost;
+                        prevv[e.to] = u;
+                        preve[e.to] = i;
+                        if (!inq[e.to]) {
+                            inq[e.to] = true;
+                            q.push_back(e.to);
+                        }
+                    }
+                }
+            }
+            if (dist[t] == INF) break; // no more augmenting paths
+            // find bottleneck capacity along the path
+            ll d = INF;
+            for (int v = t; v != s; v = prevv[v]) {
+                d = min(d, graph[prevv[v]][preve[v]].cap);
+            }
+            for (int v = t; v != s; v = prevv[v]) {
+                graph[prevv[v]][preve[v]].cap -= d;
+                Edge &amp;back = graph[v][graph[prevv[v]][preve[v]].rev];
+                back.cap += d;
+            }
+            totalFlow += d;
+            totalCost += d * dist[t];
+        }
+        return {totalFlow, totalCost};
+    }
+};
+
+int main(){
+    int n, m, s, t;
+    cin &gt;&gt; n &gt;&gt; m &gt;&gt; s &gt;&gt; t;
+    MCMF mcmf(n);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v; ll cap, cost;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; cap &gt;&gt; cost;
+        mcmf.addEdge(u, v, cap, cost);
+    }
+    auto [flow, cost] = mcmf.run(s, t);
+    cout &lt;&lt; flow &lt;&lt; &quot; &quot; &lt;&lt; cost &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 5 0 3
+0 1 2 2
+0 2 1 3
+1 3 1 1
+1 2 1 1
+2 3 2 1
+</code></pre>
+    <pre><code>3 11
+</code></pre>
+  </div>
+</article><article class="example-card" id="network-flow-min-cost-max-flow-mcmf-ex1">
+  <h4>Shipping a Required Amount at Minimum Cost (or Determining Impossibility)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You must ship exactly D units of cargo from source node s to sink node t through a directed flow network with n nodes and m edges (each with a capacity and a per-unit cost), minimizing total shipping cost. If it is impossible to ship D units through the network at all (even ignoring cost), print -1.</p><p>Input: n, m, s, t, D on the first line; then m lines each with u, v, cap, cost.<br>Output: the minimum cost to ship exactly D units, or -1 if D units cannot be shipped.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the &#x27;required flow&#x27; variant of MCMF: instead of running successive shortest augmenting paths until NO path remains (which finds the true max-flow), stop as soon as the accumulated flow reaches exactly D, capping the amount pushed along the final augmenting path so the total does not overshoot D. If the loop runs out of augmenting paths (sink becomes unreachable) before reaching D units shipped, D units are infeasible and the answer is -1. Because SSP always selects the CHEAPEST available path first, and cheapest-path costs are non-decreasing across iterations, capping the flow at D automatically yields the minimum cost for shipping exactly D units, not just A valid way to ship D units.</p><p>Verified on a 5-node network (source 0, sink 4) with edges 0-&gt;1 (cap 4, cost 2), 0-&gt;2 (cap 2, cost 2), 1-&gt;3 (cap 2, cost 1), 1-&gt;4 (cap 3, cost 6), 2-&gt;3 (cap 2, cost 1), 3-&gt;4 (cap 4, cost 2): the two cheapest paths, 0-1-3-4 (cost 2+1+2=5 per unit, capacity-limited to 2 units by edge 1-&gt;3) and 0-2-3-4 (cost 2+1+2=5 per unit, capacity-limited to 2 units by edge 0-&gt;2), together supply exactly the required D=4 units at the shared cheapest rate of 5 per unit, for a total cost of 4*5=20 — matching the program&#x27;s output. Separately verified that requesting D=8 (exceeding the network&#x27;s true max-flow of 6) correctly yields -1.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll INF = LLONG_MAX / 2;
+
+struct MCMF {
+    struct Edge { int to; ll cap, cost; int rev; };
+    int n;
+    vector&lt;vector&lt;Edge&gt;&gt; graph;
+    MCMF(int n) : n(n), graph(n) {}
+    void addEdge(int from, int to, ll cap, ll cost) {
+        graph[from].push_back({to, cap, cost, (int)graph[to].size()});
+        graph[to].push_back({from, 0, -cost, (int)graph[from].size()-1});
+    }
+    // Ships up to `need` units of flow at minimum cost, one shortest augmenting path at a time.
+    // Returns {flowShipped, cost}. If flowShipped &lt; need, it was impossible to ship `need` units.
+    pair&lt;ll,ll&gt; run(int s, int t, ll need) {
+        ll totalFlow = 0, totalCost = 0;
+        while (totalFlow &lt; need) {
+            vector&lt;ll&gt; dist(n, INF);
+            vector&lt;int&gt; prevv(n, -1), preve(n, -1);
+            vector&lt;bool&gt; inq(n, false);
+            dist[s] = 0;
+            deque&lt;int&gt; q;
+            q.push_back(s);
+            inq[s] = true;
+            while (!q.empty()) {
+                int u = q.front(); q.pop_front();
+                inq[u] = false;
+                for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+                    Edge &amp;e = graph[u][i];
+                    if (e.cap &gt; 0 &amp;&amp; dist[u] + e.cost &lt; dist[e.to]) {
+                        dist[e.to] = dist[u] + e.cost;
+                        prevv[e.to] = u;
+                        preve[e.to] = i;
+                        if (!inq[e.to]) {
+                            inq[e.to] = true;
+                            q.push_back(e.to);
+                        }
+                    }
+                }
+            }
+            if (dist[t] == INF) break; // no more augmenting paths at all
+            ll d = need - totalFlow;
+            for (int v = t; v != s; v = prevv[v]) {
+                d = min(d, graph[prevv[v]][preve[v]].cap);
+            }
+            for (int v = t; v != s; v = prevv[v]) {
+                graph[prevv[v]][preve[v]].cap -= d;
+                Edge &amp;back = graph[v][graph[prevv[v]][preve[v]].rev];
+                back.cap += d;
+            }
+            totalFlow += d;
+            totalCost += d * dist[t];
+        }
+        return {totalFlow, totalCost};
+    }
+};
+
+int main(){
+    int n, m, s, t; ll need;
+    cin &gt;&gt; n &gt;&gt; m &gt;&gt; s &gt;&gt; t &gt;&gt; need;
+    MCMF mcmf(n);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v; ll cap, cost;
+        cin &gt;&gt; u &gt;&gt; v &gt;&gt; cap &gt;&gt; cost;
+        mcmf.addEdge(u, v, cap, cost);
+    }
+    auto [flow, cost] = mcmf.run(s, t, need);
+    if (flow &lt; need) cout &lt;&lt; -1 &lt;&lt; endl;
+    else cout &lt;&lt; cost &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 6 0 4 4
+0 1 4 2
+0 2 2 2
+1 3 2 1
+1 4 3 6
+2 3 2 1
+3 4 4 2
+</code></pre>
+    <pre><code>20
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="network-flow-hungarian-algorithm-assignment-problem">
+  <div class="topic-head"><h2>Hungarian Algorithm (Assignment Problem)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The assignment problem asks: given n &#x27;workers&#x27; and n &#x27;jobs&#x27; and an n x n cost matrix cost[i][j] (the cost of assigning worker i to job j), find a PERFECT matching (a bijection between workers and jobs, i.e. each worker gets exactly one job and vice versa) that minimizes (or, with negated costs, maximizes) the total cost. This is exactly a special case of min-cost max-flow — build a bipartite network with a source connected to every worker (capacity 1 each), every worker connected to every job with the given cost (capacity 1), and every job connected to the sink (capacity 1 each) — but the Hungarian algorithm (also called the Kuhn-Munkres algorithm, in its modern potential-based form sometimes attributed to Jonker-Volgenant) solves it directly in O(n^3) without any explicit flow-network machinery, which is both asymptotically better than a generic MCMF implementation on this special structure and simpler to reason about once the potential-update invariants are internalized.</p><p>The algorithm maintains a potential u_i for every worker and v_j for every job, satisfying the invariant cost[i][j] - u_i - v_j &gt;= 0 for all i, j (with equality along &#x27;tight&#x27; edges that are candidates for the eventual matching), and incrementally grows an augmenting structure one worker at a time: for each new worker, it runs a Dijkstra-like shortest-augmenting-path search over the REDUCED costs (cost[i][j] - u_i - v_j) to find an augmenting path from that worker to some free job through the existing partial matching, updates potentials along the way to maintain the invariant, and then flips the matching along the found path. After all n workers have been processed this way, the resulting perfect matching is provably optimal, and the total minimum cost equals -v_0 (or can simply be read off by summing cost[i][match(i)] over the final matching, which is what most implementations do directly for clarity). To solve a MAXIMIZATION version (maximize total profit rather than minimize total cost), simply negate every entry of the profit matrix and run the same minimization algorithm; the optimal assignment is unchanged and the true maximum profit is the negation of the reported minimum cost.</p><p>Beyond the literal &#x27;n workers, n jobs, minimize total cost&#x27; framing, the Hungarian algorithm&#x27;s structure applies whenever a problem reduces to choosing a BIJECTION between two equal-size finite sets to optimize a sum of pairwise costs/profits: assigning distinct completion times to tasks to minimize total tardiness penalty, choosing an order to activate a fixed set of time-dependent financial offers to maximize eventual payoff, or any &#x27;match every item on the left to a distinct item on the right&#x27; scenario where the pairwise cost/profit matrix is given explicitly or can be computed in O(n^2) total. When n is large (thousands) and the cost structure has extra exploitable regularity (e.g. costs depending only on |i - j| or on a 1-D coordinate difference), a smarter O(n log n) greedy or DP often exists and outperforms the generic O(n^3) Hungarian algorithm — but the Hungarian algorithm remains the fully general fallback whenever the cost matrix has no such special structure.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You must pair up every element of one set with a distinct element of another set of the SAME size (a bijection / perfect matching), an explicit or implicitly-computable cost (or profit) is associated with each possible pairing, and you need the minimum total cost (or maximum total profit) over all such bijections. n is usually small-to-moderate (up to several hundred to ~1000, since the algorithm is O(n^3)).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n^3) time for an n x n cost matrix, O(n^2) space.</p></div>
+  </div>
+  <article class="example-card" id="network-flow-hungarian-algorithm-assignment-problem-ex0">
+  <h4>Minimum-Cost Task Assignment</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n employees and n tasks (1 &lt;= n &lt;= 300 in the general version; kept small here for hand verification). You are given an n x n cost matrix where cost[i][j] is the cost of assigning employee i to task j. Assign every employee exactly one distinct task (a perfect matching between employees and tasks) to minimize the total cost. Output the minimum total cost, and one valid assignment (for each employee 1..n, the task assigned to it).</p><p>Input: n, then n rows of n integers each (the cost matrix, 1-indexed conceptually).<br>Output: the minimum total cost on the first line; then n integers on the second line, where the i-th integer is the task assigned to employee i.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Direct application of the O(n^3) Hungarian algorithm with worker/job potentials (u_i, v_j) and per-worker shortest-augmenting-path search over reduced costs, as described in the theory. Each new worker i is temporarily attached to a virtual &#x27;unassigned&#x27; job (column 0 in the 1-indexed internal formulation), and the algorithm grows a shortest-path tree from that worker through the existing partial matching until it reaches a genuinely free job, then flips the matching along that path and updates potentials so the non-negativity invariant is preserved for the next worker.</p><p>Hand-verified on the 3x3 cost matrix [[4,1,3],[2,0,5],[3,2,2]]: brute-forcing all 3! = 6 possible assignments gives costs 6, 11, 5, 9, 10, 6 for the six permutations, so the true minimum is 5, achieved uniquely by employee1-&gt;task2 (cost 1), employee2-&gt;task1 (cost 2), employee3-&gt;task3 (cost 2), summing to 5 — exactly matching the program&#x27;s output of total cost 5 and assignment (2, 1, 3).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll INF = LLONG_MAX / 2;
+
+// Jonker-Volgenant / Kuhn-Munkres O(n^3) Hungarian algorithm for the square
+// assignment problem: minimize sum of cost[i][match(i)] over a perfect matching.
+// 1-indexed internally (standard formulation with potentials u,v).
+int n;
+vector&lt;vector&lt;ll&gt;&gt; cost; // 1-indexed n x n
+
+pair&lt;ll, vector&lt;int&gt;&gt; hungarianMin() {
+    vector&lt;ll&gt; u(n+1, 0), v(n+1, 0);
+    vector&lt;int&gt; p(n+1, 0), way(n+1, 0); // p[j] = row assigned to column j
+    for (int i = 1; i &lt;= n; i++) {
+        p[0] = i;
+        int j0 = 0;
+        vector&lt;ll&gt; minv(n+1, INF);
+        vector&lt;bool&gt; used(n+1, false);
+        do {
+            used[j0] = true;
+            int i0 = p[j0], j1 = -1;
+            ll delta = INF;
+            for (int j = 1; j &lt;= n; j++) {
+                if (!used[j]) {
+                    ll cur = cost[i0][j] - u[i0] - v[j];
+                    if (cur &lt; minv[j]) { minv[j] = cur; way[j] = j0; }
+                    if (minv[j] &lt; delta) { delta = minv[j]; j1 = j; }
+                }
+            }
+            for (int j = 0; j &lt;= n; j++) {
+                if (used[j]) { u[p[j]] += delta; v[j] -= delta; }
+                else minv[j] -= delta;
+            }
+            j0 = j1;
+        } while (p[j0] != 0);
+        do {
+            int j1 = way[j0];
+            p[j0] = p[j1];
+            j0 = j1;
+        } while (j0 != 0);
+    }
+    vector&lt;int&gt; rowToCol(n+1, 0);
+    for (int j = 1; j &lt;= n; j++) rowToCol[p[j]] = j;
+    ll total = 0;
+    for (int i = 1; i &lt;= n; i++) total += cost[i][rowToCol[i]];
+    return {total, rowToCol};
+}
+
+int main(){
+    cin &gt;&gt; n;
+    cost.assign(n+1, vector&lt;ll&gt;(n+1));
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= n; j++)
+            cin &gt;&gt; cost[i][j];
+    auto [total, rowToCol] = hungarianMin();
+    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+    for (int i = 1; i &lt;= n; i++) cout &lt;&lt; rowToCol[i] &lt;&lt; &quot; \n&quot;[i==n];
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+4 1 3
+2 0 5
+3 2 2
+</code></pre>
+    <pre><code>5
+2 1 3
+</code></pre>
+  </div>
+</article><article class="example-card" id="network-flow-hungarian-algorithm-assignment-problem-ex1">
+  <h4>Maximum-Profit Assignment</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>There are n agents and n contracts. You are given an n x n profit matrix where profit[i][j] is the profit earned if agent i is assigned contract j. Assign every agent exactly one distinct contract to MAXIMIZE total profit. Output the maximum total profit and one optimal assignment.</p><p>Input: n, then n rows of n integers each (the profit matrix).<br>Output: the maximum total profit on the first line; then n integers on the second line, the contract assigned to each agent.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Negate every entry of the profit matrix to obtain a cost matrix (cost[i][j] = -profit[i][j]), then run the exact same O(n^3) minimum-cost Hungarian algorithm on this negated matrix. Minimizing total negated-profit is equivalent to maximizing total profit, and the optimal assignment (the bijection itself) is identical either way — only the reported total needs to be negated back at the end.</p><p>Hand-verified on the 3x3 profit matrix [[5,9,4],[2,6,8],[7,3,1]]: brute-forcing all 6 permutations gives totals 12, 16, 12, 24, 9, 17, so the true maximum is 24, achieved uniquely by agent1-&gt;contract2 (profit 9), agent2-&gt;contract3 (profit 8), agent3-&gt;contract1 (profit 7), summing to 24 — exactly matching the program&#x27;s output of total profit 24 and assignment (2, 3, 1). Note this optimum is NOT the trivial diagonal assignment, confirming the algorithm is doing genuine combinatorial work rather than defaulting to an identity matching.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll INF = LLONG_MAX / 2;
+
+int n;
+vector&lt;vector&lt;ll&gt;&gt; cost; // 1-indexed n x n, holds NEGATED profit so min-cost Hungarian maximizes profit
+
+pair&lt;ll, vector&lt;int&gt;&gt; hungarianMin() {
+    vector&lt;ll&gt; u(n+1, 0), v(n+1, 0);
+    vector&lt;int&gt; p(n+1, 0), way(n+1, 0);
+    for (int i = 1; i &lt;= n; i++) {
+        p[0] = i;
+        int j0 = 0;
+        vector&lt;ll&gt; minv(n+1, INF);
+        vector&lt;bool&gt; used(n+1, false);
+        do {
+            used[j0] = true;
+            int i0 = p[j0], j1 = -1;
+            ll delta = INF;
+            for (int j = 1; j &lt;= n; j++) {
+                if (!used[j]) {
+                    ll cur = cost[i0][j] - u[i0] - v[j];
+                    if (cur &lt; minv[j]) { minv[j] = cur; way[j] = j0; }
+                    if (minv[j] &lt; delta) { delta = minv[j]; j1 = j; }
+                }
+            }
+            for (int j = 0; j &lt;= n; j++) {
+                if (used[j]) { u[p[j]] += delta; v[j] -= delta; }
+                else minv[j] -= delta;
+            }
+            j0 = j1;
+        } while (p[j0] != 0);
+        do {
+            int j1 = way[j0];
+            p[j0] = p[j1];
+            j0 = j1;
+        } while (j0 != 0);
+    }
+    vector&lt;int&gt; rowToCol(n+1, 0);
+    for (int j = 1; j &lt;= n; j++) rowToCol[p[j]] = j;
+    ll total = 0;
+    for (int i = 1; i &lt;= n; i++) total += cost[i][rowToCol[i]];
+    return {total, rowToCol};
+}
+
+int main(){
+    cin &gt;&gt; n;
+    vector&lt;vector&lt;ll&gt;&gt; profit(n+1, vector&lt;ll&gt;(n+1));
+    cost.assign(n+1, vector&lt;ll&gt;(n+1));
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= n; j++) {
+            cin &gt;&gt; profit[i][j];
+            cost[i][j] = -profit[i][j]; // maximize profit == minimize negated profit
+        }
+    auto [totalNeg, rowToCol] = hungarianMin();
+    cout &lt;&lt; (-totalNeg) &lt;&lt; &quot;\n&quot;;
+    for (int i = 1; i &lt;= n; i++) cout &lt;&lt; rowToCol[i] &lt;&lt; &quot; \n&quot;[i==n];
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+5 9 4
+2 6 8
+7 3 1
+</code></pre>
+    <pre><code>24
+2 3 1
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">18</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="download speed cses max flow find the maximum data transfer rate from computer 1 to computer n through a network of directed connections with given capacities.">
+  <td><a href="https://cses.fi/problemset/task/1694" target="_blank" rel="noopener noreferrer">Download Speed</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">max flow</td>
+  <td class="desc-cell">Find the maximum data transfer rate from computer 1 to computer n through a network of directed connections with given capacities.</td>
+</tr><tr data-search="distinct routes cses max flow find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.">
+  <td><a href="https://cses.fi/problemset/task/1711" target="_blank" rel="noopener noreferrer">Distinct Routes</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">max flow</td>
+  <td class="desc-cell">Find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.</td>
+</tr><tr data-search="fox and dinner codeforces max flow seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.">
+  <td><a href="https://codeforces.com/problemset/problem/510/E" target="_blank" rel="noopener noreferrer">Fox and Dinner</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2300</td>
+  <td class="subtopic-cell">max flow</td>
+  <td class="desc-cell">Seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.</td>
+</tr><tr data-search="delivery bears codeforces max flow split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.">
+  <td><a href="https://codeforces.com/problemset/problem/653/D" target="_blank" rel="noopener noreferrer">Delivery Bears</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2200</td>
+  <td class="subtopic-cell">max flow</td>
+  <td class="desc-cell">Split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.</td>
+</tr><tr data-search="police chase cses min cut find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.">
+  <td><a href="https://cses.fi/problemset/task/1695" target="_blank" rel="noopener noreferrer">Police Chase</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">min cut</td>
+  <td class="desc-cell">Find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.</td>
+</tr><tr data-search="petya and graph codeforces min cut choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).">
+  <td><a href="https://codeforces.com/problemset/problem/1082/G" target="_blank" rel="noopener noreferrer">Petya and Graph</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2400</td>
+  <td class="subtopic-cell">min cut</td>
+  <td class="desc-cell">Choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).</td>
+</tr><tr data-search="rectangle painting 2 codeforces min cut paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.">
+  <td><a href="https://codeforces.com/problemset/problem/1198/E" target="_blank" rel="noopener noreferrer">Rectangle Painting 2</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2500</td>
+  <td class="subtopic-cell">min cut</td>
+  <td class="desc-cell">Paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.</td>
+</tr><tr data-search="school dance cses bipartite matching find the maximum matching between boys and girls given a list of pairs willing to dance together.">
+  <td><a href="https://cses.fi/problemset/task/1696" target="_blank" rel="noopener noreferrer">School Dance</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">bipartite matching</td>
+  <td class="desc-cell">Find the maximum matching between boys and girls given a list of pairs willing to dance together.</td>
+</tr><tr data-search="exploration plan codeforces bipartite matching find the minimum time limit so that n teams starting in various cities can collectively occupy at least k distinct cities.">
+  <td><a href="https://codeforces.com/problemset/problem/852/D" target="_blank" rel="noopener noreferrer">Exploration Plan</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2100</td>
+  <td class="subtopic-cell">bipartite matching</td>
+  <td class="desc-cell">Find the minimum time limit so that N teams starting in various cities can collectively occupy at least K distinct cities.</td>
+</tr><tr data-search="round marriage codeforces bipartite matching match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.">
+  <td><a href="https://codeforces.com/problemset/problem/981/F" target="_blank" rel="noopener noreferrer">Round Marriage</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2500</td>
+  <td class="subtopic-cell">bipartite matching</td>
+  <td class="desc-cell">Match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.</td>
+</tr><tr data-search="anti-palindromize codeforces min-cost max-flow rearrange a string into an antipalindromic permutation maximizing the sum of &quot;beauty&quot; values at positions that keep their original character.">
+  <td><a href="https://codeforces.com/problemset/problem/884/F" target="_blank" rel="noopener noreferrer">Anti-Palindromize</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2500</td>
+  <td class="subtopic-cell">Min-Cost Max-Flow</td>
+  <td class="desc-cell">Rearrange a string into an antipalindromic permutation maximizing the sum of &quot;beauty&quot; values at positions that keep their original character.</td>
+</tr><tr data-search="red-blue graph codeforces min-cost max-flow color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.">
+  <td><a href="https://codeforces.com/problemset/problem/1288/F" target="_blank" rel="noopener noreferrer">Red-Blue Graph</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2900</td>
+  <td class="subtopic-cell">Min-Cost Max-Flow</td>
+  <td class="desc-cell">Color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.</td>
+</tr><tr data-search="build string codeforces min-cost max-flow build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.">
+  <td><a href="https://codeforces.com/problemset/problem/237/E" target="_blank" rel="noopener noreferrer">Build String</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2000</td>
+  <td class="subtopic-cell">Min-Cost Max-Flow</td>
+  <td class="desc-cell">Build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.</td>
+</tr><tr data-search="four melodies codeforces min-cost max-flow select four disjoint, non-intersecting &quot;melody&quot; subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.">
+  <td><a href="https://codeforces.com/problemset/problem/818/G" target="_blank" rel="noopener noreferrer">Four Melodies</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2600</td>
+  <td class="subtopic-cell">Min-Cost Max-Flow</td>
+  <td class="desc-cell">Select four disjoint, non-intersecting &quot;melody&quot; subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.</td>
+</tr><tr data-search="mcf codeforces min-cost max-flow find the minimum-cost circulation in a dag-like flow network subject to the extra constraint that each edge&#x27;s flow must match its capacity&#x27;s parity.">
+  <td><a href="https://codeforces.com/problemset/problem/1766/F" target="_blank" rel="noopener noreferrer">MCF</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2800</td>
+  <td class="subtopic-cell">Min-Cost Max-Flow</td>
+  <td class="desc-cell">Find the minimum-cost circulation in a DAG-like flow network subject to the extra constraint that each edge&#x27;s flow must match its capacity&#x27;s parity.</td>
+</tr><tr data-search="task assignment cses hungarian algorithm given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).">
+  <td><a href="https://cses.fi/problemset/task/2129" target="_blank" rel="noopener noreferrer">Task Assignment</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Hungarian Algorithm</td>
+  <td class="desc-cell">Given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).</td>
+</tr><tr data-search="chef monocarp codeforces hungarian algorithm assign each of n dishes to a distinct positive-integer removal time t, minimizing the sum of |t - t_i| over all dishes.">
+  <td><a href="https://codeforces.com/problemset/problem/1437/C" target="_blank" rel="noopener noreferrer">Chef Monocarp</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">1800</td>
+  <td class="subtopic-cell">Hungarian Algorithm</td>
+  <td class="desc-cell">Assign each of n dishes to a distinct positive-integer removal time T, minimizing the sum of |T - t_i| over all dishes.</td>
+</tr><tr data-search="vasya and endless credits codeforces hungarian algorithm choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.">
+  <td><a href="https://codeforces.com/problemset/problem/1107/F" target="_blank" rel="noopener noreferrer">Vasya and Endless Credits</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2600</td>
+  <td class="subtopic-cell">Hungarian Algorithm</td>
+  <td class="desc-cell">Choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

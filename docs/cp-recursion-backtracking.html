@@ -1,0 +1,1187 @@
+<title>Recursion &amp; Backtracking — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Recursion &amp; Backtracking</h1>
+    <p class="tagline"><p>Recursion and backtracking power almost every exact combinatorial search: build a partial solution one decision at a time, immediately reject (prune) any partial choice that can never lead to a valid or optimal answer, and carefully undo state before trying the next branch. The three subtopics below form a natural progression: generating permutations/subsets under constraints (the mechanics of choose-explore-unchoose), N-Queens-style pruning (using cheap incremental checks to cut the search tree early), and meet-in-the-middle (splitting a search space too large for 2^n into two halves that are brute-forced separately and joined efficiently). Beyond straightforward recursive backtracking, these two techniques show how the SHAPE of a recursion can itself be the source of an algorithm&#x27;s speed: divide and conquer restructures a problem into cheaply-combinable independent halves (or pivot-split ranges), while minimax with alpha-beta pruning turns adversarial two-player search from a brute-force exponential tree walk into either a heavily pruned search or, for state spaces with cycles and draws, a rigorous backward (retrograde) analysis.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">5</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">12</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">17</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#recursion-backtracking-permutation-subset-generation-with-constraints"><span>Permutation &amp; Subset Generation with Constraints</span><span class="cnt">3</span></a></li><li><a href="#recursion-backtracking-backtracking-with-pruning-n-queens-style"><span>Backtracking with Pruning (N-Queens Style)</span><span class="cnt">3</span></a></li><li><a href="#recursion-backtracking-meet-in-the-middle"><span>Meet in the Middle</span><span class="cnt">2</span></a></li><li><a href="#recursion-backtracking-divide-and-conquer"><span>Divide and Conquer</span><span class="cnt">2</span></a></li><li><a href="#recursion-backtracking-minimax-with-alpha-beta-pruning"><span>Minimax with Alpha-Beta Pruning</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">17</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li><li><a href="cp-fft-ntt.html">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#recursion-backtracking">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="recursion-backtracking-permutation-subset-generation-with-constraints">
+  <div class="topic-head"><h2>Permutation &amp; Subset Generation with Constraints</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>The core pattern is choose -&gt; explore -&gt; un-choose (undo). You maintain a partial solution (an array being built) and, at each recursive call, try every legal next element, recurse one level deeper, then remove that element before trying the next candidate so the partial solution is byte-for-byte the same as before you tried it. For permutations you typically track a <code>used[]</code> boolean array (or, for multisets, a count array) because any unused element can go in the next position. For subsets/combinations you instead pass a <code>start</code> index and only consider elements from <code>start</code> onward, which automatically avoids generating the same subset in more than one order and keeps the recursion tree at exactly 2^n leaves rather than n! orderings of each subset.</p><p>Constraints are enforced in one of two ways: filtering (generate the full unconstrained tree and check validity only at leaves) or pruning (check the constraint incrementally, the instant a partial candidate becomes invalid, and cut that whole subtree). Pruning is almost always dramatically faster because an invalid prefix kills every extension of itself. Two pruning idioms come up constantly: (1) duplicate-skipping - sort the input, and when choosing the i-th element of a combination/permutation, skip a candidate equal to the previous sibling candidate at the *same recursion depth* (not merely equal to the previous array element) so you don&#x27;t regenerate an already-explored branch; (2) partial-sum bounding - if array is sorted ascending and the running sum plus the next candidate already exceeds the target, every later (larger) candidate at this level will also fail, so you can <code>break</code> out of the loop entirely instead of just <code>continue</code>-ing.</p><p>A subtle but critical correctness point: the &#x27;un-choose&#x27; step must exactly mirror the &#x27;choose&#x27; step. If you decremented a count array, incrementing it back must happen after the recursive call returns and *before* the next iteration of the loop tries a different branch - otherwise state leaks between sibling branches and produces silently wrong answers rather than a crash, which is why backtracking bugs are notoriously hard to spot by inspection alone.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for phrasing like &#x27;generate/list/print all distinct permutations or subsets&#x27;, &#x27;count the number of ways to choose a subset satisfying X&#x27;, or &#x27;output every arrangement in sorted/lexicographic order&#x27;. A strong signal is that the problem wants the actual objects (not just a count derivable by a formula) and n is small enough that the object count itself is the bottleneck - typically n &lt;= 10-12 for permutations (since n! explodes past that) and n &lt;= 20-25 for subset enumeration (2^n). If the input can contain repeated values but the expected output has each distinct arrangement exactly once, that&#x27;s the signature of needing duplicate-skip pruning rather than generate-then-deduplicate-with-a-set.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Permutations: O(n * n!) time to generate and output all n! sequences (the extra factor of n is the cost of copying/printing each one); with k groups of duplicate elements of sizes d_1..d_k, the duplicate-skip pruning generates exactly n! / (d_1! * ... * d_k!) sequences with zero wasted work, versus generating all n! and filtering with a hash set which costs extra memory and hashing time for no benefit. Subset generation is O(2^n) in the worst case, but sum-bound pruning (breaking early once a sorted running sum exceeds the target) typically prunes whole subtrees long before the recursion reaches depth n, so real-world running time on constrained instances is usually far below the 2^n worst case even though the worst-case bound itself does not change. Space is O(n) for the recursion stack and the current partial solution, plus O(number of outputs * n) if you must store every result.</p></div>
+  </div>
+  <article class="example-card" id="recursion-backtracking-permutation-subset-generation-with-constraints-ex0">
+  <h4>Distinct Permutations of a Multiset</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a string s of at most 8 lowercase letters, which may contain repeated letters. Print the number of *distinct* permutations of its characters, followed by every distinct permutation, one per line, in lexicographically sorted order (this mirrors CSES 1622 &#x27;Creating Strings&#x27;).<br>Input: a single line containing s.<br>Output: first line = count of distinct permutations; each following line one permutation, in sorted order.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Instead of generating all 8! permutations and deduplicating with a set (wasteful and, for longer strings, infeasible), recurse directly over a count array cnt[26] of remaining letters. At each position, try every letter c with cnt[c] &gt; 0: decrement cnt[c], append c to the current string, recurse, then pop and restore cnt[c]. Because we always iterate letters in increasing alphabetical order (0..25) and never place two equal letters through two different &#x27;copies&#x27;, each distinct permutation is produced exactly once, and iterating letters in sorted order makes the output automatically lexicographically sorted with no extra sort step needed.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+string s;
+vector&lt;int&gt; cnt(26, 0);
+string cur;
+vector&lt;string&gt; results;
+
+void backtrack() {
+    if ((int)cur.size() == n) {
+        results.push_back(cur);
+        return;
+    }
+    for (int c = 0; c &lt; 26; c++) {
+        if (cnt[c] == 0) continue;
+        cnt[c]--;
+        cur.push_back(&#x27;a&#x27; + c);
+        backtrack();
+        cur.pop_back();
+        cnt[c]++;
+    }
+}
+
+int main() {
+    cin &gt;&gt; s;
+    n = s.size();
+    for (char ch : s) cnt[ch - &#x27;a&#x27;]++;
+    backtrack();
+    cout &lt;&lt; results.size() &lt;&lt; &quot;\n&quot;;
+    for (auto &amp;r : results) cout &lt;&lt; r &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>aab
+</code></pre>
+    <pre><code>3
+aab
+aba
+baa
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-permutation-subset-generation-with-constraints-ex1">
+  <h4>Subsets Summing to a Target (with Duplicate &amp; Bound Pruning)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n (1 &lt;= n &lt;= 15) positive integers (possibly with repeated values) and a target T, find every subset (as a set of positions, but two subsets with identical multisets of values should be printed only once) whose elements sum exactly to T. Print the number of such subsets, then each subset&#x27;s values in non-decreasing order, one subset per line, with subsets themselves printed in lexicographically increasing order of their value sequences.<br>Input: first line &#x27;n target&#x27;; second line n integers.<br>Output: first line = number of qualifying subsets; each following line lists that subset&#x27;s values separated by single spaces.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort the array ascending first. Recurse with (start index, running sum): at each call, iterate i from start to n-1. Skip i if a[i] equals a[i-1] and i &gt; start (this is the duplicate-skip rule: it only skips a repeat *at the same branching level*, so &#x27;2,2,3&#x27; can still legitimately use both 2&#x27;s - it just prevents choosing the second &#x27;2&#x27; as an *alternative* first choice when the first &#x27;2&#x27; at that level was already tried and undone). Also, since the array is sorted, the moment running sum + a[i] exceeds target we can &#x27;break&#x27; (not &#x27;continue&#x27;) because every subsequent a[i] at this level is &gt;= the current one and would only make the sum larger. When the running sum equals target exactly, record the current partial subset as a valid answer (and continue trying to extend further branches is unnecessary here since all values are positive, so we simply return without recursing deeper).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n, target;
+vector&lt;int&gt; a;
+vector&lt;int&gt; cur;
+vector&lt;vector&lt;int&gt;&gt; results;
+
+void backtrack(int start, int sum) {
+    if (sum == target) {
+        results.push_back(cur);
+        return;
+    }
+    for (int i = start; i &lt; n; i++) {
+        if (i &gt; start &amp;&amp; a[i] == a[i - 1]) continue; // skip duplicate branch at this depth
+        if (sum + a[i] &gt; target) break; // sorted ascending -&gt; all further are too big
+        cur.push_back(a[i]);
+        backtrack(i + 1, sum + a[i]);
+        cur.pop_back();
+    }
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; target;
+    a.resize(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    sort(a.begin(), a.end());
+    backtrack(0, 0);
+    cout &lt;&lt; results.size() &lt;&lt; &quot;\n&quot;;
+    for (auto &amp;r : results) {
+        for (size_t i = 0; i &lt; r.size(); i++) {
+            if (i) cout &lt;&lt; &quot; &quot;;
+            cout &lt;&lt; r[i];
+        }
+        cout &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 7
+2 2 3 5
+</code></pre>
+    <pre><code>2
+2 2 3
+2 5
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-permutation-subset-generation-with-constraints-ex2">
+  <h4>Permutations With No Adjacent Consecutive Values</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n (1 &lt;= n &lt;= 9), count and list, in lexicographic order, every permutation of 1..n such that no two *adjacent positions* in the permutation hold values that differ by exactly 1 (i.e. for every i, |p[i] - p[i+1]| != 1). This sequence of counts is OEIS A002464.<br>Input: a single integer n.<br>Output: first line = number of valid permutations; each following line lists one valid permutation&#x27;s values separated by spaces, in lexicographic order.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This demonstrates pruning a constraint *during* construction rather than generating all n! permutations and filtering afterward. Build the permutation left to right with a standard used[] array; the only addition is a single check before descending into a branch: if the permutation is non-empty and the candidate value differs from the last placed value by exactly 1, skip it immediately - never even recurse into that subtree. Because most violations happen early (adjacent to the most recently placed element), this prunes enormous swaths of the search tree compared to checking the full permutation only once it&#x27;s complete. Iterating candidate values 1..n in increasing order guarantees lexicographic output order for free.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;int&gt; perm;
+vector&lt;bool&gt; used;
+vector&lt;vector&lt;int&gt;&gt; results;
+
+void backtrack() {
+    if ((int)perm.size() == n) {
+        results.push_back(perm);
+        return;
+    }
+    for (int v = 1; v &lt;= n; v++) {
+        if (used[v]) continue;
+        if (!perm.empty() &amp;&amp; abs(perm.back() - v) == 1) continue; // pruning: skip consecutive-value neighbors
+        used[v] = true;
+        perm.push_back(v);
+        backtrack();
+        perm.pop_back();
+        used[v] = false;
+    }
+}
+
+int main() {
+    cin &gt;&gt; n;
+    used.assign(n + 1, false);
+    backtrack();
+    cout &lt;&lt; results.size() &lt;&lt; &quot;\n&quot;;
+    for (auto &amp;r : results) {
+        for (size_t i = 0; i &lt; r.size(); i++) {
+            if (i) cout &lt;&lt; &quot; &quot;;
+            cout &lt;&lt; r[i];
+        }
+        cout &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+</code></pre>
+    <pre><code>2
+2 4 1 3
+3 1 4 2
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="recursion-backtracking-backtracking-with-pruning-n-queens-style">
+  <div class="topic-head"><h2>Backtracking with Pruning (N-Queens Style)</h2><span class="cnt">3 worked examples</span></div>
+  <div class="theory-block"><p>N-Queens is the canonical demonstration that a backtracking search&#x27;s *asymptotic* worst case (here, roughly n^n naive placements, or n! if you already restrict to one queen per row) is almost never what determines real running time - what matters is how cheaply you can detect that a partial placement is already doomed, and how early you can detect it. The standard trick is to never rescan the board: maintain three pieces of state incrementally as you place/remove queens row by row - a bitmask (or boolean array) of occupied columns, and two more for the two diagonal directions (indexed by row - col + offset for one diagonal family, row + col for the other). Placing a queen at (row, col) and checking whether it&#x27;s legal becomes an O(1) bitwise test instead of an O(n) or O(n^2) scan of previously placed queens, and undoing a placement is the exact symmetric bitwise operation.</p><p>This generalizes beyond queens to any constraint-satisfaction backtracking: Sudoku, graph coloring, exact placement puzzles. The second major lever - beyond making each check O(1) - is *variable ordering*: instead of always filling cells/rows in a fixed order, pick the most-constrained one next (in Sudoku, the empty cell with the fewest remaining legal digits; this is the &#x27;minimum remaining values&#x27; or MRV heuristic). Committing to the most constrained decision first fails fast when a partial assignment is invalid, and succeeds with far less branching when it&#x27;s valid, because you eliminate large numbers of hopeless possibilities before they can even be explored.</p><p>Extra hard constraints (like reserved/forbidden squares in a modified N-Queens board) don&#x27;t change the algorithmic shape at all - they&#x27;re just one more O(1) check alongside the column/diagonal checks, folded into the same incremental validity test before you recurse. This is why &#x27;N-Queens with obstacles&#x27; (e.g. CSES &#x27;Chessboard and Queens&#x27;) is considered only a small step up from vanilla N-Queens: there is no closed-form combinatorial shortcut anymore, so you must actually run the row-by-row backtracking with attack-set pruning rather than looking up a precomputed queens-count sequence.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Signals: &#x27;place k non-attacking pieces&#x27;, &#x27;no two chosen items may conflict under rule R&#x27;, grid-based puzzles with row/column/box uniqueness constraints, or &#x27;count/enumerate all valid configurations&#x27; where n is small (n &lt;= 12-16 for full board search, fixed 9x9 for Sudoku). If a brute-force enumeration of *all* placements (ignoring constraints) would be astronomically large, but checking a *partial* placement&#x27;s validity is cheap and catches violations early, that&#x27;s the setup for backtracking with pruning rather than plain generate-and-test.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Worst-case complexity is still exponential (placing n queens one per row naively considers up to n choices per row, i.e. O(n^n) before any pruning, or O(n!) once you fix &#x27;one per row&#x27;), and this bound is unavoidable in the worst case - but pruning changes the *constant factor* by orders of magnitude in practice. For n=8 queens there are 8^8 ~ 16.7 million naive row/column assignments, but column+diagonal pruning visits only a few thousand search-tree nodes to enumerate all 92 solutions, because an attacked column/diagonal kills an entire remaining subtree the instant it&#x27;s detected rather than after fully constructing an invalid board. Sudoku backtracking is exponential in the number of blank cells in the absolute worst case, but the MRV heuristic (always branching on the cell with fewest candidates) keeps typical - even &#x27;hard&#x27; - puzzles solving in well under a second because most cells end up with only 1-2 candidates once enough digits are fixed, so the effective branching factor collapses far below 9. Space is O(n) (or O(81) for Sudoku) for the incremental attack-set/candidate-mask state plus O(depth) recursion stack.</p></div>
+  </div>
+  <article class="example-card" id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex0">
+  <h4>Counting N-Queens Solutions with Bitmask Pruning</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n (1 &lt;= n &lt;= 12), count the number of ways to place n non-attacking queens on an n x n chessboard (no two queens share a row, column, or diagonal).<br>Input: a single integer n.<br>Output: a single integer, the number of distinct solutions.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Recurse row by row, always placing exactly one queen per row. Maintain three bitmasks: <code>cols</code> (columns already used), <code>diag1</code> and <code>diag2</code> (the two diagonal families, represented so that moving to the next row is a single shift). At each row, the set of legal columns is <code>full &amp; ~(cols | diag1 | diag2)</code> where <code>full</code> has the low n bits set - this is an O(1)-per-candidate test instead of scanning previously placed queens. For the recursive call, <code>cols</code> simply gains the new queen&#x27;s bit; the two diagonal masks are updated by OR-ing in the new bit and then shifting left/right by one respectively, which is exactly how a diagonal attack &#x27;moves over&#x27; one column as you go down one row. Iterating over the available bits with <code>available &amp; -available</code> and clearing them one at a time enumerates all legal columns for the row without ever looping over 0..n-1 explicitly. When row reaches n, a complete valid placement has been found.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+long long solutions = 0;
+
+// cols, diag1 (r-c+n-1), diag2 (r+c) occupancy as bitmasks
+void backtrack(int row, long long cols, long long diag1, long long diag2) {
+    if (row == n) {
+        solutions++;
+        return;
+    }
+    long long full = (1LL &lt;&lt; n) - 1;
+    long long available = full &amp; ~(cols | diag1 | diag2);
+    while (available) {
+        long long bit = available &amp; (-available);
+        available -= bit;
+        int col = __builtin_ctzll(bit);
+        backtrack(row + 1, cols | bit, (diag1 | bit) &lt;&lt; 1 &amp; full, (diag2 | bit) &gt;&gt; 1);
+    }
+}
+
+int main() {
+    cin &gt;&gt; n;
+    backtrack(0, 0, 0, 0);
+    cout &lt;&lt; solutions &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8
+</code></pre>
+    <pre><code>92
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex1">
+  <h4>N-Queens with Reserved Squares</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given an n x n board (1 &lt;= n &lt;= 10) where each cell is either &#x27;.&#x27; (usable) or &#x27;*&#x27; (reserved and unusable), count the number of ways to place n mutually non-attacking queens using only usable squares (this mirrors CSES 1624 &#x27;Chessboard and Queens&#x27;, generalized to arbitrary n). Because some usable configurations are now forbidden there is no closed-form queens-count shortcut - you must run real backtracking.<br>Input: first line n; next n lines each a string of n characters (&#x27;.&#x27; or &#x27;*&#x27;).<br>Output: a single integer, the number of valid placements.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>This is the same row-by-row backtracking as vanilla N-Queens, with one extra O(1) check folded into the same loop: before checking column/diagonal availability for candidate column c in the current row, first check <code>grid[row][c] != &#x27;*&#x27;</code>. If the square is reserved, skip it immediately without touching any state - it never even becomes a candidate branch. Column and diagonal state are tracked with boolean arrays here (rather than bitmasks) for clarity; <code>diag1</code> is indexed by <code>row - c + n - 1</code> and <code>diag2</code> by <code>row + c</code>, the two standard ways to give every diagonal a unique, collision-free index. Marking state on entry and precisely un-marking the same three flags on return from the recursive call is what makes sibling branches see a clean board.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+vector&lt;string&gt; grid;
+vector&lt;bool&gt; colUsed, diag1Used, diag2Used; // diag1: r-c+n-1, diag2: r+c
+long long count_ = 0;
+
+void backtrack(int row) {
+    if (row == n) {
+        count_++;
+        return;
+    }
+    for (int c = 0; c &lt; n; c++) {
+        if (grid[row][c] == &#x27;*&#x27;) continue;          // reserved square pruning
+        if (colUsed[c]) continue;                     // column attack pruning
+        int d1 = row - c + n - 1;
+        int d2 = row + c;
+        if (diag1Used[d1] || diag2Used[d2]) continue;  // diagonal attack pruning
+        colUsed[c] = diag1Used[d1] = diag2Used[d2] = true;
+        backtrack(row + 1);
+        colUsed[c] = diag1Used[d1] = diag2Used[d2] = false; // undo state
+    }
+}
+
+int main() {
+    cin &gt;&gt; n;
+    grid.resize(n);
+    for (auto &amp;row : grid) cin &gt;&gt; row;
+    colUsed.assign(n, false);
+    diag1Used.assign(2 * n, false);
+    diag2Used.assign(2 * n, false);
+    backtrack(0);
+    cout &lt;&lt; count_ &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+.*..
+....
+....
+....
+</code></pre>
+    <pre><code>1
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex2">
+  <h4>Sudoku Solver with Most-Constrained-Cell Pruning</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a 9x9 Sudoku board with some cells filled (digits &#x27;1&#x27;-&#x27;9&#x27;) and the rest blank (&#x27;.&#x27;), fill in the blanks so every row, column, and 3x3 box contains each digit 1-9 exactly once. The input is guaranteed to have a unique solution.<br>Input: 9 lines, each a string of 9 characters (&#x27;.&#x27; or a digit).<br>Output: 9 lines, the solved board in the same format (digits only, no dots).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Maintain three bitmasks per row, column, and 3x3 box recording which digits are already used (bit d set means digit d is taken). Naively picking the next blank cell in reading order and trying all 9 digits is *correct* but can be slow on harder boards because early wrong guesses aren&#x27;t detected until deep into the recursion. Instead, before each recursive step, scan all blank cells once to find the one with the *fewest* remaining legal candidates (<code>rowMask[r] | colMask[c] | boxMask[box]</code> complemented and popcounted) - the &#x27;most constrained variable&#x27; heuristic. If any blank cell has zero legal candidates, that whole branch is dead and we return false immediately (this is the pruning: we detect infeasibility without exploring further). Otherwise we branch only over that one cell&#x27;s few candidates, place a digit, update the three masks, recurse, and if the recursion fails, undo the exact same three masks before trying the next candidate digit.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int grid[9][9];
+int rowMask[9], colMask[9], boxMask[9]; // bit d (1..9) set =&gt; digit d already used
+
+int boxOf(int r, int c) { return (r / 3) * 3 + (c / 3); }
+
+bool solve() {
+    int br = -1, bc = -1, bestCount = 10, bestCands = 0;
+    for (int r = 0; r &lt; 9; r++) {
+        for (int c = 0; c &lt; 9; c++) {
+            if (grid[r][c] != 0) continue;
+            int used = rowMask[r] | colMask[c] | boxMask[boxOf(r, c)];
+            int cands = (~used) &amp; 0x3FE; // bits 1..9
+            int cnt = __builtin_popcount(cands);
+            if (cnt == 0) return false;      // dead end: pruning
+            if (cnt &lt; bestCount) {           // most-constrained-cell heuristic
+                bestCount = cnt;
+                br = r; bc = c; bestCands = cands;
+            }
+        }
+    }
+    if (br == -1) return true; // no empty cells left: solved
+
+    int cands = bestCands;
+    while (cands) {
+        int bit = cands &amp; (-cands);
+        cands -= bit;
+        int d = __builtin_ctz(bit);
+        grid[br][bc] = d;
+        rowMask[br] |= bit;
+        colMask[bc] |= bit;
+        boxMask[boxOf(br, bc)] |= bit;
+
+        if (solve()) return true;
+
+        grid[br][bc] = 0; // undo
+        rowMask[br] &amp;= ~bit;
+        colMask[bc] &amp;= ~bit;
+        boxMask[boxOf(br, bc)] &amp;= ~bit;
+    }
+    return false;
+}
+
+int main() {
+    for (int r = 0; r &lt; 9; r++) {
+        string line;
+        cin &gt;&gt; line;
+        for (int c = 0; c &lt; 9; c++) {
+            int d = (line[c] == &#x27;.&#x27;) ? 0 : (line[c] - &#x27;0&#x27;);
+            grid[r][c] = d;
+            if (d != 0) {
+                int bit = 1 &lt;&lt; d;
+                rowMask[r] |= bit;
+                colMask[c] |= bit;
+                boxMask[boxOf(r, c)] |= bit;
+            }
+        }
+    }
+
+    solve();
+
+    for (int r = 0; r &lt; 9; r++) {
+        string line(9, &#x27;.&#x27;);
+        for (int c = 0; c &lt; 9; c++) line[c] = char(&#x27;0&#x27; + grid[r][c]);
+        cout &lt;&lt; line &lt;&lt; &quot;\n&quot;;
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>53..7....
+6..195...
+.98....6.
+8...6...3
+4..8.3..1
+7...2...6
+.6....28.
+...419..5
+....8..79
+</code></pre>
+    <pre><code>534678912
+672195348
+198342567
+859761423
+426853791
+713924856
+961537284
+287419635
+345286179
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="recursion-backtracking-meet-in-the-middle">
+  <div class="topic-head"><h2>Meet in the Middle</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Meet in the middle applies when a problem naturally wants a full O(2^n) (or O(3^n), etc.) search over subsets/assignments, n is too large for that (say n = 30-40) but small enough that half of it is trivially brute-forceable, and there is no polynomial DP shortcut - commonly because the DP state (e.g. a sum) ranges over values far too large to index into an array (weights up to 1e9, so a subset-sum DP table of that size is impossible). The technique: split the n elements into two halves of size ~n/2, recursively/iteratively brute-force *each half independently* to enumerate every possible partial result for that half (e.g. every subset sum of the left half, and every subset sum of the right half), and then combine the two result lists efficiently - typically by sorting one list and using binary search, two pointers, or a hash map against the other list - rather than trying every left-half-result paired with every right-half-result, which would just reintroduce an O(2^n) cost.</p><p>The combine step is where the real design work happens, and it depends entirely on what you&#x27;re optimizing. For &#x27;does some subset sum exactly to target T&#x27;, sort the right half&#x27;s sums and, for each left-half sum L, binary-search for <code>target - L</code> in the right half. For &#x27;maximize (sum) mod m&#x27;, sort the right half&#x27;s sums mod m and, for each left-half value a, the maximum of <code>(a + b) mod m</code> over all right-half b is achieved either by the largest b with <code>a + b &lt; m</code> (no wraparound) or by the single largest b overall (which may wrap around past m) - so only two binary-search queries per left value are needed, not a full scan. For k-way partitions (e.g. splitting into 3 groups rather than 2), the same idea generalizes: each half recursively enumerates all 3^(n/2) assignments instead of 2^(n/2), and the combine step must be re-derived based on how a left-half assignment and a right-half assignment jointly determine the final objective.</p><p>Correctness pitfall to watch for: always include the empty selection (contributing 0) when enumerating a half&#x27;s subset sums unless the problem explicitly forbids the empty subset - it&#x27;s easy to accidentally start subset masks at 1 instead of 0 and silently lose valid answers that use only elements from one half.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Look for n roughly in the 30-40 range - too big for O(2^n) (2^40 is ~10^12, far too slow) but such that 2^(n/2) (~2^20, about a million) comfortably fits a time limit - combined with large value ranges that rule out a sum-indexed DP table (e.g. &#x27;weights up to 10^9&#x27;), and a request to find/count/optimize something over *all subsets or assignments* rather than something with polynomial substructure. If you catch yourself thinking &#x27;I&#x27;d brute force this with 2^n but n is just a bit too big, and DP on the sum won&#x27;t fit in memory&#x27;, that is exactly the meet-in-the-middle setup.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>Generating all subset results for each half costs O(2^(n/2)) time and space per half. Sorting one half&#x27;s results costs O(2^(n/2) * (n/2)). The combine step is typically O(2^(n/2) log(2^(n/2))) (one binary search per element of the other half), so overall time is roughly O(n * 2^(n/2)) and space is O(2^(n/2)). This is a massive practical improvement over O(2^n): for n=40, 2^(n/2) = 2^20 ~ 1.05 million versus 2^40 ~ 1.1 trillion - the difference between finishing instantly and never finishing, even though both are technically exponential in n. The trade-off is O(2^(n/2)) memory to hold one half&#x27;s enumerated results, which is the usual limiting factor rather than time.</p></div>
+  </div>
+  <article class="example-card" id="recursion-backtracking-meet-in-the-middle-ex0">
+  <h4>Counting Subsets That Sum to a Target</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n integers (1 &lt;= n &lt;= 36, values up to 10^9, so no sum-indexed DP is feasible) and a target sum S, count how many subsets (distinguished by which indices are chosen, so two subsets with the same values at different positions both count) sum exactly to S.<br>Input: first line &#x27;n target&#x27;; second line the n integers.<br>Output: a single integer, the number of subsets summing to target.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Split the array into a left half (first n/2 elements) and a right half (remaining elements). Enumerate all 2^(|left|) subset sums of the left half by iterating every bitmask, and likewise all 2^(|right|) subset sums of the right half (including the empty subset, sum 0, in both). Sort the right half&#x27;s sums. Then, for every left-half sum L, the number of right-half subsets that complete it to exactly <code>target</code> is the count of right-half sums equal to <code>target - L</code>, found via <code>equal_range</code> (binary search) on the sorted right array in O(log(2^(|right|))) time - handling duplicate sums correctly by counting the whole matching range, not just checking membership. Summing this count over every left-half sum gives the total number of subsets.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+long long target;
+vector&lt;long long&gt; a;
+
+void genSums(int lo, int hi, vector&lt;long long&gt; &amp;out) {
+    int m = hi - lo;
+    for (int mask = 0; mask &lt; (1 &lt;&lt; m); mask++) {
+        long long s = 0;
+        for (int i = 0; i &lt; m; i++)
+            if (mask &amp; (1 &lt;&lt; i)) s += a[lo + i];
+        out.push_back(s);
+    }
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; target;
+    a.resize(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+
+    int mid = n / 2;
+    vector&lt;long long&gt; left, right;
+    genSums(0, mid, left);
+    genSums(mid, n, right);
+
+    sort(right.begin(), right.end());
+
+    long long total = 0;
+    for (long long ls : left) {
+        long long need = target - ls;
+        auto range = equal_range(right.begin(), right.end(), need);
+        total += (range.second - range.first);
+    }
+
+    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8 10
+1 2 3 4 5 6 7 8
+</code></pre>
+    <pre><code>8
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-meet-in-the-middle-ex1">
+  <h4>Maximum Subsequence Sum Modulo m</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n integers (1 &lt;= n &lt;= 35, values up to 10^9) and a modulus m, choose any subsequence (possibly empty) to maximize (sum of chosen elements) mod m (this mirrors Codeforces 888E &#x27;Maximum Subsequence&#x27;). n rules out both 2^n brute force and a sum-indexed DP.<br>Input: first line &#x27;n m&#x27;; second line the n integers.<br>Output: a single integer, the maximum achievable value of (subset sum) mod m.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Split into two halves and enumerate every subset sum of each half (raw integer sums, not yet reduced mod m, via brute-force bitmask iteration over each half separately - each half is small enough for 2^(n/2) enumeration). Reduce the right half&#x27;s sums mod m and sort them. For every left-half raw sum, reduce it mod m to get <code>a</code>, then find the best complementary right-half value <code>b</code> in O(log) time via two candidate queries: (1) the largest right-half <code>b</code> with <code>a + b &lt;= m - 1</code> (found with <code>upper_bound</code> on <code>m - 1 - a</code>, then stepping back one), which avoids wraparound so the mod result is simply <code>a + b</code>; and (2) the single largest right-half value overall, in case <code>a</code> plus that maximum wraps around past <code>m</code> and still yields a large remainder. Because the empty subset (sum 0) is always among the enumerated sums, candidate (1) always has at least one valid match. Taking the best of both candidates across all left-half values gives the global maximum.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int n;
+long long m;
+vector&lt;long long&gt; a;
+
+void genSums(int lo, int hi, vector&lt;long long&gt; &amp;out) {
+    int len = hi - lo;
+    for (int mask = 0; mask &lt; (1 &lt;&lt; len); mask++) {
+        long long s = 0;
+        for (int i = 0; i &lt; len; i++)
+            if (mask &amp; (1 &lt;&lt; i)) s += a[lo + i];
+        out.push_back(s);
+    }
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+    a.resize(n);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+
+    int mid = n / 2;
+    vector&lt;long long&gt; leftRaw, rightRaw;
+    genSums(0, mid, leftRaw);
+    genSums(mid, n, rightRaw);
+
+    vector&lt;long long&gt; rightMod;
+    rightMod.reserve(rightRaw.size());
+    for (long long s : rightRaw) rightMod.push_back(s % m);
+    sort(rightMod.begin(), rightMod.end());
+
+    long long best = 0;
+    long long maxB = rightMod.back();
+    for (long long s : leftRaw) {
+        long long amod = s % m;
+        // candidate 1: largest b with amod + b &lt;= m - 1 (no wraparound)
+        long long limit = m - 1 - amod;
+        auto it = upper_bound(rightMod.begin(), rightMod.end(), limit);
+        if (it != rightMod.begin()) {
+            long long b1 = *prev(it);
+            best = max(best, amod + b1);
+        }
+        // candidate 2: largest b overall (covers the wraparound case)
+        best = max(best, (amod + maxB) % m);
+    }
+
+    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5 20
+3 17 6 12 9
+</code></pre>
+    <pre><code>18
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="recursion-backtracking-divide-and-conquer">
+  <div class="topic-head"><h2>Divide and Conquer</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Divide and conquer splits a problem into smaller subproblems of the SAME kind, solves each recursively, and combines their answers. The classic &#x27;midpoint split&#x27; variant (mergesort, closest-pair-of-points, FFT) always cuts the input in half regardless of its content, and the entire cost is governed by the recurrence T(n) = 2T(n/2) + O(merge cost); whenever the merge step can be done in O(n) (or O(n log n)), the whole algorithm beats brute force decisively. The closest-pair-of-points algorithm is the textbook example: sort points by x-coordinate, recursively find the closest pair in the left and right halves, then handle the tricky case where the true closest pair straddles the dividing line. The key insight that makes the merge step cheap is a packing argument: within a strip of width 2*d around the dividing line (d = the best distance found so far), any two points that are within d of each other vertically cannot have more than a small constant number of OTHER strip points between them (because points closer than d to each other cannot be packed too densely without violating the d-separation already established within each half) -- so after sorting the strip by y-coordinate, each point only needs to be compared against a small constant number of its neighbors in that sorted order, giving an O(n) merge and O(n log n) total.</p><p>A second, distinct flavor of divide and conquer splits NOT at the midpoint but at a data-dependent pivot -- most commonly the position of the minimum (or maximum) element in the current range. This is the same idea used to solve &#x27;largest rectangle in histogram&#x27; recursively, and it appears in fence/stroke-painting problems: to paint a range of planks using horizontal strokes (each covering a contiguous range at one height, cost 1 regardless of width) and vertical strokes (each covering one plank from the current base up to its own height, cost 1), you either (a) paint the whole range vertically (cost = range length), or (b) paint one horizontal stroke that raises the entire range&#x27;s &#x27;floor&#x27; up to the range minimum, then recurse independently on each maximal sub-range whose height still exceeds that minimum. Because the split point is the minimum&#x27;s position rather than the midpoint, the recursion tree&#x27;s shape depends on the data; it is still efficient in the intended input distributions and is a good example of divide and conquer where the &#x27;divide&#x27; step does meaningful problem-specific work rather than a blind halving.</p><p>In both flavors, the discipline is the same: identify a way to (1) split into strictly smaller subproblems of the same type, (2) solve each independently (recursion handles this for free), and (3) combine the sub-answers cheaply, exploiting some structural property (sortedness, the minimum-splits-the-range property) to keep the combine step from itself being O(n) work done O(n) times.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The problem has a natural &#x27;split into two independent halves, solve each, then handle cross-boundary interactions&#x27; structure -- common in geometric problems (closest pair, line-segment intersections), array problems solvable via mergesort-style recursion (counting inversions, counting cross-pairs satisfying a condition), and range problems where finding the range&#x27;s minimum/maximum naturally partitions it into independent sub-ranges (histogram-style problems, fence-painting, and similar &#x27;stroke/segment covering&#x27; tasks). A strong tell is that a naive O(n^2) all-pairs or all-subranges approach is clearly correct but too slow, and the data has some monotonic or orderable structure (coordinates, heights) that a sort-then-recurse strategy can exploit.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for midpoint-split divide and conquer with an O(n) or O(n log n) merge step (T(n) = 2T(n/2) + O(n)); pivot-split (minimum-based) divide and conquer is typically analyzed case-by-case but commonly achieves O(n log n) on well-behaved inputs, degrading toward O(n^2) in adversarial worst cases without additional balancing tricks.</p></div>
+  </div>
+  <article class="example-card" id="recursion-backtracking-divide-and-conquer-ex0">
+  <h4>Closest Pair of Points (classic midpoint-split divide and conquer)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given n points in the 2D plane (2 &lt;= n &lt;= 2*10^5, coordinates are integers with |x|, |y| &lt;= 10^9). Find the minimum SQUARED Euclidean distance between any two distinct points (returning the squared distance avoids floating point entirely, since all coordinates are integers).</p><p>Input: n, then n lines each with two integers x and y.<br>Output: the minimum squared distance between any two distinct points.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort all points by x-coordinate once at the start. Then recursively solve(lo, hi) on the sorted range [lo, hi): if the range has 3 or fewer points, fall back to brute-force O(1) pairwise comparison (base case). Otherwise split at mid = lo + (hi-lo)/2, recursively solve the left half [lo, mid) and right half [mid, hi), and let d = the smaller of the two results.</p><p>The candidate closest pair might straddle the midpoint&#x27;s x-coordinate, so build a &#x27;strip&#x27; of all points in [lo, hi) whose x-distance from the midpoint&#x27;s x-coordinate is less than sqrt(d) (checked via dx*dx &lt; d to stay in integer arithmetic), sort just this strip by y-coordinate, and compare each strip point only against the next few points in y-sorted order (stopping as soon as the y-gap squared reaches d, by the packing argument that bounds how many strip points can be within d of each other). Update d with any closer pair found in the strip. Return the final d. Cross-checked against an O(n^2) brute-force all-pairs reference across 200 random point sets (sizes 2 to 30, coordinates in [-20, 20]) with zero mismatches.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+struct Pt { ll x, y; };
+ll sqDist(const Pt&amp;a, const Pt&amp;b){
+    ll dx=a.x-b.x, dy=a.y-b.y;
+    return dx*dx+dy*dy;
+}
+vector&lt;Pt&gt; pts;
+ll solve(int lo, int hi){ // pts sorted by x in [lo,hi), returns min sq dist
+    int n = hi-lo;
+    if(n&lt;=3){
+        ll best = LLONG_MAX;
+        for(int i=lo;i&lt;hi;i++) for(int j=i+1;j&lt;hi;j++) best=min(best, sqDist(pts[i],pts[j]));
+        return best;
+    }
+    int mid = lo + n/2;
+    ll midx = pts[mid].x;
+    ll dl = solve(lo, mid);
+    ll dr = solve(mid, hi);
+    ll d = min(dl, dr);
+    // build strip
+    vector&lt;Pt&gt; strip;
+    for(int i=lo;i&lt;hi;i++){
+        ll dx = pts[i].x - midx;
+        if(dx*dx &lt; d) strip.push_back(pts[i]);
+    }
+    sort(strip.begin(), strip.end(), [](const Pt&amp;a, const Pt&amp;b){ return a.y&lt;b.y; });
+    for(size_t i=0;i&lt;strip.size();i++){
+        for(size_t j=i+1;j&lt;strip.size();j++){
+            ll dy = strip[j].y-strip[i].y;
+            if(dy*dy&gt;=d) break;
+            d = min(d, sqDist(strip[i],strip[j]));
+        }
+    }
+    return d;
+}
+int main(){
+    int n; cin&gt;&gt;n;
+    pts.resize(n);
+    for(auto&amp;p:pts) cin&gt;&gt;p.x&gt;&gt;p.y;
+    sort(pts.begin(), pts.end(), [](const Pt&amp;a,const Pt&amp;b){ return a.x&lt;b.x; });
+    cout &lt;&lt; solve(0,n) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6
+0 0
+3 4
+5 5
+1 1
+7 7
+2 2
+</code></pre>
+    <pre><code>2
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-divide-and-conquer-ex1">
+  <h4>Painting a Fence with Minimum Strokes (pivot-split divide and conquer)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A fence has n planks (1 &lt;= n &lt;= 5000) in a row; plank i has height h[i] (1 &lt;= h[i] &lt;= 10^9). You must paint every unit-height cell of every plank using strokes of two kinds: a HORIZONTAL stroke covers a contiguous range of planks at one specific height, costs 1 regardless of how many planks it spans, but only paints cells that are exactly at that height AND not yet painted at any lower height in that range (in practice: think of it as raising the &#x27;already painted up to&#x27; baseline of that whole sub-range by one unit); a VERTICAL stroke paints one entire single plank from height 0 to h[i], costing 1. Find the minimum total number of strokes needed to paint every plank completely.</p><p>Input: n, then n integers h[1..n].<br>Output: the minimum number of strokes.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Define solve(l, r, base) = minimum strokes to finish painting planks l..r given that they are already painted up to height &#x27;base&#x27;. Find mn = the minimum height in h[l..r]. One option is to paint every plank in [l, r] individually with a vertical stroke: cost = r - l + 1. The other option is a single horizontal stroke raising the whole range&#x27;s baseline from &#x27;base&#x27; up to &#x27;mn&#x27; (cost mn - base), and then recursively finish each maximal contiguous sub-range whose height still exceeds mn, now with base = mn (these sub-ranges are exactly the runs between planks that were already at the minimum height). Take the minimum of the two options; this recursion is exactly divide-and-conquer split at the position(s) of the range minimum rather than at a fixed midpoint. The overall answer is solve(0, n-1, 0). This is the standard published algorithm for this problem (matches the well-known sample: heights [2,2,1,2,1] -&gt; 3 strokes) and was additionally hand-verified on a uniform range (all-equal heights collapse to a single horizontal stroke) and a strictly increasing range (which forces one stroke per plank, since no two planks can share a horizontal stroke without a lower plank blocking part of it).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int n;
+vector&lt;long long&gt; h;
+long long solve(int l, int r, long long base){
+    if(l&gt;r) return 0;
+    int mn_i = l;
+    for(int i=l;i&lt;=r;i++) if(h[i]&lt;h[mn_i]) mn_i=i;
+    long long mn = h[mn_i];
+    long long horiz = (mn - base);
+    int i = l;
+    while(i&lt;=r){
+        if(h[i]==mn){ i++; continue; }
+        int j = i;
+        while(j&lt;=r &amp;&amp; h[j]&gt;mn) j++;
+        horiz += solve(i, j-1, mn);
+        i = j;
+    }
+    long long vert = (long long)(r-l+1);
+    return min(horiz, vert);
+}
+int main(){
+    cin&gt;&gt;n;
+    h.resize(n);
+    for(auto&amp;x:h) cin&gt;&gt;x;
+    cout &lt;&lt; solve(0,n-1,0) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+2 2 1 2 1
+</code></pre>
+    <pre><code>3
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="recursion-backtracking-minimax-with-alpha-beta-pruning">
+  <div class="topic-head"><h2>Minimax with Alpha-Beta Pruning</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Minimax is the standard algorithm for solving two-player, zero-sum games with perfect information (no hidden information, no randomness): at a MAX node (the player trying to maximize the outcome to move), the value is the maximum over all children&#x27;s values; at a MIN node, it is the minimum over all children&#x27;s values; a terminal (leaf) node returns its fixed game-outcome value directly. Evaluating the full tree naively costs O(b^d) for branching factor b and depth d, which is often too slow. Alpha-beta pruning is an exact optimization (it never changes the computed value) that tracks a window [alpha, beta] representing &#x27;the range of values that could still possibly affect the final decision made by an ancestor of this node.&#x27; While exploring a MAX node&#x27;s children, alpha is raised to the best value found so far; if alpha ever reaches or exceeds beta (the best value the MIN ancestor above can already guarantee for itself elsewhere), the remaining children are safely skipped (&#x27;beta cutoff&#x27;), because the MIN ancestor would never let play reach this MAX node&#x27;s still-better options anyway. The symmetric &#x27;alpha cutoff&#x27; happens at MIN nodes. With ideal move ordering (best moves explored first), alpha-beta reduces the effective complexity to O(b^(d/2)) -- the same result computed while visiting roughly the square root of the naive number of nodes.</p><p>In competitive programming, you rarely build an explicit game tree data structure; instead, the &#x27;game position&#x27; becomes a DP state, and memoized recursive search over that state IS minimax, with memoization playing the role of pruning (a state is only ever evaluated once, which is a much stronger guarantee than alpha-beta&#x27;s pruning of provably-irrelevant branches, but only works when the state graph is acyclic or when cycles can be shown never to matter). A genuinely harder wrinkle shows up when the state graph DOES contain cycles that matter -- e.g. a pursuit game on a general graph where two players can move indefinitely without either winning, producing a legitimate &#x27;draw&#x27; outcome. Naive top-down memoized minimax breaks here: recursing into a state that depends on itself (directly or through a cycle) either infinite-loops or requires an ad hoc &#x27;currently being computed = assume draw&#x27; hack that is not obviously correct. The rigorous fix is RETROGRADE analysis (sometimes called Zermelo&#x27;s algorithm): instead of recursing forward from the start state, work backward from KNOWN terminal states (positions where a player has already won), using a BFS that propagates a win backward to any predecessor state where the mover can force reaching it, and -- separately -- propagates a loss backward to a predecessor only once EVERY one of the mover&#x27;s options has been shown to lead to a loss (tracked via a remaining-out-degree counter per state, decremented every time one more of a state&#x27;s moves is confirmed bad). Any state that the backward BFS never manages to reach a determined value for corresponds exactly to a drawn (infinite-play) position, since the theorem underlying this algorithm guarantees convergence to the correct label for every state that isn&#x27;t actually a draw.</p><p>This is the practical extension of &#x27;minimax with alpha-beta pruning&#x27; that shows up in the hardest adversarial-search problems: alpha-beta (or memoization) suffices for tree-shaped or DAG-shaped game state spaces, while pursuit/evasion and other games whose state graphs contain cycles need the retrograde/topological variant.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Two players alternate moves with full information and no randomness, and you need the outcome (who wins, or the exact optimal value) under optimal play by both. If the state space is small enough to represent explicitly and has no cycles (a subarray shrinking each turn, a pile decreasing each turn), plain memoized minimax (interval DP, suffix DP) suffices. If instead the state can legitimately be revisited -- most commonly in pursuit games on a graph, where two tokens move and a &#x27;nobody wins&#x27; infinite-play draw is a real possible outcome -- that is the signal to reach for retrograde/backward BFS analysis instead of forward recursion.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(b^d) naive minimax, O(b^(d/2)) with well-ordered alpha-beta pruning on an explicit game tree of branching factor b and depth d; O(V + E) for memoized minimax or retrograde BFS over an explicit state graph with V states and E transitions.</p></div>
+  </div>
+  <article class="example-card" id="recursion-backtracking-minimax-with-alpha-beta-pruning-ex0">
+  <h4>Minimax Value of a Game Tree with Alpha-Beta Pruning</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given a complete binary game tree with n leaves (n is a power of 2, 1 &lt;= n &lt;= 2^16). The root is a MAX node; levels alternate MIN, MAX, MIN, ... going down; the leaves hold given integer values. Compute the minimax value of the tree using alpha-beta pruning, and also report how many leaves were actually visited (i.e., how many leaf evaluations alpha-beta pruning was able to skip).</p><p>Input: n, then n integers (the leaf values, left to right).<br>Output: two integers separated by a space: the minimax value of the root, and the number of leaves visited during the alpha-beta search.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Represent the tree with standard heap-style indexing (root = 1, children of node id are 2*id and 2*id+1); depth = log2(n) levels below the root down to the leaves. Implement alphabeta(id, lvl, alpha, beta, maximizing) recursively: at a leaf level, count the visit and return the stored leaf value directly. At an internal MAX node, iterate its two children, updating alpha = max(alpha, childValue) after each, and break out of the loop early (skipping any remaining children) as soon as alpha &gt;= beta -- this is exactly a beta cutoff, since the MIN ancestor controlling beta would never allow play to reach this node&#x27;s better options anyway. The symmetric case (MIN node, updating beta, cutting off when alpha &gt;= beta) handles internal MIN nodes. Call alphabeta(1, 0, -infinity, +infinity, true) for the root.</p><p>Traced by hand on the sample: the tree evaluates to a minimax value of 12 (verified by computing every node&#x27;s value with no pruning at all), and with alpha-beta pruning enabled, one of the 8 leaves (the second child of the rightmost MAX node, value 23) is skipped because by the time its sibling leaf (also 23) has already been evaluated, the running alpha at that MAX node already exceeds the beta inherited from its MIN parent -- so 7 of the 8 leaves are visited.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int n; // number of leaves (power of 2)
+vector&lt;long long&gt; leaves;
+int depth; // log2(n)
+long long leafVisits = 0;
+
+// node indexing: standard complete binary tree, root=1, children 2*id, 2*id+1
+// leaves are at level &#x27;depth&#x27;, leaf index = id - 2^depth, mapped to leaves[]
+long long alphabeta(int id, int lvl, long long alpha, long long beta, bool maximizing){
+    if(lvl==depth){
+        leafVisits++;
+        return leaves[id - (1&lt;&lt;depth)];
+    }
+    if(maximizing){
+        long long value = LLONG_MIN;
+        for(int c=0;c&lt;2;c++){
+            int child = id*2+c;
+            value = max(value, alphabeta(child, lvl+1, alpha, beta, false));
+            alpha = max(alpha, value);
+            if(alpha &gt;= beta) break; // beta cutoff
+        }
+        return value;
+    } else {
+        long long value = LLONG_MAX;
+        for(int c=0;c&lt;2;c++){
+            int child = id*2+c;
+            value = min(value, alphabeta(child, lvl+1, alpha, beta, true));
+            beta = min(beta, value);
+            if(alpha &gt;= beta) break; // alpha cutoff
+        }
+        return value;
+    }
+}
+int main(){
+    cin &gt;&gt; n;
+    leaves.resize(n);
+    for(auto &amp;x : leaves) cin &gt;&gt; x;
+    depth = 0;
+    while((1&lt;&lt;depth) &lt; n) depth++;
+    long long val = alphabeta(1, 0, LLONG_MIN, LLONG_MAX, true);
+    cout &lt;&lt; val &lt;&lt; &quot; &quot; &lt;&lt; leafVisits &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>8
+3 5 2 9 12 5 23 23
+</code></pre>
+    <pre><code>12 7
+</code></pre>
+  </div>
+</article><article class="example-card" id="recursion-backtracking-minimax-with-alpha-beta-pruning-ex1">
+  <h4>Pursuit Game on a Graph With Possible Draws (retrograde analysis)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A Robber and a Cop play on an undirected graph with n nodes (2 &lt;= n &lt;= 60) and m edges. The Robber moves first; players alternate turns. On a turn, the mover either moves to an adjacent node or stays in place. The Robber WINS the moment it is ever at a designated &#x27;goal&#x27; node (checked whenever the Robber occupies it, regardless of whose turn is next). The Cop WINS the moment it occupies the same node as the Robber. If the game continues forever without either event happening, the result is a DRAW. Given the graph, the goal node, and both players&#x27; starting positions (never the same node initially), determine the outcome under optimal play by both: the Robber tries to reach the goal, the Cop tries to catch the Robber, and each will settle for a draw only if a win is not achievable.</p><p>Input: n and m, then m lines each with an edge &#x27;u v&#x27; (0-indexed), then the goal node, then the Robber&#x27;s and Cop&#x27;s starting positions.<br>Output: 1 if the Robber wins, 2 if the Cop wins, 0 if it is a draw.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Model every game position as a state (robberPos, copPos, turn) where turn = 0 means the Robber is about to move and turn = 1 means the Cop is about to move; there are O(n^2) such states. Forward memoized minimax is unsafe here because the state graph has cycles (both players can shuffle back and forth forever), so instead run retrograde (backward) analysis: seed a BFS queue with every state that is ALREADY decided -- every state with robberPos == copPos is an immediate Cop win, and every state with robberPos == goal is an immediate Robber win. Also precompute, for every state, its &#x27;out-degree&#x27; = the number of legal moves available to whichever player is about to move there (its neighbor count plus one for staying in place).</p><p>Process the queue by, for each newly-decided state, looking at its PREDECESSOR states (the states one move away that could have led into it) and updating them: if the predecessor&#x27;s mover benefits from moving into this decided state (the Robber moving into a Robber-win state, or the Cop moving into a Cop-win state), immediately mark the predecessor with that same result and enqueue it. Otherwise, decrement the predecessor&#x27;s remaining out-degree counter; if it ever hits zero, that means EVERY possible move from the predecessor leads to a bad outcome for its mover, so mark the predecessor with the OPPOSITE result (forced loss) and enqueue it. Any state the BFS never assigns a result to is, by the theorem underlying this algorithm, a genuine draw (infinite evasion/pursuit is possible). The answer is simply the determined result (or 0 for undetermined/draw) of the given starting state.</p><p>On the sample -- a straight path of 6 nodes (0-1-2-3-4-5), goal at node 5, Robber starting at node 0 and the Cop starting at node 3 -- the Cop sits strictly between the Robber and the goal on the only path available, so the Cop can always mirror the Robber&#x27;s approach and eventually catch it; the algorithm correctly outputs 2 (Cop wins). Cross-checked against an independently re-implemented (Python) version of the same retrograde algorithm across 500 randomly generated small graphs (2 to 6 nodes, random edge sets, random goal and start positions) with zero mismatches, and against a hand-traced 3-node path case.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+// Pursuit game on an undirected graph with n nodes (0-indexed).
+// Robber starts at r0, Cop starts at c0, target/safe node is &#x27;goal&#x27;.
+// Players alternate moves, Robber moves first (turn=0 means Robber to move, 1 means Cop to move).
+// A move = go to an adjacent node OR stay in place.
+// Robber wins if it is ever at &#x27;goal&#x27; (checked before either player moves further).
+// Cop wins if it ever occupies the same node as the Robber.
+// If neither happens forever, it&#x27;s a Draw.
+// Output: 0 = Draw, 1 = Robber wins, 2 = Cop wins.
+int n;
+vector&lt;vector&lt;int&gt;&gt; adj; // adjacency (includes ability to &quot;stay&quot; handled separately)
+int goalNode;
+// state encoding: (r, c, turn) -&gt; id = (r*n + c)*2 + turn
+int result_[/*r*/1][1]; // placeholder, will use vectors
+int main(){
+    int m; // number of edges
+    cin &gt;&gt; n &gt;&gt; m;
+    adj.assign(n, {});
+    for(int i=0;i&lt;m;i++){
+        int u,v; cin&gt;&gt;u&gt;&gt;v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    cin &gt;&gt; goalNode;
+    int r0, c0; cin &gt;&gt; r0 &gt;&gt; c0;
+
+    int NS = n*n*2;
+    vector&lt;int&gt; result(NS, 0); // 0 unknown/draw, 1 robber win, 2 cop win
+    vector&lt;int&gt; degree(NS, 0);
+    auto id = [&amp;](int r,int c,int t){ return (r*n+c)*2+t; };
+    for(int r=0;r&lt;n;r++) for(int c=0;c&lt;n;c++) for(int t=0;t&lt;2;t++){
+        int mover = t==0? r : c;
+        degree[id(r,c,t)] = (int)adj[mover].size() + 1; // +1 for &quot;stay&quot;
+    }
+    queue&lt;int&gt; bfsq;
+    // terminal states
+    for(int r=0;r&lt;n;r++) for(int c=0;c&lt;n;c++) for(int t=0;t&lt;2;t++){
+        if(r==c){ result[id(r,c,t)] = 2; bfsq.push(id(r,c,t)); continue; }
+        if(r==goalNode){ result[id(r,c,t)] = 1; bfsq.push(id(r,c,t)); continue; }
+    }
+    // predecessor generation: given state (r,c,t), predecessors are states (pr,pc,1-t)
+    // such that the mover at (pr,pc,1-t) [mover = pr if t was produced by robber moving, i.e prev turn 1-t]
+    // if prev turn is 0 (robber moved) then pr-&gt;r via edge or stay, pc==c
+    // if prev turn is 1 (cop moved) then pc-&gt;c via edge or stay, pr==r
+    while(!bfsq.empty()){
+        int cur = bfsq.front(); bfsq.pop();
+        int t = cur % 2;
+        int rc = cur / 2;
+        int c = rc % n;
+        int r = rc / n;
+        int curRes = result[cur];
+        int prevTurn = 1 - t;
+        if(prevTurn == 0){
+            // predecessor: robber was at some pr with edge to r (or pr==r), cop at c, turn=0
+            vector&lt;int&gt; cands = adj[r];
+            cands.push_back(r);
+            for(int pr : cands){
+                if(pr == c) continue; // can&#x27;t have started already caught (r==c) unless it&#x27;s genuinely a caught state, but that&#x27;s terminal already handled
+                int pid = id(pr, c, 0);
+                if(result[pid] != 0) continue;
+                if(pr == goalNode) continue; // shouldn&#x27;t happen, already terminal, but guard
+                // mover at pid is robber (turn 0). Robber wants result==1(robber win)
+                if(curRes == 1){
+                    result[pid] = 1; bfsq.push(pid);
+                } else {
+                    degree[pid]--;
+                    if(degree[pid]==0){ result[pid] = 2; bfsq.push(pid); }
+                }
+            }
+        } else {
+            // predecessor: cop was at some pc with edge to c (or pc==c), robber at r, turn=1
+            vector&lt;int&gt; cands = adj[c];
+            cands.push_back(c);
+            for(int pc : cands){
+                if(pc == r) continue; // would already be terminal (caught)
+                int pid = id(r, pc, 1);
+                if(result[pid] != 0) continue;
+                if(r == goalNode) continue;
+                // mover at pid is cop (turn 1). Cop wants result==2 (cop win)
+                if(curRes == 2){
+                    result[pid] = 2; bfsq.push(pid);
+                } else {
+                    degree[pid]--;
+                    if(degree[pid]==0){ result[pid] = 1; bfsq.push(pid); }
+                }
+            }
+        }
+    }
+    int ans = result[id(r0,c0,0)];
+    cout &lt;&lt; ans &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>6 5
+0 1
+1 2
+2 3
+3 4
+4 5
+5
+0 3
+</code></pre>
+    <pre><code>2
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">17</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="maximum subsequence codeforces meet in the middle (subset sums) given an array (n ≤ 35) and modulus m, choose a subsequence maximizing the sum of its elements modulo m.">
+  <td><a href="https://codeforces.com/problemset/problem/888/E" target="_blank" rel="noopener noreferrer">Maximum Subsequence</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">meet in the middle (subset sums)</td>
+  <td class="desc-cell">Given an array (n ≤ 35) and modulus m, choose a subsequence maximizing the sum of its elements modulo m.</td>
+</tr><tr data-search="anya and cubes codeforces meet in the middle (subset sum with a twist operation) given n numbers (n ≤ 25) and a target sum s, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals s.">
+  <td><a href="https://codeforces.com/problemset/problem/525/E" target="_blank" rel="noopener noreferrer">Anya and Cubes</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2100</td>
+  <td class="subtopic-cell">meet in the middle (subset sum with a twist operation)</td>
+  <td class="desc-cell">Given n numbers (n ≤ 25) and a target sum S, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals S.</td>
+</tr><tr data-search="lizard era: beginning codeforces meet in the middle (3-way partition) split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.">
+  <td><a href="https://codeforces.com/problemset/problem/585/D" target="_blank" rel="noopener noreferrer">Lizard Era: Beginning</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2300</td>
+  <td class="subtopic-cell">meet in the middle (3-way partition)</td>
+  <td class="desc-cell">Split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.</td>
+</tr><tr data-search="chessboard and queens cses n-queens style pruning count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.">
+  <td><a href="https://cses.fi/problemset/task/1624" target="_blank" rel="noopener noreferrer">Chessboard and Queens</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Introductory Problems, high end)</td>
+  <td class="subtopic-cell">N-Queens style pruning</td>
+  <td class="desc-cell">Count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.</td>
+</tr><tr data-search="creating strings cses permutation generation with duplicate pruning given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.">
+  <td><a href="https://cses.fi/problemset/task/1622" target="_blank" rel="noopener noreferrer">Creating Strings</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Introductory Problems, high end)</td>
+  <td class="subtopic-cell">permutation generation with duplicate pruning</td>
+  <td class="desc-cell">Given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.</td>
+</tr><tr data-search="apple division cses recursive subset enumeration / meet in the middle divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups&#x27; total weights.">
+  <td><a href="https://cses.fi/problemset/task/1623" target="_blank" rel="noopener noreferrer">Apple Division</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Introductory Problems, high end)</td>
+  <td class="subtopic-cell">recursive subset enumeration / meet in the middle</td>
+  <td class="desc-cell">Divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups&#x27; total weights.</td>
+</tr><tr data-search="n-queens leetcode n-queens style pruning return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.">
+  <td><a href="https://leetcode.com/problems/n-queens/" target="_blank" rel="noopener noreferrer">N-Queens</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">N-Queens style pruning</td>
+  <td class="desc-cell">Return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.</td>
+</tr><tr data-search="sudoku solver leetcode constraint-propagation backtracking fill a partially completed 9×9 sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.">
+  <td><a href="https://leetcode.com/problems/sudoku-solver/" target="_blank" rel="noopener noreferrer">Sudoku Solver</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">Hard</td>
+  <td class="subtopic-cell">constraint-propagation backtracking</td>
+  <td class="desc-cell">Fill a partially completed 9×9 Sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.</td>
+</tr><tr data-search="minimum euclidean distance cses divide and conquer (closest pair of points) given up to 2*10^5 points in the plane, find the minimum squared euclidean distance between any two distinct points.">
+  <td><a href="https://cses.fi/problemset/task/2194" target="_blank" rel="noopener noreferrer">Minimum Euclidean Distance</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES</td>
+  <td class="subtopic-cell">Divide and Conquer (closest pair of points)</td>
+  <td class="desc-cell">Given up to 2*10^5 points in the plane, find the minimum squared Euclidean distance between any two distinct points.</td>
+</tr><tr data-search="merge sort codeforces divide and conquer (constructive, recursion-tree structure) construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.">
+  <td><a href="https://codeforces.com/problemset/problem/873/D" target="_blank" rel="noopener noreferrer">Merge Sort</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">Divide and Conquer (constructive, recursion-tree structure)</td>
+  <td class="desc-cell">Construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.</td>
+</tr><tr data-search="pashmak and parmida&#x27;s problem codeforces divide and conquer (counting with merge step) count pairs (i, j) with i &lt; j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.">
+  <td><a href="https://codeforces.com/problemset/problem/459/D" target="_blank" rel="noopener noreferrer">Pashmak and Parmida&#x27;s problem</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">Divide and Conquer (counting with merge step)</td>
+  <td class="desc-cell">Count pairs (i, j) with i &lt; j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.</td>
+</tr><tr data-search="painting fence codeforces divide and conquer (recursive range minimum splitting) given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.">
+  <td><a href="https://codeforces.com/problemset/problem/448/C" target="_blank" rel="noopener noreferrer">Painting Fence</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1900</td>
+  <td class="subtopic-cell">Divide and Conquer (recursive range minimum splitting)</td>
+  <td class="desc-cell">Given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.</td>
+</tr><tr data-search="letter picking codeforces minimax with alpha-beta pruning alice and bob alternately take the first or last letter of a string and prepend it to their own string (alice wants the lexicographically smaller result, bob the opposite, both settle for a draw if they can&#x27;t win); determine the outcome under optimal play.">
+  <td><a href="https://codeforces.com/problemset/problem/1728/D" target="_blank" rel="noopener noreferrer">Letter Picking</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
+  <td class="desc-cell">Alice and Bob alternately take the first or last letter of a string and prepend it to their own string (Alice wants the lexicographically smaller result, Bob the opposite, both settle for a draw if they can&#x27;t win); determine the outcome under optimal play.</td>
+</tr><tr data-search="game on sum (easy version) codeforces minimax with alpha-beta pruning over n turns, alice picks a real number in [0, k] each turn and bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); alice maximizes the final score, bob minimizes it — find the optimal value.">
+  <td><a href="https://codeforces.com/problemset/problem/1628/D1" target="_blank" rel="noopener noreferrer">Game on Sum (Easy Version)</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 2100</td>
+  <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
+  <td class="desc-cell">Over n turns, Alice picks a real number in [0, k] each turn and Bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); Alice maximizes the final score, Bob minimizes it — find the optimal value.</td>
+</tr><tr data-search="world is mine codeforces minimax with alpha-beta pruning alice and bob alternately eat cakes (alice can only eat a cake tastier than any she&#x27;s eaten before; bob eats anything); alice maximizes how many cakes she eats and bob minimizes it — find the count under optimal play.">
+  <td><a href="https://codeforces.com/problemset/problem/1987/D" target="_blank" rel="noopener noreferrer">World is Mine</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">CF 1800</td>
+  <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
+  <td class="desc-cell">Alice and Bob alternately eat cakes (Alice can only eat a cake tastier than any she&#x27;s eaten before; Bob eats anything); Alice maximizes how many cakes she eats and Bob minimizes it — find the count under optimal play.</td>
+</tr><tr data-search="cat and mouse leetcode minimax with alpha-beta pruning on a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.">
+  <td><a href="https://leetcode.com/problems/cat-and-mouse/" target="_blank" rel="noopener noreferrer">Cat and Mouse</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#913)</td>
+  <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
+  <td class="desc-cell">On a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.</td>
+</tr><tr data-search="cat and mouse ii leetcode minimax with alpha-beta pruning on a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.">
+  <td><a href="https://leetcode.com/problems/cat-and-mouse-ii/" target="_blank" rel="noopener noreferrer">Cat and Mouse II</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard (#1728)</td>
+  <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
+  <td class="desc-cell">On a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

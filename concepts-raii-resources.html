@@ -1,0 +1,480 @@
+<title>RAII &amp; Resource Management — C++ Concepts</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54" class="current">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">C++ Concepts Reference</p>
+    <h1>RAII &amp; Resource Management</h1>
+    <p class="tagline"><p>RAII is arguably THE central idea of idiomatic C++ resource management — everything in this group is either a direct application of it (smart pointers, PImpl) or the rule-of-thumb machinery around making it work correctly (Rule of Five, exception safety, allocators).</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">6</div><div class="l">Concepts</div></div>
+      <div class="stat-tile"><div class="n">12</div><div class="l">Worked Examples</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#raii-resource-acquisition-is-initialization"><span>RAII (Resource Acquisition Is Initialization)</span></a></li><li><a href="#rule-of-zero-three-five"><span>Rule of Zero / Three / Five</span></a></li><li><a href="#smart-pointer-ownership-models"><span>Smart pointer ownership models</span></a></li><li><a href="#allocators-custom-allocation"><span>Allocators &amp; custom allocation</span></a></li><li><a href="#pimpl-idiom-pointer-to-implementation"><span>PImpl idiom (Pointer to Implementation)</span></a></li><li><a href="#exception-safety-guarantees"><span>Exception safety guarantees</span></a></li></ul>
+      <h2>Other concept groups</h2>
+      <ul class="nav-list"><li><a href="https://claude.ai/code/artifact/212d5d66-cec2-43e1-acf4-a5e50c9875e2">Value Categories &amp; Move Semantics</a></li><li><a href="https://claude.ai/code/artifact/b63ad2c2-69df-4fb4-a179-6f682186b4b0">Object-Oriented Mechanics &amp; Polymorphism</a></li><li><a href="https://claude.ai/code/artifact/10812d60-8666-4c04-abcb-9a51494f2a78">Templates &amp; Generic Programming</a></li><li><a href="https://claude.ai/code/artifact/748f9ef6-7666-4b22-9b11-aff10b51fd0e">Compile-Time Constructs &amp; Program Structure</a></li><li><a href="https://claude.ai/code/artifact/e6ecda5d-3bf8-4548-a1b2-1fe0932cf150">Concurrency, Memory Model &amp; Low-Level Layout</a></li><li><a href="https://claude.ai/code/artifact/c0a34229-e57b-4665-b25a-e9197bd62743">Modern C++ (17/20) &amp; STL Utilities</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">All C++ Concepts</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+      </ul>
+    </aside>
+    <main><article class="concept-card" id="raii-resource-acquisition-is-initialization">
+  <h3>RAII (Resource Acquisition Is Initialization)</h3>
+  <div class="intro"><p>RAII binds a resource&#x27;s lifetime to an object&#x27;s lifetime: acquire the resource in the constructor, release it in the destructor. Because C++ *guarantees* that destructors run when a scope exits — through normal control flow, an early return, or even an exception unwinding the stack — RAII gives you automatic, exception-safe cleanup without a single explicit <code>try/finally</code>-equivalent block. This one idea underlies <code>std::lock_guard</code>, every smart pointer, <code>std::fstream</code>, <code>std::vector</code>&#x27;s own memory management, and essentially all correctly-written resource-owning C++ types.</p></div>
+  <div class="example-box">
+  <div class="ex-title">A minimal RAII wrapper around a raw resource</div>
+  <pre><code>class FileHandle {
+    FILE* fp;
+public:
+    explicit FileHandle(const char* path) : fp(fopen(path, &quot;r&quot;)) {
+        if (!fp) throw std::runtime_error(&quot;failed to open file&quot;);
+    }
+    ~FileHandle() { if (fp) fclose(fp); }
+
+    FileHandle(const FileHandle&amp;) = delete;            // see Rule of Five: don&#x27;t allow
+    FileHandle&amp; operator=(const FileHandle&amp;) = delete;  // an implicit double-close
+
+    FILE* get() const { return fp; }
+};
+
+void process() {
+    FileHandle f(&quot;data.bin&quot;);   // acquired
+    parseHeader(f.get());       // if this throws...
+    parseBody(f.get());
+}                                // ...~FileHandle() STILL runs during stack unwinding, closing fp</code></pre>
+  <div class="ex-explain"><p>There is no cleanup code visible anywhere in <code>process()</code> — that&#x27;s the entire point. Whether the function returns normally or an exception propagates out of <code>parseHeader</code>/<code>parseBody</code>, <code>f</code>&#x27;s destructor is guaranteed to run as the stack unwinds past it, so the file always gets closed exactly once.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">RAII for a mutex — the pattern behind std::lock_guard</div>
+  <pre><code>class ScopedLock {
+    std::mutex&amp; m;
+public:
+    explicit ScopedLock(std::mutex&amp; m) : m(m) { m.lock(); }
+    ~ScopedLock() { m.unlock(); }
+    ScopedLock(const ScopedLock&amp;) = delete;
+};
+
+void criticalSection(std::mutex&amp; mtx) {
+    ScopedLock lock(mtx);
+    doWork();  // if doWork() throws, the mutex is STILL released — no deadlock
+}</code></pre>
+  <div class="ex-explain"><p>This is literally what <code>std::lock_guard&lt;std::mutex&gt;</code> does internally. Without RAII, you&#x27;d need to remember to call <code>mtx.unlock()</code> on every exit path of <code>criticalSection</code> — including exceptional ones — which is exactly the kind of manual bookkeeping RAII eliminates.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Writing an RAII class but forgetting to delete (or properly implement) its copy constructor/assignment — a naive memberwise copy of a resource-owning object (e.g. copying <code>fp</code> in FileHandle above) leads to two objects both believing they own — and will both try to close/free — the same resource.</p></li><li><p>Allocating a resource in a constructor that can partially fail (acquiring resource A, then throwing while acquiring resource B) without unwinding what was already acquired — the destructor never runs for an object whose constructor didn&#x27;t finish, so any RAII sub-members must each independently be exception-safe.</p></li></ul></div>
+  <p class="why-box"><p>RAII isn&#x27;t usually asked about directly by name as often as it&#x27;s ASSUMED — interviewers expect you to reach for it (smart pointers, lock_guard) automatically when discussing resource management, and will probe if you reach for manual malloc/free or lock/unlock instead.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#rule-of-zero-three-five" data-related-href="#rule-of-zero-three-five">Rule of Zero / Three / Five</a><a class="related-tag" href="#smart-pointer-ownership-models" data-related-href="#smart-pointer-ownership-models">Smart pointer ownership models</a><a class="related-tag" href="#exception-safety-guarantees" data-related-href="#exception-safety-guarantees">Exception safety guarantees</a></div>
+</article><article class="concept-card" id="rule-of-zero-three-five">
+  <h3>Rule of Zero / Three / Five</h3>
+  <div class="intro"><p>**Rule of Three** (the pre-C++11 guideline): if a class needs a custom destructor, it&#x27;s almost certainly managing a resource directly — and if so, it needs a custom copy constructor and copy-assignment operator too, because the compiler-generated memberwise versions would copy the raw resource handle, not the resource itself (see RAII pitfalls above). **Rule of Five** extends this for C++11+: add a move constructor and move-assignment operator too, so the resource can be transferred cheaply instead of always being deep-copied. **Rule of Zero** is the modern preferred design: don&#x27;t write ANY of the five special members by hand at all — instead, compose your class out of members that ALREADY manage their own resources correctly (std::vector, std::string, std::unique_ptr, etc.), so the compiler-generated defaults for all five special members are automatically correct, because they just recursively do the right thing member-by-member.</p></div>
+  <div class="example-box">
+  <div class="ex-title">Rule of Five: a class that legitimately needs all five</div>
+  <pre><code>class Buffer {
+    size_t n; int* data;
+public:
+    explicit Buffer(size_t n) : n(n), data(new int[n]) {}
+    ~Buffer() { delete[] data; }                                     // 1. destructor
+    Buffer(const Buffer&amp; o) : n(o.n), data(new int[n]) {              // 2. copy ctor
+        std::copy(o.data, o.data + n, data);
+    }
+    Buffer&amp; operator=(const Buffer&amp; o) {                              // 3. copy assign
+        if (this != &amp;o) { int* nd = new int[o.n]; std::copy(o.data, o.data+o.n, nd);
+                           delete[] data; data = nd; n = o.n; }
+        return *this;
+    }
+    Buffer(Buffer&amp;&amp; o) noexcept : n(o.n), data(o.data) {               // 4. move ctor
+        o.data = nullptr; o.n = 0;
+    }
+    Buffer&amp; operator=(Buffer&amp;&amp; o) noexcept {                           // 5. move assign
+        if (this != &amp;o) { delete[] data; data = o.data; n = o.n; o.data = nullptr; o.n = 0; }
+        return *this;
+    }
+};</code></pre>
+  <div class="ex-explain"><p>Buffer IS the resource-owning primitive here (it directly holds a raw <code>int*</code>), so it must define all five to behave correctly under copying, moving, and destruction — this is exactly the situation where Rule of Five applies.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Rule of Zero: the same functionality, none of the boilerplate</div>
+  <pre><code>class Buffer {
+    std::vector&lt;int&gt; data;  // already manages its own memory correctly
+public:
+    explicit Buffer(size_t n) : data(n) {}
+    // no destructor, no copy ctor/assign, no move ctor/assign written by hand --
+    // the compiler-generated versions of all five just call vector&#x27;s own
+    // (already-correct) versions member-by-member, and that&#x27;s exactly right.
+};</code></pre>
+  <div class="ex-explain"><p>By delegating actual ownership to <code>std::vector</code>, Buffer no longer needs to know anything about copying, moving, or freeing memory itself — it inherits correct behavior for free. This is why Rule of Zero is the default modern recommendation: write Rule of Five code only when you&#x27;re building the resource-owning primitive itself (rare), and Rule of Zero everywhere else (common).</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Defining only SOME of the five (e.g. just a destructor, forgetting copy/move) — this is worse than defining none, because it silently disables move operations (the compiler won&#x27;t generate a move constructor for a class that has a user-declared destructor) and falls back to copying, or worse leaves a raw-resource class with a compiler-generated copy that double-frees.</p></li><li><p>Writing Rule-of-Five boilerplate for a class that doesn&#x27;t need it — if your class&#x27;s members are all well-behaved RAII types already, hand-writing the five special members is pure risk (a bug in hand-rolled boilerplate) for zero benefit over Rule of Zero.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="https://claude.ai/code/artifact/212d5d66-cec2-43e1-acf4-a5e50c9875e2#move-semantics" data-related-href="https://claude.ai/code/artifact/212d5d66-cec2-43e1-acf4-a5e50c9875e2#move-semantics">Move semantics</a><a class="related-tag" href="#smart-pointer-ownership-models" data-related-href="#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
+</article><article class="concept-card" id="smart-pointer-ownership-models">
+  <h3>Smart pointer ownership models</h3>
+  <div class="intro"><p>The three standard smart pointers encode three DIFFERENT ownership philosophies, and picking the wrong one for the situation is a common design-review flag. <code>std::unique_ptr&lt;T&gt;</code> is sole ownership: exactly one owner at a time, move-only (copying is disabled), and — crucially — zero runtime overhead over a raw pointer; the object is destroyed the instant the owning unique_ptr goes out of scope. <code>std::shared_ptr&lt;T&gt;</code> is shared ownership via ATOMIC reference counting: any number of shared_ptrs can co-own the same object, which is destroyed when the last one goes away — but that shared refcount means copying a shared_ptr is not free (an atomic increment/decrement every time). <code>std::weak_ptr&lt;T&gt;</code> observes an object owned by a shared_ptr WITHOUT extending its lifetime or touching the strong refcount — used to break reference cycles and to safely ask &quot;is this thing still alive?&quot; before trying to use it.</p></div>
+  <div class="example-box">
+  <div class="ex-title">All three, and when each is the right call</div>
+  <pre><code>auto owner = std::make_unique&lt;Order&gt;();      // exactly one owner -- the common case
+auto shared = std::make_shared&lt;Book&gt;(bookId); // genuinely shared across multiple subsystems
+std::weak_ptr&lt;Book&gt; cache_entry = shared;     // a cache that shouldn&#x27;t keep Book alive on its own
+
+if (auto locked = cache_entry.lock()) {
+    use(*locked);           // safely promoted to a real shared_ptr, only if still alive
+} else {
+    // the Book was already destroyed elsewhere -- refetch or skip
+}</code></pre>
+  <div class="ex-explain"><p>The cache holding a weak_ptr instead of a shared_ptr is the key design decision here: if the cache held a shared_ptr, it would itself keep every cached Book alive forever, defeating the point of a cache. weak_ptr::lock() is the safe way to attempt access without accidentally extending an object&#x27;s lifetime.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The classic shared_ptr cycle leak</div>
+  <pre><code>struct Node {
+    std::shared_ptr&lt;Node&gt; next;
+    std::weak_ptr&lt;Node&gt; prev;  // deliberately weak to break the cycle
+};
+
+auto a = std::make_shared&lt;Node&gt;();
+auto b = std::make_shared&lt;Node&gt;();
+a-&gt;next = b;
+b-&gt;prev = a;   // if this were ALSO a shared_ptr, a and b would keep each other alive forever
+               // -- neither refcount would ever reach zero, even after a and b go out of scope</code></pre>
+  <div class="ex-explain"><p>This is why doubly-linked structures built on shared_ptr deliberately make one direction (commonly &quot;prev&quot;/&quot;parent&quot;) a weak_ptr — otherwise the mutual ownership means neither object&#x27;s reference count ever drops to zero, and both leak silently for the rest of the program&#x27;s life.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Defaulting to shared_ptr everywhere &quot;to be safe&quot; — this hides ownership intent (who&#x27;s really responsible for this object?) and pays for atomic refcounting you usually don&#x27;t need; prefer unique_ptr (or even a plain reference/raw pointer with clear, non-owning semantics) unless shared ownership is a genuine requirement.</p></li><li><p>Creating a reference cycle with shared_ptrs in both directions of a graph/tree-like structure (see example above) — a very common, very real memory leak in production code, not just an academic gotcha.</p></li><li><p>Using shared_ptr on a genuinely latency-sensitive hot path without accounting for the atomic increment/decrement cost on every copy — this is a real, measurable cost interviewers expect you to know about.</p></li></ul></div>
+  <p class="why-box"><p>Extremely commonly asked, often phrased as &quot;implement a basic shared_ptr&quot; or &quot;what happens if two objects hold shared_ptrs to each other&quot; — both of which test whether you understand the reference-counting mechanism, not just the API.</p></p>
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="#rule-of-zero-three-five" data-related-href="#rule-of-zero-three-five">Rule of Zero / Three / Five</a><a class="related-tag" href="https://claude.ai/code/artifact/b63ad2c2-69df-4fb4-a179-6f682186b4b0#object-slicing" data-related-href="https://claude.ai/code/artifact/b63ad2c2-69df-4fb4-a179-6f682186b4b0#object-slicing">Object slicing</a></div>
+</article><article class="concept-card" id="allocators-custom-allocation">
+  <h3>Allocators &amp; custom allocation</h3>
+  <div class="intro"><p>Every STL container is actually a template over an <code>Allocator</code> type (defaulting to one that calls <code>operator new</code>/<code>operator delete</code>), which is the hook that lets you plug in a custom memory strategy — most commonly, a pre-sized arena or pool allocator — instead of the general-purpose heap for every single allocation. This matters a great deal in latency-sensitive code: the default heap allocator is a general-purpose tool that has to handle arbitrary sizes and frees in arbitrary order, which usually means internal locking and bookkeeping with latency that isn&#x27;t tightly bounded. A pre-allocated arena, sized for a known maximum number of objects up front, can hand out and reclaim fixed-size chunks in O(1) with no lock contention and no unpredictable tail latency.</p></div>
+  <div class="example-box">
+  <div class="ex-title">The shape of a minimal fixed-size pool allocator</div>
+  <pre><code>template &lt;class T, size_t N&gt;
+class PoolAllocator {
+    alignas(T) char storage[N * sizeof(T)];
+    bool used[N] = {};
+public:
+    T* allocate() {
+        for (size_t i = 0; i &lt; N; ++i)
+            if (!used[i]) { used[i] = true; return reinterpret_cast&lt;T*&gt;(storage + i * sizeof(T)); }
+        throw std::bad_alloc(); // pool exhausted -- a design decision made explicit, not hidden
+    }
+    void deallocate(T* p) {
+        size_t i = (reinterpret_cast&lt;char*&gt;(p) - storage) / sizeof(T);
+        used[i] = false;
+    }
+};</code></pre>
+  <div class="ex-explain"><p>All the storage for up to N objects is claimed once, up front, as a single contiguous block. allocate()/deallocate() then become simple array-scan/index operations — no syscalls, no general-purpose allocator bookkeeping, no lock — at the cost of a hard, known-in-advance capacity limit.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why this matters in a trading-system hot path</div>
+  <pre><code>// Bad on a hot path: every incoming market-data tick allocates a fresh Order
+// via the general heap allocator -- unpredictable latency, potential lock contention
+// with other threads also calling malloc/new.
+std::vector&lt;std::unique_ptr&lt;Order&gt;&gt; book; // default new/delete under the hood
+
+// Better: pre-size a pool for the expected peak order count at startup,
+// and hand out/reclaim Order objects from it during the trading session --
+// no calls into the general allocator once trading has started.</code></pre>
+  <div class="ex-explain"><p>The core idea is moving all allocation-related uncertainty to STARTUP time (when it doesn&#x27;t matter), so the actual trading-hours hot path never has to ask the OS/general allocator for memory at all.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming a custom allocator automatically makes code thread-safe — a pool allocator shared across threads still needs its own synchronization (or a per-thread pool) unless it&#x27;s specifically designed to be lock-free.</p></li><li><p>Over-engineering with a custom allocator before profiling shows the default allocator is actually a bottleneck — this is real complexity/bug-surface you&#x27;re taking on, and it should be justified by a measured problem, not applied preemptively everywhere.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="https://claude.ai/code/artifact/c0a34229-e57b-4665-b25a-e9197bd62743#small-string-optimization-sso" data-related-href="https://claude.ai/code/artifact/c0a34229-e57b-4665-b25a-e9197bd62743#small-string-optimization-sso">Small String Optimization (SSO)</a></div>
+</article><article class="concept-card" id="pimpl-idiom-pointer-to-implementation">
+  <h3>PImpl idiom (Pointer to Implementation)</h3>
+  <div class="intro"><p>A class hides its private implementation details behind a single pointer to a forward-declared struct/class whose full definition lives only in the .cpp file, never the header. The immediate payoff: changing a private member no longer changes the public class&#x27;s size or forces every translation unit that includes its header to recompile — you&#x27;re trading one extra heap allocation and one extra pointer indirection per access for dramatically better compile-time isolation (and, as a bonus, a more stable binary interface/ABI, since the public class&#x27;s memory layout doesn&#x27;t change when private internals do).</p></div>
+  <div class="example-box">
+  <div class="ex-title">The header — completely decoupled from Widget&#x27;s real internals</div>
+  <pre><code>// widget.h
+class Widget {
+public:
+    Widget();
+    ~Widget();                      // must be declared here, DEFINED in the .cpp (see pitfall)
+    Widget(Widget&amp;&amp;) noexcept;
+    Widget&amp; operator=(Widget&amp;&amp;) noexcept;
+    void doWork();
+private:
+    struct Impl;                    // forward declaration ONLY -- no definition visible here
+    std::unique_ptr&lt;Impl&gt; pImpl;    // the entire real implementation lives behind this one pointer
+};</code></pre>
+  <div class="ex-explain"><p>Anyone who includes widget.h sees none of Widget&#x27;s actual private data members — only a forward-declared Impl and a pointer to it. Adding, removing, or resizing private fields inside Impl never touches this header, so it never forces a rebuild of every file that includes widget.h.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">The .cpp — where Impl actually lives</div>
+  <pre><code>// widget.cpp
+struct Widget::Impl {
+    std::vector&lt;int&gt; data;
+    std::string name;
+    // as much private state as needed -- completely invisible to widget.h&#x27;s includers
+};
+
+Widget::Widget() : pImpl(std::make_unique&lt;Impl&gt;()) {}
+Widget::~Widget() = default;   // MUST be defined here, where Impl is a complete type
+Widget::Widget(Widget&amp;&amp;) noexcept = default;
+Widget&amp; Widget::operator=(Widget&amp;&amp;) noexcept = default;
+void Widget::doWork() { pImpl-&gt;data.push_back(42); }</code></pre>
+  <div class="ex-explain"><p>The destructor (and any special member relying on Impl being complete, like the defaulted move operations) has to be DEFINED in the .cpp file, not just declared in the header — see the pitfall below for why getting this wrong is a classic compile error.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Declaring <code>~Widget()</code> in the header but letting it be implicitly defined there (or writing <code>= default</code> right in the header) — at that point in the header, <code>Impl</code> is only forward-declared (incomplete), so <code>std::unique_ptr&lt;Impl&gt;</code>&#x27;s destructor can&#x27;t be instantiated; this produces a real, sometimes-confusing compile error about an incomplete type. The fix is always to declare the destructor in the header but DEFINE it (even as <code>= default</code>) in the .cpp, after Impl&#x27;s full definition is visible.</p></li><li><p>Using PImpl reflexively on every class &quot;for good practice&quot; — it adds a real heap allocation and indirection cost to every object; it&#x27;s most valuable for classes with either large/frequently-changing private internals or genuine ABI-stability requirements, not as a universal default.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="https://claude.ai/code/artifact/748f9ef6-7666-4b22-9b11-aff10b51fd0e#odr-one-definition-rule" data-related-href="https://claude.ai/code/artifact/748f9ef6-7666-4b22-9b11-aff10b51fd0e#odr-one-definition-rule">ODR (One Definition Rule)</a></div>
+</article><article class="concept-card" id="exception-safety-guarantees">
+  <h3>Exception safety guarantees</h3>
+  <div class="intro"><p>Three standard levels describe what a piece of code promises will still be true if an exception is thrown partway through it. The **basic guarantee**: no resources leak and the object&#x27;s invariants still hold, but its exact observable state afterward is unspecified. The **strong guarantee**: the operation either fully succeeds, or has NO visible effect at all — as if it never started (commit-or-rollback semantics) — commonly implemented via the copy-and-swap idiom. The **nothrow (no-throw) guarantee**: the operation is guaranteed to never throw at all, which the standard library actually RELIES on in specific places — most importantly, containers only use a type&#x27;s move constructor during reallocation if that move constructor is <code>noexcept</code>; otherwise they fall back to copying to preserve their own strong guarantee (see Move semantics).</p></div>
+  <div class="example-box">
+  <div class="ex-title">The strong guarantee via copy-and-swap</div>
+  <pre><code>class Widget {
+    std::vector&lt;int&gt; data;
+public:
+    Widget&amp; operator=(const Widget&amp; other) {
+        Widget tmp(other);              // (1) copy -- if THIS throws, *this is completely untouched
+        std::swap(data, tmp.data);      // (2) swap is noexcept -- this step cannot fail
+        return *this;
+    }                                    // (3) tmp&#x27;s destructor cleans up the OLD data automatically
+};</code></pre>
+  <div class="ex-explain"><p>If step (1)&#x27;s copy throws (e.g. out of memory), <code>*this</code> has not been modified at all yet — the strong guarantee holds. Step (2), the only part that actually mutates <code>*this</code>, is a non-throwing swap, so once you reach it, success is guaranteed. This pattern — build the new state fully off to the side, then commit via a non-throwing swap — is the standard recipe for the strong guarantee.</p></div>
+</div><div class="example-box">
+  <div class="ex-title">Why noexcept on move operations isn&#x27;t just documentation</div>
+  <pre><code>class Buffer {
+public:
+    Buffer(Buffer&amp;&amp; other) noexcept { /* steal other&#x27;s resources */ }
+};
+
+std::vector&lt;Buffer&gt; v;
+// ... v grows past capacity ...
+// Because Buffer&#x27;s move ctor is noexcept, std::vector moves each existing
+// Buffer into the new, larger allocation -- O(1) per element.
+// If it were NOT noexcept, std::vector would COPY every element instead,
+// specifically to preserve ITS OWN strong guarantee: a throwing move mid-reallocation
+// could leave the vector in a state where some elements were moved and others weren&#x27;t,
+// with no way to safely roll back -- so the library refuses to risk it.</code></pre>
+  <div class="ex-explain"><p>This is a direct, practical consequence of the nothrow guarantee concept: the standard library&#x27;s own exception-safety promises are the reason it inspects your type&#x27;s noexcept-ness before deciding how to treat it internally.</p></div>
+</div>
+  <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming &quot;basic guarantee&quot; means &quot;nothing bad happens&quot; — it specifically does NOT promise the object&#x27;s state is predictable afterward, only that it&#x27;s still valid (destructible, assignable) and nothing leaked. Code relying on a specific post-exception state needs the strong guarantee, not just the basic one.</p></li><li><p>Forgetting that destructors, swap, and move operations are all expected to provide the no-throw guarantee by convention (and are <code>noexcept</code> by default for destructors since C++11) — throwing from any of these is either outright disallowed (destructors during unwinding call std::terminate) or defeats optimizations the standard library specifically makes conditional on noexcept-ness.</p></li></ul></div>
+  
+  <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="https://claude.ai/code/artifact/212d5d66-cec2-43e1-acf4-a5e50c9875e2#move-semantics" data-related-href="https://claude.ai/code/artifact/212d5d66-cec2-43e1-acf4-a5e50c9875e2#move-semantics">Move semantics</a><a class="related-tag" href="https://claude.ai/code/artifact/c0a34229-e57b-4665-b25a-e9197bd62743#noexcept-specifier" data-related-href="https://claude.ai/code/artifact/c0a34229-e57b-4665-b25a-e9197bd62743#noexcept-specifier">noexcept specifier</a></div>
+</article></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

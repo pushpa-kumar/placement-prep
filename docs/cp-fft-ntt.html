@@ -1,0 +1,703 @@
+<title>FFT / NTT — CP / DSA Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">Interview Q&amp;A + MCQ Bank</a><a href="cp-guide.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>FFT / NTT</h1>
+    <p class="tagline"><p>The Fast Fourier Transform lets you multiply two polynomials (equivalently, compute the full convolution of two numeric sequences) in O(n log n) instead of the naive O(n^2), by evaluating both polynomials at the n-th roots of unity, multiplying those values pointwise, and interpolating back. The Number Theoretic Transform (NTT) is the same algorithm carried out over a modular integer field instead of the complex numbers, trading floating-point rounding risk for exactness at the cost of only working modulo a specific prime. Both are notoriously easy to get subtly wrong (padding length, precision, root-of-unity direction), so this page favors small, fully hand-verified examples over exotic ones. The polynomial-multiplication machinery behind FFT/NTT also powers a completely different application: jumping straight to the n-th term of a huge-index linear recurrence in O(k^2 log n) or better, without ever materializing the O(n) intervening terms or paying the O(k^3 log n) cost of naive matrix exponentiation.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">3</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">4</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">10</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#fft-ntt-polynomial-multiplication-via-fft"><span>Polynomial Multiplication via FFT</span><span class="cnt">1</span></a></li><li><a href="#fft-ntt-exact-integer-convolution-via-ntt"><span>Exact Integer Convolution via NTT</span><span class="cnt">1</span></a></li><li><a href="#fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm"><span>Linear Recurrences via Polynomials (Kitamasa&#x27;s Method / Bostan-Mori Algorithm)</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">10</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="cp-arrays-strings.html">Arrays &amp; Strings</a></li><li><a href="cp-sorting-searching.html">Sorting &amp; Binary Search</a></li><li><a href="cp-recursion-backtracking.html">Recursion &amp; Backtracking</a></li><li><a href="cp-dynamic-programming.html">Dynamic Programming</a></li><li><a href="cp-greedy.html">Greedy Algorithms</a></li><li><a href="cp-graphs.html">Graph Algorithms</a></li><li><a href="cp-trees.html">Trees</a></li><li><a href="cp-data-structures.html">Data Structures for CP</a></li><li><a href="cp-number-theory.html">Number Theory &amp; Combinatorics</a></li><li><a href="cp-string-algorithms.html">String Algorithms</a></li><li><a href="cp-bit-manipulation.html">Bit Manipulation</a></li><li><a href="cp-game-theory.html">Game Theory</a></li><li><a href="cp-network-flow.html">Network Flow &amp; Matching</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="cp-guide.html">CP / DSA Guide Hub</a></li>
+        <li><a href="index.html">Interview Q&amp;A Bank</a></li>
+        <li><a href="cp-further-reading.html#fft-ntt">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="fft-ntt-polynomial-multiplication-via-fft">
+  <div class="topic-head"><h2>Polynomial Multiplication via FFT</h2><span class="cnt">1 worked example</span></div>
+  <div class="theory-block"><p>Multiplying two polynomials A(x) = sum a_i x^i (degree n-1) and B(x) = sum b_j x^j (degree m-1) directly from their coefficients costs O(n*m): every coefficient c_k of the product C = A*B is c_k = sum_{i+j=k} a_i * b_j, a convolution. The FFT trick is to switch representations: a degree-(d-1) polynomial is uniquely determined by its values at any d distinct points, and in the POINT-VALUE representation, multiplying two polynomials is just pointwise multiplication of their values in O(d) -- the hard part the naive approach does in O(n*m) is entirely avoided, PROVIDED you can convert between coefficient and point-value representations fast enough.</p><p>The FFT does exactly that conversion in O(d log d) by evaluating (and interpolating) specifically at the d-th roots of unity, because evaluating a polynomial at a set of points closed under negation (w and -w both roots) lets you split it into its even- and odd-indexed coefficients and reuse each half&#x27;s evaluations for both +w and -w (the classic Cooley-Tukey divide-and-conquer identity). The standard competitive-programming implementation avoids recursion entirely: it computes the &#x27;bit-reversal permutation&#x27; of the coefficient array up front, then processes butterfly operations iteratively in increasing block sizes (len = 2, 4, 8, ... up to n), multiplying by a running power of the len-th root of unity at each step. The same routine, with the sign of the angle flipped and an extra division by n at the end, computes the INVERSE transform (point-value back to coefficients).</p><p>To multiply A and B: pick n to be a power of two at least as large as the true result length (deg(A) + deg(B) + 1 coefficients, i.e. sizeA + sizeB - 1) -- this padding is essential, because FFT multiplication is actually a CYCLIC convolution of length n, and if n is smaller than the true (non-cyclic) result length, high-order terms wrap around and corrupt low-order ones. Zero-pad both coefficient arrays to length n, FFT both, multiply pointwise, inverse-FFT the product, and round each resulting real value to the nearest integer (llround) -- rounding is necessary and CORRECT here (not a hack) because the true answer is known to be an integer and the only error present is floating-point noise on the order of 1e-6 to 1e-9 for coefficients and sizes typical in contest problems.</p><p>The main way this silently breaks in practice: forgetting to pad to a length &gt;= the true result size (causing wraparound corruption), reusing a <code>long double</code>-free <code>double</code> with coefficients whose PRODUCTS exceed roughly 1e15 (accumulated rounding error becomes larger than 0.5 and <code>llround</code> gives the wrong integer), and off-by-one errors in the bit-reversal loop or in the loop bounds of the butterfly step. When coefficients or answers can be large, or an EXACT modular answer is required instead of an exact integer, switch to the NTT variant described next.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>Any task requiring the full convolution of two numeric sequences -- literally multiplying two polynomials, multiplying two big integers represented digit-by-digit, or counting the number of ways to pick one element from each of two sets so their values sum to k (for every k simultaneously) -- when direct O(n*m) is too slow (n, m up to ~1e5-1e6, or n*m too large to brute force). Also recognize approximate/wildcard string matching problems that reduce to a small number of convolutions, one per alphabet symbol.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time where n is the smallest power of two &gt;= sizeA + sizeB - 1; O(n) space for the complex coefficient arrays. Precision is typically safe in <code>double</code> for coefficient magnitudes up to about 1e5-1e6 and n up to about 1e6-1e7; beyond that, prefer NTT or split-based techniques.</p></div>
+  </div>
+  <article class="example-card" id="fft-ntt-polynomial-multiplication-via-fft-ex0">
+  <h4>Multiply Two Small Polynomials with FFT</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given polynomial A with coefficients a0, a1, a2 (representing A(x) = a0 + a1*x + a2*x^2) and polynomial B with coefficients b0, b1 (representing B(x) = b0 + b1*x). Compute the coefficients of the product polynomial C(x) = A(x) * B(x) using an FFT-based convolution.</p><p>Input: first line has two integers sizeA and sizeB (the number of coefficients of A and B respectively, 1 &lt;= sizeA, sizeB &lt;= 5); second line has sizeA integers, the coefficients of A from a0 upward; third line has sizeB integers, the coefficients of B from b0 upward (1 &lt;= each coefficient &lt;= 20). Output: first line is the number of coefficients of C (sizeA + sizeB - 1); second line is those coefficients from the constant term upward.</p><p>Concrete instance: A(x) = 1 + 2x + 3x^2, B(x) = 4 + 5x.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Hand-multiply first to have a ground truth: (1 + 2x + 3x^2)(4 + 5x) = 1*4 + (1*5 + 2*4)x + (2*5 + 3*4)x^2 + (3*5)x^3 = 4 + 13x + 22x^2 + 15x^3, i.e. coefficients [4, 13, 22, 15].<br>2. In code: the true result has sizeA + sizeB - 1 = 3 + 2 - 1 = 4 coefficients, so pad both arrays with zeros up to n = 4 (already a power of two).<br>3. Compute the bit-reversal permutation of a length-4 array (indices 0,1,2,3 map to 0,2,1,3), then run the iterative FFT butterfly for len = 2 then len = 4 on both A&#x27;s and B&#x27;s padded coefficient arrays (now [1,2,3,0] and [4,5,0,0]) to get their values at the 4th roots of unity (1, i, -1, -i).<br>4. Multiply the two length-4 complex value arrays entrywise.<br>5. Run the inverse FFT (same butterfly structure, conjugated angle, then divide every entry by n = 4) to recover the coefficient representation of the product.<br>6. Round each of the 4 resulting real parts to the nearest integer: [4, 13, 22, 15], matching the hand-multiplied ground truth exactly.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef complex&lt;double&gt; cd;
+const double PI = acos(-1.0);
+
+void fft(vector&lt;cd&gt;&amp; a, bool invert) {
+    int n = a.size();
+    if (n == 1) return;
+    for (int i = 1, j = 0; i &lt; n; i++) {
+        int bit = n &gt;&gt; 1;
+        for (; j &amp; bit; bit &gt;&gt;= 1) j ^= bit;
+        j ^= bit;
+        if (i &lt; j) swap(a[i], a[j]);
+    }
+    for (int len = 2; len &lt;= n; len &lt;&lt;= 1) {
+        double ang = 2 * PI / len * (invert ? -1 : 1);
+        cd wlen(cos(ang), sin(ang));
+        for (int i = 0; i &lt; n; i += len) {
+            cd w(1);
+            for (int j = 0; j &lt; len / 2; j++) {
+                cd u = a[i + j];
+                cd v = a[i + j + len / 2] * w;
+                a[i + j] = u + v;
+                a[i + j + len / 2] = u - v;
+                w *= wlen;
+            }
+        }
+    }
+    if (invert) {
+        for (cd&amp; x : a) x /= n;
+    }
+}
+
+vector&lt;long long&gt; multiply(vector&lt;long long&gt; const&amp; a, vector&lt;long long&gt; const&amp; b) {
+    vector&lt;cd&gt; fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    int resultSize = (int)a.size() + (int)b.size() - 1;
+    int n = 1;
+    while (n &lt; resultSize) n &lt;&lt;= 1;
+    fa.resize(n);
+    fb.resize(n);
+    fft(fa, false);
+    fft(fb, false);
+    for (int i = 0; i &lt; n; i++) fa[i] *= fb[i];
+    fft(fa, true);
+    vector&lt;long long&gt; result(resultSize);
+    for (int i = 0; i &lt; resultSize; i++) result[i] = llround(fa[i].real());
+    return result;
+}
+
+int main() {
+    int sizeA, sizeB;
+    cin &gt;&gt; sizeA &gt;&gt; sizeB;
+    vector&lt;long long&gt; a(sizeA), b(sizeB);
+    for (auto&amp; x : a) cin &gt;&gt; x;
+    for (auto&amp; x : b) cin &gt;&gt; x;
+    vector&lt;long long&gt; c = multiply(a, b);
+    cout &lt;&lt; c.size() &lt;&lt; &quot;\n&quot;;
+    for (int i = 0; i &lt; (int)c.size(); i++) {
+        cout &lt;&lt; c[i] &lt;&lt; (i + 1 &lt; (int)c.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 2
+1 2 3
+4 5
+</code></pre>
+    <pre><code>4
+4 13 22 15
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="fft-ntt-exact-integer-convolution-via-ntt">
+  <div class="topic-head"><h2>Exact Integer Convolution via NTT</h2><span class="cnt">1 worked example</span></div>
+  <div class="theory-block"><p>Floating-point FFT rounds its final answer to the nearest integer, which is fine as long as the accumulated error stays comfortably below 0.5 -- but for large n or large coefficient magnitudes, that error can grow enough to round to the WRONG integer, and there is no way to detect this from inside the algorithm. The Number Theoretic Transform (NTT) sidesteps the issue entirely by replacing the complex n-th roots of unity with integers that behave like n-th roots of unity inside a prime field Z/pZ: a prime p of the form c * 2^k + 1 has, by Fermat&#x27;s little theorem and the structure of the multiplicative group mod p, elements of every order dividing p-1, in particular elements of order exactly 2^k -- these play the role of &#x27;i&#x27;, &#x27;-1&#x27;, etc. The workhorse modulus in competitive programming is p = 998244353 = 119 * 2^23 + 1, with primitive root g = 3, which supports NTT sizes that are any power of two up to 2^23 (about 8 million) -- comfortably enough for essentially any contest problem.</p><p>The NTT implementation is structurally IDENTICAL to the FFT implementation -- same bit-reversal permutation, same iterative butterfly over increasing block sizes len = 2, 4, 8, ... -- with every complex multiplication replaced by a modular multiplication mod p, and the &#x27;root of unity for this block size&#x27; computed as g^((p-1)/len) mod p via fast exponentiation (its modular inverse for the inverse transform, computed as g^(p-1-(p-1)/len) mod p using Fermat&#x27;s little theorem, since g^(p-1) = 1 mod p). The one genuinely new step versus FFT is that the final &#x27;divide by n&#x27; of the inverse transform becomes &#x27;multiply by the modular inverse of n mod p&#x27; (again via fast exponentiation, n^(p-2) mod p).</p><p>Because everything is exact modular arithmetic, there is zero rounding error -- the output is exactly correct AS LONG AS the true (non-modular) coefficient values are guaranteed to be smaller than p, or the problem is fine with an answer reported modulo p (which is extremely common: &#x27;output the answer modulo 998244353&#x27; is often a strong hint that NTT is the intended tool). When the true, non-modular integer answer is required and might exceed a single modulus (e.g. multiplying two 10^5-digit numbers), run the same NTT with two or three different NTT-friendly primes and reconstruct the exact value with the Chinese Remainder Theorem.</p><p>Complexity is the same O(n log n) as FFT, just with modular multiplications (each O(1) but with a larger constant than a floating-point multiply, due to the mod operation). Use NTT over FFT whenever the judge demands an exact answer, states an explicit prime modulus in the problem statement, or the coefficient magnitudes are large enough that you cannot trust double-precision rounding.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>The same convolution-shaped problems as plain FFT (polynomial products, counting via convolution), but specifically when the problem statement asks for the answer modulo a fixed prime (998244353 and 1000000007 are the two most common; only the former is NTT-friendly out of the box), or when coefficients/results are large enough (products approaching or exceeding roughly 10^15) that floating-point rounding in FFT can no longer be trusted to recover the exact integer.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) modular multiplications where n is the smallest power of two &gt;= sizeA + sizeB - 1 (bounded above by the modulus&#x27;s supported transform length, e.g. 2^23 for p = 998244353); O(n) space. Multiply by 2-3x if Chinese Remainder Theorem reconstruction across multiple primes is needed for a true (non-modular) exact answer.</p></div>
+  </div>
+  <article class="example-card" id="fft-ntt-exact-integer-convolution-via-ntt-ex0">
+  <h4>Exact Convolution via NTT (mod 998244353)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>You are given two small integer polynomials A and B, described the same way as in the FFT example (sizeA and sizeB coefficients respectively, all guaranteed small enough that the true product coefficients fit far below 998244353, so no modular wraparound is actually visible in this instance -- the point is to compute the convolution with ZERO floating-point rounding risk, using the Number Theoretic Transform instead of complex FFT). Output the exact product coefficients.</p><p>Input: first line sizeA sizeB (1 &lt;= sizeA, sizeB &lt;= 5); second line sizeA integers (A&#x27;s coefficients from the constant term upward); third line sizeB integers (B&#x27;s coefficients from the constant term upward), all coefficients between 1 and 20. Output: first line the number of coefficients of the product (sizeA + sizeB - 1); second line those coefficients from the constant term upward.</p><p>Concrete instance: A(x) = 1 + 2x + 3x^2, B(x) = 4 + 5x + 6x^2.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>1. Hand-multiply first as ground truth: c_0 = a0*b0 = 1*4 = 4. c_1 = a0*b1 + a1*b0 = 1*5 + 2*4 = 13. c_2 = a0*b2 + a1*b1 + a2*b0 = 1*6 + 2*5 + 3*4 = 6 + 10 + 12 = 28. c_3 = a1*b2 + a2*b1 = 2*6 + 3*5 = 12 + 15 = 27. c_4 = a2*b2 = 3*6 = 18. So the exact product is [4, 13, 28, 27, 18], and every one of these is far smaller than the modulus 998244353, so no modular reduction ever actually triggers here -- this is intentional, to make the example hand-verifiable while still exercising a genuine, correct NTT implementation end to end.<br>2. In code: true result length is sizeA + sizeB - 1 = 3 + 3 - 1 = 5, so pad both coefficient arrays with zeros up to n = 8 (smallest power of two &gt;= 5).<br>3. Bit-reverse both padded arrays [1,2,3,0,0,0,0,0] and [4,5,6,0,0,0,0,0], then run the iterative modular butterfly for len = 2, 4, 8, using w = 3^((998244353-1)/len) mod 998244353 as the working root of unity at each stage, to get both arrays&#x27; NTT (their values at the 8 relevant 8th roots of unity in the field).<br>4. Multiply the two length-8 arrays entrywise mod 998244353.<br>5. Run the inverse NTT (same butterfly structure with the inverse root w^-1 = 3^(998244353-1-(998244353-1)/len) mod 998244353 at each stage), then multiply every entry by the modular inverse of 8 (8^(998244353-2) mod 998244353 by Fermat&#x27;s little theorem).<br>6. Truncate to the true result length 5: [4, 13, 28, 27, 18], matching the hand-computed ground truth exactly, with no rounding involved anywhere.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll MOD = 998244353;
+const ll ROOT = 3; // a primitive root modulo 998244353
+
+ll power(ll a, ll b, ll mod) {
+    a %= mod;
+    if (a &lt; 0) a += mod;
+    ll res = 1;
+    while (b &gt; 0) {
+        if (b &amp; 1) res = res * a % mod;
+        a = a * a % mod;
+        b &gt;&gt;= 1;
+    }
+    return res;
+}
+
+void ntt(vector&lt;ll&gt;&amp; a, bool invert) {
+    int n = (int)a.size();
+    for (int i = 1, j = 0; i &lt; n; i++) {
+        int bit = n &gt;&gt; 1;
+        for (; j &amp; bit; bit &gt;&gt;= 1) j ^= bit;
+        j ^= bit;
+        if (i &lt; j) swap(a[i], a[j]);
+    }
+    for (int len = 2; len &lt;= n; len &lt;&lt;= 1) {
+        ll w = invert ? power(ROOT, MOD - 1 - (MOD - 1) / len, MOD)
+                      : power(ROOT, (MOD - 1) / len, MOD);
+        for (int i = 0; i &lt; n; i += len) {
+            ll wn = 1;
+            for (int j = 0; j &lt; len / 2; j++) {
+                ll u = a[i + j];
+                ll v = a[i + j + len / 2] * wn % MOD;
+                a[i + j] = (u + v) % MOD;
+                a[i + j + len / 2] = (u - v + MOD) % MOD;
+                wn = wn * w % MOD;
+            }
+        }
+    }
+    if (invert) {
+        ll n_inv = power(n, MOD - 2, MOD);
+        for (ll&amp; x : a) x = x * n_inv % MOD;
+    }
+}
+
+vector&lt;ll&gt; multiply(vector&lt;ll&gt; a, vector&lt;ll&gt; b) {
+    int resultSize = (int)a.size() + (int)b.size() - 1;
+    int n = 1;
+    while (n &lt; resultSize) n &lt;&lt;= 1;
+    a.resize(n);
+    b.resize(n);
+    ntt(a, false);
+    ntt(b, false);
+    for (int i = 0; i &lt; n; i++) a[i] = a[i] * b[i] % MOD;
+    ntt(a, true);
+    a.resize(resultSize);
+    return a;
+}
+
+int main() {
+    int sizeA, sizeB;
+    cin &gt;&gt; sizeA &gt;&gt; sizeB;
+    vector&lt;ll&gt; a(sizeA), b(sizeB);
+    for (auto&amp; x : a) cin &gt;&gt; x;
+    for (auto&amp; x : b) cin &gt;&gt; x;
+    vector&lt;ll&gt; c = multiply(a, b);
+    cout &lt;&lt; c.size() &lt;&lt; &quot;\n&quot;;
+    for (size_t i = 0; i &lt; c.size(); i++) {
+        cout &lt;&lt; c[i] &lt;&lt; (i + 1 &lt; c.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    }
+    return 0;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 3
+1 2 3
+4 5 6
+</code></pre>
+    <pre><code>5
+4 13 28 27 18
+</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm">
+  <div class="topic-head"><h2>Linear Recurrences via Polynomials (Kitamasa&#x27;s Method / Bostan-Mori Algorithm)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>Every order-k linear recurrence a_n = c_1 a_{n-1} + c_2 a_{n-2} + ... + c_k a_{n-k} has an associated CHARACTERISTIC POLYNOMIAL Q(x) = x^k - c_1 x^{k-1} - c_2 x^{k-2} - ... - c_k (equivalently, in the &#x27;denominator&#x27; convention used by Bostan-Mori, Q(x) = 1 - c_1 x - c_2 x^2 - ... - c_k x^k). KITAMASA&#x27;S METHOD observes that a_n can be extracted as a_n = sum_{i=0}^{k-1} r_i * a_i, where r_0, r_1, ..., r_{k-1} are the coefficients of R(x) = x^n mod Q(x) (polynomial division remainder). Because x^i for i &lt; k is trivially already reduced (R(x) = x^n exactly when n &lt; k), this formula is uniform for every n &gt;= 0, not just large n. R(x) = x^n mod Q(x) is computed by binary exponentiation exactly like modular integer exponentiation, except &#x27;multiply&#x27; means POLYNOMIAL multiplication followed by reduction modulo Q(x) (replacing every x^d term with d &gt;= k using the recurrence relation x^d = c_1 x^{d-1} + ... + c_k x^{d-k}, applied from the highest degree down). Each of the O(log n) squaring steps costs O(k^2) with schoolbook polynomial multiplication (or O(k log k) using NTT/FFT when k is large enough — several hundred or more — to make the asymptotic improvement worth the implementation complexity), giving a total of O(k^2 log n) or O(k log k log n).</p><p>The BOSTAN-MORI ALGORITHM computes the same quantity from a different, often more convenient starting representation: the recurrence&#x27;s ordinary generating function A(x) = sum a_i x^i is a RATIONAL function P(x)/Q(x) with deg P &lt; deg Q = k (P is determined directly from the first k terms a_0..a_{k-1} and Q&#x27;s coefficients, via P(x) = (A(x) * Q(x)) truncated to degree &lt; k). Bostan-Mori extracts a_n = [x^n] P(x)/Q(x) via a beautiful doubling trick: multiply numerator and denominator by Q(-x) (the polynomial with every odd-degree coefficient negated), so that A(x) = (P(x)Q(-x)) / (Q(x)Q(-x)); the new denominator Q(x)Q(-x) is automatically an EVEN polynomial (invariant under x -&gt; -x, since swapping x for -x just swaps the two multiplicands), meaning it can be reinterpreted as a polynomial in y = x^2 alone. Splitting the new numerator into its even-degree and odd-degree parts (as polynomials in y), exactly ONE of them (determined by the parity of n) contains the coefficient you need, at HALF the original index in y. Recursing this halving step O(log n) times (each step doing a handful of O(k)-sized polynomial multiplications, so O(k^2) per step with schoolbook multiplication) converges to n=0, where the answer is simply P(0)/Q(0). Bostan-Mori is often preferred over raw Kitamasa in practice because it needs no explicit polynomial-modulus reduction step (division by Q is replaced entirely by the even/odd-splitting trick) and generalizes more gracefully to computing sequences defined by an arbitrary rational generating function, not just ones already phrased as &#x27;recurrence plus initial terms.&#x27;</p><p>Both techniques are typically combined with the BERLEKAMP-MASSEY algorithm in problems where the linear recurrence itself is not given directly: if you can compute the first ~2k terms of a sequence by brute force (or by a slower DP) and suspect it satisfies SOME linear recurrence of moderate order, Berlekamp-Massey finds the shortest such recurrence in O(k^2) from those 2k terms, which Kitamasa or Bostan-Mori can then evaluate at an arbitrarily huge index. This &#x27;guess the recurrence via Berlekamp-Massey from small cases, then jump to n via Kitamasa/Bostan-Mori&#x27; pipeline is a well-known technique for problems whose direct combinatorial recurrence is annoying to derive by hand but whose small-case values are cheap to brute-force.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>You need the n-th term of a sequence known to satisfy SOME linear recurrence of order k (given explicitly, or discoverable via Berlekamp-Massey from brute-forced small terms), where n is astronomically large (up to 10^9-10^18) and k is too large (hundreds or more) for a naive O(n) DP, and either too large or borderline for O(k^3 log n) matrix exponentiation to comfortably fit the time limit, making the O(k^2 log n) polynomial-based approach the intended solution.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(k^2 log n) with schoolbook polynomial multiplication (as implemented below); O(k log k log n) if polynomial multiplications are additionally accelerated with NTT/FFT, which matters once k grows into the hundreds or thousands.</p></div>
+  </div>
+  <article class="example-card" id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm-ex0">
+  <h4>N-th Term of an Order-4 Linear Recurrence via Kitamasa&#x27;s Method</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A sequence is defined by a_0=0, a_1=1, a_2=1, a_3=2, and, for i &gt;= 4, the order-4 linear recurrence a_i = a_{i-1} + a_{i-2} + a_{i-3} + a_{i-4}. Given n (0 &lt;= n &lt;= 10^18), compute a_n modulo 10^9 + 7.</p><p>Input: the order k, then n, on the first line; then k recurrence coefficients c_1..c_k (so that a_i = sum_{j=1}^{k} c_j * a_{i-j}); then the k initial terms a_0..a_{k-1}.<br>Output: a_n modulo 10^9 + 7.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Build the characteristic polynomial Q(x) = x^k - c_1 x^{k-1} - ... - c_k implicitly via the coefficient array c[1..k], then compute R(x) = x^n mod Q(x) by binary exponentiation: maintain a running &#x27;result&#x27; polynomial (initialized to the constant 1) and a running &#x27;base&#x27; polynomial (initialized to x, i.e. the length-k coefficient vector with a 1 in position 1), and at each bit of n&#x27;s binary representation, multiply result by base (if the bit is set) and square base, reducing modulo Q(x) after every multiplication by repeatedly replacing the highest-degree term x^d (for d &gt;= k) with c_1 x^{d-1} + ... + c_k x^{d-k} until every remaining term has degree &lt; k. After processing all bits of n, the final answer is a_n = sum_{i=0}^{k-1} result[i] * a_i.</p><p>Hand-verified: with c = [1,1,1,1] and initial terms [0,1,1,2], direct unrolling of the recurrence gives a_4=4, a_5=8, a_6=15, a_7=29, a_8=56, a_9=108, a_10=208 — and the program, run with n=10, correctly outputs 208, exercising the full binary-exponentiation-with-polynomial-reduction code path (n=10 requires several actual squaring/multiplication steps, not just the trivial n&lt;k early case).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll MOD = 1000000007;
+int K;
+vector&lt;ll&gt; C; // C[1..K]: a_i = sum_{j=1}^{K} C[j]*a_{i-j}   (characteristic poly Q(x) = x^K - C[1]x^{K-1} - ... - C[K])
+
+vector&lt;ll&gt; polyMul(const vector&lt;ll&gt; &amp;A, const vector&lt;ll&gt; &amp;B) {
+    vector&lt;ll&gt; R(A.size() + B.size() - 1, 0);
+    for (size_t i = 0; i &lt; A.size(); i++) {
+        if (A[i] == 0) continue;
+        for (size_t j = 0; j &lt; B.size(); j++) {
+            R[i+j] = (R[i+j] + A[i] * B[j]) % MOD;
+        }
+    }
+    return R;
+}
+
+// reduce a polynomial (coeff vector, degree possibly &gt;= K) modulo Q(x), result has exactly K coeffs (degree &lt; K)
+vector&lt;ll&gt; reduceMod(vector&lt;ll&gt; Pc) {
+    for (int d = (int)Pc.size() - 1; d &gt;= K; d--) {
+        if (Pc[d] == 0) continue;
+        ll coef = Pc[d];
+        Pc[d] = 0;
+        for (int j = 1; j &lt;= K; j++) {
+            Pc[d-j] = (Pc[d-j] + coef * C[j]) % MOD;
+        }
+    }
+    Pc.resize(K);
+    return Pc;
+}
+
+// compute x^n mod Q(x), returned as a length-K coefficient vector
+vector&lt;ll&gt; polyPowX(ll n) {
+    vector&lt;ll&gt; result(K, 0);
+    result[0] = 1; // polynomial &quot;1&quot;
+    vector&lt;ll&gt; base(K, 0);
+    if (K == 1) base[0] = C[1] % MOD; // x === C[1] (mod Q) when Q(x) = x - C[1]
+    else base[1] = 1;                // polynomial &quot;x&quot;
+    while (n &gt; 0) {
+        if (n &amp; 1) result = reduceMod(polyMul(result, base));
+        base = reduceMod(polyMul(base, base));
+        n &gt;&gt;= 1;
+    }
+    return result;
+}
+
+int main(){
+    ll n;
+    cin &gt;&gt; K &gt;&gt; n;
+    C.assign(K+1, 0);
+    for (int j = 1; j &lt;= K; j++) cin &gt;&gt; C[j];
+    vector&lt;ll&gt; a(K);
+    for (int i = 0; i &lt; K; i++) cin &gt;&gt; a[i];
+
+    vector&lt;ll&gt; coef = polyPowX(n); // a_n = sum coef[i]*a_i
+    ll ans = 0;
+    for (int i = 0; i &lt; K; i++) ans = (ans + coef[i] * (a[i] % MOD)) % MOD;
+    cout &lt;&lt; ans &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 10
+1 1 1 1
+0 1 1 2
+</code></pre>
+    <pre><code>208
+</code></pre>
+  </div>
+</article><article class="example-card" id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm-ex1">
+  <h4>N-th Term of a Rational Generating Function via the Bostan-Mori Algorithm</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>A sequence a_0, a_1, a_2, ... satisfies a_0=0, a_1=0, a_2=1, and the order-3 recurrence a_i = a_{i-1} + a_{i-2} + a_{i-3} for i &gt;= 3 (the Tribonacci sequence). Given n, where n can be as large as 10^18, compute a_n modulo 10^9 + 7 using the Bostan-Mori algorithm on the sequence&#x27;s rational generating function, WITHOUT ever computing any of the intermediate terms a_3, a_4, ..., a_{n-1} directly.</p><p>Input: the order k, then n, on the first line; then k recurrence coefficients c_1..c_k; then the k initial terms a_0..a_{k-1}.<br>Output: a_n modulo 10^9 + 7.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Construct Q(x) = 1 - c_1 x - c_2 x^2 - ... - c_k x^k (the &#x27;denominator&#x27; convention), and P(x) = the degree-less-than-k truncation of A(x)*Q(x), computed directly from the known initial terms as P_i = sum_{j=0}^{i} Q_j * a_{i-j} for i = 0..k-1 (this uses only a_0..a_{k-1}, which are given). Then A(x) = P(x)/Q(x) exactly reproduces the sequence&#x27;s generating function. Run the Bostan-Mori doubling loop: while n &gt; 0, form Q(-x) by negating Q&#x27;s odd-indexed coefficients, compute numer = P * Q(-x) and denom = Q * Q(-x) (both by ordinary polynomial multiplication), extract the odd-indexed (if n is odd) or even-indexed (if n is even) coefficients of numer as the new P, extract the even-indexed coefficients of denom as the new Q, and halve n (integer division by 2). When n reaches 0, the answer is P[0] * modular-inverse(Q[0]).</p><p>Hand-verified against direct recurrence unrolling for small n (a_0..a_9 = 0,0,1,1,2,4,7,13,24,44, so a_10 should be 81, and the program confirms a_10 = 81), and separately cross-checked for astronomically large n by an independent order-3 matrix-exponentiation implementation: both methods agree exactly at n = 1000, n = 123456789, and n = 10^18 (all producing the same value under mod 10^9+7), confirming Bostan-Mori&#x27;s doubling recursion is implemented correctly even though only the moderate n=10 case is used as this example&#x27;s official sample (chosen so the expected output is hand-verifiable without relying on a second program).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+typedef long long ll;
+const ll MOD = 1000000007;
+
+ll power(ll a, ll e, ll mod) {
+    a %= mod; if (a &lt; 0) a += mod;
+    ll r = 1;
+    while (e &gt; 0) { if (e &amp; 1) r = r * a % mod; a = a * a % mod; e &gt;&gt;= 1; }
+    return r;
+}
+ll modinv(ll a) { return power(a, MOD-2, MOD); }
+
+vector&lt;ll&gt; polyMul(const vector&lt;ll&gt; &amp;A, const vector&lt;ll&gt; &amp;B) {
+    if (A.empty() || B.empty()) return {};
+    vector&lt;ll&gt; R(A.size() + B.size() - 1, 0);
+    for (size_t i = 0; i &lt; A.size(); i++) {
+        if (A[i] == 0) continue;
+        for (size_t j = 0; j &lt; B.size(); j++) {
+            R[i+j] = (R[i+j] + A[i] * B[j]) % MOD;
+        }
+    }
+    return R;
+}
+
+// [x^n] P(x)/Q(x) via Bostan-Mori doubling. Q[0] must be 1 (and stays 1 throughout).
+ll bostanMori(vector&lt;ll&gt; P, vector&lt;ll&gt; Q, ll n) {
+    while (n &gt; 0) {
+        // Qneg(x) = Q(-x): negate odd-index coefficients
+        vector&lt;ll&gt; Qneg = Q;
+        for (size_t i = 1; i &lt; Qneg.size(); i += 2) {
+            Qneg[i] = (MOD - Qneg[i]) % MOD;
+        }
+        vector&lt;ll&gt; numer = polyMul(P, Qneg);
+        vector&lt;ll&gt; denom = polyMul(Q, Qneg);
+        int parity = n &amp; 1;
+        vector&lt;ll&gt; newP, newQ;
+        for (size_t i = parity; i &lt; numer.size(); i += 2) newP.push_back(numer[i]);
+        for (size_t i = 0; i &lt; denom.size(); i += 2) newQ.push_back(denom[i]);
+        if (newP.empty()) newP.push_back(0);
+        P = newP; Q = newQ;
+        n &gt;&gt;= 1;
+    }
+    return P[0] % MOD * modinv(Q[0] % MOD) % MOD;
+}
+
+int main(){
+    int K;
+    ll n;
+    cin &gt;&gt; K &gt;&gt; n;
+    vector&lt;ll&gt; c(K+1, 0); // c[1..K]: a_i = sum c_j * a_{i-j}
+    for (int j = 1; j &lt;= K; j++) cin &gt;&gt; c[j];
+    vector&lt;ll&gt; a(K);
+    for (int i = 0; i &lt; K; i++) cin &gt;&gt; a[i];
+
+    // Q(x) = 1 - c_1 x - c_2 x^2 - ... - c_K x^K
+    vector&lt;ll&gt; Q(K+1, 0);
+    Q[0] = 1;
+    for (int j = 1; j &lt;= K; j++) Q[j] = (MOD - c[j] % MOD) % MOD;
+
+    // P(x) = (A(x) * Q(x)) truncated to degree &lt; K, using only known terms a_0..a_{K-1}
+    vector&lt;ll&gt; P(K, 0);
+    for (int i = 0; i &lt; K; i++) {
+        ll s = 0;
+        for (int j = 0; j &lt;= i; j++) {
+            s = (s + Q[j] * (a[i-j] % MOD)) % MOD;
+        }
+        P[i] = s;
+    }
+
+    cout &lt;&lt; bostanMori(P, Q, n) &lt;&lt; endl;
+}
+</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3 10
+1 1 1
+0 0 1
+</code></pre>
+    <pre><code>81
+</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">10</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="the child and binary tree codeforces polynomial multiplication (generating functions) count the number of distinct vertex-weighted rooted binary trees achieving each total weight from 1 to m, given an allowed set of vertex weights.">
+  <td><a href="https://codeforces.com/problemset/problem/438/E" target="_blank" rel="noopener noreferrer">The Child and Binary Tree</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">3100</td>
+  <td class="subtopic-cell">polynomial multiplication (generating functions)</td>
+  <td class="desc-cell">Count the number of distinct vertex-weighted rooted binary trees achieving each total weight from 1 to m, given an allowed set of vertex weights.</td>
+</tr><tr data-search="thief in a shop codeforces polynomial multiplication (fast exponentiation) determine every total cost achievable by picking exactly k items (with repetition) from n item types with given costs.">
+  <td><a href="https://codeforces.com/problemset/problem/632/E" target="_blank" rel="noopener noreferrer">Thief in a Shop</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2400</td>
+  <td class="subtopic-cell">polynomial multiplication (fast exponentiation)</td>
+  <td class="desc-cell">Determine every total cost achievable by picking exactly k items (with repetition) from n item types with given costs.</td>
+</tr><tr data-search="lucky tickets codeforces polynomial multiplication (convolution counting) count n-digit tickets using only a given set of allowed digits where the digit sum of the first half equals the digit sum of the second half.">
+  <td><a href="https://codeforces.com/problemset/problem/1096/G" target="_blank" rel="noopener noreferrer">Lucky Tickets</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2400</td>
+  <td class="subtopic-cell">polynomial multiplication (convolution counting)</td>
+  <td class="desc-cell">Count n-digit tickets using only a given set of allowed digits where the digit sum of the first half equals the digit sum of the second half.</td>
+</tr><tr data-search="fuzzy search codeforces string matching via convolution count positions where a pattern matches a text, allowing each pattern character to match within a tolerance window of k positions.">
+  <td><a href="https://codeforces.com/problemset/problem/528/D" target="_blank" rel="noopener noreferrer">Fuzzy Search</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2500</td>
+  <td class="subtopic-cell">string matching via convolution</td>
+  <td class="desc-cell">Count positions where a pattern matches a text, allowing each pattern character to match within a tolerance window of k positions.</td>
+</tr><tr data-search="rusty string codeforces string matching via convolution given a string with wildcard characters that can be filled with one of two letters, determine which values are valid periods of the completed string.">
+  <td><a href="https://codeforces.com/problemset/problem/827/E" target="_blank" rel="noopener noreferrer">Rusty String</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2700</td>
+  <td class="subtopic-cell">string matching via convolution</td>
+  <td class="desc-cell">Given a string with wildcard characters that can be filled with one of two letters, determine which values are valid periods of the completed string.</td>
+</tr><tr data-search="yet another string matching problem codeforces string matching via convolution find, for every alignment of two strings, the minimum number of global character-relabeling operations needed to make the overlapping substrings equal.">
+  <td><a href="https://codeforces.com/problemset/problem/954/I" target="_blank" rel="noopener noreferrer">Yet Another String Matching Problem</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2200</td>
+  <td class="subtopic-cell">string matching via convolution</td>
+  <td class="desc-cell">Find, for every alignment of two strings, the minimum number of global character-relabeling operations needed to make the overlapping substrings equal.</td>
+</tr><tr data-search="nikita and order statistics codeforces counting via convolution for every k from 0 to n, count the number of subarrays containing exactly k elements less than a given value x.">
+  <td><a href="https://codeforces.com/problemset/problem/993/E" target="_blank" rel="noopener noreferrer">Nikita and Order Statistics</a></td>
+  <td><span class="judge-badge cf">Codeforces</span></td>
+  <td class="diff-badge">2300</td>
+  <td class="subtopic-cell">counting via convolution</td>
+  <td class="desc-cell">For every k from 0 to n, count the number of subarrays containing exactly k elements less than a given value x.</td>
+</tr><tr data-search="painting a grid with three different colors leetcode linear recurrences via polynomials count the number of ways to color an m×n grid with 3 colors so no two adjacent cells share a color, for n up to 1000.">
+  <td><a href="https://leetcode.com/problems/painting-a-grid-with-three-different-colors/" target="_blank" rel="noopener noreferrer">Painting a Grid With Three Different Colors</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard</td>
+  <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
+  <td class="desc-cell">Count the number of ways to color an m×n grid with 3 colors so no two adjacent cells share a color, for n up to 1000.</td>
+</tr><tr data-search="total characters in string after transformations ii leetcode linear recurrences via polynomials after t transformations (each letter replaced by a range of following letters per a per-letter rule), find the total resulting string length, for t up to 10^9.">
+  <td><a href="https://leetcode.com/problems/total-characters-in-string-after-transformations-ii/" target="_blank" rel="noopener noreferrer">Total Characters in String After Transformations II</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard</td>
+  <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
+  <td class="desc-cell">After t transformations (each letter replaced by a range of following letters per a per-letter rule), find the total resulting string length, for t up to 10^9.</td>
+</tr><tr data-search="number of zigzag arrays ii leetcode linear recurrences via polynomials count length-n zigzag arrays with values in [l, r] modulo 1e9+7, for n up to 10^9 and (r-l) up to ~100.">
+  <td><a href="https://leetcode.com/problems/number-of-zigzag-arrays-ii/" target="_blank" rel="noopener noreferrer">Number of ZigZag Arrays II</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LeetCode Hard</td>
+  <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
+  <td class="desc-cell">Count length-n zigzag arrays with values in [l, r] modulo 1e9+7, for n up to 10^9 and (r-l) up to ~100.</td>
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

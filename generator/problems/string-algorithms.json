@@ -1,0 +1,209 @@
+[
+ {
+  "name": "Shortest Palindrome",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/shortest-palindrome/",
+  "difficulty": "LeetCode Hard (#214)",
+  "subtopic": "KMP",
+  "description": "Given a string s, add characters in front of it to make it a palindrome and return the shortest such palindrome.",
+  "why_hard": "The intended O(n) solution runs the KMP failure function on `s + '#' + reverse(s)` to find the longest palindromic prefix of s, a non-obvious reduction from \"make palindrome\" to \"prefix function.\""
+ },
+ {
+  "name": "Sum of Scores of Built Strings",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/sum-of-scores-of-built-strings/",
+  "difficulty": "LeetCode Hard (#2223)",
+  "subtopic": "Z-function",
+  "description": "For a string s, define score(i) as the length of the longest common prefix between s and the suffix of s ending at i; return the sum of scores over all suffixes.",
+  "why_hard": "The score function is exactly the Z-array by definition, so the problem is a direct, unforgiving test of correctly implementing the Z-function in O(n) rather than the naive O(n^2) comparison."
+ },
+ {
+  "name": "Prefix-Suffix Palindrome (Hard version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1326/D2",
+  "difficulty": "CF 1800",
+  "subtopic": "string hashing",
+  "description": "Given a string, find the longest string formed by concatenating a prefix and a suffix of it (each possibly empty, non-overlapping) that is a palindrome.",
+  "why_hard": "Requires peeling off a matching outer prefix/suffix pair with two pointers, then using double hashing to find the longest palindromic prefix or suffix of the remaining middle in O(1) per check, combining hashing with careful greedy/two-pointer logic."
+ },
+ {
+  "name": "Palindrome Queries",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2420",
+  "difficulty": "CSES",
+  "subtopic": "string hashing",
+  "description": "Given a string, process point updates (change a character) and range queries (is the substring from a to b a palindrome) online.",
+  "why_hard": "Answering palindrome queries under updates forces maintaining two Fenwick-tree-based polynomial hashes (forward and reversed) so any substring's forward and reverse hash can be compared in O(log n), a step beyond static hashing."
+ },
+ {
+  "name": "All Palindromes",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/3138",
+  "difficulty": "CSES",
+  "subtopic": "Manacher's",
+  "description": "For every position in a string, compute the length of the longest palindrome that ends exactly at that position.",
+  "why_hard": "Manacher's algorithm directly gives the longest palindrome centered at each position, but converting that into \"longest palindrome ending at each position\" requires an extra non-trivial transformation of the radius array rather than a direct read-off."
+ },
+ {
+  "name": "Counting Patterns",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2103",
+  "difficulty": "CSES",
+  "subtopic": "trie / Aho-Corasick",
+  "description": "Given a text string and k patterns, count for each pattern how many times it occurs in the text.",
+  "why_hard": "With many patterns, per-pattern KMP is too slow; the intended solution builds a trie of all patterns with Aho-Corasick failure links to process the text in a single O(n + sum|pattern|) pass, a genuine multi-pattern-matching data structure rather than a single-string trick."
+ },
+ {
+  "name": "Martian Strings",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/149/E",
+  "difficulty": "CF 2300",
+  "subtopic": "suffix array / suffix automaton",
+  "description": "Given two strings s and t, find the longest substring of s that can be split into two parts, the first being a substring of t and the second also being a substring of t.",
+  "why_hard": "Requires building suffix structures (suffix array/automaton or hashing-based binary search) over both strings to compute longest-common-prefix/suffix arrays efficiently, then combining two independent LCP computations to search over all split points."
+ },
+ {
+  "name": "Substring Order I",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2108",
+  "difficulty": "CSES (String Algorithms, hard section)",
+  "subtopic": "Suffix Automaton",
+  "description": "Given a string of length up to 1e5, find the k-th smallest string among all of its *distinct* substrings in lexicographic order.",
+  "why_hard": "Forces you to walk the suffix automaton's DAG while counting distinct substrings reachable from each state (endpos-class sizes), combining SAM construction with a counting-DP over the link tree."
+ },
+ {
+  "name": "Substring Distribution",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2110",
+  "difficulty": "CSES (String Algorithms, hard section)",
+  "subtopic": "Suffix Automaton",
+  "description": "For every length 1..n, print the number of distinct substrings of that exact length.",
+  "why_hard": "Requires turning per-state (len[state] - len[link[state]]) ranges from the suffix automaton into a difference array over lengths — a clean test of understanding what each SAM state actually represents."
+ },
+ {
+  "name": "Longest Duplicate Substring",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/longest-duplicate-substring/",
+  "difficulty": "LeetCode Hard (topicTags include \"Suffix Automaton\", \"Suffix Array\", \"Rolling Hash\")",
+  "subtopic": "Suffix Automaton",
+  "description": "Find the longest substring of a given string (up to 3*10^4 chars) that occurs at least twice (occurrences may overlap).",
+  "why_hard": "The suffix-automaton solution (find the deepest state with more than one occurrence, i.e. |endpos| > 1) is a direct, elegant alternative to the binary-search+hashing approach most people default to, and LeetCode's own tag confirms SAM as an intended technique."
+ },
+ {
+  "name": "Good Substrings",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/316/G2",
+  "difficulty": "CF rating 2200 (easy subtask of a 3-part problem; G3 harder version is rated 2400)",
+  "subtopic": "Suffix Automaton",
+  "description": "Each of the 26 letters has a cost and a bad/good flag; count distinct substrings whose total letter cost falls in [minCost, maxCost] and that contain no \"bad\" letters.",
+  "why_hard": "Classic \"count distinct substrings satisfying a per-letter predicate\" — you build the SAM and then do a DFS/DP over the suffix-link tree tracking cumulative cost per state, a very common competitive pattern."
+ },
+ {
+  "name": "Cyclical Quest",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/235/C",
+  "difficulty": "CF rating 2700",
+  "subtopic": "Suffix Automaton",
+  "description": "Given a big string and many query strings, for each query count how many times the query and all of its cyclic rotations occur as substrings of the big string, weighted by rotation count.",
+  "why_hard": "Requires building a suffix automaton once, then for each query string of doubled length walking the SAM incrementally while resetting on mismatch and correctly deduplicating occurrence counts per SAM state per query — a genuinely tricky online-traversal exercise."
+ },
+ {
+  "name": "Little Elephant and Strings",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/204/E",
+  "difficulty": "CF rating 2800",
+  "subtopic": "Suffix Automaton",
+  "description": "Given n strings, for each string find the length of its longest substring that also occurs (as a substring) in at least k of the n strings.",
+  "why_hard": "A generalized/multi-string suffix automaton (or generalized suffix tree) problem requiring per-state counts of \"how many of the n original strings reach this state,\" a step up from single-string SAM problems."
+ },
+ {
+  "name": "Cool Slogans",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/700/E",
+  "difficulty": "CF rating 3300",
+  "subtopic": "Suffix Automaton",
+  "description": "Find the longest chain of substrings s1, s2, ..., sk of a given string such that each si+1 is a substring of si occurring at least twice inside it (overlaps allowed).",
+  "why_hard": "The canonical hard suffix-automaton problem — you build the SAM's suffix-link tree, and for every pair of parent/child states merge their sets of \"positions where the substring occurs at least twice\" using small-to-large merging over sorted endpos sets, an advanced SAM technique."
+ },
+ {
+  "name": "Pattern Positions",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2104",
+  "difficulty": "CSES (String Algorithms, hard section)",
+  "subtopic": "Aho-Corasick Multi-Pattern Matching",
+  "description": "Same setup as Counting Patterns, but report the first (1-indexed) position at which each pattern occurs in the text, or -1 if it never occurs.",
+  "why_hard": "Pushes past simple counting — you must propagate \"earliest hit\" information up the automaton's fail-link tree (or down, depending on formulation) instead of just summing counts, testing a deeper understanding of the automaton's structure."
+ },
+ {
+  "name": "Stream of Characters",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/stream-of-characters/",
+  "difficulty": "LeetCode Hard (topicTag: \"Aho–Corasick Algorithm\", confirmed via LeetCode's own tag data)",
+  "subtopic": "Aho-Corasick Multi-Pattern Matching",
+  "description": "Design a data structure that, given up to 2*10^4 words, supports streaming individual characters and reports whether any suffix of the stream so far matches one of the words.",
+  "why_hard": "Because queries arrive online character-by-character rather than as a fixed text, the natural high-performance solution builds an Aho-Corasick automaton over the *reversed* words and walks it incrementally — a nice twist on the standard offline multi-pattern-matching setup."
+ },
+ {
+  "name": "String Set Queries",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/710/F",
+  "difficulty": "CF rating 2400",
+  "subtopic": "Aho-Corasick Multi-Pattern Matching",
+  "description": "Online queries that add a string to a set, remove a string from the set, or ask for the total number of occurrences (over all strings currently in the set) inside a given text — must be answered before reading the next query.",
+  "why_hard": "The classic \"dynamic Aho-Corasick\" problem — since the automaton can't be rebuilt from scratch per query, you maintain a small number of static Aho-Corasick automata of geometrically increasing size and periodically rebuild, an important amortized-rebuild trick."
+ },
+ {
+  "name": "Genetic engineering",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/86/C",
+  "difficulty": "CF rating 2500",
+  "subtopic": "Aho-Corasick Multi-Pattern Matching",
+  "description": "Count DNA sequences of length n (over a 4-letter alphabet) such that every position is covered by at least one occurrence of a given collection of up to 10 short patterns.",
+  "why_hard": "A classic Aho-Corasick + DP problem — states of the DP are (position in string, current automaton node, how far ahead is currently \"covered\"), forcing you to combine automaton transitions with a nontrivial coverage-tracking DP."
+ },
+ {
+  "name": "Death DBMS",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1437/G",
+  "difficulty": "CF rating 2600",
+  "subtopic": "Aho-Corasick Multi-Pattern Matching",
+  "description": "Maintain a database of names (patterns) each with a suspicion value that can be updated; given a query string, find the maximum suspicion value among all database names occurring as a substring of it.",
+  "why_hard": "One of the most cited Aho-Corasick data-structure problems — build the automaton once over all names, then use small-to-large merging of multisets (or segment tree merging) along the fail-link tree so that point updates and substring-max queries are both efficient."
+ },
+ {
+  "name": "Hossam and (sub-)palindromic tree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1771/D",
+  "difficulty": "CF rating 2100",
+  "subtopic": "Palindromic Tree (Eertree)",
+  "description": "On a tree with a letter at every vertex, for every path between two vertices find the length of the longest palindromic *subsequence* of the letters along that path.",
+  "why_hard": "Literally named after the palindromic-tree structure, it forces you to combine palindrome-subsequence DP with small-to-large tree-DP merging across all O(n^2) paths, a genuinely advanced composition of two hard techniques."
+ },
+ {
+  "name": "Palindrome Degree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/7/D",
+  "difficulty": "CF rating 2200",
+  "subtopic": "Palindromic Tree (Eertree)",
+  "description": "For every prefix of a string, define its \"degree\" recursively (a prefix has degree k if its first half is itself a palindrome of degree k-1); output the sum of all prefix degrees.",
+  "why_hard": "A classic recursive-palindrome-structure problem — efficient solutions rely on quickly testing \"is this prefix a palindrome\" and jumping through nested palindromic halves, which is exactly the kind of suffix-link jumping an Eertree (or Eertree-style hashing) supports natively."
+ },
+ {
+  "name": "Palindrome Partition",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/932/G",
+  "difficulty": "CF rating 2900",
+  "subtopic": "Palindromic Tree (Eertree)",
+  "description": "Count the number of ways to split a string into an even number of non-empty parts p1..pk such that each pi is \"special-equal\" (equal, or equal after reversal) to its mirror part pk+1-i.",
+  "why_hard": "The textbook hard application of the palindromic tree/Eertree in competitive programming — the \"special-equal\" check across mirrored parts reduces to querying palindromic structure via the Eertree combined with hashing and a counting DP, and it's routinely cited as *the* problem to test real Eertree mastery."
+ },
+ {
+  "name": "Palisection",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/17/E",
+  "difficulty": "CF rating 2900",
+  "subtopic": "Palindromic Tree (Eertree)",
+  "description": "Count the number of pairs of palindromic substrings (of length >= 2) of a given string that intersect (share at least one common position).",
+  "why_hard": "A famous, old (Codeforces Beta Round 7) hard palindrome-counting problem — you need to enumerate/count all palindromic substrings efficiently (Eertree or Manacher-derived), then combine per-position counts with a running-sum trick to count intersecting pairs without double counting, testing both palindrome enumeration and careful combinatorial counting."
+ }
+]

@@ -1,0 +1,88 @@
+{
+"group": "Compile-Time Constructs & Program Structure",
+"slug": "compile-time",
+"intro": "These concepts are about the rules governing how a C++ program is built out of multiple translation units and how the compiler enforces (or fails to enforce) correctness across that boundary — const-ness, linkage, initialization order, and name lookup.",
+"concepts": [
+{
+"term": "const correctness",
+"intro": "Marking parameters, member functions, and variables `const` wherever they aren't meant to change lets the compiler catch accidental mutation AT COMPILE TIME and documents intent for every reader of the code. A `const` member function promises not to modify the object's observable state (mutable members are a deliberate, narrow escape hatch — see below) and, crucially, can be called on `const` objects and `const&` references, which non-const member functions cannot.",
+"examples": [
+{"title": "const-correctness enabling a function to accept read-only access", "code": "class Account {\n    double balance;\npublic:\n    double getBalance() const { return balance; }   // promises not to mutate *this\n    void deposit(double amt) { balance += amt; }      // genuinely mutates -- not const\n};\n\nvoid printBalance(const Account& a) {\n    std::cout << a.getBalance();  // OK: getBalance() is const, callable on a const&\n    // a.deposit(100);            // ERROR: deposit() is non-const, cannot be called on a const&\n}", "explanation": "Because `printBalance` takes its parameter as `const Account&`, only `const`-qualified member functions are callable on it — the compiler is enforcing, at the type-system level, that this function cannot mutate the account it was given, exactly matching its intent."},
+{"title": "mutable: the narrow, deliberate escape hatch", "code": "class ExpensiveComputation {\n    mutable std::optional<int> cache;\npublic:\n    int compute() const {\n        if (!cache) cache = /* ...expensive work... */ 42;  // legal despite compute() being const\n        return *cache;\n    }\n};", "explanation": "`compute()` is logically read-only from the caller's perspective (calling it twice gives the same answer, no observable side effect) even though it physically mutates the internal cache — `mutable` is specifically for this \"physically mutates, logically const\" case, and should be used sparingly and deliberately, not as a way to bypass const-correctness when you're just being lazy."}
+],
+"pitfalls": [
+"Adding `const` to a member function that returns a non-const pointer/reference to internal data — this technically compiles but LEAKS mutable access to your \"read-only\" object's internals, defeating the purpose (`const T* get() const { return ptr; }` is fine only if `ptr` is genuinely meant to allow outside mutation of the pointed-to data).",
+"Overusing `mutable` as a shortcut to avoid fixing a genuinely non-const design — it should be reserved for implementation details (caching, lazy computation, internal bookkeeping like a mutex) that are invisible to the object's logical, observable state."
+],
+"related": ["constexpr vs const", "Static vs dynamic binding"],
+"why": null
+},
+{
+"term": "constexpr vs const",
+"intro": "`const` means \"this value will not change after it's initialized\" — but that initial value might still only be knowable at RUNTIME. `constexpr` is a stronger, different promise: this value (or function result) MUST be computable at compile time, given constexpr-compatible inputs — which unlocks using it in contexts that genuinely require a compile-time constant, like array bounds and template arguments, and often means the value is baked directly into the compiled binary rather than computed at runtime at all.",
+"examples": [
+{"title": "const doesn't imply compile-time; constexpr does", "code": "int readConfigValue();  // some runtime computation, e.g. reads a file\n\nconst int a = readConfigValue();   // fine: const, but its value is only known at RUNTIME\nconstexpr int b = 2 * 21;          // must be computable at COMPILE time -- and it is: 42\n\nint arr[b];       // OK: b is a genuine compile-time constant, valid as an array bound\n// int arr2[a];   // ERROR: a is const but NOT a compile-time constant -- invalid as a bound", "explanation": "Both `a` and `b` are immutable after initialization (that's what `const` gives you either way), but only `b` satisfies the stronger \"known at compile time\" requirement that things like array bounds and template non-type parameters demand."},
+{"title": "constexpr functions: computed at compile time when possible", "code": "constexpr int factorial(int n) {\n    return n <= 1 ? 1 : n * factorial(n - 1);\n}\n\nconstexpr int f5 = factorial(5);  // computed entirely at COMPILE time -- 120 is baked into the binary\nint x = getRuntimeValue();\nint fx = factorial(x);            // x isn't known at compile time -> falls back to a normal\n                                   // RUNTIME function call, computing the same way at runtime instead", "explanation": "The same `constexpr` function can be evaluated at compile time OR at runtime, depending on whether its actual arguments are compile-time constants — this dual nature is exactly what makes constexpr functions broadly useful rather than a narrow special case."}
+],
+"pitfalls": [
+"Assuming `constexpr` GUARANTEES compile-time evaluation in every call — it only guarantees the function is ELIGIBLE to be evaluated at compile time when given compile-time-constant arguments; called with a runtime value, it silently falls back to ordinary runtime execution (as shown above), with no error and no warning."
+],
+"related": ["const correctness", "inline keyword"],
+"why": null
+},
+{
+"term": "inline keyword",
+"intro": "In modern C++, `inline` primarily changes LINKAGE, not compiler inlining behavior — a common misconception baked right into the keyword's name. What `inline` actually does is permit a function (or, since C++17, a variable) to be DEFINED IDENTICALLY in multiple translation units without violating the One Definition Rule, letting the linker merge those duplicate definitions into one. That's precisely why any non-template function DEFINED (not just declared) directly in a header file must be marked `inline` — every .cpp file that includes that header gets its own copy of the definition, and without `inline`, that's an ODR violation caught (usually) as a duplicate-symbol linker error. Whether the compiler actually inlines a given CALL to that function (substituting the call site with the function body) is a completely separate decision the compiler makes on its own cost-based heuristics, regardless of the `inline` keyword.",
+"examples": [
+{"title": "Why headers need inline on function definitions", "code": "// math_utils.h -- included by both a.cpp and b.cpp\nint square(int x) { return x * x; }        // WITHOUT inline: ODR violation!\n                                             // a.cpp and b.cpp each get their own\n                                             // definition of square -> \"duplicate symbol\" linker error\n\ninline int square(int x) { return x * x; }  // WITH inline: legal -- the linker merges\n                                             // the identical definitions from a.o and b.o into one", "explanation": "The `inline` keyword here is solely about satisfying the linker's ODR requirements across translation units — it has nothing to do with whether calls to `square()` actually get inlined at their call sites."},
+{"title": "The compiler ignores `inline` for its actual inlining decision", "code": "inline int trivial(int x) { return x + 1; }  // likely WILL be inlined -- tiny, simple\ninline int huge(int x) {                      // marked inline, but...\n    // ...200 lines of complex logic, several loops...\n    return result;\n}                                              // the compiler will likely NOT inline this at call\n                                               // sites, despite the `inline` keyword being present --\n                                               // it's just too large/complex to be worth it", "explanation": "`huge`'s `inline` keyword is still necessary for ODR reasons (if it's defined in a header), but it has essentially no bearing on the compiler's actual cost/benefit inlining decision, which looks at the function's size and complexity, not this keyword."}
+],
+"pitfalls": [
+"Believing that marking a function `inline` will make it faster by forcing the compiler to inline its calls — this is almost entirely backwards from what the keyword does in modern compilers; use compiler-specific attributes like `[[gnu::always_inline]]` if you genuinely need to force inlining (rare, and usually a sign of over-optimization before profiling)."
+],
+"related": ["constexpr vs const", "ODR (One Definition Rule)"],
+"why": null
+},
+{
+"term": "ODR (One Definition Rule)",
+"intro": "Every non-inline function, non-inline variable, class, and template specialization must have EXACTLY ONE definition across the entire linked program (inline entities are the deliberate exception — they may be defined identically in multiple translation units, and the linker merges them). Violating the ODR — most commonly, defining the same non-inline function differently in two different .cpp files that both end up linked into the same binary — is undefined behavior. Sometimes this is caught cleanly at link time as a \"duplicate symbol\" error; other times (especially across shared libraries, or with subtly-different-but-same-named definitions) it silently compiles and links, producing inconsistent behavior depending on which definition happens to get used where.",
+"examples": [
+{"title": "A caught ODR violation (link error)", "code": "// a.cpp\nint helper() { return 1; }\n\n// b.cpp\nint helper() { return 2; }   // same signature, different body, both non-inline, both linked --\n                              // typically caught as a \"duplicate symbol: helper\" LINKER error", "explanation": "Because neither definition is `inline`, the linker expects exactly one definition of `helper` across the whole program — finding two, it (usually) refuses to link at all, which is the BENIGN outcome of an ODR violation."},
+{"title": "A silent, dangerous ODR violation", "code": "// widget_v1.h -- included only by a.cpp\nstruct Widget { int x; };\n\n// widget_v2.h -- included only by b.cpp, but ALSO named \"Widget\"\nstruct Widget { int x; double y; };   // a DIFFERENT layout, same class NAME\n\n// If both a.o and b.o are linked together, this is an ODR violation the linker\n// often CANNOT detect (inline/header-only class definitions frequently aren't\n// flagged the way duplicate non-inline FUNCTION symbols are) -- code compiled\n// against the first Widget may end up operating on memory laid out per the second", "explanation": "This is the genuinely dangerous case: two different definitions of a class with the same name, each visible only in part of the program, that the linker doesn't reliably catch — producing subtle, hard-to-diagnose memory corruption rather than a clean build failure."}
+],
+"pitfalls": [
+"Assuming ODR violations always produce a clear linker error — for classes/templates/inline functions specifically, silent, undetected ODR violations are a real and much scarier failure mode than the \"duplicate symbol\" case for plain non-inline functions.",
+"Defining the same-named class differently in two headers included by different parts of a large codebase (a common accident in big projects with loosely-namespaced internal helper types) — always use unique, sufficiently-namespaced names for anything defined in a widely-included header."
+],
+"related": ["inline keyword", "PImpl idiom (Pointer to Implementation)"],
+"why": null
+},
+{
+"term": "ADL (Argument-Dependent Lookup)",
+"intro": "When you call an unqualified function, the compiler doesn't only look in the local/enclosing/global scope for candidates — it ALSO looks in the namespaces associated with the types of the function call's arguments. This is why `swap(a, b)`, called unqualified on some user-defined type from `mylib`, usually finds `mylib::swap` correctly even without a `using mylib::swap;` or fully qualifying the call — ADL adds `mylib`'s namespace to the lookup purely because one of the arguments' type lives there.",
+"examples": [
+{"title": "ADL finding a namespace-scoped swap without any using-declaration", "code": "namespace mylib {\n    struct Widget { int data; };\n    void swap(Widget& a, Widget& b) { std::swap(a.data, b.data); }\n}\n\nvoid useIt(mylib::Widget& a, mylib::Widget& b) {\n    swap(a, b);   // unqualified call -- ADL looks in mylib (because a and b are mylib::Widget)\n                  // and finds mylib::swap, even with no `using mylib::swap;` anywhere\n}", "explanation": "Without ADL, `swap(a, b)` here would only find whatever `swap` is visible via ordinary (non-argument-dependent) lookup in the caller's own scope — likely std::swap via a `using namespace std;`, or nothing at all. ADL is specifically what makes the CORRECT, type-specific `mylib::swap` get found automatically."},
+{"title": "Why this matters for the \"swap idiom\" and generic code", "code": "template <class T>\nvoid genericAlgorithm(T& a, T& b) {\n    using std::swap;   // bring std::swap into scope as a FALLBACK candidate\n    swap(a, b);          // unqualified call: ADL will still prefer a type-specific swap\n                          // (like mylib::swap above) if T's own namespace defines one,\n                          // but falls back to std::swap via the using-declaration otherwise\n}", "explanation": "This `using std::swap; swap(a, b);` pattern is the standard idiom precisely because it lets ADL pick a more specific, type-appropriate swap when one exists, while still having std::swap available as a fallback for types that don't define their own — this is exactly how std::sort and friends achieve efficient swapping for arbitrary user types."}
+],
+"pitfalls": [
+"Fully qualifying a swap call as `std::swap(a, b)` inside generic code — this DISABLES ADL entirely (a qualified call only looks exactly where you said), so a more efficient type-specific swap defined elsewhere never gets considered, even if one exists."
+],
+"related": ["ODR (One Definition Rule)"],
+"why": null
+},
+{
+"term": "Static initialization order fiasco",
+"intro": "The relative initialization order of non-local static/global objects defined in DIFFERENT translation units is left UNSPECIFIED by the standard (within a single translation unit, order is well-defined: top to bottom). If one such global's constructor depends on another global — defined in a different .cpp file — already being initialized, whether the program works correctly ends up depending on arbitrary link order, which can silently change across compilers, compiler versions, or even just reordering source files in a build. This is the \"static initialization order fiasco,\" and it's a real, if increasingly rare (thanks to modern idioms), source of hard-to-reproduce startup bugs.",
+"examples": [
+{"title": "The fiasco: a fragile dependency across translation units", "code": "// file1.cpp\nMyType globalA = computeUsingGlobalB();  // depends on globalB already existing --\n                                          // but is globalB initialized yet?? UNSPECIFIED.\n\n// file2.cpp\nMyType globalB = /* some initial value */;\n\n// Whether this program works correctly depends entirely on which translation\n// unit's globals happen to get initialized first -- NOT guaranteed by the\n// standard, and effectively determined by arbitrary link order", "explanation": "There's no reliable, portable way to make this work as written — the standard simply does not promise anything about the relative order of globalA's and globalB's initialization across these two files."},
+{"title": "The standard fix: construct-on-first-use", "code": "MyType& getGlobalA() {\n    static MyType instance = computeUsingGlobalB();  // a FUNCTION-LOCAL static\n    return instance;    // C++11 guarantees this is initialized exactly once,\n}                        // on first call, in a thread-safe way -- and \"first call\"\n                         // naturally happens only once getGlobalB() has already run,\n                         // if getGlobalA()'s initializer itself calls getGlobalB()\n\nMyType& getGlobalB() {\n    static MyType instance = /* some initial value */;\n    return instance;\n}", "explanation": "By wrapping each global in an accessor function that returns a reference to a function-local static, initialization order becomes driven by which accessor is CALLED first — which you control by simply calling getGlobalB() before (or from within) getGlobalA()'s initialization — rather than by unspecified cross-translation-unit static-init order."}
+],
+"pitfalls": [
+"Relying on any specific order of global/static initialization across different .cpp files — even if it \"happens to work\" with your current compiler, it is not a guarantee and can silently break on a compiler upgrade or build reorganization.",
+"Assuming the construct-on-first-use fix has no downsides — it only guards INITIALIZATION order, not destruction order (globals are still destroyed in the reverse order of completed construction, which introduces an analogous, less commonly discussed \"static DEinitialization order\" hazard for objects that reference each other during program teardown)."
+],
+"related": ["ODR (One Definition Rule)"],
+"why": null
+}
+]
+}

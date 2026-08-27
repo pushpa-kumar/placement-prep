@@ -1,0 +1,119 @@
+[
+ {
+  "name": "Buy Low Sell High",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/865/D",
+  "difficulty": "CF 2400",
+  "subtopic": "greedy + data structure (\"regret\" greedy with a min-heap)",
+  "description": "Given n days of known future stock prices, repeatedly buy/sell one share per day (never short) to maximize total profit.",
+  "why_hard": "The optimal strategy isn't simple local matching — you push every price twice into a min-heap and \"undo\" a bad earlier buy by reselling-and-rebuying through the heap whenever a better price appears, a non-obvious exchange argument that's a template for a whole family of regret-based greedy problems."
+ },
+ {
+  "name": "Shichikuji and Power Grid",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1245/D",
+  "difficulty": "CF 1900",
+  "subtopic": "greedy reduction to MST",
+  "description": "For n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.",
+  "why_hard": "The key insight is a non-obvious modeling trick — add a virtual \"source\" node connected to every city with an edge weight equal to that city's own-station cost, then the whole problem collapses into finding a Minimum Spanning Tree, whose greedy correctness (Prim/Kruskal) has to be re-justified in this transformed setting."
+ },
+ {
+  "name": "Stressful Training",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1132/D",
+  "difficulty": "CF 2300",
+  "subtopic": "binary search + greedy feasibility check",
+  "description": "n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.",
+  "why_hard": "The check-function for a candidate capacity is itself a non-trivial greedy simulation (always rescue whichever student is closest to dying, via a priority queue), so the problem combines two layers of exact reasoning: binary search monotonicity plus proving the inner greedy allocation is optimal."
+ },
+ {
+  "name": "Tasks and Deadlines",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1630",
+  "difficulty": "CSES (Sorting and Searching, high end)",
+  "subtopic": "exchange argument (sort by duration, not deadline)",
+  "description": "Process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task's reward is its deadline minus its finishing time.",
+  "why_hard": "The deadlines are a red herring in the objective's structure — a swap-adjacent-tasks exchange argument shows only the order of durations matters (shortest job first), which is counter-intuitive on first read since deadlines appear in the reward formula."
+ },
+ {
+  "name": "Reading Books",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1631",
+  "difficulty": "CSES (Sorting and Searching, high end)",
+  "subtopic": "greedy pairing / scheduling with two workers",
+  "description": "Two people must read all n books together (never the same book at the same time); given each book's reading time, find the minimum total time for both to finish everything.",
+  "why_hard": "The answer isn't simply \"split books evenly\" — you must reason about the interaction between the single longest book and the sum of all reading times to derive the correct greedy lower bound and a matching construction."
+ },
+ {
+  "name": "Movie Festival II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1632",
+  "difficulty": "CSES (Sorting and Searching, high end)",
+  "subtopic": "greedy interval scheduling with k resources",
+  "description": "With k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.",
+  "why_hard": "It generalizes classic single-resource interval scheduling to k parallel resources — sorting by end time is still correct, but you additionally need a data structure (e.g. a multiset of members' free times) to greedily assign each movie to the \"least wasteful\" available member."
+ },
+ {
+  "name": "Candy",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/candy/",
+  "difficulty": "Hard",
+  "subtopic": "exchange argument (two-pass greedy)",
+  "description": "Distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.",
+  "why_hard": "A single left-to-right or right-to-left pass is provably insufficient; the minimal correct assignment requires two independent greedy passes whose results are combined by taking the max at each position, and proving that this actually achieves the global minimum is non-obvious."
+ },
+ {
+  "name": "Set Intersection Size At Least Two",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/set-intersection-size-at-least-two/",
+  "difficulty": "Hard",
+  "subtopic": "greedy on intervals with a non-obvious proof",
+  "description": "Given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.",
+  "why_hard": "The natural single-point interval-greedy idea (from \"minimum points to stab all intervals\") doesn't extend cleanly to \"at least two\" — the correct approach sorts by right endpoint (tie-broken by left endpoint) and greedily appends the two largest missing values from the interval's tail, and justifying why this greedy choice is always safe is considerably subtler than the classic single-cover version."
+ },
+ {
+  "name": "Huffman Coding on Segment",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/700/D",
+  "difficulty": "CF 3100",
+  "subtopic": "Huffman Coding & Optimal Merge",
+  "description": "For each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary Huffman encoding of the characters in that subarray.",
+  "why_hard": "Directly names and requires Huffman coding, but instead of encoding the whole array once, it demands the optimal-merge cost for arbitrary online ranges — forcing a persistent/segment-tree-of-heaps style data structure layered on top of the classic greedy-merge algorithm."
+ },
+ {
+  "name": "Minimum Cost to Merge Stones",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-cost-to-merge-stones/",
+  "difficulty": "LeetCode Hard (#1000)",
+  "subtopic": "Huffman Coding & Optimal Merge",
+  "description": "Given piles of stones in a row, merge exactly K consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.",
+  "why_hard": "A direct generalization of the two-way Huffman/optimal-merge idea to K-way merges with an adjacency (interval) constraint instead of \"any two smallest\" — the greedy priority-queue approach that solves classic Huffman coding fails here, and interval DP is required, making it an excellent problem for contrasting when greedy optimal-merge generalizes and when it doesn't."
+ },
+ {
+  "name": "Minimum Cost to Merge Sorted Lists",
+  "judge": "LeetCode",
+  "link": "https://leetcode.com/problems/minimum-cost-to-merge-sorted-lists/",
+  "difficulty": "LeetCode Hard (#3801)",
+  "subtopic": "Huffman Coding & Optimal Merge",
+  "description": "Repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.",
+  "why_hard": "The len(a) + len(b) term is exactly the classic Huffman/optimal-merge cost (rewarding merging small pieces first, greedily via a priority queue), but the added median-distance penalty breaks the pure greedy-by-size argument and requires reasoning about which pairs to merge — a modern, sharper test of recognizing optimal-merge structure versus its limits."
+ },
+ {
+  "name": "Olympiad in Programming and Sports",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/730/I",
+  "difficulty": "CF 2000",
+  "subtopic": "Fractional vs. 0/1 Greedy Recognition (naive greedy fails)",
+  "description": "Split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).",
+  "why_hard": "A naive per-student \"assign to whichever skill is larger\" or ratio-based fractional-style greedy is provably suboptimal because of the exact-size constraints on both teams; the correct approach starts from a size-respecting baseline assignment and refines it with an exchange-argument priority queue — a sharp illustration of where indivisible, sized-bucket constraints break simple greedy/fractional reasoning."
+ },
+ {
+  "name": "Knapsack",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1132/E",
+  "difficulty": "CF 2300",
+  "subtopic": "Fractional vs. 0/1 Greedy Recognition (0/1 requires DP, not greedy)",
+  "description": "Given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.",
+  "why_hard": "Looks like it should admit a simple ratio-greedy (as in fractional knapsack), but the hard per-category cardinality caps and 0/1 (indivisible) selection mean the true solution needs a knapsack-style DP over category counts combined with a greedy sort within each category — a clean test of recognizing exactly which part of the problem greedy can solve and which needs DP."
+ }
+]

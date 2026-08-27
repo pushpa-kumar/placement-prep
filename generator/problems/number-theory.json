@@ -1,0 +1,209 @@
+[
+ {
+  "name": "Exponentiation II",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1712",
+  "difficulty": "CSES (Mathematics, harder set)",
+  "subtopic": "Modular Exponentiation (tower of exponents)",
+  "description": "Efficiently compute a^(b^c) mod 1e9+7 for many triples (a, b, c), with the convention 0^0 = 1.",
+  "why_hard": "The outer exponent b^c is astronomically large, so it must be reduced modulo (p-1) via Fermat's little theorem before the outer fast exponentiation — and the 0^0 = 1 convention plus the case a ≡ 0 (mod p) create edge cases that trip up a naive Euler-theorem application."
+ },
+ {
+  "name": "Multipliers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/615/D",
+  "difficulty": "2000",
+  "subtopic": "Modular Exponentiation (divisor-pairing trick)",
+  "description": "Given n, compute the product of all of its divisors, modulo 1e9+7.",
+  "why_hard": "Divisors pair up as (d, n/d) with product n, so the answer is n raised to (number of divisors)/2 — but that count can be odd (perfect squares) and n itself can be ≡ 0 mod p, forcing careful modular-exponentiation bookkeeping rather than a naive product loop."
+ },
+ {
+  "name": "Sum of Divisors",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1082",
+  "difficulty": "CSES (Mathematics, harder set)",
+  "subtopic": "Sieve-based / divisor-function summation",
+  "description": "Compute the sum of σ(i) (sum-of-divisors function) for i = 1..n, modulo 1e9+7, for n up to 10^12.",
+  "why_hard": "n is too large to sieve directly, so the sum must be rewritten as Σ d·⌊n/d⌋ and evaluated in O(√n) using the floor-division block technique — a step beyond a basic sieve, testing whether the solver knows the divisor-summation identity."
+ },
+ {
+  "name": "Steps to One",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1139/D",
+  "difficulty": "2300",
+  "subtopic": "Sieve-based DP over divisors",
+  "description": "Starting from an array, repeatedly replace it with a uniformly random non-empty subset and take the GCD of the remaining elements until it becomes 1; find the expected number of steps.",
+  "why_hard": "Requires computing, for every x, the probability that a random subset's GCD is a multiple of x by counting multiples of x in the array, then sieving downward from large x to small x (Möbius-style subtraction of multiples) to get the exact-GCD-x probabilities before assembling the expectation."
+ },
+ {
+  "name": "Next Prime",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/3396",
+  "difficulty": "CSES (Mathematics, harder set)",
+  "subtopic": "Primality Testing at Scale",
+  "description": "For up to 20 queries, each giving n up to 10^12, output the smallest prime strictly greater than n.",
+  "why_hard": "Trial division up to √n (≈10^6) per candidate, repeated across the average prime gap and multiple queries, is too slow within the time limit — the intended solution needs a fast deterministic primality test (Miller–Rabin) to check each candidate in O(log^3 n)."
+ },
+ {
+  "name": "Binomial Coefficients",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1079",
+  "difficulty": "CSES (Mathematics, harder set)",
+  "subtopic": "nCr under modulo",
+  "description": "Answer many queries of the form \"compute C(a, b) mod 1e9+7.\"",
+  "why_hard": "With up to 10^5 queries and a, b up to 10^6, per-query computation is too slow — it forces precomputing factorials and modular inverse factorials (via Fermat's little theorem) up front to answer each query in O(1)."
+ },
+ {
+  "name": "Anton and School - 2",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/785/D",
+  "difficulty": "2300",
+  "subtopic": "nCr under modulo (combinatorial identities)",
+  "description": "Given a bracket string, for each query range count the number of ways to pick a balanced-bracket subsequence (as a sum over k of C(opens, k)·C(closes, k)).",
+  "why_hard": "Naively summing C(opens, k)·C(closes, k) over all k is too slow per query; the fast solution collapses the sum into a single binomial coefficient via a Vandermonde-style identity, requiring genuine combinatorial-identity manipulation on top of routine modular nCr."
+ },
+ {
+  "name": "Prime Multiples",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2185",
+  "difficulty": "CSES (Mathematics, harder set)",
+  "subtopic": "Inclusion-Exclusion",
+  "description": "Given up to 20 distinct primes and n up to 10^18, count how many integers in [1, n] are divisible by at least one of the given primes.",
+  "why_hard": "With n up to 10^18, only inclusion-exclusion over the 2^20 subsets of the given primes (each subset contributing ⌊n / product⌋) is fast enough — a clean, large-scale test of the inclusion-exclusion principle itself."
+ },
+ {
+  "name": "Unusual Sequences",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/900/D",
+  "difficulty": "2000",
+  "subtopic": "Inclusion-Exclusion (Möbius function)",
+  "description": "Count the number of sequences of positive integers of any length whose GCD is exactly x and whose elements sum to y.",
+  "why_hard": "First requires solving \"count sequences with GCD exactly 1\" via a stars-and-bars-style recurrence, then extending to \"GCD exactly x\" via a Möbius-function inclusion-exclusion over the multiples of x — a two-layer combination of combinatorics and number theory rather than a single-step formula."
+ },
+ {
+  "name": "Remainders Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/687/B",
+  "difficulty": "1800",
+  "subtopic": "Chinese Remainder Theorem",
+  "description": "Given k and a set of moduli c_1..c_n, decide whether knowing x mod c_i for all i always determines x mod k for every possible x.",
+  "why_hard": "Forces you to reason about CRT existence/uniqueness conditions (lcm of the c_i vs. k) rather than just running the algorithm."
+ },
+ {
+  "name": "Congruence Equation",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/919/E",
+  "difficulty": "2100",
+  "subtopic": "Chinese Remainder Theorem",
+  "description": "Given a, b, prime p and bound x, count integers y in [1, x] such that a^y ≡ b (mod p).",
+  "why_hard": "Combines discrete logarithm / multiplicative order with CRT-style periodic counting to combine residues across the full range."
+ },
+ {
+  "name": "Two Chandeliers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1500/B",
+  "difficulty": "2200",
+  "subtopic": "Chinese Remainder Theorem",
+  "description": "Two chandeliers cycle through colors with different periods; find the day of the k-th day their colors differ, using CRT to count matching days up to a bound.",
+  "why_hard": "Requires binary search over CRT-derived periodicity plus careful inclusion-exclusion on the merged cycle length (lcm of the two periods)."
+ },
+ {
+  "name": "Power Tower",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/906/D",
+  "difficulty": "2700",
+  "subtopic": "Chinese Remainder Theorem",
+  "description": "Compute a power tower w_l^(w_{l+1}^(...)) mod m for range queries, using the generalized Euler theorem (which itself needs CRT-style modulus factoring via repeated totient reduction).",
+  "why_hard": "Classic \"CRT + Euler's theorem tower\" problem; the recursive modulus-halving argument is a staple hard-NT technique."
+ },
+ {
+  "name": "ConstructOR",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1748/D",
+  "difficulty": "2100",
+  "subtopic": "Chinese Remainder Theorem",
+  "description": "Find x < 2^60 such that a|x and b|x (bitwise OR) are both divisible by d, by reasoning over coprime bit-parity constraints reminiscent of CRT-style constraint splitting.",
+  "why_hard": "Good constructive-CRT-flavored problem for the \"combine independent modular/bitwise constraints\" mindset, verified via CF API tag `chinese remainder theorem`."
+ },
+ {
+  "name": "Magic Gems",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1117/D",
+  "difficulty": "2100",
+  "subtopic": "Matrix Exponentiation",
+  "description": "Count configurations summing to N units where each magic gem takes 1 unit or is split into M units, for N up to 1e18 — the count follows f(n) = f(n-1) + f(n-M).",
+  "why_hard": "Textbook \"derive an order-M linear recurrence then matrix-exponentiate it\" problem, a clean step beyond plain Fibonacci."
+ },
+ {
+  "name": "Lunar New Year and a Recursive Sequence",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1106/F",
+  "difficulty": "2400",
+  "subtopic": "Matrix Exponentiation",
+  "description": "Given f_i = (f_{i-1}^{b1} · ... · f_{i-k}^{bk}) mod p for a prime p, find f_n.",
+  "why_hard": "The recurrence is multiplicative, so you must exponentiate the *exponent vector* via matrix power and separately handle the base via a primitive root / discrete logarithm — a genuinely harder combination than a linear additive recurrence."
+ },
+ {
+  "name": "Fibonotci",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/575/A",
+  "difficulty": "2700",
+  "subtopic": "Matrix Exponentiation",
+  "description": "Compute F_n for a Fibonacci-like recurrence F_n = s_{n-1}F_{n-1} + s_{n-2}F_{n-2} where s is an \"almost cyclic\" coefficient sequence with a handful of exceptions, over huge n and many queries.",
+  "why_hard": "Needs precomputed matrix products over one full cycle plus careful patching for the exceptional positions — a much harder generalization of Fibonacci-by-matrix-power."
+ },
+ {
+  "name": "Throwing Dice",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/1096",
+  "difficulty": "CSES (n up to 1e18)",
+  "subtopic": "Matrix Exponentiation",
+  "description": "Count the number of ways to reach sum n by repeatedly throwing a die (1..6), for n up to 10^18.",
+  "why_hard": "Canonical order-6 linear recurrence that is intractable by plain DP once n exceeds ~10^7, forcing matrix exponentiation."
+ },
+ {
+  "name": "Ceizenpok's formula",
+  "judge": "Codeforces (Gym — 2015 ICL, Finals, Div. 1)",
+  "link": "https://codeforces.com/gym/100633/problem/J",
+  "difficulty": "No CF contest rating (ICPC Gym problem); constraints (n ≤ 1e18, m ≤ 1e6 arbitrary) put it solidly at Div.1 E/hard-2400+ equivalent difficulty",
+  "subtopic": "Lucas' Theorem (combined with CRT)",
+  "description": "Compute C(n, k) mod m for n up to 1e18, k ≤ n, and an *arbitrary* modulus m ≤ 1e6 (not necessarily prime).",
+  "why_hard": "The canonical \"generalized Lucas' theorem\" problem — factor m into prime powers via CRT, apply Lucas/Andrew Granville's extension for each prime power, then recombine with CRT. Verified by direct fetch (statement confirms exact n/k/m bounds); note this is the one genuinely well-known Lucas' theorem problem found on a Codeforces-hosted judge — standalone (non-gym) CF/CSES problems requiring pure Lucas' theorem are very rare (see summary)."
+ },
+ {
+  "name": "Coprime Subsequences",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/803/F",
+  "difficulty": "2000",
+  "subtopic": "Möbius Inversion",
+  "description": "Count the number of subsequences of an array whose gcd is 1.",
+  "why_hard": "Requires inclusion-exclusion via the Möbius function over multiples to avoid double counting non-coprime subsequences."
+ },
+ {
+  "name": "Make It One",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1043/F",
+  "difficulty": "2500",
+  "subtopic": "Möbius Inversion",
+  "description": "Find the minimum-size subset of an array whose gcd is 1, using Möbius-function-weighted subset-sum DP.",
+  "why_hard": "Combines Möbius inversion with a nontrivial DP bound proof (answer ≤ 7) — a favorite \"hard Möbius\" problem in most curated lists."
+ },
+ {
+  "name": "Alex and a TV Show",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1097/F",
+  "difficulty": "2500",
+  "subtopic": "Möbius Inversion",
+  "description": "Support union/gcd/lcm updates on multisets and answer \"count of x with a given gcd\" queries via randomization plus a Möbius-transform-style array.",
+  "why_hard": "Rare combination of Möbius/divisor-transform ideas with randomized hashing for online updates."
+ },
+ {
+  "name": "Counting Coprime Pairs",
+  "judge": "CSES",
+  "link": "https://cses.fi/problemset/task/2417",
+  "difficulty": "CSES",
+  "subtopic": "Möbius Inversion",
+  "description": "Given n integers up to 10^6, count the number of pairs that are coprime.",
+  "why_hard": "The standard entry-level-but-still-nontrivial Möbius sieve counting problem — a clean verification target before tackling 803F/1043F."
+ }
+]
