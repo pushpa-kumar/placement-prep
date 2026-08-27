@@ -10,6 +10,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -22,6 +24,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -31,6 +35,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -206,6 +212,12 @@
     margin:0 0 10px; font-size:.8rem;
   }
   .mcq-card pre code{ background:none; padding:0; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .mcq-options{ display:flex; flex-direction:column; gap:6px; margin-bottom:2px; }
   .mcq-option{
     text-align:left; background:var(--surface-2); border:1px solid var(--border); color:var(--text);
@@ -310,6 +322,22 @@ function norm(s){ return (s||"").toLowerCase(); }
 function escapeHtml(s){
   return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
+const CPP_TOKEN_RE = /(?<comment>\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(?<preproc>^[ \t]*#.*)|(?<string>"(?:\\.|[^"\\\n])*")|(?<char>'(?:\\.|[^'\\\n])*')|(?<number>\b0[xX][0-9a-fA-F]+[uUlL]*\b|\b\d+\.?\d*(?:[eE][+-]?\d+)?[fFuUlL]*\b)|(?<keyword>\b(?:alignas|alignof|and|and_eq|asm|auto|bitand|bitor|bool|break|case|catch|char|char8_t|char16_t|char32_t|class|compl|concept|const|consteval|constexpr|constinit|const_cast|continue|co_await|co_return|co_yield|decltype|default|delete|do|double|dynamic_cast|else|enum|explicit|export|extern|false|final|float|for|friend|goto|if|inline|int|long|mutable|namespace|new|noexcept|not|not_eq|nullptr|operator|or|or_eq|override|private|protected|public|register|reinterpret_cast|requires|return|short|signed|sizeof|static|static_assert|static_cast|struct|switch|template|this|thread_local|throw|true|try|typedef|typeid|typename|union|unsigned|using|virtual|void|volatile|wchar_t|while|xor|xor_eq)\b)|(?<type>\b(?:string|vector|map|unordered_map|unordered_set|set|multiset|multimap|pair|tuple|queue|priority_queue|stack|deque|array|list|forward_list|bitset|complex|size_t|ssize_t|int8_t|int16_t|int32_t|int64_t|uint8_t|uint16_t|uint32_t|uint64_t)\b)/gm;
+
+function highlightCpp(code){
+  code = code || "";
+  let out = "", pos = 0, m;
+  CPP_TOKEN_RE.lastIndex = 0;
+  while((m = CPP_TOKEN_RE.exec(code)) !== null){
+    if(m.index > pos) out += escapeHtml(code.slice(pos, m.index));
+    const kind = Object.keys(m.groups).find(k => m.groups[k] !== undefined);
+    out += `<span class="tok-${kind}">${escapeHtml(m[0])}</span>`;
+    pos = CPP_TOKEN_RE.lastIndex;
+  }
+  out += escapeHtml(code.slice(pos));
+  return out;
+}
+
 function inlineCode(s){
   // escape first, then restore `code` spans as <code>
   let esc = escapeHtml(s);
@@ -445,7 +473,7 @@ function mcqCardHtml(m){
     : "";
   return `<article class="mcq-card" id="mcq-card-${m.id}">
     <p class="q">${inlineCode(m.question)}</p>
-    ${m.code ? `<pre><code>${escapeHtml(m.code)}</code></pre>` : ""}
+    ${m.code ? `<pre><code>${highlightCpp(m.code)}</code></pre>` : ""}
     <div class="badges">${statusBadge}${companyBadges}</div>
     <div class="mcq-options ${answered?"answered":""}">${options}</div>
     <div class="meta-row" style="margin-top:6px;"><span class="src">Source: ${src}</span></div>

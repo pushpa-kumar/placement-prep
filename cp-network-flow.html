@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,69 +281,69 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Build a residual graph with each cable as a forward edge of its given capacity plus a paired reverse edge of capacity 0.<br>2. Repeat: BFS from node 1 in the residual graph to find any path to node n using only edges of positive residual capacity.<br>3. If no such path exists, stop -- the current total is the answer.<br>4. Otherwise find the bottleneck (minimum residual capacity) along the found path, add it to the answer, and subtract it from every forward edge on the path while adding it to every corresponding reverse edge.<br>5. By hand: augment 1-&gt;2-&gt;4 by min(3,2)=2 (running total 2), then 1-&gt;3-&gt;4 by min(2,3)=2 (running total 4), then the only remaining path 1-&gt;2-&gt;3-&gt;4 has bottleneck min(1,1,1)=1 (running total 5); after that node 4 is unreachable from node 1 in the residual graph, so the answer is 5. This matches the min cut {1,2,3} vs {4} of capacity 2 + 3 = 5.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct MaxFlow {
-    struct Edge { int to; long long cap; int rev; };
-    vector&lt;vector&lt;Edge&gt;&gt; graph;
-    int n;
-    MaxFlow(int n): n(n), graph(n) {}
-    void addEdge(int u, int v, long long cap) {
-        graph[u].push_back({v, cap, (int)graph[v].size()});
-        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+<span class="tok-keyword">struct</span> MaxFlow {
+    <span class="tok-keyword">struct</span> Edge { <span class="tok-keyword">int</span> to; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap; <span class="tok-keyword">int</span> rev; };
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;Edge&gt;&gt; graph;
+    <span class="tok-keyword">int</span> n;
+    MaxFlow(<span class="tok-keyword">int</span> n): n(n), graph(n) {}
+    <span class="tok-keyword">void</span> addEdge(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap) {
+        graph[u].push_back({v, cap, (<span class="tok-keyword">int</span>)graph[v].size()});
+        graph[v].push_back({u, <span class="tok-number">0</span>, (<span class="tok-keyword">int</span>)graph[u].size() - <span class="tok-number">1</span>});
     }
-    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
-        vector&lt;bool&gt; visited(n, false);
-        queue&lt;int&gt; q;
+    <span class="tok-keyword">bool</span> bfs(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; prevv, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; preve) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited(n, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
         q.push(s);
-        visited[s] = true;
-        prevv.assign(n, -1);
-        preve.assign(n, -1);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            if (u == t) break;
-            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+        visited[s] = <span class="tok-keyword">true</span>;
+        prevv.assign(n, -<span class="tok-number">1</span>);
+        preve.assign(n, -<span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">if</span> (u == t) <span class="tok-keyword">break</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)graph[u].size(); i++) {
                 Edge&amp; e = graph[u][i];
-                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
-                    visited[e.to] = true;
+                <span class="tok-keyword">if</span> (!visited[e.to] &amp;&amp; e.cap &gt; <span class="tok-number">0</span>) {
+                    visited[e.to] = <span class="tok-keyword">true</span>;
                     prevv[e.to] = u;
                     preve[e.to] = i;
                     q.push(e.to);
                 }
             }
         }
-        return visited[t];
+        <span class="tok-keyword">return</span> visited[t];
     }
-    long long maxflow(int s, int t) {
-        long long flow = 0;
-        vector&lt;int&gt; prevv, preve;
-        while (bfs(s, t, prevv, preve)) {
-            long long d = LLONG_MAX;
-            for (int v = t; v != s; v = prevv[v])
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> maxflow(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> flow = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prevv, preve;
+        <span class="tok-keyword">while</span> (bfs(s, t, prevv, preve)) {
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> d = LLONG_MAX;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v])
                 d = min(d, graph[prevv[v]][preve[v]].cap);
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 graph[prevv[v]][preve[v]].cap -= d;
-                int rev = graph[prevv[v]][preve[v]].rev;
+                <span class="tok-keyword">int</span> rev = graph[prevv[v]][preve[v]].rev;
                 graph[v][rev].cap += d;
             }
             flow += d;
         }
-        return flow;
+        <span class="tok-keyword">return</span> flow;
     }
 };
 
-int main() {
-    int n, m;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    MaxFlow mf(n + 1);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v; long long c;
+    MaxFlow mf(n + <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
         mf.addEdge(u, v, c);
     }
-    cout &lt;&lt; mf.maxflow(1, n) &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; mf.maxflow(<span class="tok-number">1</span>, n) &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -353,69 +365,69 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Same Edmonds-Karp loop as example 1: repeatedly BFS for a shortest augmenting path in the residual graph and push the bottleneck amount.<br>2. Notice the only way flow reaches the sink (node 5) is through node 3 (capacity 2 on edge 3-&gt;5) or node 4 (capacity 5 on edge 4-&gt;5), and the only way into node 4 is edge 2-&gt;4 (capacity 3). So the cut {1,2,3} vs {4,5} is NOT the tightest; check the cut {1,2,3} vs {4,5}: crossing edges 2-&gt;4 (3) + nothing else since 3-&gt;5&#x27;s other endpoint 5 is outside and 4-&gt;3 goes into the set -- crossing capacity is 3 (from 2-&gt;4) + 2 (from 3-&gt;5) = 5.<br>3. Running the algorithm confirms this: total achievable flow is 5, split for example as 2 units via 1-&gt;2-&gt;4-&gt;5, 2 units via 1-&gt;2-&gt;3-&gt;5, and 1 unit via 1-&gt;3-&gt;... -- the exact path decomposition depends on BFS tie-breaking, but the final VALUE is always 5 regardless of which shortest paths are chosen, because it is pinned down by the minimum cut.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct MaxFlow {
-    struct Edge { int to; long long cap; int rev; };
-    vector&lt;vector&lt;Edge&gt;&gt; graph;
-    int n;
-    MaxFlow(int n): n(n), graph(n) {}
-    void addEdge(int u, int v, long long cap) {
-        graph[u].push_back({v, cap, (int)graph[v].size()});
-        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+<span class="tok-keyword">struct</span> MaxFlow {
+    <span class="tok-keyword">struct</span> Edge { <span class="tok-keyword">int</span> to; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap; <span class="tok-keyword">int</span> rev; };
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;Edge&gt;&gt; graph;
+    <span class="tok-keyword">int</span> n;
+    MaxFlow(<span class="tok-keyword">int</span> n): n(n), graph(n) {}
+    <span class="tok-keyword">void</span> addEdge(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap) {
+        graph[u].push_back({v, cap, (<span class="tok-keyword">int</span>)graph[v].size()});
+        graph[v].push_back({u, <span class="tok-number">0</span>, (<span class="tok-keyword">int</span>)graph[u].size() - <span class="tok-number">1</span>});
     }
-    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
-        vector&lt;bool&gt; visited(n, false);
-        queue&lt;int&gt; q;
+    <span class="tok-keyword">bool</span> bfs(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; prevv, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; preve) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited(n, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
         q.push(s);
-        visited[s] = true;
-        prevv.assign(n, -1);
-        preve.assign(n, -1);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            if (u == t) break;
-            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+        visited[s] = <span class="tok-keyword">true</span>;
+        prevv.assign(n, -<span class="tok-number">1</span>);
+        preve.assign(n, -<span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">if</span> (u == t) <span class="tok-keyword">break</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)graph[u].size(); i++) {
                 Edge&amp; e = graph[u][i];
-                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
-                    visited[e.to] = true;
+                <span class="tok-keyword">if</span> (!visited[e.to] &amp;&amp; e.cap &gt; <span class="tok-number">0</span>) {
+                    visited[e.to] = <span class="tok-keyword">true</span>;
                     prevv[e.to] = u;
                     preve[e.to] = i;
                     q.push(e.to);
                 }
             }
         }
-        return visited[t];
+        <span class="tok-keyword">return</span> visited[t];
     }
-    long long maxflow(int s, int t) {
-        long long flow = 0;
-        vector&lt;int&gt; prevv, preve;
-        while (bfs(s, t, prevv, preve)) {
-            long long d = LLONG_MAX;
-            for (int v = t; v != s; v = prevv[v])
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> maxflow(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> flow = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prevv, preve;
+        <span class="tok-keyword">while</span> (bfs(s, t, prevv, preve)) {
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> d = LLONG_MAX;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v])
                 d = min(d, graph[prevv[v]][preve[v]].cap);
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 graph[prevv[v]][preve[v]].cap -= d;
-                int rev = graph[prevv[v]][preve[v]].rev;
+                <span class="tok-keyword">int</span> rev = graph[prevv[v]][preve[v]].rev;
                 graph[v][rev].cap += d;
             }
             flow += d;
         }
-        return flow;
+        <span class="tok-keyword">return</span> flow;
     }
 };
 
-int main() {
-    int n, m;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    MaxFlow mf(n + 1);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v; long long c;
+    MaxFlow mf(n + <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
         mf.addEdge(u, v, c);
     }
-    cout &lt;&lt; mf.maxflow(1, n) &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; mf.maxflow(<span class="tok-number">1</span>, n) &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -447,94 +459,94 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Run Edmonds-Karp max flow from 1 to 4: augment along 1-&gt;2-&gt;4 (bottleneck 1), then along 1-&gt;3-&gt;4 (bottleneck 1). Total flow = 2, and no further augmenting path exists (both edges out of node 1 are now saturated).<br>2. By the max-flow min-cut theorem, the minimum cut capacity equals this flow value, 2 -- you must remove both edges 1-&gt;2 and 1-&gt;3 (or equivalently both paths&#x27; worth of capacity) to fully disconnect node 1 from node 4, and no single edge removal suffices since the two paths are vertex-disjoint.<br>3. Do one more BFS from node 1 in the final residual graph: both 1-&gt;2 and 1-&gt;3 are fully saturated (0 residual capacity), so no further vertex is reachable -- the source side of the minimum cut is just {1}.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct MaxFlow {
-    struct Edge { int to; long long cap; int rev; };
-    vector&lt;vector&lt;Edge&gt;&gt; graph;
-    int n;
-    MaxFlow(int n): n(n), graph(n) {}
-    void addEdge(int u, int v, long long cap) {
-        graph[u].push_back({v, cap, (int)graph[v].size()});
-        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+<span class="tok-keyword">struct</span> MaxFlow {
+    <span class="tok-keyword">struct</span> Edge { <span class="tok-keyword">int</span> to; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap; <span class="tok-keyword">int</span> rev; };
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;Edge&gt;&gt; graph;
+    <span class="tok-keyword">int</span> n;
+    MaxFlow(<span class="tok-keyword">int</span> n): n(n), graph(n) {}
+    <span class="tok-keyword">void</span> addEdge(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap) {
+        graph[u].push_back({v, cap, (<span class="tok-keyword">int</span>)graph[v].size()});
+        graph[v].push_back({u, <span class="tok-number">0</span>, (<span class="tok-keyword">int</span>)graph[u].size() - <span class="tok-number">1</span>});
     }
-    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
-        vector&lt;bool&gt; visited(n, false);
-        queue&lt;int&gt; q;
+    <span class="tok-keyword">bool</span> bfs(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; prevv, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; preve) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited(n, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
         q.push(s);
-        visited[s] = true;
-        prevv.assign(n, -1);
-        preve.assign(n, -1);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            if (u == t) break;
-            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+        visited[s] = <span class="tok-keyword">true</span>;
+        prevv.assign(n, -<span class="tok-number">1</span>);
+        preve.assign(n, -<span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">if</span> (u == t) <span class="tok-keyword">break</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)graph[u].size(); i++) {
                 Edge&amp; e = graph[u][i];
-                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
-                    visited[e.to] = true;
+                <span class="tok-keyword">if</span> (!visited[e.to] &amp;&amp; e.cap &gt; <span class="tok-number">0</span>) {
+                    visited[e.to] = <span class="tok-keyword">true</span>;
                     prevv[e.to] = u;
                     preve[e.to] = i;
                     q.push(e.to);
                 }
             }
         }
-        return visited[t];
+        <span class="tok-keyword">return</span> visited[t];
     }
-    long long maxflow(int s, int t) {
-        long long flow = 0;
-        vector&lt;int&gt; prevv, preve;
-        while (bfs(s, t, prevv, preve)) {
-            long long d = LLONG_MAX;
-            for (int v = t; v != s; v = prevv[v])
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> maxflow(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> flow = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prevv, preve;
+        <span class="tok-keyword">while</span> (bfs(s, t, prevv, preve)) {
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> d = LLONG_MAX;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v])
                 d = min(d, graph[prevv[v]][preve[v]].cap);
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 graph[prevv[v]][preve[v]].cap -= d;
-                int rev = graph[prevv[v]][preve[v]].rev;
+                <span class="tok-keyword">int</span> rev = graph[prevv[v]][preve[v]].rev;
                 graph[v][rev].cap += d;
             }
             flow += d;
         }
-        return flow;
+        <span class="tok-keyword">return</span> flow;
     }
-    // vertices reachable from s in the final residual graph (the source side of the min cut)
-    vector&lt;int&gt; reachableFromSource(int s) {
-        vector&lt;bool&gt; visited(n, false);
-        queue&lt;int&gt; q;
+    <span class="tok-comment">// vertices reachable from s in the final residual graph (the source side of the min cut)</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; reachableFromSource(<span class="tok-keyword">int</span> s) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited(n, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
         q.push(s);
-        visited[s] = true;
-        vector&lt;int&gt; order;
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
+        visited[s] = <span class="tok-keyword">true</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order;
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
             order.push_back(u);
-            for (auto&amp; e : graph[u]) {
-                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
-                    visited[e.to] = true;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; e : graph[u]) {
+                <span class="tok-keyword">if</span> (!visited[e.to] &amp;&amp; e.cap &gt; <span class="tok-number">0</span>) {
+                    visited[e.to] = <span class="tok-keyword">true</span>;
                     q.push(e.to);
                 }
             }
         }
         sort(order.begin(), order.end());
-        return order;
+        <span class="tok-keyword">return</span> order;
     }
 };
 
-int main() {
-    int n, m;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    MaxFlow mf(n + 1);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v; long long c;
+    MaxFlow mf(n + <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
         mf.addEdge(u, v, c);
     }
-    long long cut = mf.maxflow(1, n);
-    cout &lt;&lt; cut &lt;&lt; &quot;\n&quot;;
-    vector&lt;int&gt; side = mf.reachableFromSource(1);
-    for (int i = 0; i &lt; (int)side.size(); i++) {
-        cout &lt;&lt; side[i] &lt;&lt; (i + 1 &lt; (int)side.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cut = mf.maxflow(<span class="tok-number">1</span>, n);
+    cout &lt;&lt; cut &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; side = mf.reachableFromSource(<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)side.size(); i++) {
+        cout &lt;&lt; side[i] &lt;&lt; (i + <span class="tok-number">1</span> &lt; (<span class="tok-keyword">int</span>)side.size() ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -556,94 +568,94 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Run Edmonds-Karp: augment 1-&gt;2-&gt;4 by min(5,3)=3 (total 3), then 1-&gt;3-&gt;4 by min(5,3)=3 (total 6). Now edges 2-&gt;4 and 3-&gt;4 are both fully saturated (0 residual capacity), while 1-&gt;2 and 1-&gt;3 still each have 2 units of residual capacity left, and 2-&gt;3 (capacity 10) is completely unused.<br>2. Check for another augmenting path: from node 1 you can still reach node 2 (residual 2) and node 3 (residual 2, or via 2-&gt;3 which still has capacity 10), but from either node 2 or node 3 there is no more residual capacity into node 4 (both are saturated). So node 4 is unreachable and the algorithm terminates at flow value 6.<br>3. The final BFS from node 1 in the residual graph reaches nodes 1, 2, AND 3 (since 1-&gt;2, 1-&gt;3, and 2-&gt;3 all still have spare residual capacity), but not node 4. So the minimum cut&#x27;s source side is {1, 2, 3}, and its capacity is the sum of ORIGINAL capacities of edges leaving this set: 2-&gt;4 (3) + 3-&gt;4 (3) = 6, matching the flow value exactly -- note this cut does NOT simply cut every edge out of the source, demonstrating that the bottleneck can be &#x27;deeper&#x27; in the network.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct MaxFlow {
-    struct Edge { int to; long long cap; int rev; };
-    vector&lt;vector&lt;Edge&gt;&gt; graph;
-    int n;
-    MaxFlow(int n): n(n), graph(n) {}
-    void addEdge(int u, int v, long long cap) {
-        graph[u].push_back({v, cap, (int)graph[v].size()});
-        graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+<span class="tok-keyword">struct</span> MaxFlow {
+    <span class="tok-keyword">struct</span> Edge { <span class="tok-keyword">int</span> to; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap; <span class="tok-keyword">int</span> rev; };
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;Edge&gt;&gt; graph;
+    <span class="tok-keyword">int</span> n;
+    MaxFlow(<span class="tok-keyword">int</span> n): n(n), graph(n) {}
+    <span class="tok-keyword">void</span> addEdge(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cap) {
+        graph[u].push_back({v, cap, (<span class="tok-keyword">int</span>)graph[v].size()});
+        graph[v].push_back({u, <span class="tok-number">0</span>, (<span class="tok-keyword">int</span>)graph[u].size() - <span class="tok-number">1</span>});
     }
-    bool bfs(int s, int t, vector&lt;int&gt;&amp; prevv, vector&lt;int&gt;&amp; preve) {
-        vector&lt;bool&gt; visited(n, false);
-        queue&lt;int&gt; q;
+    <span class="tok-keyword">bool</span> bfs(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; prevv, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; preve) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited(n, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
         q.push(s);
-        visited[s] = true;
-        prevv.assign(n, -1);
-        preve.assign(n, -1);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            if (u == t) break;
-            for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+        visited[s] = <span class="tok-keyword">true</span>;
+        prevv.assign(n, -<span class="tok-number">1</span>);
+        preve.assign(n, -<span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">if</span> (u == t) <span class="tok-keyword">break</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)graph[u].size(); i++) {
                 Edge&amp; e = graph[u][i];
-                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
-                    visited[e.to] = true;
+                <span class="tok-keyword">if</span> (!visited[e.to] &amp;&amp; e.cap &gt; <span class="tok-number">0</span>) {
+                    visited[e.to] = <span class="tok-keyword">true</span>;
                     prevv[e.to] = u;
                     preve[e.to] = i;
                     q.push(e.to);
                 }
             }
         }
-        return visited[t];
+        <span class="tok-keyword">return</span> visited[t];
     }
-    long long maxflow(int s, int t) {
-        long long flow = 0;
-        vector&lt;int&gt; prevv, preve;
-        while (bfs(s, t, prevv, preve)) {
-            long long d = LLONG_MAX;
-            for (int v = t; v != s; v = prevv[v])
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> maxflow(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> flow = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prevv, preve;
+        <span class="tok-keyword">while</span> (bfs(s, t, prevv, preve)) {
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> d = LLONG_MAX;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v])
                 d = min(d, graph[prevv[v]][preve[v]].cap);
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 graph[prevv[v]][preve[v]].cap -= d;
-                int rev = graph[prevv[v]][preve[v]].rev;
+                <span class="tok-keyword">int</span> rev = graph[prevv[v]][preve[v]].rev;
                 graph[v][rev].cap += d;
             }
             flow += d;
         }
-        return flow;
+        <span class="tok-keyword">return</span> flow;
     }
-    // vertices reachable from s in the final residual graph (the source side of the min cut)
-    vector&lt;int&gt; reachableFromSource(int s) {
-        vector&lt;bool&gt; visited(n, false);
-        queue&lt;int&gt; q;
+    <span class="tok-comment">// vertices reachable from s in the final residual graph (the source side of the min cut)</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; reachableFromSource(<span class="tok-keyword">int</span> s) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited(n, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
         q.push(s);
-        visited[s] = true;
-        vector&lt;int&gt; order;
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
+        visited[s] = <span class="tok-keyword">true</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order;
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
             order.push_back(u);
-            for (auto&amp; e : graph[u]) {
-                if (!visited[e.to] &amp;&amp; e.cap &gt; 0) {
-                    visited[e.to] = true;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; e : graph[u]) {
+                <span class="tok-keyword">if</span> (!visited[e.to] &amp;&amp; e.cap &gt; <span class="tok-number">0</span>) {
+                    visited[e.to] = <span class="tok-keyword">true</span>;
                     q.push(e.to);
                 }
             }
         }
         sort(order.begin(), order.end());
-        return order;
+        <span class="tok-keyword">return</span> order;
     }
 };
 
-int main() {
-    int n, m;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    MaxFlow mf(n + 1);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v; long long c;
+    MaxFlow mf(n + <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; c;
         mf.addEdge(u, v, c);
     }
-    long long cut = mf.maxflow(1, n);
-    cout &lt;&lt; cut &lt;&lt; &quot;\n&quot;;
-    vector&lt;int&gt; side = mf.reachableFromSource(1);
-    for (int i = 0; i &lt; (int)side.size(); i++) {
-        cout &lt;&lt; side[i] &lt;&lt; (i + 1 &lt; (int)side.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cut = mf.maxflow(<span class="tok-number">1</span>, n);
+    cout &lt;&lt; cut &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; side = mf.reachableFromSource(<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)side.size(); i++) {
+        cout &lt;&lt; side[i] &lt;&lt; (i + <span class="tok-number">1</span> &lt; (<span class="tok-keyword">int</span>)side.size() ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -674,42 +686,42 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Process left vertices in order 1..4, running a DFS-based augmenting search for each.<br>2. Left 1: tries right 1 (free) -&gt; match (1,1).<br>3. Left 2: tries right 1 (taken by 1) -&gt; try to re-match left 1 elsewhere: left 1&#x27;s only other option is right 2, which is free -&gt; re-match (1,2), freeing right 1 for left 2 -&gt; match (2,1).<br>4. Left 3: tries right 2 (taken by 1) -&gt; try to re-match left 1: its only options are right 1 (taken by 2, and left 2 has no other option, so this fails) -&gt; right 2 augmentation fails -&gt; try right 3 (free) -&gt; match (3,3).<br>5. Left 4: tries right 3 (taken by 3) -&gt; try to re-match left 3: its only other option is right 2 (taken by 1, whose only other option right 1 is taken by 2 with no alternative -- fails) -&gt; right 3 augmentation fails -&gt; try right 4 (free) -&gt; match (4,4).<br>6. Every one of the 4 left vertices got matched, so the maximum matching size is 4.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int L, R, m;
-vector&lt;vector&lt;int&gt;&gt; adj; // adjacency list for left vertices (1-indexed)
-vector&lt;int&gt; matchR;      // matchR[r] = l matched to r, or -1
-vector&lt;bool&gt; visited;
+<span class="tok-keyword">int</span> L, R, m;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj; <span class="tok-comment">// adjacency list for left vertices (1-indexed)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; matchR;      <span class="tok-comment">// matchR[r] = l matched to r, or -1</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited;
 
-bool tryKuhn(int u) {
-    for (int v : adj[u]) {
-        if (visited[v]) continue;
-        visited[v] = true;
-        if (matchR[v] == -1 || tryKuhn(matchR[v])) {
+<span class="tok-keyword">bool</span> tryKuhn(<span class="tok-keyword">int</span> u) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (visited[v]) <span class="tok-keyword">continue</span>;
+        visited[v] = <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">if</span> (matchR[v] == -<span class="tok-number">1</span> || tryKuhn(matchR[v])) {
             matchR[v] = u;
-            return true;
+            <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
         }
     }
-    return false;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; L &gt;&gt; R &gt;&gt; m;
-    adj.assign(L + 1, {});
-    matchR.assign(R + 1, -1);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v;
+    adj.assign(L + <span class="tok-number">1</span>, {});
+    matchR.assign(R + <span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v;
         cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
     }
-    int result = 0;
-    for (int u = 1; u &lt;= L; u++) {
-        visited.assign(R + 1, false);
-        if (tryKuhn(u)) result++;
+    <span class="tok-keyword">int</span> result = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u = <span class="tok-number">1</span>; u &lt;= L; u++) {
+        visited.assign(R + <span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+        <span class="tok-keyword">if</span> (tryKuhn(u)) result++;
     }
     cout &lt;&lt; result &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -733,48 +745,48 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Left 1: tries right 1 (free) -&gt; match (1,1).<br>2. Left 2: tries right 1 (taken by 1) -&gt; try to re-match left 1: its next option is right 2 (free) -&gt; re-match (1,2), freeing right 1 -&gt; match (2,1). Matching is now {(1,2), (2,1)}.<br>3. Left 3: tries right 2 (taken by 1) -&gt; try to re-match left 1: left 1&#x27;s only other option is right 1 (taken by 2, and left 2 has no other neighbor, so that fails) -&gt; right 2 augmentation fails for left 3 -&gt; try right 3 (free) -&gt; match (3,3).<br>4. Final matching: (1,2), (2,1), (3,3), size 3 -- printed sorted by the left vertex: 1 2, then 2 1, then 3 3.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int L, R, m;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;int&gt; matchR;
-vector&lt;bool&gt; visited;
+<span class="tok-keyword">int</span> L, R, m;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; matchR;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; visited;
 
-bool tryKuhn(int u) {
-    for (int v : adj[u]) {
-        if (visited[v]) continue;
-        visited[v] = true;
-        if (matchR[v] == -1 || tryKuhn(matchR[v])) {
+<span class="tok-keyword">bool</span> tryKuhn(<span class="tok-keyword">int</span> u) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (visited[v]) <span class="tok-keyword">continue</span>;
+        visited[v] = <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">if</span> (matchR[v] == -<span class="tok-number">1</span> || tryKuhn(matchR[v])) {
             matchR[v] = u;
-            return true;
+            <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
         }
     }
-    return false;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; L &gt;&gt; R &gt;&gt; m;
-    adj.assign(L + 1, {});
-    matchR.assign(R + 1, -1);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v;
+    adj.assign(L + <span class="tok-number">1</span>, {});
+    matchR.assign(R + <span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v;
         cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
     }
-    int result = 0;
-    for (int u = 1; u &lt;= L; u++) {
-        visited.assign(R + 1, false);
-        if (tryKuhn(u)) result++;
+    <span class="tok-keyword">int</span> result = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u = <span class="tok-number">1</span>; u &lt;= L; u++) {
+        visited.assign(R + <span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+        <span class="tok-keyword">if</span> (tryKuhn(u)) result++;
     }
-    cout &lt;&lt; result &lt;&lt; &quot;\n&quot;;
-    vector&lt;pair&lt;int,int&gt;&gt; pairs;
-    for (int v = 1; v &lt;= R; v++) {
-        if (matchR[v] != -1) pairs.push_back({matchR[v], v});
+    cout &lt;&lt; result &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; pairs;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt;= R; v++) {
+        <span class="tok-keyword">if</span> (matchR[v] != -<span class="tok-number">1</span>) pairs.push_back({matchR[v], v});
     }
     sort(pairs.begin(), pairs.end());
-    for (auto&amp; p : pairs) cout &lt;&lt; p.first &lt;&lt; &quot; &quot; &lt;&lt; p.second &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; p : pairs) cout &lt;&lt; p.first &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; p.second &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -807,54 +819,54 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the flow network with a standard adjacency-list MCMF structure: each added edge also creates a reverse residual edge with capacity 0 and NEGATED cost. Repeatedly run SPFA (Bellman-Ford with a FIFO queue, needed because reverse residual edges carry negative costs) from s to find the CHEAPEST path to every reachable node; if the sink is unreachable, stop. Otherwise, find the bottleneck capacity along the cheapest s-to-t path (the minimum residual capacity of any edge on that path), push that much flow along it (decreasing forward capacities and increasing the corresponding reverse capacities), and add (bottleneck * path cost) to the running total cost. Repeat until no augmenting path remains; the accumulated flow is the max-flow value and the accumulated cost is the minimum cost for that flow.</p><p>This was hand-verified on the given 4-node network: source 0, sink 3, edges 0-&gt;1 (cap 2, cost 2), 0-&gt;2 (cap 1, cost 3), 1-&gt;3 (cap 1, cost 1), 1-&gt;2 (cap 1, cost 1), 2-&gt;3 (cap 2, cost 1). The bottleneck at every source/sink edge forces a unique maximum flow of exactly 3 units that saturates EVERY edge in the network simultaneously (0-&gt;1 fully used at 2, 0-&gt;2 fully used at 1, 1-&gt;3 fully used at 1, 1-&gt;2 fully used at 1, 2-&gt;3 fully used at 2) — since this is the only possible flow of value 3, its cost is forced: 2*2 + 1*3 + 1*1 + 1*1 + 2*1 = 4+3+1+1+2 = 11, matching the program&#x27;s output exactly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll INF = LLONG_MAX / 2;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll INF = LLONG_MAX / <span class="tok-number">2</span>;
 
-struct MCMF {
-    struct Edge { int to; ll cap, cost; int rev; };
-    int n;
-    vector&lt;vector&lt;Edge&gt;&gt; graph;
-    MCMF(int n) : n(n), graph(n) {}
-    void addEdge(int from, int to, ll cap, ll cost) {
-        graph[from].push_back({to, cap, cost, (int)graph[to].size()});
-        graph[to].push_back({from, 0, -cost, (int)graph[from].size()-1});
+<span class="tok-keyword">struct</span> MCMF {
+    <span class="tok-keyword">struct</span> Edge { <span class="tok-keyword">int</span> to; ll cap, cost; <span class="tok-keyword">int</span> rev; };
+    <span class="tok-keyword">int</span> n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;Edge&gt;&gt; graph;
+    MCMF(<span class="tok-keyword">int</span> n) : n(n), graph(n) {}
+    <span class="tok-keyword">void</span> addEdge(<span class="tok-keyword">int</span> from, <span class="tok-keyword">int</span> to, ll cap, ll cost) {
+        graph[from].push_back({to, cap, cost, (<span class="tok-keyword">int</span>)graph[to].size()});
+        graph[to].push_back({from, <span class="tok-number">0</span>, -cost, (<span class="tok-keyword">int</span>)graph[from].size()-<span class="tok-number">1</span>});
     }
-    // returns {maxflow, mincost} using successive shortest augmenting paths (SPFA, handles negative edges)
-    pair&lt;ll,ll&gt; run(int s, int t) {
-        ll totalFlow = 0, totalCost = 0;
-        while (true) {
-            vector&lt;ll&gt; dist(n, INF);
-            vector&lt;int&gt; prevv(n, -1), preve(n, -1);
-            vector&lt;bool&gt; inq(n, false);
-            dist[s] = 0;
-            deque&lt;int&gt; q;
+    <span class="tok-comment">// returns {maxflow, mincost} using successive shortest augmenting paths (SPFA, handles negative edges)</span>
+    <span class="tok-type">pair</span>&lt;ll,ll&gt; run(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t) {
+        ll totalFlow = <span class="tok-number">0</span>, totalCost = <span class="tok-number">0</span>;
+        <span class="tok-keyword">while</span> (<span class="tok-keyword">true</span>) {
+            <span class="tok-type">vector</span>&lt;ll&gt; dist(n, INF);
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prevv(n, -<span class="tok-number">1</span>), preve(n, -<span class="tok-number">1</span>);
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; inq(n, <span class="tok-keyword">false</span>);
+            dist[s] = <span class="tok-number">0</span>;
+            <span class="tok-type">deque</span>&lt;<span class="tok-keyword">int</span>&gt; q;
             q.push_back(s);
-            inq[s] = true;
-            while (!q.empty()) {
-                int u = q.front(); q.pop_front();
-                inq[u] = false;
-                for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+            inq[s] = <span class="tok-keyword">true</span>;
+            <span class="tok-keyword">while</span> (!q.empty()) {
+                <span class="tok-keyword">int</span> u = q.front(); q.pop_front();
+                inq[u] = <span class="tok-keyword">false</span>;
+                <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)graph[u].size(); i++) {
                     Edge &amp;e = graph[u][i];
-                    if (e.cap &gt; 0 &amp;&amp; dist[u] + e.cost &lt; dist[e.to]) {
+                    <span class="tok-keyword">if</span> (e.cap &gt; <span class="tok-number">0</span> &amp;&amp; dist[u] + e.cost &lt; dist[e.to]) {
                         dist[e.to] = dist[u] + e.cost;
                         prevv[e.to] = u;
                         preve[e.to] = i;
-                        if (!inq[e.to]) {
-                            inq[e.to] = true;
+                        <span class="tok-keyword">if</span> (!inq[e.to]) {
+                            inq[e.to] = <span class="tok-keyword">true</span>;
                             q.push_back(e.to);
                         }
                     }
                 }
             }
-            if (dist[t] == INF) break; // no more augmenting paths
-            // find bottleneck capacity along the path
+            <span class="tok-keyword">if</span> (dist[t] == INF) <span class="tok-keyword">break</span>; <span class="tok-comment">// no more augmenting paths</span>
+            <span class="tok-comment">// find bottleneck capacity along the path</span>
             ll d = INF;
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 d = min(d, graph[prevv[v]][preve[v]].cap);
             }
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 graph[prevv[v]][preve[v]].cap -= d;
                 Edge &amp;back = graph[v][graph[prevv[v]][preve[v]].rev];
                 back.cap += d;
@@ -862,21 +874,21 @@ struct MCMF {
             totalFlow += d;
             totalCost += d * dist[t];
         }
-        return {totalFlow, totalCost};
+        <span class="tok-keyword">return</span> {totalFlow, totalCost};
     }
 };
 
-int main(){
-    int n, m, s, t;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m, s, t;
     cin &gt;&gt; n &gt;&gt; m &gt;&gt; s &gt;&gt; t;
     MCMF mcmf(n);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v; ll cap, cost;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v; ll cap, cost;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; cap &gt;&gt; cost;
         mcmf.addEdge(u, v, cap, cost);
     }
-    auto [flow, cost] = mcmf.run(s, t);
-    cout &lt;&lt; flow &lt;&lt; &quot; &quot; &lt;&lt; cost &lt;&lt; endl;
+    <span class="tok-keyword">auto</span> [flow, cost] = mcmf.run(s, t);
+    cout &lt;&lt; flow &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; cost &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -898,54 +910,54 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the &#x27;required flow&#x27; variant of MCMF: instead of running successive shortest augmenting paths until NO path remains (which finds the true max-flow), stop as soon as the accumulated flow reaches exactly D, capping the amount pushed along the final augmenting path so the total does not overshoot D. If the loop runs out of augmenting paths (sink becomes unreachable) before reaching D units shipped, D units are infeasible and the answer is -1. Because SSP always selects the CHEAPEST available path first, and cheapest-path costs are non-decreasing across iterations, capping the flow at D automatically yields the minimum cost for shipping exactly D units, not just A valid way to ship D units.</p><p>Verified on a 5-node network (source 0, sink 4) with edges 0-&gt;1 (cap 4, cost 2), 0-&gt;2 (cap 2, cost 2), 1-&gt;3 (cap 2, cost 1), 1-&gt;4 (cap 3, cost 6), 2-&gt;3 (cap 2, cost 1), 3-&gt;4 (cap 4, cost 2): the two cheapest paths, 0-1-3-4 (cost 2+1+2=5 per unit, capacity-limited to 2 units by edge 1-&gt;3) and 0-2-3-4 (cost 2+1+2=5 per unit, capacity-limited to 2 units by edge 0-&gt;2), together supply exactly the required D=4 units at the shared cheapest rate of 5 per unit, for a total cost of 4*5=20 — matching the program&#x27;s output. Separately verified that requesting D=8 (exceeding the network&#x27;s true max-flow of 6) correctly yields -1.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll INF = LLONG_MAX / 2;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll INF = LLONG_MAX / <span class="tok-number">2</span>;
 
-struct MCMF {
-    struct Edge { int to; ll cap, cost; int rev; };
-    int n;
-    vector&lt;vector&lt;Edge&gt;&gt; graph;
-    MCMF(int n) : n(n), graph(n) {}
-    void addEdge(int from, int to, ll cap, ll cost) {
-        graph[from].push_back({to, cap, cost, (int)graph[to].size()});
-        graph[to].push_back({from, 0, -cost, (int)graph[from].size()-1});
+<span class="tok-keyword">struct</span> MCMF {
+    <span class="tok-keyword">struct</span> Edge { <span class="tok-keyword">int</span> to; ll cap, cost; <span class="tok-keyword">int</span> rev; };
+    <span class="tok-keyword">int</span> n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;Edge&gt;&gt; graph;
+    MCMF(<span class="tok-keyword">int</span> n) : n(n), graph(n) {}
+    <span class="tok-keyword">void</span> addEdge(<span class="tok-keyword">int</span> from, <span class="tok-keyword">int</span> to, ll cap, ll cost) {
+        graph[from].push_back({to, cap, cost, (<span class="tok-keyword">int</span>)graph[to].size()});
+        graph[to].push_back({from, <span class="tok-number">0</span>, -cost, (<span class="tok-keyword">int</span>)graph[from].size()-<span class="tok-number">1</span>});
     }
-    // Ships up to `need` units of flow at minimum cost, one shortest augmenting path at a time.
-    // Returns {flowShipped, cost}. If flowShipped &lt; need, it was impossible to ship `need` units.
-    pair&lt;ll,ll&gt; run(int s, int t, ll need) {
-        ll totalFlow = 0, totalCost = 0;
-        while (totalFlow &lt; need) {
-            vector&lt;ll&gt; dist(n, INF);
-            vector&lt;int&gt; prevv(n, -1), preve(n, -1);
-            vector&lt;bool&gt; inq(n, false);
-            dist[s] = 0;
-            deque&lt;int&gt; q;
+    <span class="tok-comment">// Ships up to `need` units of flow at minimum cost, one shortest augmenting path at a time.</span>
+    <span class="tok-comment">// Returns {flowShipped, cost}. If flowShipped &lt; need, it was impossible to ship `need` units.</span>
+    <span class="tok-type">pair</span>&lt;ll,ll&gt; run(<span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> t, ll need) {
+        ll totalFlow = <span class="tok-number">0</span>, totalCost = <span class="tok-number">0</span>;
+        <span class="tok-keyword">while</span> (totalFlow &lt; need) {
+            <span class="tok-type">vector</span>&lt;ll&gt; dist(n, INF);
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prevv(n, -<span class="tok-number">1</span>), preve(n, -<span class="tok-number">1</span>);
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; inq(n, <span class="tok-keyword">false</span>);
+            dist[s] = <span class="tok-number">0</span>;
+            <span class="tok-type">deque</span>&lt;<span class="tok-keyword">int</span>&gt; q;
             q.push_back(s);
-            inq[s] = true;
-            while (!q.empty()) {
-                int u = q.front(); q.pop_front();
-                inq[u] = false;
-                for (int i = 0; i &lt; (int)graph[u].size(); i++) {
+            inq[s] = <span class="tok-keyword">true</span>;
+            <span class="tok-keyword">while</span> (!q.empty()) {
+                <span class="tok-keyword">int</span> u = q.front(); q.pop_front();
+                inq[u] = <span class="tok-keyword">false</span>;
+                <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)graph[u].size(); i++) {
                     Edge &amp;e = graph[u][i];
-                    if (e.cap &gt; 0 &amp;&amp; dist[u] + e.cost &lt; dist[e.to]) {
+                    <span class="tok-keyword">if</span> (e.cap &gt; <span class="tok-number">0</span> &amp;&amp; dist[u] + e.cost &lt; dist[e.to]) {
                         dist[e.to] = dist[u] + e.cost;
                         prevv[e.to] = u;
                         preve[e.to] = i;
-                        if (!inq[e.to]) {
-                            inq[e.to] = true;
+                        <span class="tok-keyword">if</span> (!inq[e.to]) {
+                            inq[e.to] = <span class="tok-keyword">true</span>;
                             q.push_back(e.to);
                         }
                     }
                 }
             }
-            if (dist[t] == INF) break; // no more augmenting paths at all
+            <span class="tok-keyword">if</span> (dist[t] == INF) <span class="tok-keyword">break</span>; <span class="tok-comment">// no more augmenting paths at all</span>
             ll d = need - totalFlow;
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 d = min(d, graph[prevv[v]][preve[v]].cap);
             }
-            for (int v = t; v != s; v = prevv[v]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = t; v != s; v = prevv[v]) {
                 graph[prevv[v]][preve[v]].cap -= d;
                 Edge &amp;back = graph[v][graph[prevv[v]][preve[v]].rev];
                 back.cap += d;
@@ -953,22 +965,22 @@ struct MCMF {
             totalFlow += d;
             totalCost += d * dist[t];
         }
-        return {totalFlow, totalCost};
+        <span class="tok-keyword">return</span> {totalFlow, totalCost};
     }
 };
 
-int main(){
-    int n, m, s, t; ll need;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m, s, t; ll need;
     cin &gt;&gt; n &gt;&gt; m &gt;&gt; s &gt;&gt; t &gt;&gt; need;
     MCMF mcmf(n);
-    for (int i = 0; i &lt; m; i++) {
-        int u, v; ll cap, cost;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">int</span> u, v; ll cap, cost;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; cap &gt;&gt; cost;
         mcmf.addEdge(u, v, cap, cost);
     }
-    auto [flow, cost] = mcmf.run(s, t, need);
-    if (flow &lt; need) cout &lt;&lt; -1 &lt;&lt; endl;
-    else cout &lt;&lt; cost &lt;&lt; endl;
+    <span class="tok-keyword">auto</span> [flow, cost] = mcmf.run(s, t, need);
+    <span class="tok-keyword">if</span> (flow &lt; need) cout &lt;&lt; -<span class="tok-number">1</span> &lt;&lt; endl;
+    <span class="tok-keyword">else</span> cout &lt;&lt; cost &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -999,64 +1011,64 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Direct application of the O(n^3) Hungarian algorithm with worker/job potentials (u_i, v_j) and per-worker shortest-augmenting-path search over reduced costs, as described in the theory. Each new worker i is temporarily attached to a virtual &#x27;unassigned&#x27; job (column 0 in the 1-indexed internal formulation), and the algorithm grows a shortest-path tree from that worker through the existing partial matching until it reaches a genuinely free job, then flips the matching along that path and updates potentials so the non-negativity invariant is preserved for the next worker.</p><p>Hand-verified on the 3x3 cost matrix [[4,1,3],[2,0,5],[3,2,2]]: brute-forcing all 3! = 6 possible assignments gives costs 6, 11, 5, 9, 10, 6 for the six permutations, so the true minimum is 5, achieved uniquely by employee1-&gt;task2 (cost 1), employee2-&gt;task1 (cost 2), employee3-&gt;task3 (cost 2), summing to 5 — exactly matching the program&#x27;s output of total cost 5 and assignment (2, 1, 3).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll INF = LLONG_MAX / 2;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll INF = LLONG_MAX / <span class="tok-number">2</span>;
 
-// Jonker-Volgenant / Kuhn-Munkres O(n^3) Hungarian algorithm for the square
-// assignment problem: minimize sum of cost[i][match(i)] over a perfect matching.
-// 1-indexed internally (standard formulation with potentials u,v).
-int n;
-vector&lt;vector&lt;ll&gt;&gt; cost; // 1-indexed n x n
+<span class="tok-comment">// Jonker-Volgenant / Kuhn-Munkres O(n^3) Hungarian algorithm for the square</span>
+<span class="tok-comment">// assignment problem: minimize sum of cost[i][match(i)] over a perfect matching.</span>
+<span class="tok-comment">// 1-indexed internally (standard formulation with potentials u,v).</span>
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;ll&gt;&gt; cost; <span class="tok-comment">// 1-indexed n x n</span>
 
-pair&lt;ll, vector&lt;int&gt;&gt; hungarianMin() {
-    vector&lt;ll&gt; u(n+1, 0), v(n+1, 0);
-    vector&lt;int&gt; p(n+1, 0), way(n+1, 0); // p[j] = row assigned to column j
-    for (int i = 1; i &lt;= n; i++) {
-        p[0] = i;
-        int j0 = 0;
-        vector&lt;ll&gt; minv(n+1, INF);
-        vector&lt;bool&gt; used(n+1, false);
-        do {
-            used[j0] = true;
-            int i0 = p[j0], j1 = -1;
+<span class="tok-type">pair</span>&lt;ll, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; hungarianMin() {
+    <span class="tok-type">vector</span>&lt;ll&gt; u(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>), v(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; p(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>), way(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>); <span class="tok-comment">// p[j] = row assigned to column j</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        p[<span class="tok-number">0</span>] = i;
+        <span class="tok-keyword">int</span> j0 = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;ll&gt; minv(n+<span class="tok-number">1</span>, INF);
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; used(n+<span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+        <span class="tok-keyword">do</span> {
+            used[j0] = <span class="tok-keyword">true</span>;
+            <span class="tok-keyword">int</span> i0 = p[j0], j1 = -<span class="tok-number">1</span>;
             ll delta = INF;
-            for (int j = 1; j &lt;= n; j++) {
-                if (!used[j]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= n; j++) {
+                <span class="tok-keyword">if</span> (!used[j]) {
                     ll cur = cost[i0][j] - u[i0] - v[j];
-                    if (cur &lt; minv[j]) { minv[j] = cur; way[j] = j0; }
-                    if (minv[j] &lt; delta) { delta = minv[j]; j1 = j; }
+                    <span class="tok-keyword">if</span> (cur &lt; minv[j]) { minv[j] = cur; way[j] = j0; }
+                    <span class="tok-keyword">if</span> (minv[j] &lt; delta) { delta = minv[j]; j1 = j; }
                 }
             }
-            for (int j = 0; j &lt;= n; j++) {
-                if (used[j]) { u[p[j]] += delta; v[j] -= delta; }
-                else minv[j] -= delta;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt;= n; j++) {
+                <span class="tok-keyword">if</span> (used[j]) { u[p[j]] += delta; v[j] -= delta; }
+                <span class="tok-keyword">else</span> minv[j] -= delta;
             }
             j0 = j1;
-        } while (p[j0] != 0);
-        do {
-            int j1 = way[j0];
+        } <span class="tok-keyword">while</span> (p[j0] != <span class="tok-number">0</span>);
+        <span class="tok-keyword">do</span> {
+            <span class="tok-keyword">int</span> j1 = way[j0];
             p[j0] = p[j1];
             j0 = j1;
-        } while (j0 != 0);
+        } <span class="tok-keyword">while</span> (j0 != <span class="tok-number">0</span>);
     }
-    vector&lt;int&gt; rowToCol(n+1, 0);
-    for (int j = 1; j &lt;= n; j++) rowToCol[p[j]] = j;
-    ll total = 0;
-    for (int i = 1; i &lt;= n; i++) total += cost[i][rowToCol[i]];
-    return {total, rowToCol};
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; rowToCol(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= n; j++) rowToCol[p[j]] = j;
+    ll total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) total += cost[i][rowToCol[i]];
+    <span class="tok-keyword">return</span> {total, rowToCol};
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    cost.assign(n+1, vector&lt;ll&gt;(n+1));
-    for (int i = 1; i &lt;= n; i++)
-        for (int j = 1; j &lt;= n; j++)
+    cost.assign(n+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;ll&gt;(n+<span class="tok-number">1</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= n; j++)
             cin &gt;&gt; cost[i][j];
-    auto [total, rowToCol] = hungarianMin();
-    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
-    for (int i = 1; i &lt;= n; i++) cout &lt;&lt; rowToCol[i] &lt;&lt; &quot; \n&quot;[i==n];
+    <span class="tok-keyword">auto</span> [total, rowToCol] = hungarianMin();
+    cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cout &lt;&lt; rowToCol[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i==n];
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1077,64 +1089,64 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Negate every entry of the profit matrix to obtain a cost matrix (cost[i][j] = -profit[i][j]), then run the exact same O(n^3) minimum-cost Hungarian algorithm on this negated matrix. Minimizing total negated-profit is equivalent to maximizing total profit, and the optimal assignment (the bijection itself) is identical either way — only the reported total needs to be negated back at the end.</p><p>Hand-verified on the 3x3 profit matrix [[5,9,4],[2,6,8],[7,3,1]]: brute-forcing all 6 permutations gives totals 12, 16, 12, 24, 9, 17, so the true maximum is 24, achieved uniquely by agent1-&gt;contract2 (profit 9), agent2-&gt;contract3 (profit 8), agent3-&gt;contract1 (profit 7), summing to 24 — exactly matching the program&#x27;s output of total profit 24 and assignment (2, 3, 1). Note this optimum is NOT the trivial diagonal assignment, confirming the algorithm is doing genuine combinatorial work rather than defaulting to an identity matching.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll INF = LLONG_MAX / 2;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll INF = LLONG_MAX / <span class="tok-number">2</span>;
 
-int n;
-vector&lt;vector&lt;ll&gt;&gt; cost; // 1-indexed n x n, holds NEGATED profit so min-cost Hungarian maximizes profit
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;ll&gt;&gt; cost; <span class="tok-comment">// 1-indexed n x n, holds NEGATED profit so min-cost Hungarian maximizes profit</span>
 
-pair&lt;ll, vector&lt;int&gt;&gt; hungarianMin() {
-    vector&lt;ll&gt; u(n+1, 0), v(n+1, 0);
-    vector&lt;int&gt; p(n+1, 0), way(n+1, 0);
-    for (int i = 1; i &lt;= n; i++) {
-        p[0] = i;
-        int j0 = 0;
-        vector&lt;ll&gt; minv(n+1, INF);
-        vector&lt;bool&gt; used(n+1, false);
-        do {
-            used[j0] = true;
-            int i0 = p[j0], j1 = -1;
+<span class="tok-type">pair</span>&lt;ll, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; hungarianMin() {
+    <span class="tok-type">vector</span>&lt;ll&gt; u(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>), v(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; p(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>), way(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        p[<span class="tok-number">0</span>] = i;
+        <span class="tok-keyword">int</span> j0 = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;ll&gt; minv(n+<span class="tok-number">1</span>, INF);
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; used(n+<span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+        <span class="tok-keyword">do</span> {
+            used[j0] = <span class="tok-keyword">true</span>;
+            <span class="tok-keyword">int</span> i0 = p[j0], j1 = -<span class="tok-number">1</span>;
             ll delta = INF;
-            for (int j = 1; j &lt;= n; j++) {
-                if (!used[j]) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= n; j++) {
+                <span class="tok-keyword">if</span> (!used[j]) {
                     ll cur = cost[i0][j] - u[i0] - v[j];
-                    if (cur &lt; minv[j]) { minv[j] = cur; way[j] = j0; }
-                    if (minv[j] &lt; delta) { delta = minv[j]; j1 = j; }
+                    <span class="tok-keyword">if</span> (cur &lt; minv[j]) { minv[j] = cur; way[j] = j0; }
+                    <span class="tok-keyword">if</span> (minv[j] &lt; delta) { delta = minv[j]; j1 = j; }
                 }
             }
-            for (int j = 0; j &lt;= n; j++) {
-                if (used[j]) { u[p[j]] += delta; v[j] -= delta; }
-                else minv[j] -= delta;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt;= n; j++) {
+                <span class="tok-keyword">if</span> (used[j]) { u[p[j]] += delta; v[j] -= delta; }
+                <span class="tok-keyword">else</span> minv[j] -= delta;
             }
             j0 = j1;
-        } while (p[j0] != 0);
-        do {
-            int j1 = way[j0];
+        } <span class="tok-keyword">while</span> (p[j0] != <span class="tok-number">0</span>);
+        <span class="tok-keyword">do</span> {
+            <span class="tok-keyword">int</span> j1 = way[j0];
             p[j0] = p[j1];
             j0 = j1;
-        } while (j0 != 0);
+        } <span class="tok-keyword">while</span> (j0 != <span class="tok-number">0</span>);
     }
-    vector&lt;int&gt; rowToCol(n+1, 0);
-    for (int j = 1; j &lt;= n; j++) rowToCol[p[j]] = j;
-    ll total = 0;
-    for (int i = 1; i &lt;= n; i++) total += cost[i][rowToCol[i]];
-    return {total, rowToCol};
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; rowToCol(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= n; j++) rowToCol[p[j]] = j;
+    ll total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) total += cost[i][rowToCol[i]];
+    <span class="tok-keyword">return</span> {total, rowToCol};
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    vector&lt;vector&lt;ll&gt;&gt; profit(n+1, vector&lt;ll&gt;(n+1));
-    cost.assign(n+1, vector&lt;ll&gt;(n+1));
-    for (int i = 1; i &lt;= n; i++)
-        for (int j = 1; j &lt;= n; j++) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;ll&gt;&gt; profit(n+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;ll&gt;(n+<span class="tok-number">1</span>));
+    cost.assign(n+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;ll&gt;(n+<span class="tok-number">1</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= n; j++) {
             cin &gt;&gt; profit[i][j];
-            cost[i][j] = -profit[i][j]; // maximize profit == minimize negated profit
+            cost[i][j] = -profit[i][j]; <span class="tok-comment">// maximize profit == minimize negated profit</span>
         }
-    auto [totalNeg, rowToCol] = hungarianMin();
-    cout &lt;&lt; (-totalNeg) &lt;&lt; &quot;\n&quot;;
-    for (int i = 1; i &lt;= n; i++) cout &lt;&lt; rowToCol[i] &lt;&lt; &quot; \n&quot;[i==n];
+    <span class="tok-keyword">auto</span> [totalNeg, rowToCol] = hungarianMin();
+    cout &lt;&lt; (-totalNeg) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cout &lt;&lt; rowToCol[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i==n];
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>

@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,13 +281,13 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>By Bouton&#x27;s theorem, compute the XOR of all pile sizes. If the XOR is nonzero, the position is an N-position and the first player (about to move) can force a win; if the XOR is zero, the position is a P-position and the second player wins no matter what the first player does.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    long long x = 0;
-    for (int i = 0; i &lt; n; i++) { long long v; cin &gt;&gt; v; x ^= v; }
-    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) { <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> v; cin &gt;&gt; v; x ^= v; }
+    cout &lt;&lt; (x != <span class="tok-number">0</span> ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -293,15 +305,15 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is Staircase Nim: only the ball counts on ODD-numbered stairs (1, 3, 5, ...) matter, because any ball moved onto an even stair can always be immediately mirrored one step further down by the opponent, neutralizing that move; effectively the game reduces to ordinary Nim played on b[1], b[3], b[5], .... Compute the XOR of b[i] for all odd i from 1 to n; the first player wins iff this XOR is nonzero.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; b(n + 1);
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; b[i];
-    long long x = 0;
-    for (int i = 1; i &lt;= n; i += 2) x ^= b[i];
-    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; b(n + <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; b[i];
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i += <span class="tok-number">2</span>) x ^= b[i];
+    cout &lt;&lt; (x != <span class="tok-number">0</span> ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -319,24 +331,24 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>If at least one pile has 2 or more stones, misere Nim has the SAME winning condition as normal Nim: compute the XOR of all pile sizes, and the first player wins iff it is nonzero. If every pile has size 0 or 1, the outcome instead depends purely on parity: count the piles with exactly 1 stone, and the first player wins iff that count is EVEN (with an even number of forced single-stone moves remaining, the second player is forced to take the last stone).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    long long mx = *max_element(a.begin(), a.end());
-    bool firstWins;
-    if (mx &gt;= 2) {
-        long long x = 0;
-        for (auto v : a) x ^= v;
-        firstWins = (x != 0);
-    } else {
-        int ones = 0;
-        for (auto v : a) if (v == 1) ones++;
-        firstWins = (ones % 2 == 0);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> mx = *max_element(a.begin(), a.end());
+    <span class="tok-keyword">bool</span> firstWins;
+    <span class="tok-keyword">if</span> (mx &gt;= <span class="tok-number">2</span>) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> v : a) x ^= v;
+        firstWins = (x != <span class="tok-number">0</span>);
+    } <span class="tok-keyword">else</span> {
+        <span class="tok-keyword">int</span> ones = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> v : a) <span class="tok-keyword">if</span> (v == <span class="tok-number">1</span>) ones++;
+        firstWins = (ones % <span class="tok-number">2</span> == <span class="tok-number">0</span>);
     }
-    cout &lt;&lt; (firstWins ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; (firstWins ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -362,25 +374,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>First compute the Grundy number g[n] for a single heap of size n, for n = 0..1000, via g[n] = mex over all splits (a, b) with a + b = n, a != b, a,b &gt;= 1, of (g[a] XOR g[b]) — the XOR appears because after splitting, the heap becomes two INDEPENDENT heaps, and Sprague-Grundy says their combined Grundy value is the XOR of the two. g[0] = g[1] = g[2] = 0 (no legal split exists, mex of empty set is 0). Once the table is built, the overall game is the disjunctive sum of the m given heaps, so its Grundy number is the XOR of g[n_1], g[n_2], ..., g[n_m]; the first player wins iff this XOR is nonzero.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    const int MAXN = 1000;
-    vector&lt;int&gt; g(MAXN + 1, 0);
-    for (int n = 1; n &lt;= MAXN; n++) {
-        set&lt;int&gt; reachable;
-        for (int a = 1; a &lt; n - a; a++) { // a &lt; b = n-a ensures a != b, avoids dup
-            int b = n - a;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXN = <span class="tok-number">1000</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; g(MAXN + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> n = <span class="tok-number">1</span>; n &lt;= MAXN; n++) {
+        <span class="tok-type">set</span>&lt;<span class="tok-keyword">int</span>&gt; reachable;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> a = <span class="tok-number">1</span>; a &lt; n - a; a++) { <span class="tok-comment">// a &lt; b = n-a ensures a != b, avoids dup</span>
+            <span class="tok-keyword">int</span> b = n - a;
             reachable.insert(g[a] ^ g[b]);
         }
-        int mex = 0;
-        while (reachable.count(mex)) mex++;
+        <span class="tok-keyword">int</span> mex = <span class="tok-number">0</span>;
+        <span class="tok-keyword">while</span> (reachable.count(mex)) mex++;
         g[n] = mex;
     }
-    int m; cin &gt;&gt; m;
-    int x = 0;
-    for (int i = 0; i &lt; m; i++) { int v; cin &gt;&gt; v; x ^= g[v]; }
-    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">int</span> m; cin &gt;&gt; m;
+    <span class="tok-keyword">int</span> x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) { <span class="tok-keyword">int</span> v; cin &gt;&gt; v; x ^= g[v]; }
+    cout &lt;&lt; (x != <span class="tok-number">0</span> ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -398,23 +410,23 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Because the allowed removals are restricted, plain Nim&#x27;s &#x27;XOR the pile sizes&#x27; rule does NOT apply directly — you must first compute each pile&#x27;s Grundy number under this specific move set. Build a table g[0..1000] where g[0] = 0 and g[n] = mex({ g[n-1], g[n-3], g[n-4] } intersected with valid indices &gt;= 0). This sequence turns out to be periodic with period 7 (0,1,0,1,2,3,2, repeating), but the DP computes it correctly without needing to notice that. Once every pile&#x27;s Grundy number is known, XOR them all together (this is valid because the piles are independent subgames); the first player wins iff the XOR is nonzero.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    const int MAXN = 1000;
-    vector&lt;int&gt; S = {1, 3, 4};
-    vector&lt;int&gt; g(MAXN + 1, 0);
-    for (int n = 1; n &lt;= MAXN; n++) {
-        set&lt;int&gt; reach;
-        for (int s : S) if (s &lt;= n) reach.insert(g[n - s]);
-        int mex = 0;
-        while (reach.count(mex)) mex++;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXN = <span class="tok-number">1000</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; S = {<span class="tok-number">1</span>, <span class="tok-number">3</span>, <span class="tok-number">4</span>};
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; g(MAXN + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> n = <span class="tok-number">1</span>; n &lt;= MAXN; n++) {
+        <span class="tok-type">set</span>&lt;<span class="tok-keyword">int</span>&gt; reach;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> s : S) <span class="tok-keyword">if</span> (s &lt;= n) reach.insert(g[n - s]);
+        <span class="tok-keyword">int</span> mex = <span class="tok-number">0</span>;
+        <span class="tok-keyword">while</span> (reach.count(mex)) mex++;
         g[n] = mex;
     }
-    int m; cin &gt;&gt; m;
-    int x = 0;
-    for (int i = 0; i &lt; m; i++) { int v; cin &gt;&gt; v; x ^= g[v]; }
-    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">int</span> m; cin &gt;&gt; m;
+    <span class="tok-keyword">int</span> x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) { <span class="tok-keyword">int</span> v; cin &gt;&gt; v; x ^= g[v]; }
+    cout &lt;&lt; (x != <span class="tok-number">0</span> ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -432,30 +444,30 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a genuine composite game made of three DIFFERENT kinds of subgames. Sprague-Grundy still applies: compute each pile&#x27;s Grundy number using the rule for ITS type, independent of the other piles. For type A (subtraction {1,2}), a short hand-derivation (or a DP) shows g_A(n) = n mod 3. For type B (subtraction {1,3,4}), use the same mex-DP as before. For type C (standard Nim pile), g_C(n) = n exactly (a pile of n stones can move to any smaller pile 0..n-1, so mex({0,...,n-1}) = n). Compute each given pile&#x27;s Grundy number by dispatching on its type, then XOR ALL of them together across the whole composite game; the first player wins iff the total XOR is nonzero. This demonstrates the full generality of Sprague-Grundy: it doesn&#x27;t matter that the subgames are structurally different from each other, only that each is independent and impartial.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    const int MAXN = 1000;
-    vector&lt;int&gt; gB(MAXN + 1, 0);
-    vector&lt;int&gt; Sb = {1, 3, 4};
-    for (int n = 1; n &lt;= MAXN; n++) {
-        set&lt;int&gt; reach;
-        for (int s : Sb) if (s &lt;= n) reach.insert(gB[n - s]);
-        int mex = 0;
-        while (reach.count(mex)) mex++;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXN = <span class="tok-number">1000</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; gB(MAXN + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; Sb = {<span class="tok-number">1</span>, <span class="tok-number">3</span>, <span class="tok-number">4</span>};
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> n = <span class="tok-number">1</span>; n &lt;= MAXN; n++) {
+        <span class="tok-type">set</span>&lt;<span class="tok-keyword">int</span>&gt; reach;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> s : Sb) <span class="tok-keyword">if</span> (s &lt;= n) reach.insert(gB[n - s]);
+        <span class="tok-keyword">int</span> mex = <span class="tok-number">0</span>;
+        <span class="tok-keyword">while</span> (reach.count(mex)) mex++;
         gB[n] = mex;
     }
-    int m; cin &gt;&gt; m;
-    int x = 0;
-    for (int i = 0; i &lt; m; i++) {
-        char t; int v; cin &gt;&gt; t &gt;&gt; v;
-        int gv;
-        if (t == &#x27;A&#x27;) gv = v % 3;
-        else if (t == &#x27;B&#x27;) gv = gB[v];
-        else gv = v; // type C: standard Nim pile, Grundy(v) = v
+    <span class="tok-keyword">int</span> m; cin &gt;&gt; m;
+    <span class="tok-keyword">int</span> x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-keyword">char</span> t; <span class="tok-keyword">int</span> v; cin &gt;&gt; t &gt;&gt; v;
+        <span class="tok-keyword">int</span> gv;
+        <span class="tok-keyword">if</span> (t == <span class="tok-char">&#x27;A&#x27;</span>) gv = v % <span class="tok-number">3</span>;
+        <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (t == <span class="tok-char">&#x27;B&#x27;</span>) gv = gB[v];
+        <span class="tok-keyword">else</span> gv = v; <span class="tok-comment">// type C: standard Nim pile, Grundy(v) = v</span>
         x ^= gv;
     }
-    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; (x != <span class="tok-number">0</span> ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -483,16 +495,16 @@ C 3
   <div class="section-label">Approach</div>
   <div class="prose"><p>Each heap, considered alone, is the classic subtraction game with move set {1, 2, 3}. Its Grundy number is exactly (heap size mod 4): a heap of size 0 has no moves (grundy 0); a heap of size 1, 2, or 3 can be emptied directly, reaching grundy-0, so by the mex rule its own grundy number is mex({0}) = 1, mex({0,1})=... -- working this out by hand for sizes 0..7 confirms the pattern repeats with period 4 (0,1,2,3,0,1,2,3,...), i.e. grundy(x) = x mod 4. By the Sprague-Grundy sum theorem, since a move always acts on exactly one heap, the whole multi-heap game&#x27;s outcome is determined by XOR-ing every heap&#x27;s individual Grundy number together: compute x = XOR over all heaps of (h[i] mod 4); the first player wins (under normal play) if and only if x != 0.</p><p>On the sample (heaps 5, 7, 9): grundy values are 5 mod 4 = 1, 7 mod 4 = 3, 9 mod 4 = 1, XOR = 1^3^1 = 3, which is nonzero, so the first player wins. Cross-checked against an independent brute-force minimax search over the actual multi-heap game (memoized recursion over the exact tuple of remaining heap sizes, exploring every legal 1/2/3-stick removal) across 300 randomly generated small instances (1 to 3 heaps, sizes 0 to 6) with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    int x = 0;
-    for(int i=0;i&lt;n;i++){
-        long long h; cin &gt;&gt; h;
-        x ^= (int)(h % 4);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-keyword">int</span> x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> h; cin &gt;&gt; h;
+        x ^= (<span class="tok-keyword">int</span>)(h % <span class="tok-number">4</span>);
     }
-    cout &lt;&lt; (x != 0 ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; endl;
+    cout &lt;&lt; (x != <span class="tok-number">0</span> ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -510,22 +522,22 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Apply Bouton&#x27;s misère Nim theorem. If at least one heap has size 2 or more, misère Nim is decided by the EXACT SAME rule as normal-play Nim: compute the XOR of all heap sizes; the first player wins if and only if that XOR is nonzero (the standard argument for why misère and normal play coincide here is that whenever a heap of size &gt;= 2 exists, the player with a winning normal-play strategy can always choose to leave at least two heaps of size &gt;= 2 for as long as needed, deferring the misère-specific endgame subtlety indefinitely). If, however, EVERY heap already has size 0 or 1, the two conventions diverge: the correct misère rule is that the first player wins if and only if the number of heaps with exactly 1 stone is EVEN (the opposite of what normal play&#x27;s XOR rule would say for that same configuration, since XOR-of-0s-and-1s is nonzero exactly when the count of 1s is ODD).</p><p>On the sample (three heaps, each of size 1): every heap is already 0 or 1, so the special-case rule applies; the number of heaps of size exactly 1 is 3, which is ODD, so under the misère parity flip the first player LOSES, i.e. the output is &quot;Second&quot; (note this is the opposite of what plain normal-play Nim would give for the same heaps, since XOR(1,1,1) = 1 != 0 would normally mean the first player wins -- this contrast is exactly the point of the misère correction). Cross-checked against an independent brute-force minimax search implementing the misère win condition directly (a move to the all-zero state means the mover just took the last stone and therefore LOSES immediately) across 500 randomly generated small instances (1 to 3 heaps, sizes 0 to 5) with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; h(n);
-    long long mx = 0, x = 0;
-    int onesCount = 0;
-    for(auto &amp;v : h){ cin &gt;&gt; v; mx = max(mx, v); x ^= v; if(v==1) onesCount++; }
-    bool firstWins;
-    if(mx &lt;= 1){
-        // every pile is 0 or 1: first player wins iff the number of 1-piles is even
-        firstWins = (onesCount % 2 == 0);
-    } else {
-        firstWins = (x != 0);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; h(n);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> mx = <span class="tok-number">0</span>, x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> onesCount = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;v : h){ cin &gt;&gt; v; mx = max(mx, v); x ^= v; <span class="tok-keyword">if</span>(v==<span class="tok-number">1</span>) onesCount++; }
+    <span class="tok-keyword">bool</span> firstWins;
+    <span class="tok-keyword">if</span>(mx &lt;= <span class="tok-number">1</span>){
+        <span class="tok-comment">// every pile is 0 or 1: first player wins iff the number of 1-piles is even</span>
+        firstWins = (onesCount % <span class="tok-number">2</span> == <span class="tok-number">0</span>);
+    } <span class="tok-keyword">else</span> {
+        firstWins = (x != <span class="tok-number">0</span>);
     }
-    cout &lt;&lt; (firstWins ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; endl;
+    cout &lt;&lt; (firstWins ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>

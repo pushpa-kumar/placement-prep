@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,37 +281,37 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build combined = P + &#x27;#&#x27; + T using a separator character guaranteed not to appear in either string. Compute the prefix function pi of combined in O(|combined|). For every index i in the T-part of combined (i.e. i &gt; |P|), if pi[i] == |P| then a full copy of P ends at position i of combined; converting back to an index in T gives start = i - 2*|P| (subtract |P| for the pattern part and the separator, then |P| more for the length of the match itself: i - 2*|P|). Collect all such starts.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-vector&lt;int&gt; prefixFunction(const string &amp;s) {
-    int n = s.size();
-    vector&lt;int&gt; pi(n, 0);
-    for (int i = 1; i &lt; n; i++) {
-        int j = pi[i - 1];
-        while (j &gt; 0 &amp;&amp; s[i] != s[j]) j = pi[j - 1];
-        if (s[i] == s[j]) j++;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prefixFunction(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; pi(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> j = pi[i - <span class="tok-number">1</span>];
+        <span class="tok-keyword">while</span> (j &gt; <span class="tok-number">0</span> &amp;&amp; s[i] != s[j]) j = pi[j - <span class="tok-number">1</span>];
+        <span class="tok-keyword">if</span> (s[i] == s[j]) j++;
         pi[i] = j;
     }
-    return pi;
+    <span class="tok-keyword">return</span> pi;
 }
 
-int main() {
-    string text, pattern;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> text, pattern;
     getline(cin, text);
     getline(cin, pattern);
-    string combined = pattern + &quot;#&quot; + text;
-    vector&lt;int&gt; pi = prefixFunction(combined);
-    int m = pattern.size();
-    vector&lt;int&gt; occ;
-    for (int i = m + 1; i &lt; (int)combined.size(); i++) {
-        if (pi[i] == m) occ.push_back(i - 2 * m);
+    <span class="tok-type">string</span> combined = pattern + <span class="tok-string">&quot;#&quot;</span> + text;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; pi = prefixFunction(combined);
+    <span class="tok-keyword">int</span> m = pattern.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; occ;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = m + <span class="tok-number">1</span>; i &lt; (<span class="tok-keyword">int</span>)combined.size(); i++) {
+        <span class="tok-keyword">if</span> (pi[i] == m) occ.push_back(i - <span class="tok-number">2</span> * m);
     }
-    cout &lt;&lt; occ.size() &lt;&lt; &quot;\n&quot;;
-    for (int i = 0; i &lt; (int)occ.size(); i++) {
-        cout &lt;&lt; occ[i] &lt;&lt; &quot; \n&quot;[i + 1 == (int)occ.size()];
+    cout &lt;&lt; occ.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)occ.size(); i++) {
+        cout &lt;&lt; occ[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i + <span class="tok-number">1</span> == (<span class="tok-keyword">int</span>)occ.size()];
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -318,32 +330,32 @@ abab
   <div class="section-label">Approach</div>
   <div class="prose"><p>If we prepend k characters to make s a palindrome, those k characters must equal the reverse of the last k characters of the resulting palindrome, which forces the prepended block to equal reverse(suffix) in a very specific way; the key reduction is: we want the longest prefix of s that is itself a palindrome, because everything after that prefix must be mirrored in front. Compute combined = s + &#x27;#&#x27; + reverse(s) and run the prefix function; pi.back() gives the length of the longest palindromic prefix of s (it equals the longest border between s and reverse(s), which is exactly the longest prefix of s that reads the same as a suffix of reverse(s), i.e. a palindrome). The characters of s beyond that prefix, reversed, are exactly what must be prepended: answer = reverse(s[longest:]) + s.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-vector&lt;int&gt; prefixFunction(const string &amp;s) {
-    int n = s.size();
-    vector&lt;int&gt; pi(n, 0);
-    for (int i = 1; i &lt; n; i++) {
-        int j = pi[i - 1];
-        while (j &gt; 0 &amp;&amp; s[i] != s[j]) j = pi[j - 1];
-        if (s[i] == s[j]) j++;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prefixFunction(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; pi(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> j = pi[i - <span class="tok-number">1</span>];
+        <span class="tok-keyword">while</span> (j &gt; <span class="tok-number">0</span> &amp;&amp; s[i] != s[j]) j = pi[j - <span class="tok-number">1</span>];
+        <span class="tok-keyword">if</span> (s[i] == s[j]) j++;
         pi[i] = j;
     }
-    return pi;
+    <span class="tok-keyword">return</span> pi;
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    string rev = s;
+    <span class="tok-type">string</span> rev = s;
     reverse(rev.begin(), rev.end());
-    string combined = s + &quot;#&quot; + rev;
-    vector&lt;int&gt; pi = prefixFunction(combined);
-    int longestPalinPrefix = pi.back();
-    string toAdd = rev.substr(0, s.size() - longestPalinPrefix);
-    cout &lt;&lt; toAdd + s &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-type">string</span> combined = s + <span class="tok-string">&quot;#&quot;</span> + rev;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; pi = prefixFunction(combined);
+    <span class="tok-keyword">int</span> longestPalinPrefix = pi.back();
+    <span class="tok-type">string</span> toAdd = rev.substr(<span class="tok-number">0</span>, s.size() - longestPalinPrefix);
+    cout &lt;&lt; toAdd + s &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -360,38 +372,38 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Compute the prefix function pi of s directly (no concatenation needed here). The chain b = pi[n-1], then b = pi[b-1], and so on until b = 0, enumerates every border length of the full string. A border of length b corresponds exactly to period n-b, because s[0..b) == s[n-b..n) means s repeats with period n-b. Collect n-b for every border in the chain, add the trivial period n itself, sort, and print.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-vector&lt;int&gt; prefixFunction(const string &amp;s) {
-    int n = s.size();
-    vector&lt;int&gt; pi(n, 0);
-    for (int i = 1; i &lt; n; i++) {
-        int j = pi[i - 1];
-        while (j &gt; 0 &amp;&amp; s[i] != s[j]) j = pi[j - 1];
-        if (s[i] == s[j]) j++;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; prefixFunction(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; pi(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> j = pi[i - <span class="tok-number">1</span>];
+        <span class="tok-keyword">while</span> (j &gt; <span class="tok-number">0</span> &amp;&amp; s[i] != s[j]) j = pi[j - <span class="tok-number">1</span>];
+        <span class="tok-keyword">if</span> (s[i] == s[j]) j++;
         pi[i] = j;
     }
-    return pi;
+    <span class="tok-keyword">return</span> pi;
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    int n = s.size();
-    vector&lt;int&gt; pi = prefixFunction(s);
-    vector&lt;int&gt; periods;
-    periods.push_back(n); // trivial period: the whole string
-    int b = pi[n - 1];
-    while (b &gt; 0) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; pi = prefixFunction(s);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; periods;
+    periods.push_back(n); <span class="tok-comment">// trivial period: the whole string</span>
+    <span class="tok-keyword">int</span> b = pi[n - <span class="tok-number">1</span>];
+    <span class="tok-keyword">while</span> (b &gt; <span class="tok-number">0</span>) {
         periods.push_back(n - b);
-        b = pi[b - 1];
+        b = pi[b - <span class="tok-number">1</span>];
     }
     sort(periods.begin(), periods.end());
-    for (int i = 0; i &lt; (int)periods.size(); i++) {
-        cout &lt;&lt; periods[i] &lt;&lt; &quot; \n&quot;[i + 1 == (int)periods.size()];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)periods.size(); i++) {
+        cout &lt;&lt; periods[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i + <span class="tok-number">1</span> == (<span class="tok-keyword">int</span>)periods.size()];
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -416,38 +428,38 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Form combined = P + &#x27;#&#x27; + T and compute its Z-array. For every position i within the T-part (i &gt; |P|), z[i] &gt;= |P| means the substring of combined starting at i shares at least |P| characters with the whole combined string, i.e. with P itself — an occurrence of P in T starting at index i - |P| - 1.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-vector&lt;int&gt; zFunction(const string &amp;s) {
-    int n = s.size();
-    vector&lt;int&gt; z(n, 0);
-    z[0] = n;
-    int l = 0, r = 0;
-    for (int i = 1; i &lt; n; i++) {
-        if (i &lt; r) z[i] = min(r - i, z[i - l]);
-        while (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]]) z[i]++;
-        if (i + z[i] &gt; r) { l = i; r = i + z[i]; }
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; zFunction(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; z(n, <span class="tok-number">0</span>);
+    z[<span class="tok-number">0</span>] = n;
+    <span class="tok-keyword">int</span> l = <span class="tok-number">0</span>, r = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
+        <span class="tok-keyword">if</span> (i &lt; r) z[i] = min(r - i, z[i - l]);
+        <span class="tok-keyword">while</span> (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]]) z[i]++;
+        <span class="tok-keyword">if</span> (i + z[i] &gt; r) { l = i; r = i + z[i]; }
     }
-    return z;
+    <span class="tok-keyword">return</span> z;
 }
 
-int main() {
-    string text, pattern;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> text, pattern;
     getline(cin, text);
     getline(cin, pattern);
-    int m = pattern.size();
-    string combined = pattern + &quot;#&quot; + text;
-    vector&lt;int&gt; z = zFunction(combined);
-    vector&lt;int&gt; occ;
-    for (int i = m + 1; i &lt; (int)combined.size(); i++) {
-        if (z[i] &gt;= m) occ.push_back(i - m - 1);
+    <span class="tok-keyword">int</span> m = pattern.size();
+    <span class="tok-type">string</span> combined = pattern + <span class="tok-string">&quot;#&quot;</span> + text;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; z = zFunction(combined);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; occ;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = m + <span class="tok-number">1</span>; i &lt; (<span class="tok-keyword">int</span>)combined.size(); i++) {
+        <span class="tok-keyword">if</span> (z[i] &gt;= m) occ.push_back(i - m - <span class="tok-number">1</span>);
     }
-    cout &lt;&lt; occ.size() &lt;&lt; &quot;\n&quot;;
-    for (int i = 0; i &lt; (int)occ.size(); i++) {
-        cout &lt;&lt; occ[i] &lt;&lt; &quot; \n&quot;[i + 1 == (int)occ.size()];
+    cout &lt;&lt; occ.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)occ.size(); i++) {
+        cout &lt;&lt; occ[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i + <span class="tok-number">1</span> == (<span class="tok-keyword">int</span>)occ.size()];
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -466,30 +478,30 @@ abc
   <div class="section-label">Approach</div>
   <div class="prose"><p>score(i) is exactly the definition of the Z-function value z[i] for i &gt;= 1, and score(0) = n matches the conventional z[0] = n. So the answer is simply the sum of the entire Z-array (with z[0] set to n). Compute the Z-array in O(n) and sum it — the entire difficulty of this &#x27;hard&#x27; problem is recognizing the reduction, not the implementation.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-vector&lt;long long&gt; zFunction(const string &amp;s) {
-    int n = s.size();
-    vector&lt;long long&gt; z(n, 0);
-    z[0] = n;
-    int l = 0, r = 0;
-    for (int i = 1; i &lt; n; i++) {
-        if (i &lt; r) z[i] = min((long long)(r - i), z[i - l]);
-        while (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]]) z[i]++;
-        if (i + z[i] &gt; r) { l = i; r = i + z[i]; }
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; zFunction(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; z(n, <span class="tok-number">0</span>);
+    z[<span class="tok-number">0</span>] = n;
+    <span class="tok-keyword">int</span> l = <span class="tok-number">0</span>, r = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
+        <span class="tok-keyword">if</span> (i &lt; r) z[i] = min((<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)(r - i), z[i - l]);
+        <span class="tok-keyword">while</span> (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]]) z[i]++;
+        <span class="tok-keyword">if</span> (i + z[i] &gt; r) { l = i; r = i + z[i]; }
     }
-    return z;
+    <span class="tok-keyword">return</span> z;
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    vector&lt;long long&gt; z = zFunction(s);
-    long long sum = 0;
-    for (long long v : z) sum += v;
-    cout &lt;&lt; sum &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; z = zFunction(s);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> sum = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> v : z) sum += v;
+    cout &lt;&lt; sum &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -514,65 +526,65 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>The existence of a common substring of length L is monotonic in L: if some common substring of length L exists, truncating one character from both copies gives a common substring of length L-1, so the predicate &#x27;a common substring of length L exists&#x27; is true for a prefix of lengths 0..answer and false above. Binary search on L; for the check, hash every length-L substring of s into a set (using a double hash pair to make accidental collisions negligible) and test every length-L substring of t for membership in O(1) per substring. Each check costs O(n+m), giving O((n+m) log n) overall.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ull;
 
-struct DoubleHash {
-    // two independent polynomial hashes to make collisions astronomically unlikely
-    static const ll MOD1 = 1000000007LL, MOD2 = 998244353LL;
-    static const ll BASE1 = 131, BASE2 = 137;
-    vector&lt;ll&gt; h1, h2, p1, p2;
-    void build(const string &amp;s) {
-        int n = s.size();
-        h1.assign(n + 1, 0); h2.assign(n + 1, 0);
-        p1.assign(n + 1, 1); p2.assign(n + 1, 1);
-        for (int i = 0; i &lt; n; i++) {
-            h1[i + 1] = (h1[i] * BASE1 + s[i]) % MOD1;
-            h2[i + 1] = (h2[i] * BASE2 + s[i]) % MOD2;
-            p1[i + 1] = (p1[i] * BASE1) % MOD1;
-            p2[i + 1] = (p2[i] * BASE2) % MOD2;
+<span class="tok-keyword">struct</span> DoubleHash {
+    <span class="tok-comment">// two independent polynomial hashes to make collisions astronomically unlikely</span>
+    <span class="tok-keyword">static</span> <span class="tok-keyword">const</span> ll MOD1 = <span class="tok-number">1000000007LL</span>, MOD2 = <span class="tok-number">998244353LL</span>;
+    <span class="tok-keyword">static</span> <span class="tok-keyword">const</span> ll BASE1 = <span class="tok-number">131</span>, BASE2 = <span class="tok-number">137</span>;
+    <span class="tok-type">vector</span>&lt;ll&gt; h1, h2, p1, p2;
+    <span class="tok-keyword">void</span> build(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+        <span class="tok-keyword">int</span> n = s.size();
+        h1.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>); h2.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+        p1.assign(n + <span class="tok-number">1</span>, <span class="tok-number">1</span>); p2.assign(n + <span class="tok-number">1</span>, <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+            h1[i + <span class="tok-number">1</span>] = (h1[i] * BASE1 + s[i]) % MOD1;
+            h2[i + <span class="tok-number">1</span>] = (h2[i] * BASE2 + s[i]) % MOD2;
+            p1[i + <span class="tok-number">1</span>] = (p1[i] * BASE1) % MOD1;
+            p2[i + <span class="tok-number">1</span>] = (p2[i] * BASE2) % MOD2;
         }
     }
-    // hash of s[l..r) 0-indexed, half-open
-    pair&lt;ll, ll&gt; get(int l, int r) const {
+    <span class="tok-comment">// hash of s[l..r) 0-indexed, half-open</span>
+    <span class="tok-type">pair</span>&lt;ll, ll&gt; get(<span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r) <span class="tok-keyword">const</span> {
         ll a = ((h1[r] - h1[l] * p1[r - l]) % MOD1 + MOD1) % MOD1;
         ll b = ((h2[r] - h2[l] * p2[r - l]) % MOD2 + MOD2) % MOD2;
-        return {a, b};
+        <span class="tok-keyword">return</span> {a, b};
     }
 };
 
-int main() {
-    string s, t;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s, t;
     getline(cin, s);
     getline(cin, t);
     DoubleHash hs, ht;
     hs.build(s);
     ht.build(t);
-    int n = s.size(), m = t.size();
+    <span class="tok-keyword">int</span> n = s.size(), m = t.size();
 
-    auto check = [&amp;](int len) -&gt; pair&lt;bool, int&gt; {
-        if (len == 0) return {true, 0};
-        set&lt;pair&lt;ll, ll&gt;&gt; seen;
-        for (int i = 0; i + len &lt;= n; i++) seen.insert(hs.get(i, i + len));
-        for (int j = 0; j + len &lt;= m; j++) {
-            if (seen.count(ht.get(j, j + len))) return {true, j};
+    <span class="tok-keyword">auto</span> check = [&amp;](<span class="tok-keyword">int</span> len) -&gt; <span class="tok-type">pair</span>&lt;<span class="tok-keyword">bool</span>, <span class="tok-keyword">int</span>&gt; {
+        <span class="tok-keyword">if</span> (len == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> {<span class="tok-keyword">true</span>, <span class="tok-number">0</span>};
+        <span class="tok-type">set</span>&lt;<span class="tok-type">pair</span>&lt;ll, ll&gt;&gt; seen;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i + len &lt;= n; i++) seen.insert(hs.get(i, i + len));
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j + len &lt;= m; j++) {
+            <span class="tok-keyword">if</span> (seen.count(ht.get(j, j + len))) <span class="tok-keyword">return</span> {<span class="tok-keyword">true</span>, j};
         }
-        return {false, -1};
+        <span class="tok-keyword">return</span> {<span class="tok-keyword">false</span>, -<span class="tok-number">1</span>};
     };
 
-    int lo = 0, hi = min(n, m), ans = 0, startInT = -1;
-    while (lo &lt;= hi) {
-        int mid = (lo + hi) / 2;
-        auto [ok, pos] = check(mid);
-        if (ok) { ans = mid; startInT = pos; lo = mid + 1; }
-        else hi = mid - 1;
+    <span class="tok-keyword">int</span> lo = <span class="tok-number">0</span>, hi = min(n, m), ans = <span class="tok-number">0</span>, startInT = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (lo &lt;= hi) {
+        <span class="tok-keyword">int</span> mid = (lo + hi) / <span class="tok-number">2</span>;
+        <span class="tok-keyword">auto</span> [ok, pos] = check(mid);
+        <span class="tok-keyword">if</span> (ok) { ans = mid; startInT = pos; lo = mid + <span class="tok-number">1</span>; }
+        <span class="tok-keyword">else</span> hi = mid - <span class="tok-number">1</span>;
     }
-    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
-    if (ans &gt; 0) cout &lt;&lt; t.substr(startInT, ans) &lt;&lt; &quot;\n&quot;;
-    else cout &lt;&lt; &quot;\n&quot;;
-    return 0;
+    cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">if</span> (ans &gt; <span class="tok-number">0</span>) cout &lt;&lt; t.substr(startInT, ans) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">else</span> cout &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -591,78 +603,78 @@ Geeks
   <div class="section-label">Approach</div>
   <div class="prose"><p>Greedily peel matching outer characters with two pointers i=0, j=n-1: while s[i] == s[j], advance i and retreat j. This gives the maximal &#x27;shell&#x27; — a prefix of length shell=i that exactly equals the reverse of the corresponding suffix — which can always be wrapped, unmodified, around any palindrome found in the remaining middle segment s[i..j]. The problem now reduces to: find the longest palindromic PREFIX of the middle or the longest palindromic SUFFIX of the middle (whichever is longer), and sandwich it between the shell and its mirrored copy. Use double hashing to test &#x27;is s[l..r) a palindrome&#x27; in O(1) (by comparing the forward hash of that range against the forward hash of the mirrored range in reverse(s)), and scan candidate lengths from the full middle length down to 0, stopping at the first palindrome found — this is O(|middle|) with O(1) checks, no binary search needed since &#x27;is a palindrome&#x27; is not itself monotonic in length.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
 
-struct DoubleHash {
-    static const ll MOD1 = 1000000007LL, MOD2 = 998244353LL;
-    static const ll BASE1 = 131, BASE2 = 137;
-    vector&lt;ll&gt; h1, h2, p1, p2;
-    void build(const string &amp;s) {
-        int n = s.size();
-        h1.assign(n + 1, 0); h2.assign(n + 1, 0);
-        p1.assign(n + 1, 1); p2.assign(n + 1, 1);
-        for (int i = 0; i &lt; n; i++) {
-            h1[i + 1] = (h1[i] * BASE1 + s[i]) % MOD1;
-            h2[i + 1] = (h2[i] * BASE2 + s[i]) % MOD2;
-            p1[i + 1] = (p1[i] * BASE1) % MOD1;
-            p2[i + 1] = (p2[i] * BASE2) % MOD2;
+<span class="tok-keyword">struct</span> DoubleHash {
+    <span class="tok-keyword">static</span> <span class="tok-keyword">const</span> ll MOD1 = <span class="tok-number">1000000007LL</span>, MOD2 = <span class="tok-number">998244353LL</span>;
+    <span class="tok-keyword">static</span> <span class="tok-keyword">const</span> ll BASE1 = <span class="tok-number">131</span>, BASE2 = <span class="tok-number">137</span>;
+    <span class="tok-type">vector</span>&lt;ll&gt; h1, h2, p1, p2;
+    <span class="tok-keyword">void</span> build(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+        <span class="tok-keyword">int</span> n = s.size();
+        h1.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>); h2.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+        p1.assign(n + <span class="tok-number">1</span>, <span class="tok-number">1</span>); p2.assign(n + <span class="tok-number">1</span>, <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+            h1[i + <span class="tok-number">1</span>] = (h1[i] * BASE1 + s[i]) % MOD1;
+            h2[i + <span class="tok-number">1</span>] = (h2[i] * BASE2 + s[i]) % MOD2;
+            p1[i + <span class="tok-number">1</span>] = (p1[i] * BASE1) % MOD1;
+            p2[i + <span class="tok-number">1</span>] = (p2[i] * BASE2) % MOD2;
         }
     }
-    pair&lt;ll, ll&gt; get(int l, int r) const { // s[l..r) half-open
+    <span class="tok-type">pair</span>&lt;ll, ll&gt; get(<span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r) <span class="tok-keyword">const</span> { <span class="tok-comment">// s[l..r) half-open</span>
         ll a = ((h1[r] - h1[l] * p1[r - l]) % MOD1 + MOD1) % MOD1;
         ll b = ((h2[r] - h2[l] * p2[r - l]) % MOD2 + MOD2) % MOD2;
-        return {a, b};
+        <span class="tok-keyword">return</span> {a, b};
     }
 };
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    int n = s.size();
-    string rev = s;
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">string</span> rev = s;
     reverse(rev.begin(), rev.end());
 
-    DoubleHash hf, hr; // hf: hash of s, hr: hash of reverse(s)
+    DoubleHash hf, hr; <span class="tok-comment">// hf: hash of s, hr: hash of reverse(s)</span>
     hf.build(s);
     hr.build(rev);
 
-    // isPalindrome(l, r) for s[l..r) : compare forward hash of s[l,r)
-    // with forward hash of rev at mirrored positions.
-    auto isPalin = [&amp;](int l, int r) -&gt; bool {
-        int len = r - l;
-        if (len &lt;= 1) return true;
-        int rl = n - r, rr = n - l; // mirrored half-open range in rev
-        return hf.get(l, r) == hr.get(rl, rr);
+    <span class="tok-comment">// isPalindrome(l, r) for s[l..r) : compare forward hash of s[l,r)</span>
+    <span class="tok-comment">// with forward hash of rev at mirrored positions.</span>
+    <span class="tok-keyword">auto</span> isPalin = [&amp;](<span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r) -&gt; <span class="tok-keyword">bool</span> {
+        <span class="tok-keyword">int</span> len = r - l;
+        <span class="tok-keyword">if</span> (len &lt;= <span class="tok-number">1</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">int</span> rl = n - r, rr = n - l; <span class="tok-comment">// mirrored half-open range in rev</span>
+        <span class="tok-keyword">return</span> hf.get(l, r) == hr.get(rl, rr);
     };
 
-    // Step 1: peel the maximal matching outer prefix/suffix shell.
-    int i = 0, j = n - 1;
-    while (i &lt; j &amp;&amp; s[i] == s[j]) { i++; j--; }
-    // shell length = i (chars s[0..i) match reverse of s[j+1..n))
-    int shell = i;
-    // middle is s[i..j] inclusive (0 or more characters)
-    int midL = i, midR = j + 1; // half-open [midL, midR)
+    <span class="tok-comment">// Step 1: peel the maximal matching outer prefix/suffix shell.</span>
+    <span class="tok-keyword">int</span> i = <span class="tok-number">0</span>, j = n - <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (i &lt; j &amp;&amp; s[i] == s[j]) { i++; j--; }
+    <span class="tok-comment">// shell length = i (chars s[0..i) match reverse of s[j+1..n))</span>
+    <span class="tok-keyword">int</span> shell = i;
+    <span class="tok-comment">// middle is s[i..j] inclusive (0 or more characters)</span>
+    <span class="tok-keyword">int</span> midL = i, midR = j + <span class="tok-number">1</span>; <span class="tok-comment">// half-open [midL, midR)</span>
 
-    // Step 2: longest palindromic PREFIX of the middle.
-    int bestPrefix = 0;
-    for (int len = midR - midL; len &gt;= 0; len--) {
-        if (isPalin(midL, midL + len)) { bestPrefix = len; break; }
+    <span class="tok-comment">// Step 2: longest palindromic PREFIX of the middle.</span>
+    <span class="tok-keyword">int</span> bestPrefix = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = midR - midL; len &gt;= <span class="tok-number">0</span>; len--) {
+        <span class="tok-keyword">if</span> (isPalin(midL, midL + len)) { bestPrefix = len; <span class="tok-keyword">break</span>; }
     }
-    // Step 3: longest palindromic SUFFIX of the middle.
-    int bestSuffix = 0;
-    for (int len = midR - midL; len &gt;= 0; len--) {
-        if (isPalin(midR - len, midR)) { bestSuffix = len; break; }
+    <span class="tok-comment">// Step 3: longest palindromic SUFFIX of the middle.</span>
+    <span class="tok-keyword">int</span> bestSuffix = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = midR - midL; len &gt;= <span class="tok-number">0</span>; len--) {
+        <span class="tok-keyword">if</span> (isPalin(midR - len, midR)) { bestSuffix = len; <span class="tok-keyword">break</span>; }
     }
 
-    string middlePart = (bestPrefix &gt;= bestSuffix)
+    <span class="tok-type">string</span> middlePart = (bestPrefix &gt;= bestSuffix)
                              ? s.substr(midL, bestPrefix)
                              : s.substr(midR - bestSuffix, bestSuffix);
-    string result = s.substr(0, shell) + middlePart + s.substr(j + 1, shell);
-    cout &lt;&lt; result.size() &lt;&lt; &quot;\n&quot;;
-    cout &lt;&lt; result &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-type">string</span> result = s.substr(<span class="tok-number">0</span>, shell) + middlePart + s.substr(j + <span class="tok-number">1</span>, shell);
+    cout &lt;&lt; result.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    cout &lt;&lt; result &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -680,101 +692,101 @@ aabxbaa
   <div class="section-label">Approach</div>
   <div class="prose"><p>A flat prefix-hash array can&#x27;t handle point updates efficiently (an update would shift every hash after it). Instead build a segment tree over the string where each node stores two hashes of its range under one large-modulus polynomial hash: the forward hash (read left to right) and the reverse hash (as if the range were read right to left). Forward hashes merge as combine(L,R) = L.hash * B^|R| + R.hash. Reverse hashes merge in the opposite order, because reverse(A+B) = reverse(B) + reverse(A): combine(L,R) = R.rev * B^|L| + L.rev. A point update just rewrites a leaf and recomputes O(log n) ancestors; a range query merges O(log n) segment-tree nodes to get the forward and reverse hash of the queried range in O(log n), and the range is a palindrome iff the two hashes are equal. Using a modulus near 2^61 with 128-bit multiplication (or double hashing) keeps collision probability negligible even under adversarial queries.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
-// Segment tree over a fixed-length string supporting:
-//  - point update (change one character)
-//  - range palindrome query in O(log n)
-// Each node stores (forwardHash, reverseHash) of its substring under one
-// large-modulus polynomial hash. reverse(A+B) = reverse(B) + reverse(A),
-// which gives the merge rule for the reverse hash below.
+<span class="tok-comment">// Segment tree over a fixed-length string supporting:</span>
+<span class="tok-comment">//  - point update (change one character)</span>
+<span class="tok-comment">//  - range palindrome query in O(log n)</span>
+<span class="tok-comment">// Each node stores (forwardHash, reverseHash) of its substring under one</span>
+<span class="tok-comment">// large-modulus polynomial hash. reverse(A+B) = reverse(B) + reverse(A),</span>
+<span class="tok-comment">// which gives the merge rule for the reverse hash below.</span>
 
-static const ll MOD = 1000000000000000003LL; // large prime, fits well under 2^63
-static const ll BASE = 131542391927LL;
+<span class="tok-keyword">static</span> <span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000000000000003LL</span>; <span class="tok-comment">// large prime, fits well under 2^63</span>
+<span class="tok-keyword">static</span> <span class="tok-keyword">const</span> ll BASE = <span class="tok-number">131542391927LL</span>;
 
 ll mulmod(ll a, ll b) {
-    return (ll)((lll)a * b % MOD);
+    <span class="tok-keyword">return</span> (ll)((lll)a * b % MOD);
 }
 
-int n;
-vector&lt;ll&gt; pw;
-struct Node { ll fwd = 0, rev = 0; int len = 0; };
-vector&lt;Node&gt; seg;
-string str;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;ll&gt; pw;
+<span class="tok-keyword">struct</span> Node { ll fwd = <span class="tok-number">0</span>, rev = <span class="tok-number">0</span>; <span class="tok-keyword">int</span> len = <span class="tok-number">0</span>; };
+<span class="tok-type">vector</span>&lt;Node&gt; seg;
+<span class="tok-type">string</span> str;
 
-Node merge(const Node &amp;L, const Node &amp;R) {
+Node merge(<span class="tok-keyword">const</span> Node &amp;L, <span class="tok-keyword">const</span> Node &amp;R) {
     Node res;
     res.len = L.len + R.len;
     res.fwd = (mulmod(L.fwd, pw[R.len]) + R.fwd) % MOD;
     res.rev = (mulmod(R.rev, pw[L.len]) + L.rev) % MOD;
-    return res;
+    <span class="tok-keyword">return</span> res;
 }
 
-void build(int node, int l, int r) {
-    if (l == r) {
-        ll v = str[l] - &#x27;a&#x27; + 1;
-        seg[node] = {v % MOD, v % MOD, 1};
-        return;
+<span class="tok-keyword">void</span> build(<span class="tok-keyword">int</span> node, <span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r) {
+    <span class="tok-keyword">if</span> (l == r) {
+        ll v = str[l] - <span class="tok-char">&#x27;a&#x27;</span> + <span class="tok-number">1</span>;
+        seg[node] = {v % MOD, v % MOD, <span class="tok-number">1</span>};
+        <span class="tok-keyword">return</span>;
     }
-    int mid = (l + r) / 2;
-    build(2 * node, l, mid);
-    build(2 * node + 1, mid + 1, r);
-    seg[node] = merge(seg[2 * node], seg[2 * node + 1]);
+    <span class="tok-keyword">int</span> mid = (l + r) / <span class="tok-number">2</span>;
+    build(<span class="tok-number">2</span> * node, l, mid);
+    build(<span class="tok-number">2</span> * node + <span class="tok-number">1</span>, mid + <span class="tok-number">1</span>, r);
+    seg[node] = merge(seg[<span class="tok-number">2</span> * node], seg[<span class="tok-number">2</span> * node + <span class="tok-number">1</span>]);
 }
 
-void update(int node, int l, int r, int pos, char c) {
-    if (l == r) {
-        ll v = c - &#x27;a&#x27; + 1;
-        seg[node] = {v % MOD, v % MOD, 1};
-        return;
+<span class="tok-keyword">void</span> update(<span class="tok-keyword">int</span> node, <span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r, <span class="tok-keyword">int</span> pos, <span class="tok-keyword">char</span> c) {
+    <span class="tok-keyword">if</span> (l == r) {
+        ll v = c - <span class="tok-char">&#x27;a&#x27;</span> + <span class="tok-number">1</span>;
+        seg[node] = {v % MOD, v % MOD, <span class="tok-number">1</span>};
+        <span class="tok-keyword">return</span>;
     }
-    int mid = (l + r) / 2;
-    if (pos &lt;= mid) update(2 * node, l, mid, pos, c);
-    else update(2 * node + 1, mid + 1, r, pos, c);
-    seg[node] = merge(seg[2 * node], seg[2 * node + 1]);
+    <span class="tok-keyword">int</span> mid = (l + r) / <span class="tok-number">2</span>;
+    <span class="tok-keyword">if</span> (pos &lt;= mid) update(<span class="tok-number">2</span> * node, l, mid, pos, c);
+    <span class="tok-keyword">else</span> update(<span class="tok-number">2</span> * node + <span class="tok-number">1</span>, mid + <span class="tok-number">1</span>, r, pos, c);
+    seg[node] = merge(seg[<span class="tok-number">2</span> * node], seg[<span class="tok-number">2</span> * node + <span class="tok-number">1</span>]);
 }
 
-Node query(int node, int l, int r, int ql, int qr) {
-    if (qr &lt; l || r &lt; ql) return Node{0, 0, 0};
-    if (ql &lt;= l &amp;&amp; r &lt;= qr) return seg[node];
-    int mid = (l + r) / 2;
-    Node L = query(2 * node, l, mid, ql, qr);
-    Node R = query(2 * node + 1, mid + 1, r, ql, qr);
-    if (L.len == 0) return R;
-    if (R.len == 0) return L;
-    return merge(L, R);
+Node query(<span class="tok-keyword">int</span> node, <span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r, <span class="tok-keyword">int</span> ql, <span class="tok-keyword">int</span> qr) {
+    <span class="tok-keyword">if</span> (qr &lt; l || r &lt; ql) <span class="tok-keyword">return</span> Node{<span class="tok-number">0</span>, <span class="tok-number">0</span>, <span class="tok-number">0</span>};
+    <span class="tok-keyword">if</span> (ql &lt;= l &amp;&amp; r &lt;= qr) <span class="tok-keyword">return</span> seg[node];
+    <span class="tok-keyword">int</span> mid = (l + r) / <span class="tok-number">2</span>;
+    Node L = query(<span class="tok-number">2</span> * node, l, mid, ql, qr);
+    Node R = query(<span class="tok-number">2</span> * node + <span class="tok-number">1</span>, mid + <span class="tok-number">1</span>, r, ql, qr);
+    <span class="tok-keyword">if</span> (L.len == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> R;
+    <span class="tok-keyword">if</span> (R.len == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> L;
+    <span class="tok-keyword">return</span> merge(L, R);
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+<span class="tok-keyword">int</span> main() {
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>);
+    cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; str;
     n = str.size();
-    pw.assign(n + 1, 1);
-    for (int i = 1; i &lt;= n; i++) pw[i] = mulmod(pw[i - 1], BASE);
-    seg.assign(4 * n, Node{});
-    build(1, 0, n - 1);
+    pw.assign(n + <span class="tok-number">1</span>, <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) pw[i] = mulmod(pw[i - <span class="tok-number">1</span>], BASE);
+    seg.assign(<span class="tok-number">4</span> * n, Node{});
+    build(<span class="tok-number">1</span>, <span class="tok-number">0</span>, n - <span class="tok-number">1</span>);
 
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int type;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> type;
         cin &gt;&gt; type;
-        if (type == 1) {
-            int pos; char c;
+        <span class="tok-keyword">if</span> (type == <span class="tok-number">1</span>) {
+            <span class="tok-keyword">int</span> pos; <span class="tok-keyword">char</span> c;
             cin &gt;&gt; pos &gt;&gt; c;
-            update(1, 0, n - 1, pos - 1, c);
-        } else {
-            int a, b;
+            update(<span class="tok-number">1</span>, <span class="tok-number">0</span>, n - <span class="tok-number">1</span>, pos - <span class="tok-number">1</span>, c);
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">int</span> a, b;
             cin &gt;&gt; a &gt;&gt; b;
-            Node res = query(1, 0, n - 1, a - 1, b - 1);
-            cout &lt;&lt; (res.fwd == res.rev ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+            Node res = query(<span class="tok-number">1</span>, <span class="tok-number">0</span>, n - <span class="tok-number">1</span>, a - <span class="tok-number">1</span>, b - <span class="tok-number">1</span>);
+            cout &lt;&lt; (res.fwd == res.rev ? <span class="tok-string">&quot;YES&quot;</span> : <span class="tok-string">&quot;NO&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
         }
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -808,46 +820,46 @@ YES
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run Manacher&#x27;s algorithm to get d1 (odd palindromes) and d2 (even palindromes). For each center i, the odd-length candidate has length 2*d1[i]-1 starting at i-d1[i]+1, and the even-length candidate has length 2*d2[i] starting at i-d2[i]. Track the best (length, start) pair using a strict &#x27;&gt;&#x27; comparison so the first (leftmost) occurrence of the maximum length is kept.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-void manacher(const string &amp;s, vector&lt;int&gt; &amp;d1, vector&lt;int&gt; &amp;d2) {
-    int n = s.size();
-    d1.assign(n, 0);
-    d2.assign(n, 0);
-    int l = 0, r = -1;
-    for (int i = 0; i &lt; n; i++) {
-        int k = (i &gt; r) ? 1 : min(d1[l + r - i], r - i + 1);
-        while (i - k &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
+<span class="tok-keyword">void</span> manacher(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;d1, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;d2) {
+    <span class="tok-keyword">int</span> n = s.size();
+    d1.assign(n, <span class="tok-number">0</span>);
+    d2.assign(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> l = <span class="tok-number">0</span>, r = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> k = (i &gt; r) ? <span class="tok-number">1</span> : min(d1[l + r - i], r - i + <span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (i - k &gt;= <span class="tok-number">0</span> &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
         d1[i] = k;
-        if (i + k - 1 &gt; r) { l = i - k + 1; r = i + k - 1; }
+        <span class="tok-keyword">if</span> (i + k - <span class="tok-number">1</span> &gt; r) { l = i - k + <span class="tok-number">1</span>; r = i + k - <span class="tok-number">1</span>; }
     }
-    l = 0; r = -1;
-    for (int i = 0; i &lt; n; i++) {
-        int k = (i &gt; r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
-        while (i - k - 1 &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - 1] == s[i + k]) k++;
+    l = <span class="tok-number">0</span>; r = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> k = (i &gt; r) ? <span class="tok-number">0</span> : min(d2[l + r - i + <span class="tok-number">1</span>], r - i + <span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (i - k - <span class="tok-number">1</span> &gt;= <span class="tok-number">0</span> &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - <span class="tok-number">1</span>] == s[i + k]) k++;
         d2[i] = k;
-        if (i + k - 1 &gt; r) { l = i - k; r = i + k - 1; }
+        <span class="tok-keyword">if</span> (i + k - <span class="tok-number">1</span> &gt; r) { l = i - k; r = i + k - <span class="tok-number">1</span>; }
     }
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    int n = s.size();
-    vector&lt;int&gt; d1, d2;
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; d1, d2;
     manacher(s, d1, d2);
 
-    int bestLen = 0, bestStart = 0;
-    for (int i = 0; i &lt; n; i++) {
-        int len1 = 2 * d1[i] - 1;
-        if (len1 &gt; bestLen) { bestLen = len1; bestStart = i - d1[i] + 1; }
-        int len2 = 2 * d2[i];
-        if (len2 &gt; bestLen) { bestLen = len2; bestStart = i - d2[i]; }
+    <span class="tok-keyword">int</span> bestLen = <span class="tok-number">0</span>, bestStart = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> len1 = <span class="tok-number">2</span> * d1[i] - <span class="tok-number">1</span>;
+        <span class="tok-keyword">if</span> (len1 &gt; bestLen) { bestLen = len1; bestStart = i - d1[i] + <span class="tok-number">1</span>; }
+        <span class="tok-keyword">int</span> len2 = <span class="tok-number">2</span> * d2[i];
+        <span class="tok-keyword">if</span> (len2 &gt; bestLen) { bestLen = len2; bestStart = i - d2[i]; }
     }
-    cout &lt;&lt; bestLen &lt;&lt; &quot;\n&quot;;
-    cout &lt;&lt; s.substr(bestStart, bestLen) &lt;&lt; &quot;\n&quot;;
-    return 0;
+    cout &lt;&lt; bestLen &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    cout &lt;&lt; s.substr(bestStart, bestLen) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -865,39 +877,39 @@ geeksskeeg
   <div class="section-label">Approach</div>
   <div class="prose"><p>Every palindrome centered at i with maximum radius d1[i] (odd case) contributes exactly d1[i] distinct palindromic substrings centered there — one for every radius from 1 up to d1[i], since a shorter palindrome sharing the same center is automatically still a palindrome. The same logic gives d2[i] even-length palindromes for each even center. So the total count is simply the sum of the entire d1 array plus the sum of the entire d2 array, computed via one Manacher pass in O(n).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-void manacher(const string &amp;s, vector&lt;int&gt; &amp;d1, vector&lt;int&gt; &amp;d2) {
-    int n = s.size();
-    d1.assign(n, 0);
-    d2.assign(n, 0);
-    int l = 0, r = -1;
-    for (int i = 0; i &lt; n; i++) {
-        int k = (i &gt; r) ? 1 : min(d1[l + r - i], r - i + 1);
-        while (i - k &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
+<span class="tok-keyword">void</span> manacher(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;d1, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;d2) {
+    <span class="tok-keyword">int</span> n = s.size();
+    d1.assign(n, <span class="tok-number">0</span>);
+    d2.assign(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> l = <span class="tok-number">0</span>, r = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> k = (i &gt; r) ? <span class="tok-number">1</span> : min(d1[l + r - i], r - i + <span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (i - k &gt;= <span class="tok-number">0</span> &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
         d1[i] = k;
-        if (i + k - 1 &gt; r) { l = i - k + 1; r = i + k - 1; }
+        <span class="tok-keyword">if</span> (i + k - <span class="tok-number">1</span> &gt; r) { l = i - k + <span class="tok-number">1</span>; r = i + k - <span class="tok-number">1</span>; }
     }
-    l = 0; r = -1;
-    for (int i = 0; i &lt; n; i++) {
-        int k = (i &gt; r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
-        while (i - k - 1 &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - 1] == s[i + k]) k++;
+    l = <span class="tok-number">0</span>; r = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> k = (i &gt; r) ? <span class="tok-number">0</span> : min(d2[l + r - i + <span class="tok-number">1</span>], r - i + <span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (i - k - <span class="tok-number">1</span> &gt;= <span class="tok-number">0</span> &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - <span class="tok-number">1</span>] == s[i + k]) k++;
         d2[i] = k;
-        if (i + k - 1 &gt; r) { l = i - k; r = i + k - 1; }
+        <span class="tok-keyword">if</span> (i + k - <span class="tok-number">1</span> &gt; r) { l = i - k; r = i + k - <span class="tok-number">1</span>; }
     }
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    vector&lt;int&gt; d1, d2;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; d1, d2;
     manacher(s, d1, d2);
-    long long total = 0;
-    for (int v : d1) total += v;
-    for (int v : d2) total += v;
-    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : d1) total += v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : d2) total += v;
+    cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -914,66 +926,66 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run Manacher to get d1 and d2. A center c with odd radius d1[c] can produce a palindrome ending at any e with c &lt;= e &lt;= c+d1[c]-1 (just shrink the radius), of length 2*(e-c)+1 — so for fixed e we want the SMALLEST valid center c whose reach c+d1[c]-1 covers e, to maximize the length. Because &#x27;reach covers e&#x27; can only become false as e grows (never true again once false), a single forward-moving pointer suffices: sweep e from 0 to n-1, and while the current candidate center&#x27;s reach is less than e, advance the pointer. This is an O(n) amortized two-pointer sweep, done once for odd centers and once for even centers (which contribute even-length candidates of length 2*(e-c)+2 under the analogous condition), taking the max of both for each position.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-void manacher(const string &amp;s, vector&lt;int&gt; &amp;d1, vector&lt;int&gt; &amp;d2) {
-    int n = s.size();
-    d1.assign(n, 0);
-    d2.assign(n, 0);
-    int l = 0, r = -1;
-    for (int i = 0; i &lt; n; i++) {
-        int k = (i &gt; r) ? 1 : min(d1[l + r - i], r - i + 1);
-        while (i - k &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
+<span class="tok-keyword">void</span> manacher(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;d1, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;d2) {
+    <span class="tok-keyword">int</span> n = s.size();
+    d1.assign(n, <span class="tok-number">0</span>);
+    d2.assign(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> l = <span class="tok-number">0</span>, r = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> k = (i &gt; r) ? <span class="tok-number">1</span> : min(d1[l + r - i], r - i + <span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (i - k &gt;= <span class="tok-number">0</span> &amp;&amp; i + k &lt; n &amp;&amp; s[i - k] == s[i + k]) k++;
         d1[i] = k;
-        if (i + k - 1 &gt; r) { l = i - k + 1; r = i + k - 1; }
+        <span class="tok-keyword">if</span> (i + k - <span class="tok-number">1</span> &gt; r) { l = i - k + <span class="tok-number">1</span>; r = i + k - <span class="tok-number">1</span>; }
     }
-    l = 0; r = -1;
-    for (int i = 0; i &lt; n; i++) {
-        int k = (i &gt; r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
-        while (i - k - 1 &gt;= 0 &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - 1] == s[i + k]) k++;
+    l = <span class="tok-number">0</span>; r = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> k = (i &gt; r) ? <span class="tok-number">0</span> : min(d2[l + r - i + <span class="tok-number">1</span>], r - i + <span class="tok-number">1</span>);
+        <span class="tok-keyword">while</span> (i - k - <span class="tok-number">1</span> &gt;= <span class="tok-number">0</span> &amp;&amp; i + k &lt; n &amp;&amp; s[i - k - <span class="tok-number">1</span>] == s[i + k]) k++;
         d2[i] = k;
-        if (i + k - 1 &gt; r) { l = i - k; r = i + k - 1; }
+        <span class="tok-keyword">if</span> (i + k - <span class="tok-number">1</span> &gt; r) { l = i - k; r = i + k - <span class="tok-number">1</span>; }
     }
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    int n = s.size();
-    vector&lt;int&gt; d1, d2;
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; d1, d2;
     manacher(s, d1, d2);
 
-    vector&lt;int&gt; ans(n, 1); // every single character is a palindrome ending at itself
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; ans(n, <span class="tok-number">1</span>); <span class="tok-comment">// every single character is a palindrome ending at itself</span>
 
-    // Odd palindromes: center c, reach R(c) = c + d1[c] - 1.
-    // For end e, we want the smallest c &lt;= e with R(c) &gt;= e; the answer
-    // contributed is 2*(e-c)+1. As e grows, the valid pointer only moves
-    // forward (once R(c) &lt; e it stays &lt; e for all larger e), so a single
-    // pointer sweep is O(n) total.
+    <span class="tok-comment">// Odd palindromes: center c, reach R(c) = c + d1[c] - 1.</span>
+    <span class="tok-comment">// For end e, we want the smallest c &lt;= e with R(c) &gt;= e; the answer</span>
+    <span class="tok-comment">// contributed is 2*(e-c)+1. As e grows, the valid pointer only moves</span>
+    <span class="tok-comment">// forward (once R(c) &lt; e it stays &lt; e for all larger e), so a single</span>
+    <span class="tok-comment">// pointer sweep is O(n) total.</span>
     {
-        int p = 0;
-        for (int e = 0; e &lt; n; e++) {
-            while (p &lt; e &amp;&amp; p + d1[p] - 1 &lt; e) p++;
-            if (p &lt;= e &amp;&amp; p + d1[p] - 1 &gt;= e) {
-                ans[e] = max(ans[e], 2 * (e - p) + 1);
+        <span class="tok-keyword">int</span> p = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> e = <span class="tok-number">0</span>; e &lt; n; e++) {
+            <span class="tok-keyword">while</span> (p &lt; e &amp;&amp; p + d1[p] - <span class="tok-number">1</span> &lt; e) p++;
+            <span class="tok-keyword">if</span> (p &lt;= e &amp;&amp; p + d1[p] - <span class="tok-number">1</span> &gt;= e) {
+                ans[e] = max(ans[e], <span class="tok-number">2</span> * (e - p) + <span class="tok-number">1</span>);
             }
         }
     }
-    // Even palindromes: center pair (i-1, i), reach R(i) = i + d2[i] - 1.
-    // For end e, want smallest i &lt;= e with R(i) &gt;= e; length = 2*(e-i)+2.
+    <span class="tok-comment">// Even palindromes: center pair (i-1, i), reach R(i) = i + d2[i] - 1.</span>
+    <span class="tok-comment">// For end e, want smallest i &lt;= e with R(i) &gt;= e; length = 2*(e-i)+2.</span>
     {
-        int p = 0;
-        for (int e = 0; e &lt; n; e++) {
-            while (p &lt; e &amp;&amp; p + d2[p] - 1 &lt; e) p++;
-            if (p &lt;= e &amp;&amp; p + d2[p] - 1 &gt;= e) {
-                ans[e] = max(ans[e], 2 * (e - p) + 2);
+        <span class="tok-keyword">int</span> p = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> e = <span class="tok-number">0</span>; e &lt; n; e++) {
+            <span class="tok-keyword">while</span> (p &lt; e &amp;&amp; p + d2[p] - <span class="tok-number">1</span> &lt; e) p++;
+            <span class="tok-keyword">if</span> (p &lt;= e &amp;&amp; p + d2[p] - <span class="tok-number">1</span> &gt;= e) {
+                ans[e] = max(ans[e], <span class="tok-number">2</span> * (e - p) + <span class="tok-number">2</span>);
             }
         }
     }
 
-    for (int i = 0; i &lt; n; i++) cout &lt;&lt; ans[i] &lt;&lt; &quot; \n&quot;[i + 1 == n];
-    return 0;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cout &lt;&lt; ans[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i + <span class="tok-number">1</span> == n];
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -998,56 +1010,56 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Insert all k patterns into a trie, recording the trie node reached at the end of each pattern. Build Aho-Corasick failure links with a BFS over the trie: for the root&#x27;s children, missing transitions point back to the root; for deeper nodes, the failure link of a child reached via character c from node u is next[fail[u]][c] (computed level by level so fail[u] is already finalized), and non-existent transitions are patched to point directly at next[fail[u]][c] so the automaton has O(1) transitions everywhere (no need to walk fail chains during the scan). Scan T once, following automaton transitions and incrementing a hit counter at the current node for every character. Finally, propagate hit counts along failure links from deepest to shallowest node (any pattern ending at a fail-ancestor of a matched node also just matched, since that ancestor&#x27;s string is a suffix of what was matched) so each pattern&#x27;s end-node holds its true total occurrence count.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-const int ALPHA = 26;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> ALPHA = <span class="tok-number">26</span>;
 
-struct AhoCorasick {
-    vector&lt;array&lt;int, ALPHA&gt;&gt; next_;
-    vector&lt;int&gt; fail, link_end; // link_end unused, kept simple
-    vector&lt;long long&gt; cnt;
-    vector&lt;int&gt; depth;
+<span class="tok-keyword">struct</span> AhoCorasick {
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>, ALPHA&gt;&gt; next_;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; fail, link_end; <span class="tok-comment">// link_end unused, kept simple</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; depth;
 
     AhoCorasick() { newNode(); }
 
-    int newNode() {
-        next_.push_back(array&lt;int, ALPHA&gt;{});
-        next_.back().fill(-1);
-        fail.push_back(0);
-        cnt.push_back(0);
-        depth.push_back(0);
-        return next_.size() - 1;
+    <span class="tok-keyword">int</span> newNode() {
+        next_.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>, ALPHA&gt;{});
+        next_.back().fill(-<span class="tok-number">1</span>);
+        fail.push_back(<span class="tok-number">0</span>);
+        cnt.push_back(<span class="tok-number">0</span>);
+        depth.push_back(<span class="tok-number">0</span>);
+        <span class="tok-keyword">return</span> next_.size() - <span class="tok-number">1</span>;
     }
 
-    int addString(const string &amp;s) {
-        int cur = 0;
-        for (char ch : s) {
-            int c = ch - &#x27;a&#x27;;
-            if (next_[cur][c] == -1) {
+    <span class="tok-keyword">int</span> addString(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+        <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : s) {
+            <span class="tok-keyword">int</span> c = ch - <span class="tok-char">&#x27;a&#x27;</span>;
+            <span class="tok-keyword">if</span> (next_[cur][c] == -<span class="tok-number">1</span>) {
                 next_[cur][c] = newNode();
-                depth[next_[cur][c]] = depth[cur] + 1;
+                depth[next_[cur][c]] = depth[cur] + <span class="tok-number">1</span>;
             }
             cur = next_[cur][c];
         }
-        return cur; // node index for this pattern&#x27;s end
+        <span class="tok-keyword">return</span> cur; <span class="tok-comment">// node index for this pattern&#x27;s end</span>
     }
 
-    void build() {
-        queue&lt;int&gt; q;
-        for (int c = 0; c &lt; ALPHA; c++) {
-            if (next_[0][c] == -1) next_[0][c] = 0;
-            else { fail[next_[0][c]] = 0; q.push(next_[0][c]); }
+    <span class="tok-keyword">void</span> build() {
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; ALPHA; c++) {
+            <span class="tok-keyword">if</span> (next_[<span class="tok-number">0</span>][c] == -<span class="tok-number">1</span>) next_[<span class="tok-number">0</span>][c] = <span class="tok-number">0</span>;
+            <span class="tok-keyword">else</span> { fail[next_[<span class="tok-number">0</span>][c]] = <span class="tok-number">0</span>; q.push(next_[<span class="tok-number">0</span>][c]); }
         }
-        vector&lt;int&gt; order;
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order;
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
             order.push_back(u);
-            for (int c = 0; c &lt; ALPHA; c++) {
-                int v = next_[u][c];
-                if (v == -1) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; ALPHA; c++) {
+                <span class="tok-keyword">int</span> v = next_[u][c];
+                <span class="tok-keyword">if</span> (v == -<span class="tok-number">1</span>) {
                     next_[u][c] = next_[fail[u]][c];
-                } else {
+                } <span class="tok-keyword">else</span> {
                     fail[v] = next_[fail[u]][c];
                     q.push(v);
                 }
@@ -1056,40 +1068,40 @@ struct AhoCorasick {
         bfsOrder = order;
     }
 
-    vector&lt;int&gt; bfsOrder;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; bfsOrder;
 
-    void processText(const string &amp;text) {
-        int cur = 0;
-        for (char ch : text) {
-            cur = next_[cur][ch - &#x27;a&#x27;];
+    <span class="tok-keyword">void</span> processText(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;text) {
+        <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : text) {
+            cur = next_[cur][ch - <span class="tok-char">&#x27;a&#x27;</span>];
             cnt[cur]++;
         }
-        // propagate counts along fail links, from deepest to shallowest
-        vector&lt;int&gt; order = bfsOrder;
-        sort(order.begin(), order.end(), [&amp;](int a, int b) { return depth[a] &gt; depth[b]; });
-        for (int u : order) cnt[fail[u]] += cnt[u];
+        <span class="tok-comment">// propagate counts along fail links, from deepest to shallowest</span>
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order = bfsOrder;
+        sort(order.begin(), order.end(), [&amp;](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b) { <span class="tok-keyword">return</span> depth[a] &gt; depth[b]; });
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u : order) cnt[fail[u]] += cnt[u];
     }
 };
 
-int main() {
-    string text;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> text;
     getline(cin, text);
-    int k;
+    <span class="tok-keyword">int</span> k;
     cin &gt;&gt; k;
     cin.ignore();
-    vector&lt;string&gt; patterns(k);
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; patterns(k);
     AhoCorasick ac;
-    vector&lt;int&gt; endNode(k);
-    for (int i = 0; i &lt; k; i++) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; endNode(k);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
         getline(cin, patterns[i]);
         endNode[i] = ac.addString(patterns[i]);
     }
     ac.build();
     ac.processText(text);
-    for (int i = 0; i &lt; k; i++) {
-        cout &lt;&lt; ac.cnt[endNode[i]] &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
+        cout &lt;&lt; ac.cnt[endNode[i]] &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1112,59 +1124,59 @@ aaaa
   <div class="section-label">Approach</div>
   <div class="prose"><p>Every substring of s is a prefix of exactly one suffix. If we sort all n suffixes lexicographically (the suffix array) and look at consecutive suffixes in that sorted order, the number of NEW distinct prefixes contributed by the suffix at sorted position i is (length of that suffix) minus (its longest common prefix with the previous suffix in sorted order) — because any prefix shorter than or equal to that LCP was already counted as a prefix of the previous suffix. Build the suffix array with an O(n log^2 n) doubling algorithm (sort suffixes by (rank[i], rank[i+k]) pairs, doubling k each round), compute the LCP array between lexicographically adjacent suffixes with Kasai&#x27;s O(n) algorithm, and the answer is n(n+1)/2 (total substrings, counted with multiplicity by (start,end) pairs) minus the sum of the LCP array (the total overcount from shared prefixes).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-// O(n log^2 n) suffix array via doubling on (rank, rank) pairs.
-vector&lt;int&gt; buildSuffixArray(const string &amp;s) {
-    int n = s.size();
-    vector&lt;int&gt; sa(n), rnk(n), tmp(n);
-    for (int i = 0; i &lt; n; i++) { sa[i] = i; rnk[i] = (unsigned char)s[i]; }
-    for (int k = 1; k &lt; n; k &lt;&lt;= 1) {
-        auto cmp = [&amp;](int a, int b) {
-            if (rnk[a] != rnk[b]) return rnk[a] &lt; rnk[b];
-            int ra = (a + k &lt; n) ? rnk[a + k] : -1;
-            int rb = (b + k &lt; n) ? rnk[b + k] : -1;
-            return ra &lt; rb;
+<span class="tok-comment">// O(n log^2 n) suffix array via doubling on (rank, rank) pairs.</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; buildSuffixArray(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; sa(n), rnk(n), tmp(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) { sa[i] = i; rnk[i] = (<span class="tok-keyword">unsigned</span> <span class="tok-keyword">char</span>)s[i]; }
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = <span class="tok-number">1</span>; k &lt; n; k &lt;&lt;= <span class="tok-number">1</span>) {
+        <span class="tok-keyword">auto</span> cmp = [&amp;](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b) {
+            <span class="tok-keyword">if</span> (rnk[a] != rnk[b]) <span class="tok-keyword">return</span> rnk[a] &lt; rnk[b];
+            <span class="tok-keyword">int</span> ra = (a + k &lt; n) ? rnk[a + k] : -<span class="tok-number">1</span>;
+            <span class="tok-keyword">int</span> rb = (b + k &lt; n) ? rnk[b + k] : -<span class="tok-number">1</span>;
+            <span class="tok-keyword">return</span> ra &lt; rb;
         };
         sort(sa.begin(), sa.end(), cmp);
-        tmp[sa[0]] = 0;
-        for (int i = 1; i &lt; n; i++) tmp[sa[i]] = tmp[sa[i - 1]] + (cmp(sa[i - 1], sa[i]) ? 1 : 0);
+        tmp[sa[<span class="tok-number">0</span>]] = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) tmp[sa[i]] = tmp[sa[i - <span class="tok-number">1</span>]] + (cmp(sa[i - <span class="tok-number">1</span>], sa[i]) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>);
         rnk = tmp;
-        if (rnk[sa[n - 1]] == n - 1) break;
+        <span class="tok-keyword">if</span> (rnk[sa[n - <span class="tok-number">1</span>]] == n - <span class="tok-number">1</span>) <span class="tok-keyword">break</span>;
     }
-    return sa;
+    <span class="tok-keyword">return</span> sa;
 }
 
-// Kasai&#x27;s algorithm: lcp[i] = LCP(suffix at sa[i-1], suffix at sa[i]).
-vector&lt;int&gt; buildLCP(const string &amp;s, const vector&lt;int&gt; &amp;sa) {
-    int n = s.size();
-    vector&lt;int&gt; rnk(n), lcp(n, 0);
-    for (int i = 0; i &lt; n; i++) rnk[sa[i]] = i;
-    int h = 0;
-    for (int i = 0; i &lt; n; i++) {
-        if (rnk[i] &gt; 0) {
-            int j = sa[rnk[i] - 1];
-            while (i + h &lt; n &amp;&amp; j + h &lt; n &amp;&amp; s[i + h] == s[j + h]) h++;
+<span class="tok-comment">// Kasai&#x27;s algorithm: lcp[i] = LCP(suffix at sa[i-1], suffix at sa[i]).</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; buildLCP(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;s, <span class="tok-keyword">const</span> <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; &amp;sa) {
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; rnk(n), lcp(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) rnk[sa[i]] = i;
+    <span class="tok-keyword">int</span> h = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">if</span> (rnk[i] &gt; <span class="tok-number">0</span>) {
+            <span class="tok-keyword">int</span> j = sa[rnk[i] - <span class="tok-number">1</span>];
+            <span class="tok-keyword">while</span> (i + h &lt; n &amp;&amp; j + h &lt; n &amp;&amp; s[i + h] == s[j + h]) h++;
             lcp[rnk[i]] = h;
-            if (h &gt; 0) h--;
-        } else {
-            h = 0;
+            <span class="tok-keyword">if</span> (h &gt; <span class="tok-number">0</span>) h--;
+        } <span class="tok-keyword">else</span> {
+            h = <span class="tok-number">0</span>;
         }
     }
-    return lcp;
+    <span class="tok-keyword">return</span> lcp;
 }
 
-int main() {
-    string s;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-type">string</span> s;
     getline(cin, s);
-    int n = s.size();
-    vector&lt;int&gt; sa = buildSuffixArray(s);
-    vector&lt;int&gt; lcp = buildLCP(s, sa);
-    long long total = (long long)n * (n + 1) / 2;
-    for (int i = 1; i &lt; n; i++) total -= lcp[i];
-    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-keyword">int</span> n = s.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; sa = buildSuffixArray(s);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; lcp = buildLCP(s, sa);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)n * (n + <span class="tok-number">1</span>) / <span class="tok-number">2</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) total -= lcp[i];
+    cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1189,49 +1201,49 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the suffix automaton of s online, one character at a time, using the classic extend() procedure (new state &#x27;cur&#x27; for the whole prefix seen so far, walk suffix links adding c-transitions, clone when a transition target&#x27;s len doesn&#x27;t match p.len+1).</p><p>While building, seed cnt[state] = 1 for every freshly created non-clone state (cur) and cnt[state] = 0 for every clone; every other state (in particular the root) also needs an explicit 0 entry so the cnt array stays aligned with the state array. After construction, sort states by len and process them from LARGEST len to SMALLEST, adding cnt[state] into cnt[link[state]] — this is a valid processing order because link[state] always has strictly smaller len than state, so by the time we push a state&#x27;s count upward, that state&#x27;s own count is already finalized.</p><p>After this propagation, cnt[state] equals the number of end positions (the size of the endpos set) of every substring represented by that state — i.e. how many times those substrings occur in s. The substring is duplicated (occurs at least twice, overlaps allowed) exactly when cnt[state] &gt;= 2, and the longest such substring for that state has length len[state]. The answer is the maximum len[state] over all states (excluding the initial empty-string root) with cnt[state] &gt;= 2. This was cross-checked against an O(n^2) brute force that enumerates every substring into a frequency map, with zero mismatches over 500 random small strings, and it correctly reduces &#x27;banana&#x27; to 3 (the substring &#x27;ana&#x27;, which occurs starting at index 1 and index 3, overlapping at index 3).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct SAM {
-    struct State {
-        int len, link;
-        array&lt;int,26&gt; nxt;
-        State() : len(0), link(-1) { nxt.fill(-1); }
+<span class="tok-keyword">struct</span> SAM {
+    <span class="tok-keyword">struct</span> State {
+        <span class="tok-keyword">int</span> len, link;
+        <span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt; nxt;
+        State() : len(<span class="tok-number">0</span>), link(-<span class="tok-number">1</span>) { nxt.fill(-<span class="tok-number">1</span>); }
     };
-    vector&lt;State&gt; st;
-    vector&lt;long long&gt; cnt;
-    int last;
+    <span class="tok-type">vector</span>&lt;State&gt; st;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt;
+    <span class="tok-keyword">int</span> last;
     SAM() {
         st.push_back(State());
-        st[0].len = 0; st[0].link = -1;
-        cnt.push_back(0); // keep cnt[] aligned with st[] (root has no seed occurrence)
-        last = 0;
+        st[<span class="tok-number">0</span>].len = <span class="tok-number">0</span>; st[<span class="tok-number">0</span>].link = -<span class="tok-number">1</span>;
+        cnt.push_back(<span class="tok-number">0</span>); <span class="tok-comment">// keep cnt[] aligned with st[] (root has no seed occurrence)</span>
+        last = <span class="tok-number">0</span>;
     }
-    void extend(char ch) {
-        int c = ch - &#x27;a&#x27;;
-        int cur = st.size();
+    <span class="tok-keyword">void</span> extend(<span class="tok-keyword">char</span> ch) {
+        <span class="tok-keyword">int</span> c = ch - <span class="tok-char">&#x27;a&#x27;</span>;
+        <span class="tok-keyword">int</span> cur = st.size();
         st.push_back(State());
-        st[cur].len = st[last].len + 1;
-        cnt.push_back(1); // real occurrence seed, clones fixed to 0 later
-        int p = last;
-        while (p != -1 &amp;&amp; st[p].nxt[c] == -1) {
+        st[cur].len = st[last].len + <span class="tok-number">1</span>;
+        cnt.push_back(<span class="tok-number">1</span>); <span class="tok-comment">// real occurrence seed, clones fixed to 0 later</span>
+        <span class="tok-keyword">int</span> p = last;
+        <span class="tok-keyword">while</span> (p != -<span class="tok-number">1</span> &amp;&amp; st[p].nxt[c] == -<span class="tok-number">1</span>) {
             st[p].nxt[c] = cur;
             p = st[p].link;
         }
-        if (p == -1) {
-            st[cur].link = 0;
-        } else {
-            int q = st[p].nxt[c];
-            if (st[p].len + 1 == st[q].len) {
+        <span class="tok-keyword">if</span> (p == -<span class="tok-number">1</span>) {
+            st[cur].link = <span class="tok-number">0</span>;
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">int</span> q = st[p].nxt[c];
+            <span class="tok-keyword">if</span> (st[p].len + <span class="tok-number">1</span> == st[q].len) {
                 st[cur].link = q;
-            } else {
-                int clone = st.size();
+            } <span class="tok-keyword">else</span> {
+                <span class="tok-keyword">int</span> clone = st.size();
                 st.push_back(State());
-                st[clone].len = st[p].len + 1;
+                st[clone].len = st[p].len + <span class="tok-number">1</span>;
                 st[clone].link = st[q].link;
                 st[clone].nxt = st[q].nxt;
-                cnt.push_back(0);
-                while (p != -1 &amp;&amp; st[p].nxt[c] == q) {
+                cnt.push_back(<span class="tok-number">0</span>);
+                <span class="tok-keyword">while</span> (p != -<span class="tok-number">1</span> &amp;&amp; st[p].nxt[c] == q) {
                     st[p].nxt[c] = clone;
                     p = st[p].link;
                 }
@@ -1243,24 +1255,24 @@ struct SAM {
     }
 };
 
-int main(){
-    string s;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s;
     cin &gt;&gt; s;
     SAM sam;
-    for (char c : s) sam.extend(c);
-    int n = sam.st.size();
-    // order states by len ascending using counting sort, then propagate cnt to links in descending len order
-    vector&lt;int&gt; order(n);
-    iota(order.begin(), order.end(), 0);
-    sort(order.begin(), order.end(), [&amp;](int a, int b){ return sam.st[a].len &lt; sam.st[b].len; });
-    for (int i = n - 1; i &gt;= 0; i--) {
-        int v = order[i];
-        int link = sam.st[v].link;
-        if (link &gt;= 0) sam.cnt[link] += sam.cnt[v];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> c : s) sam.extend(c);
+    <span class="tok-keyword">int</span> n = sam.st.size();
+    <span class="tok-comment">// order states by len ascending using counting sort, then propagate cnt to links in descending len order</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order(n);
+    iota(order.begin(), order.end(), <span class="tok-number">0</span>);
+    sort(order.begin(), order.end(), [&amp;](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){ <span class="tok-keyword">return</span> sam.st[a].len &lt; sam.st[b].len; });
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = n - <span class="tok-number">1</span>; i &gt;= <span class="tok-number">0</span>; i--) {
+        <span class="tok-keyword">int</span> v = order[i];
+        <span class="tok-keyword">int</span> link = sam.st[v].link;
+        <span class="tok-keyword">if</span> (link &gt;= <span class="tok-number">0</span>) sam.cnt[link] += sam.cnt[v];
     }
-    long long best = 0;
-    for (int v = 1; v &lt; n; v++) {
-        if (sam.cnt[v] &gt;= 2) best = max(best, (long long)sam.st[v].len);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt; n; v++) {
+        <span class="tok-keyword">if</span> (sam.cnt[v] &gt;= <span class="tok-number">2</span>) best = max(best, (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)sam.st[v].len);
     }
     cout &lt;&lt; best &lt;&lt; endl;
 }
@@ -1279,44 +1291,44 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the suffix automaton of s (this example needs only len[] and link[] — no occurrence counting is required). The key structural fact is that every non-root state represents a contiguous, non-overlapping-across-states range of substring lengths: state v is responsible for exactly one distinct substring of each length in (len[link[v]], len[v]], and no two different states are ever responsible for the same length AND represent the same substring (different states never represent the same substring by construction), while every distinct substring of s is represented by exactly one state at exactly one length. So the number of distinct substrings of exact length L is simply the number of states v with len[link[v]] &lt; L &lt;= len[v].</p><p>This range-counting is done with a difference array: for every non-root state v, add +1 at position len[link[v]]+1 and -1 at position len[v]+1 of an array diff[1..n+1], then take a running prefix sum over diff[1..n] to get, for each L, the count of states whose range covers L — which is exactly the answer for that length. This runs in O(n) after the O(n) SAM construction. Verified against an O(n^2) brute force that inserts every substring of every length into a set and reports its size, with zero mismatches over 500 random small strings (and by hand for &#x27;abab&#x27;, which correctly yields 2 2 2 1 for lengths 1..4: {a,b}, {ab,ba}, {aba,bab}, {abab}).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct SAM {
-    struct State {
-        int len, link;
-        array&lt;int,26&gt; nxt;
-        State() : len(0), link(-1) { nxt.fill(-1); }
+<span class="tok-keyword">struct</span> SAM {
+    <span class="tok-keyword">struct</span> State {
+        <span class="tok-keyword">int</span> len, link;
+        <span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt; nxt;
+        State() : len(<span class="tok-number">0</span>), link(-<span class="tok-number">1</span>) { nxt.fill(-<span class="tok-number">1</span>); }
     };
-    vector&lt;State&gt; st;
-    int last;
+    <span class="tok-type">vector</span>&lt;State&gt; st;
+    <span class="tok-keyword">int</span> last;
     SAM() {
         st.push_back(State());
-        last = 0;
+        last = <span class="tok-number">0</span>;
     }
-    void extend(char ch) {
-        int c = ch - &#x27;a&#x27;;
-        int cur = st.size();
+    <span class="tok-keyword">void</span> extend(<span class="tok-keyword">char</span> ch) {
+        <span class="tok-keyword">int</span> c = ch - <span class="tok-char">&#x27;a&#x27;</span>;
+        <span class="tok-keyword">int</span> cur = st.size();
         st.push_back(State());
-        st[cur].len = st[last].len + 1;
-        int p = last;
-        while (p != -1 &amp;&amp; st[p].nxt[c] == -1) {
+        st[cur].len = st[last].len + <span class="tok-number">1</span>;
+        <span class="tok-keyword">int</span> p = last;
+        <span class="tok-keyword">while</span> (p != -<span class="tok-number">1</span> &amp;&amp; st[p].nxt[c] == -<span class="tok-number">1</span>) {
             st[p].nxt[c] = cur;
             p = st[p].link;
         }
-        if (p == -1) {
-            st[cur].link = 0;
-        } else {
-            int q = st[p].nxt[c];
-            if (st[p].len + 1 == st[q].len) {
+        <span class="tok-keyword">if</span> (p == -<span class="tok-number">1</span>) {
+            st[cur].link = <span class="tok-number">0</span>;
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">int</span> q = st[p].nxt[c];
+            <span class="tok-keyword">if</span> (st[p].len + <span class="tok-number">1</span> == st[q].len) {
                 st[cur].link = q;
-            } else {
-                int clone = st.size();
+            } <span class="tok-keyword">else</span> {
+                <span class="tok-keyword">int</span> clone = st.size();
                 st.push_back(State());
-                st[clone].len = st[p].len + 1;
+                st[clone].len = st[p].len + <span class="tok-number">1</span>;
                 st[clone].link = st[q].link;
                 st[clone].nxt = st[q].nxt;
-                while (p != -1 &amp;&amp; st[p].nxt[c] == q) {
+                <span class="tok-keyword">while</span> (p != -<span class="tok-number">1</span> &amp;&amp; st[p].nxt[c] == q) {
                     st[p].nxt[c] = clone;
                     p = st[p].link;
                 }
@@ -1328,28 +1340,28 @@ struct SAM {
     }
 };
 
-int main(){
-    string s;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s;
     cin &gt;&gt; s;
-    int n = s.size();
+    <span class="tok-keyword">int</span> n = s.size();
     SAM sam;
-    for (char c : s) sam.extend(c);
-    // diff[L] += 1 at L = link.len+1, -= 1 at L = state.len+1, for every non-root state.
-    vector&lt;long long&gt; diff(n + 2, 0);
-    for (int v = 1; v &lt; (int)sam.st.size(); v++) {
-        int lo = sam.st[sam.st[v].link].len + 1;
-        int hi = sam.st[v].len;
-        diff[lo] += 1;
-        diff[hi + 1] -= 1;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> c : s) sam.extend(c);
+    <span class="tok-comment">// diff[L] += 1 at L = link.len+1, -= 1 at L = state.len+1, for every non-root state.</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; diff(n + <span class="tok-number">2</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt; (<span class="tok-keyword">int</span>)sam.st.size(); v++) {
+        <span class="tok-keyword">int</span> lo = sam.st[sam.st[v].link].len + <span class="tok-number">1</span>;
+        <span class="tok-keyword">int</span> hi = sam.st[v].len;
+        diff[lo] += <span class="tok-number">1</span>;
+        diff[hi + <span class="tok-number">1</span>] -= <span class="tok-number">1</span>;
     }
-    vector&lt;long long&gt; ans(n + 1, 0);
-    long long running = 0;
-    for (int L = 1; L &lt;= n; L++) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; ans(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> running = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> L = <span class="tok-number">1</span>; L &lt;= n; L++) {
         running += diff[L];
         ans[L] = running;
     }
-    for (int L = 1; L &lt;= n; L++) {
-        cout &lt;&lt; ans[L] &lt;&lt; (L &lt; n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> L = <span class="tok-number">1</span>; L &lt;= n; L++) {
+        cout &lt;&lt; ans[L] &lt;&lt; (L &lt; n ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -1375,44 +1387,44 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build an Aho-Corasick automaton over all k patterns (trie + BFS-computed fail links, converted into a full goto-automaton so every node has a transition for every letter). Scan the text once, maintaining the current automaton state; at every text position, increment a raw hit-counter hit[state] for whatever state the automaton is currently in.</p><p>After scanning, propagate hit counts up the fail tree: process automaton nodes in decreasing BFS-depth order (i.e. iterate the BFS order in reverse) and, for each node u, add hit[u] into hit[fail[u]]. This works because a node v ends up on the fail-chain of exactly the nodes in v&#x27;s own fail-subtree, so folding each node&#x27;s raw count into its fail-parent, deepest first, accumulates into hit[v] the total count of text positions where the pattern ending at v was on the fail-chain of the automaton&#x27;s actual (longest-match) state — which is exactly the number of times that pattern occurs in the text.</p><p>Finally, for each pattern p_i, walk it once more through the (now fully built) automaton from the root to find the node it ends at, and report hit[that node]. Verified against an O(|t| * |p_i|) brute-force substring scan for every pattern, with zero mismatches over 300 random small (text, pattern-set) pairs; the worked example (&#x27;abcbcabc&#x27; against &#x27;abc&#x27;,&#x27;bc&#x27;,&#x27;c&#x27;,&#x27;z&#x27;) gives 2, 3, 3, 0, matching a manual count.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-const int ALPHA = 26;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> ALPHA = <span class="tok-number">26</span>;
 
-struct AhoCorasick {
-    vector&lt;array&lt;int,ALPHA&gt;&gt; nxt;
-    vector&lt;int&gt; fail;
-    int newNode() {
-        nxt.push_back(array&lt;int,ALPHA&gt;{});
-        nxt.back().fill(-1);
-        fail.push_back(0);
-        return (int)nxt.size() - 1;
+<span class="tok-keyword">struct</span> AhoCorasick {
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,ALPHA&gt;&gt; nxt;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; fail;
+    <span class="tok-keyword">int</span> newNode() {
+        nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,ALPHA&gt;{});
+        nxt.back().fill(-<span class="tok-number">1</span>);
+        fail.push_back(<span class="tok-number">0</span>);
+        <span class="tok-keyword">return</span> (<span class="tok-keyword">int</span>)nxt.size() - <span class="tok-number">1</span>;
     }
-    AhoCorasick() { newNode(); } // node 0 = root
-    void addPattern(const string &amp;p) {
-        int cur = 0;
-        for (char ch : p) {
-            int c = ch - &#x27;a&#x27;;
-            if (nxt[cur][c] == -1) nxt[cur][c] = newNode();
+    AhoCorasick() { newNode(); } <span class="tok-comment">// node 0 = root</span>
+    <span class="tok-keyword">void</span> addPattern(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;p) {
+        <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : p) {
+            <span class="tok-keyword">int</span> c = ch - <span class="tok-char">&#x27;a&#x27;</span>;
+            <span class="tok-keyword">if</span> (nxt[cur][c] == -<span class="tok-number">1</span>) nxt[cur][c] = newNode();
             cur = nxt[cur][c];
         }
     }
-    vector&lt;int&gt; bfsOrder;
-    void build() {
-        queue&lt;int&gt; q;
-        for (int c = 0; c &lt; ALPHA; c++) {
-            if (nxt[0][c] == -1) nxt[0][c] = 0;
-            else { fail[nxt[0][c]] = 0; q.push(nxt[0][c]); }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; bfsOrder;
+    <span class="tok-keyword">void</span> build() {
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; ALPHA; c++) {
+            <span class="tok-keyword">if</span> (nxt[<span class="tok-number">0</span>][c] == -<span class="tok-number">1</span>) nxt[<span class="tok-number">0</span>][c] = <span class="tok-number">0</span>;
+            <span class="tok-keyword">else</span> { fail[nxt[<span class="tok-number">0</span>][c]] = <span class="tok-number">0</span>; q.push(nxt[<span class="tok-number">0</span>][c]); }
         }
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
             bfsOrder.push_back(u);
-            for (int c = 0; c &lt; ALPHA; c++) {
-                int v = nxt[u][c];
-                if (v == -1) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; ALPHA; c++) {
+                <span class="tok-keyword">int</span> v = nxt[u][c];
+                <span class="tok-keyword">if</span> (v == -<span class="tok-number">1</span>) {
                     nxt[u][c] = nxt[fail[u]][c];
-                } else {
+                } <span class="tok-keyword">else</span> {
                     fail[v] = nxt[fail[u]][c];
                     q.push(v);
                 }
@@ -1421,41 +1433,41 @@ struct AhoCorasick {
     }
 };
 
-int main(){
-    string text;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> text;
     cin &gt;&gt; text;
-    int k;
+    <span class="tok-keyword">int</span> k;
     cin &gt;&gt; k;
-    vector&lt;string&gt; pats(k);
-    for (auto &amp;p : pats) cin &gt;&gt; p;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; pats(k);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;p : pats) cin &gt;&gt; p;
 
     AhoCorasick ac;
-    for (int i = 0; i &lt; k; i++) ac.addPattern(pats[i]);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) ac.addPattern(pats[i]);
     ac.build();
 
-    int nodes = ac.nxt.size();
-    vector&lt;long long&gt; hit(nodes, 0);
-    int cur = 0;
-    for (char ch : text) {
-        cur = ac.nxt[cur][ch - &#x27;a&#x27;];
+    <span class="tok-keyword">int</span> nodes = ac.nxt.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; hit(nodes, <span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : text) {
+        cur = ac.nxt[cur][ch - <span class="tok-char">&#x27;a&#x27;</span>];
         hit[cur]++;
     }
-    // propagate hit counts up the fail-link tree: process nodes in order of
-    // DEcreasing depth so a child&#x27;s contribution reaches its parent exactly once.
-    // BFS order (ac.bfsOrder) is increasing depth, so traverse it in reverse.
-    for (int i = (int)ac.bfsOrder.size() - 1; i &gt;= 0; i--) {
-        int u = ac.bfsOrder[i];
+    <span class="tok-comment">// propagate hit counts up the fail-link tree: process nodes in order of</span>
+    <span class="tok-comment">// DEcreasing depth so a child&#x27;s contribution reaches its parent exactly once.</span>
+    <span class="tok-comment">// BFS order (ac.bfsOrder) is increasing depth, so traverse it in reverse.</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = (<span class="tok-keyword">int</span>)ac.bfsOrder.size() - <span class="tok-number">1</span>; i &gt;= <span class="tok-number">0</span>; i--) {
+        <span class="tok-keyword">int</span> u = ac.bfsOrder[i];
         hit[ac.fail[u]] += hit[u];
     }
 
-    vector&lt;long long&gt; ans(k, 0);
-    // total occurrences of pattern i = hit[node where pattern i ends]
-    for (int i = 0; i &lt; k; i++) {
-        int node = 0;
-        for (char ch : pats[i]) node = ac.nxt[node][ch - &#x27;a&#x27;];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; ans(k, <span class="tok-number">0</span>);
+    <span class="tok-comment">// total occurrences of pattern i = hit[node where pattern i ends]</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
+        <span class="tok-keyword">int</span> node = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : pats[i]) node = ac.nxt[node][ch - <span class="tok-char">&#x27;a&#x27;</span>];
         ans[i] = hit[node];
     }
-    for (int i = 0; i &lt; k; i++) cout &lt;&lt; ans[i] &lt;&lt; (i + 1 &lt; k ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) cout &lt;&lt; ans[i] &lt;&lt; (i + <span class="tok-number">1</span> &lt; k ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1477,89 +1489,89 @@ z
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the Aho-Corasick automaton over all patterns exactly as before. While scanning the text, instead of a hit COUNT, record firstVisit[state] = the earliest 1-indexed text position after which the automaton&#x27;s current state is exactly that state (i.e. the smallest i such that after reading t[0..i-1], the automaton is in that state); states never directly visited keep a sentinel of +infinity.</p><p>The key aggregation is again over the fail tree, but note carefully which quantity is being aggregated: a pattern node v is &#x27;active&#x27; (its pattern occurs ending at position i) whenever v lies anywhere on the fail-chain of the automaton&#x27;s actual state at position i -- which means v could be an ANCESTOR, in the fail-chain sense, of a node that was directly visited even though v itself was never the literal longest-match state. So earliest[v] must equal the minimum firstVisit over v&#x27;s entire fail-SUBTREE (v and everything that folds into v via repeated fail links), which -- exactly like the sum in the previous example -- is computed by processing nodes in decreasing BFS-depth order and relaxing earliest[fail[u]] = min(earliest[fail[u]], earliest[u]) for each node u (folding a node&#x27;s value into its fail-PARENT, never the other way around).</p><p>For each pattern p_i, walk it through the automaton once to find its ending node, read off earliest[node] as the earliest END position, then subtract |p_i|-1 to get the earliest START position (or report -1 if earliest[node] is still infinity). This direction is easy to get backwards -- an initial implementation that instead computed earliest[v] = min(firstVisit[v], earliest[fail[v]]) top-down looked plausible but silently missed occurrences and was caught immediately by comparing against an O(|t|*|p_i|) brute-force substring search on random small inputs before being corrected to the bottom-up (child-into-fail-parent) direction shown here; 300 random stress tests now pass with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const int ALPHA = 26;
-const long long INF = LLONG_MAX / 2;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> ALPHA = <span class="tok-number">26</span>;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> INF = LLONG_MAX / <span class="tok-number">2</span>;
 
-struct AhoCorasick {
-    vector&lt;array&lt;int,ALPHA&gt;&gt; nxt;
-    vector&lt;int&gt; fail;
-    int newNode() {
-        nxt.push_back(array&lt;int,ALPHA&gt;{});
-        nxt.back().fill(-1);
-        fail.push_back(0);
-        return (int)nxt.size() - 1;
+<span class="tok-keyword">struct</span> AhoCorasick {
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,ALPHA&gt;&gt; nxt;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; fail;
+    <span class="tok-keyword">int</span> newNode() {
+        nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,ALPHA&gt;{});
+        nxt.back().fill(-<span class="tok-number">1</span>);
+        fail.push_back(<span class="tok-number">0</span>);
+        <span class="tok-keyword">return</span> (<span class="tok-keyword">int</span>)nxt.size() - <span class="tok-number">1</span>;
     }
     AhoCorasick() { newNode(); }
-    void addPattern(const string &amp;p) {
-        int cur = 0;
-        for (char ch : p) {
-            int c = ch - &#x27;a&#x27;;
-            if (nxt[cur][c] == -1) nxt[cur][c] = newNode();
+    <span class="tok-keyword">void</span> addPattern(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;p) {
+        <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : p) {
+            <span class="tok-keyword">int</span> c = ch - <span class="tok-char">&#x27;a&#x27;</span>;
+            <span class="tok-keyword">if</span> (nxt[cur][c] == -<span class="tok-number">1</span>) nxt[cur][c] = newNode();
             cur = nxt[cur][c];
         }
     }
-    vector&lt;int&gt; bfsOrder;
-    void build() {
-        queue&lt;int&gt; q;
-        for (int c = 0; c &lt; ALPHA; c++) {
-            if (nxt[0][c] == -1) nxt[0][c] = 0;
-            else { fail[nxt[0][c]] = 0; q.push(nxt[0][c]); }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; bfsOrder;
+    <span class="tok-keyword">void</span> build() {
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; ALPHA; c++) {
+            <span class="tok-keyword">if</span> (nxt[<span class="tok-number">0</span>][c] == -<span class="tok-number">1</span>) nxt[<span class="tok-number">0</span>][c] = <span class="tok-number">0</span>;
+            <span class="tok-keyword">else</span> { fail[nxt[<span class="tok-number">0</span>][c]] = <span class="tok-number">0</span>; q.push(nxt[<span class="tok-number">0</span>][c]); }
         }
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
             bfsOrder.push_back(u);
-            for (int c = 0; c &lt; ALPHA; c++) {
-                int v = nxt[u][c];
-                if (v == -1) nxt[u][c] = nxt[fail[u]][c];
-                else { fail[v] = nxt[fail[u]][c]; q.push(v); }
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; ALPHA; c++) {
+                <span class="tok-keyword">int</span> v = nxt[u][c];
+                <span class="tok-keyword">if</span> (v == -<span class="tok-number">1</span>) nxt[u][c] = nxt[fail[u]][c];
+                <span class="tok-keyword">else</span> { fail[v] = nxt[fail[u]][c]; q.push(v); }
             }
         }
     }
 };
 
-int main(){
-    string text;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> text;
     cin &gt;&gt; text;
-    int k;
+    <span class="tok-keyword">int</span> k;
     cin &gt;&gt; k;
-    vector&lt;string&gt; pats(k);
-    for (auto &amp;p : pats) cin &gt;&gt; p;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; pats(k);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;p : pats) cin &gt;&gt; p;
 
     AhoCorasick ac;
-    for (auto &amp;p : pats) ac.addPattern(p);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;p : pats) ac.addPattern(p);
     ac.build();
 
-    int nodes = ac.nxt.size();
-    // firstVisit[v] = earliest 1-indexed text position after which the automaton
-    // state is exactly v (i.e. the trie path to v is a suffix of text[0..pos-1]).
-    vector&lt;long long&gt; firstVisit(nodes, INF);
-    int cur = 0;
-    for (int i = 0; i &lt; (int)text.size(); i++) {
-        cur = ac.nxt[cur][text[i] - &#x27;a&#x27;];
-        firstVisit[cur] = min(firstVisit[cur], (long long)(i + 1)); // 1-indexed end position
+    <span class="tok-keyword">int</span> nodes = ac.nxt.size();
+    <span class="tok-comment">// firstVisit[v] = earliest 1-indexed text position after which the automaton</span>
+    <span class="tok-comment">// state is exactly v (i.e. the trie path to v is a suffix of text[0..pos-1]).</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; firstVisit(nodes, INF);
+    <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)text.size(); i++) {
+        cur = ac.nxt[cur][text[i] - <span class="tok-char">&#x27;a&#x27;</span>];
+        firstVisit[cur] = min(firstVisit[cur], (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)(i + <span class="tok-number">1</span>)); <span class="tok-comment">// 1-indexed end position</span>
     }
-    // Pattern v occurs ending at text position p iff v lies on the fail-chain of
-    // whatever node the automaton is in after reading p characters. So
-    // earliest[v] = min firstVisit[u] over v itself and every node u that has v as
-    // a fail-ancestor (u lies in v&#x27;s fail-subtree). This is the same &quot;aggregate
-    // over the fail-subtree&quot; shape as the hit-count trick in the previous example,
-    // just with min instead of sum, so it must be propagated from deeper nodes
-    // toward the root (children into fail[child]), i.e. BFS order reversed.
-    vector&lt;long long&gt; earliest = firstVisit;
-    for (int i = (int)ac.bfsOrder.size() - 1; i &gt;= 0; i--) {
-        int u = ac.bfsOrder[i];
+    <span class="tok-comment">// Pattern v occurs ending at text position p iff v lies on the fail-chain of</span>
+    <span class="tok-comment">// whatever node the automaton is in after reading p characters. So</span>
+    <span class="tok-comment">// earliest[v] = min firstVisit[u] over v itself and every node u that has v as</span>
+    <span class="tok-comment">// a fail-ancestor (u lies in v&#x27;s fail-subtree). This is the same &quot;aggregate</span>
+    <span class="tok-comment">// over the fail-subtree&quot; shape as the hit-count trick in the previous example,</span>
+    <span class="tok-comment">// just with min instead of sum, so it must be propagated from deeper nodes</span>
+    <span class="tok-comment">// toward the root (children into fail[child]), i.e. BFS order reversed.</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; earliest = firstVisit;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = (<span class="tok-keyword">int</span>)ac.bfsOrder.size() - <span class="tok-number">1</span>; i &gt;= <span class="tok-number">0</span>; i--) {
+        <span class="tok-keyword">int</span> u = ac.bfsOrder[i];
         earliest[ac.fail[u]] = min(earliest[ac.fail[u]], earliest[u]);
     }
 
-    for (int i = 0; i &lt; k; i++) {
-        int node = 0;
-        for (char ch : pats[i]) node = ac.nxt[node][ch - &#x27;a&#x27;];
-        long long endPos = earliest[node];
-        if (endPos &gt;= INF) cout &lt;&lt; -1;
-        else cout &lt;&lt; (endPos - (long long)pats[i].size() + 1); // 1-indexed start position
-        cout &lt;&lt; (i + 1 &lt; k ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
+        <span class="tok-keyword">int</span> node = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : pats[i]) node = ac.nxt[node][ch - <span class="tok-char">&#x27;a&#x27;</span>];
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> endPos = earliest[node];
+        <span class="tok-keyword">if</span> (endPos &gt;= INF) cout &lt;&lt; -<span class="tok-number">1</span>;
+        <span class="tok-keyword">else</span> cout &lt;&lt; (endPos - (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)pats[i].size() + <span class="tok-number">1</span>); <span class="tok-comment">// 1-indexed start position</span>
+        cout &lt;&lt; (i + <span class="tok-number">1</span> &lt; k ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -1590,61 +1602,61 @@ xyz
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the Eertree incrementally, appending one character of s at a time. The construction maintains a pointer &#x27;last&#x27; to the node representing the longest palindromic suffix of the string built SO FAR; by definition, immediately after inserting the i-th character, last&#x27;s length IS the answer for position i, so this problem requires no extra post-processing beyond correctly implementing the core add() operation.</p><p>add(c) works as follows: starting from &#x27;last&#x27;, walk up suffix links until reaching a node v (a candidate palindrome) such that the character immediately preceding v&#x27;s occurrence in the current string equals c (checked via the string&#x27;s length and v&#x27;s own length: the required position is currentLength - v.length - 2, using the imaginary root&#x27;s length -1 to make the base case for brand-new length-1 palindromes fall out automatically). If v already has a transition on c, &#x27;last&#x27; becomes that existing target (this exact palindrome already occurred). Otherwise, create a new node of length v.length+2; its suffix link is found by continuing the same upward walk starting from v&#x27;s OWN suffix link (a second, independent search, not reusing v), with the length-1 case special-cased to link directly to the empty-string root. Record v&#x27;s new transition on c to the new node, and set &#x27;last&#x27; to it.</p><p>Verified by hand-tracing the classic example s = &#x27;abacaba&#x27;, which must produce 1 1 3 1 3 5 7 (longest palindromic suffixes &#x27;a&#x27;,&#x27;b&#x27;,&#x27;aba&#x27;,&#x27;c&#x27;,&#x27;aca&#x27;,&#x27;bacab&#x27;,&#x27;abacaba&#x27;), and cross-checked against an O(n^2) brute force that tests every suffix-of-a-prefix for being a palindrome, with zero mismatches over 500 random small strings.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct Eertree {
-    string s;
-    vector&lt;int&gt; len, link;
-    vector&lt;array&lt;int,26&gt;&gt; nxt;
-    int last;
+<span class="tok-keyword">struct</span> Eertree {
+    <span class="tok-type">string</span> s;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; len, link;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;&gt; nxt;
+    <span class="tok-keyword">int</span> last;
     Eertree() {
-        // node 0 = imaginary root, len = -1, links to itself
-        len.push_back(-1); link.push_back(0);
-        nxt.push_back(array&lt;int,26&gt;{}); nxt[0].fill(0);
-        // node 1 = empty-string root, len = 0, links to node 0
-        len.push_back(0); link.push_back(0);
-        nxt.push_back(array&lt;int,26&gt;{}); nxt[1].fill(0);
-        last = 1;
+        <span class="tok-comment">// node 0 = imaginary root, len = -1, links to itself</span>
+        len.push_back(-<span class="tok-number">1</span>); link.push_back(<span class="tok-number">0</span>);
+        nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;{}); nxt[<span class="tok-number">0</span>].fill(<span class="tok-number">0</span>);
+        <span class="tok-comment">// node 1 = empty-string root, len = 0, links to node 0</span>
+        len.push_back(<span class="tok-number">0</span>); link.push_back(<span class="tok-number">0</span>);
+        nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;{}); nxt[<span class="tok-number">1</span>].fill(<span class="tok-number">0</span>);
+        last = <span class="tok-number">1</span>;
     }
-    int getLink(int v) {
-        int n = (int)s.size();
-        while (true) {
-            int curLen = len[v];
-            int pos = n - curLen - 2; // index of char that must equal s.back()
-            if (pos &gt;= 0 &amp;&amp; s[pos] == s.back()) return v;
+    <span class="tok-keyword">int</span> getLink(<span class="tok-keyword">int</span> v) {
+        <span class="tok-keyword">int</span> n = (<span class="tok-keyword">int</span>)s.size();
+        <span class="tok-keyword">while</span> (<span class="tok-keyword">true</span>) {
+            <span class="tok-keyword">int</span> curLen = len[v];
+            <span class="tok-keyword">int</span> pos = n - curLen - <span class="tok-number">2</span>; <span class="tok-comment">// index of char that must equal s.back()</span>
+            <span class="tok-keyword">if</span> (pos &gt;= <span class="tok-number">0</span> &amp;&amp; s[pos] == s.back()) <span class="tok-keyword">return</span> v;
             v = link[v];
         }
     }
-    // returns len[last] after inserting c
-    int add(char c) {
+    <span class="tok-comment">// returns len[last] after inserting c</span>
+    <span class="tok-keyword">int</span> add(<span class="tok-keyword">char</span> c) {
         s.push_back(c);
-        int c_idx = c - &#x27;a&#x27;;
-        int cur = getLink(last);
-        if (!nxt[cur][c_idx]) {
-            int now = (int)len.size();
-            len.push_back(len[cur] + 2);
-            nxt.push_back(array&lt;int,26&gt;{}); nxt.back().fill(0);
-            if (len[now] == 1) {
-                link.push_back(1);
-            } else {
-                int sufLink = getLink(link[cur]);
+        <span class="tok-keyword">int</span> c_idx = c - <span class="tok-char">&#x27;a&#x27;</span>;
+        <span class="tok-keyword">int</span> cur = getLink(last);
+        <span class="tok-keyword">if</span> (!nxt[cur][c_idx]) {
+            <span class="tok-keyword">int</span> now = (<span class="tok-keyword">int</span>)len.size();
+            len.push_back(len[cur] + <span class="tok-number">2</span>);
+            nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;{}); nxt.back().fill(<span class="tok-number">0</span>);
+            <span class="tok-keyword">if</span> (len[now] == <span class="tok-number">1</span>) {
+                link.push_back(<span class="tok-number">1</span>);
+            } <span class="tok-keyword">else</span> {
+                <span class="tok-keyword">int</span> sufLink = getLink(link[cur]);
                 link.push_back(nxt[sufLink][c_idx]);
             }
             nxt[cur][c_idx] = now;
         }
         last = nxt[cur][c_idx];
-        return len[last];
+        <span class="tok-keyword">return</span> len[last];
     }
 };
 
-int main(){
-    string s;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s;
     cin &gt;&gt; s;
     Eertree tree;
-    vector&lt;int&gt; ans;
-    for (char c : s) ans.push_back(tree.add(c));
-    for (int i = 0; i &lt; (int)ans.size(); i++) cout &lt;&lt; ans[i] &lt;&lt; (i+1&lt;(int)ans.size()? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; ans;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> c : s) ans.push_back(tree.add(c));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)ans.size(); i++) cout &lt;&lt; ans[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;(<span class="tok-keyword">int</span>)ans.size()? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1661,71 +1673,71 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the Eertree over s exactly as before, but additionally maintain an occurrence counter occ[node], incremented by 1 every time &#x27;last&#x27; becomes that node during ANY insertion (whether the node was freshly created or already existed) -- this seed correctly reflects &#x27;this exact palindrome was the longest palindromic suffix ending at this position&#x27; at least once per insertion where it applies directly.</p><p>After processing the whole string, propagate these seed counts up the suffix-link tree so that shorter palindromes correctly accumulate the occurrences of every longer palindrome that has them as a palindromic suffix (e.g. every occurrence of &#x27;aaa&#x27; also implies an occurrence of &#x27;aa&#x27; and of &#x27;a&#x27; ending at the same position, which the seed-counting alone does not directly capture for &#x27;aa&#x27; and &#x27;a&#x27;). This is done by sorting nodes by length in DEcreasing order (a valid topological order since suffix links always point to strictly shorter nodes) and, for each node v (skipping the two imaginary/empty roots), adding occ[v] into occ[link[v]].</p><p>After this propagation, occ[v] equals the true number of times the palindrome represented by v occurs as a substring of s, so the final answer is simply the sum of occ[v] over every real node (excluding the two roots). Verified against an O(n^2) brute force that tests every substring for being a palindrome and sums matches directly, with zero mismatches over 500 random small strings; &#x27;aaa&#x27; correctly yields 6 and &#x27;abacaba&#x27; correctly yields 12.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct Eertree {
-    string s;
-    vector&lt;int&gt; len, link;
-    vector&lt;long long&gt; occ;
-    vector&lt;array&lt;int,26&gt;&gt; nxt;
-    int last;
+<span class="tok-keyword">struct</span> Eertree {
+    <span class="tok-type">string</span> s;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; len, link;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; occ;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;&gt; nxt;
+    <span class="tok-keyword">int</span> last;
     Eertree() {
-        len.push_back(-1); link.push_back(0); occ.push_back(0);
-        nxt.push_back(array&lt;int,26&gt;{}); nxt[0].fill(0);
-        len.push_back(0); link.push_back(0); occ.push_back(0);
-        nxt.push_back(array&lt;int,26&gt;{}); nxt[1].fill(0);
-        last = 1;
+        len.push_back(-<span class="tok-number">1</span>); link.push_back(<span class="tok-number">0</span>); occ.push_back(<span class="tok-number">0</span>);
+        nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;{}); nxt[<span class="tok-number">0</span>].fill(<span class="tok-number">0</span>);
+        len.push_back(<span class="tok-number">0</span>); link.push_back(<span class="tok-number">0</span>); occ.push_back(<span class="tok-number">0</span>);
+        nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;{}); nxt[<span class="tok-number">1</span>].fill(<span class="tok-number">0</span>);
+        last = <span class="tok-number">1</span>;
     }
-    int getLink(int v) {
-        int n = (int)s.size();
-        while (true) {
-            int curLen = len[v];
-            int pos = n - curLen - 2;
-            if (pos &gt;= 0 &amp;&amp; s[pos] == s.back()) return v;
+    <span class="tok-keyword">int</span> getLink(<span class="tok-keyword">int</span> v) {
+        <span class="tok-keyword">int</span> n = (<span class="tok-keyword">int</span>)s.size();
+        <span class="tok-keyword">while</span> (<span class="tok-keyword">true</span>) {
+            <span class="tok-keyword">int</span> curLen = len[v];
+            <span class="tok-keyword">int</span> pos = n - curLen - <span class="tok-number">2</span>;
+            <span class="tok-keyword">if</span> (pos &gt;= <span class="tok-number">0</span> &amp;&amp; s[pos] == s.back()) <span class="tok-keyword">return</span> v;
             v = link[v];
         }
     }
-    void add(char c) {
+    <span class="tok-keyword">void</span> add(<span class="tok-keyword">char</span> c) {
         s.push_back(c);
-        int c_idx = c - &#x27;a&#x27;;
-        int cur = getLink(last);
-        if (!nxt[cur][c_idx]) {
-            int now = (int)len.size();
-            len.push_back(len[cur] + 2);
-            occ.push_back(0);
-            nxt.push_back(array&lt;int,26&gt;{}); nxt.back().fill(0);
-            if (len[now] == 1) {
-                link.push_back(1);
-            } else {
-                int sufLink = getLink(link[cur]);
+        <span class="tok-keyword">int</span> c_idx = c - <span class="tok-char">&#x27;a&#x27;</span>;
+        <span class="tok-keyword">int</span> cur = getLink(last);
+        <span class="tok-keyword">if</span> (!nxt[cur][c_idx]) {
+            <span class="tok-keyword">int</span> now = (<span class="tok-keyword">int</span>)len.size();
+            len.push_back(len[cur] + <span class="tok-number">2</span>);
+            occ.push_back(<span class="tok-number">0</span>);
+            nxt.push_back(<span class="tok-type">array</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-number">26</span>&gt;{}); nxt.back().fill(<span class="tok-number">0</span>);
+            <span class="tok-keyword">if</span> (len[now] == <span class="tok-number">1</span>) {
+                link.push_back(<span class="tok-number">1</span>);
+            } <span class="tok-keyword">else</span> {
+                <span class="tok-keyword">int</span> sufLink = getLink(link[cur]);
                 link.push_back(nxt[sufLink][c_idx]);
             }
             nxt[cur][c_idx] = now;
         }
         last = nxt[cur][c_idx];
-        occ[last]++; // this node was the longest palindromic suffix ending here
+        occ[last]++; <span class="tok-comment">// this node was the longest palindromic suffix ending here</span>
     }
 };
 
-int main(){
-    string s;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s;
     cin &gt;&gt; s;
     Eertree tree;
-    for (char c : s) tree.add(c);
-    int total = (int)tree.len.size();
-    // propagate occurrence counts along suffix links: link[v] always has strictly
-    // smaller len than v, so sorting by len descending gives a valid processing
-    // order (every node is finalized before its suffix-link target is updated).
-    vector&lt;int&gt; order(total);
-    iota(order.begin(), order.end(), 0);
-    sort(order.begin(), order.end(), [&amp;](int a, int b){ return tree.len[a] &gt; tree.len[b]; });
-    for (int v : order) {
-        if (v &lt;= 1) continue; // skip the two imaginary roots
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> c : s) tree.add(c);
+    <span class="tok-keyword">int</span> total = (<span class="tok-keyword">int</span>)tree.len.size();
+    <span class="tok-comment">// propagate occurrence counts along suffix links: link[v] always has strictly</span>
+    <span class="tok-comment">// smaller len than v, so sorting by len descending gives a valid processing</span>
+    <span class="tok-comment">// order (every node is finalized before its suffix-link target is updated).</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order(total);
+    iota(order.begin(), order.end(), <span class="tok-number">0</span>);
+    sort(order.begin(), order.end(), [&amp;](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){ <span class="tok-keyword">return</span> tree.len[a] &gt; tree.len[b]; });
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : order) {
+        <span class="tok-keyword">if</span> (v &lt;= <span class="tok-number">1</span>) <span class="tok-keyword">continue</span>; <span class="tok-comment">// skip the two imaginary roots</span>
         tree.occ[tree.link[v]] += tree.occ[v];
     }
-    long long answer = 0;
-    for (int v = 2; v &lt; total; v++) answer += tree.occ[v];
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> answer = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">2</span>; v &lt; total; v++) answer += tree.occ[v];
     cout &lt;&lt; answer &lt;&lt; endl;
 }
 </code></pre>

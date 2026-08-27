@@ -1,6 +1,6 @@
 import json, sys, os, re
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import esc, inline_code, HEAD_CSS, site_nav, FOOTER, problems_table_html
+from gen_lib import esc, inline_code, highlight_cpp, HEAD_CSS, site_nav, FOOTER, problems_table_html
 
 SCRATCH = os.path.dirname(__file__)
 PROBLEMS_DIR = f"{SCRATCH}/problems"
@@ -35,7 +35,7 @@ def example_card_html(ex, idx, sub_anchor):
   <div class="section-label">Approach</div>
   <div class="prose">{inline_code(ex["approach"])}</div>
   <div class="section-label">Solution</div>
-  <pre><code>{esc(ex["code"])}</code></pre>
+  <pre><code>{highlight_cpp(ex["code"])}</code></pre>
   <div class="section-label">Sample I/O</div>
   <div class="io-row">
     <pre><code>{esc(ex["sample_input"])}</code></pre>

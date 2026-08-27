@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,28 +281,28 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is not orderable by plain numeric or lexicographic comparison of the numbers themselves (e.g., 9 should come before 30 even though &#x27;30&#x27; &lt; &#x27;9&#x27; lexicographically as a prefix issue). Convert every number to its decimal string, then sort the strings with the comparator cmp(a, b) := (a+b) &gt; (b+a) as strings, i.e., a should precede b iff placing a first yields a lexicographically larger concatenation. This comparator is provably a valid strict weak ordering (transitivity follows from comparing digit blocks), so std::sort with it produces a correct total order. After sorting, concatenate all strings; finally, strip leading zeros (but keep a single &#x27;0&#x27; if every element was zero).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;string&gt; v(n);
-    for (auto &amp;s : v) {
-        int x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; v(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;s : v) {
+        <span class="tok-keyword">int</span> x;
         cin &gt;&gt; x;
         s = to_string(x);
     }
-    sort(v.begin(), v.end(), [](const string &amp;a, const string &amp;b) {
-        return a + b &gt; b + a;
+    sort(v.begin(), v.end(), [](<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;a, <span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;b) {
+        <span class="tok-keyword">return</span> a + b &gt; b + a;
     });
-    string res;
-    for (auto &amp;s : v) res += s;
-    int i = 0;
-    while (i + 1 &lt; (int)res.size() &amp;&amp; res[i] == &#x27;0&#x27;) i++;
+    <span class="tok-type">string</span> res;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;s : v) res += s;
+    <span class="tok-keyword">int</span> i = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (i + <span class="tok-number">1</span> &lt; (<span class="tok-keyword">int</span>)res.size() &amp;&amp; res[i] == <span class="tok-char">&#x27;0&#x27;</span>) i++;
     res = res.substr(i);
     cout &lt;&lt; res &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -308,24 +320,24 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the canonical demonstration of why stability matters: sorting only by &#x27;score descending&#x27; does not fully specify the output when scores tie, so the algorithm must preserve input order among equal elements. Using std::sort here is unsafe because it is not guaranteed stable (equal elements may be reordered arbitrarily by its internal introsort). The correct tool is std::stable_sort with the comparator only comparing score (descending); stable_sort guarantees O(n log^2 n) worst case (O(n log n) with enough extra memory, which is the common case) and never disturbs the relative order of elements that compare equal. An equivalent alternative that also works with plain sort is to break ties explicitly by original index.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-struct Student {
-    string name;
-    int score;
+<span class="tok-keyword">struct</span> Student {
+    <span class="tok-type">string</span> name;
+    <span class="tok-keyword">int</span> score;
 };
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;Student&gt; v(n);
-    for (int i = 0; i &lt; n; i++) cin &gt;&gt; v[i].name &gt;&gt; v[i].score;
-    stable_sort(v.begin(), v.end(), [](const Student &amp;a, const Student &amp;b) {
-        return a.score &gt; b.score;
+    <span class="tok-type">vector</span>&lt;Student&gt; v(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cin &gt;&gt; v[i].name &gt;&gt; v[i].score;
+    stable_sort(v.begin(), v.end(), [](<span class="tok-keyword">const</span> Student &amp;a, <span class="tok-keyword">const</span> Student &amp;b) {
+        <span class="tok-keyword">return</span> a.score &gt; b.score;
     });
-    for (auto &amp;s : v) cout &lt;&lt; s.name &lt;&lt; &quot; &quot; &lt;&lt; s.score &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;s : v) cout &lt;&lt; s.name &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; s.score &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -359,33 +371,33 @@ Dave 85
   <div class="section-label">Approach</div>
   <div class="prose"><p>At any midpoint, even though the whole array isn&#x27;t sorted, at least one of the two halves [lo, mid] or [mid, hi] IS a contiguous sorted run (rotation can only break sortedness at one point). So at each step: compare a[lo] with a[mid] to determine which half is properly sorted; then check whether the target lies within that sorted half&#x27;s value range. If it does, recurse into that half; otherwise the target (if present) must be in the other half. This keeps the search space halving every step, giving O(log n).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    int target;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">int</span> target;
     cin &gt;&gt; target;
 
-    int lo = 0, hi = n - 1, ans = -1;
-    while (lo &lt;= hi) {
-        int mid = lo + (hi - lo) / 2;
-        if (a[mid] == target) { ans = mid; break; }
-        if (a[lo] &lt;= a[mid]) {
-            // left half [lo, mid] is sorted
-            if (a[lo] &lt;= target &amp;&amp; target &lt; a[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        } else {
-            // right half [mid, hi] is sorted
-            if (a[mid] &lt; target &amp;&amp; target &lt;= a[hi]) lo = mid + 1;
-            else hi = mid - 1;
+    <span class="tok-keyword">int</span> lo = <span class="tok-number">0</span>, hi = n - <span class="tok-number">1</span>, ans = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (lo &lt;= hi) {
+        <span class="tok-keyword">int</span> mid = lo + (hi - lo) / <span class="tok-number">2</span>;
+        <span class="tok-keyword">if</span> (a[mid] == target) { ans = mid; <span class="tok-keyword">break</span>; }
+        <span class="tok-keyword">if</span> (a[lo] &lt;= a[mid]) {
+            <span class="tok-comment">// left half [lo, mid] is sorted</span>
+            <span class="tok-keyword">if</span> (a[lo] &lt;= target &amp;&amp; target &lt; a[mid]) hi = mid - <span class="tok-number">1</span>;
+            <span class="tok-keyword">else</span> lo = mid + <span class="tok-number">1</span>;
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-comment">// right half [mid, hi] is sorted</span>
+            <span class="tok-keyword">if</span> (a[mid] &lt; target &amp;&amp; target &lt;= a[hi]) lo = mid + <span class="tok-number">1</span>;
+            <span class="tok-keyword">else</span> hi = mid - <span class="tok-number">1</span>;
         }
     }
     cout &lt;&lt; ans &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -404,45 +416,45 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Binary search over a partition index i in the smaller array (WLOG size m &lt;= n). For a given i, the mirrored partition in the other array is forced: j = (m + n + 1) / 2 - i, so that the left side of the combined partition has exactly ceil((m+n)/2) elements. A partition is correct when max(left side of A) &lt;= min(right side of B) AND max(left side of B) &lt;= min(right side of A); if the first condition fails (A&#x27;s left is too large), shrink i; if the second fails, grow i. When a valid partition is found, the median is either max(leftA, leftB) (odd total length) or the average of max(leftA, leftB) and min(rightA, rightB) (even total length). Sentinels INT_MIN/INT_MAX handle empty partitions cleanly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int m;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m;
     cin &gt;&gt; m;
-    vector&lt;int&gt; A(m);
-    for (auto &amp;x : A) cin &gt;&gt; x;
-    int n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; A(m);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : A) cin &gt;&gt; x;
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; B(n);
-    for (auto &amp;x : B) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; B(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : B) cin &gt;&gt; x;
 
-    if (m &gt; n) { swap(A, B); swap(m, n); }
+    <span class="tok-keyword">if</span> (m &gt; n) { swap(A, B); swap(m, n); }
 
-    int lo = 0, hi = m, half = (m + n + 1) / 2;
-    double ans = 0;
-    while (lo &lt;= hi) {
-        int i = lo + (hi - lo) / 2;
-        int j = half - i;
-        int Aleft  = (i == 0) ? INT_MIN : A[i - 1];
-        int Aright = (i == m) ? INT_MAX : A[i];
-        int Bleft  = (j == 0) ? INT_MIN : B[j - 1];
-        int Bright = (j == n) ? INT_MAX : B[j];
+    <span class="tok-keyword">int</span> lo = <span class="tok-number">0</span>, hi = m, half = (m + n + <span class="tok-number">1</span>) / <span class="tok-number">2</span>;
+    <span class="tok-keyword">double</span> ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (lo &lt;= hi) {
+        <span class="tok-keyword">int</span> i = lo + (hi - lo) / <span class="tok-number">2</span>;
+        <span class="tok-keyword">int</span> j = half - i;
+        <span class="tok-keyword">int</span> Aleft  = (i == <span class="tok-number">0</span>) ? INT_MIN : A[i - <span class="tok-number">1</span>];
+        <span class="tok-keyword">int</span> Aright = (i == m) ? INT_MAX : A[i];
+        <span class="tok-keyword">int</span> Bleft  = (j == <span class="tok-number">0</span>) ? INT_MIN : B[j - <span class="tok-number">1</span>];
+        <span class="tok-keyword">int</span> Bright = (j == n) ? INT_MAX : B[j];
 
-        if (Aleft &lt;= Bright &amp;&amp; Bleft &lt;= Aright) {
-            if ((m + n) % 2 == 0)
-                ans = (max(Aleft, Bleft) + min(Aright, Bright)) / 2.0;
-            else
+        <span class="tok-keyword">if</span> (Aleft &lt;= Bright &amp;&amp; Bleft &lt;= Aright) {
+            <span class="tok-keyword">if</span> ((m + n) % <span class="tok-number">2</span> == <span class="tok-number">0</span>)
+                ans = (max(Aleft, Bleft) + min(Aright, Bright)) / <span class="tok-number">2.0</span>;
+            <span class="tok-keyword">else</span>
                 ans = max(Aleft, Bleft);
-            break;
-        } else if (Aleft &gt; Bright) {
-            hi = i - 1;
-        } else {
-            lo = i + 1;
+            <span class="tok-keyword">break</span>;
+        } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (Aleft &gt; Bright) {
+            hi = i - <span class="tok-number">1</span>;
+        } <span class="tok-keyword">else</span> {
+            lo = i + <span class="tok-number">1</span>;
         }
     }
-    cout &lt;&lt; fixed &lt;&lt; setprecision(5) &lt;&lt; ans &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="tok-number">5</span>) &lt;&lt; ans &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -470,28 +482,28 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Computing the optimal T directly is hard because production is a sum of floor divisions with different rates. But feasibility is trivial to check and monotonic: for a fixed candidate time T, the total products made is sum(floor(T / t_i)) over all machines, an O(k) computation, and this total is clearly non-decreasing as T grows. So binary search T over [1, huge upper bound] (e.g., up to n * max(t_i), or just a very large constant since t_i, n &lt;= ~10^9), and find the smallest T with total production &gt;= n.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    long long k, n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> k, n;
     cin &gt;&gt; k &gt;&gt; n;
-    vector&lt;long long&gt; t(k);
-    for (auto &amp;x : t) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; t(k);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : t) cin &gt;&gt; x;
 
-    long long lo = 1, hi = (long long)2e18;
-    while (lo &lt; hi) {
-        long long mid = lo + (hi - lo) / 2;
-        long long total = 0;
-        for (auto ti : t) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> lo = <span class="tok-number">1</span>, hi = (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)<span class="tok-number">2e18</span>;
+    <span class="tok-keyword">while</span> (lo &lt; hi) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> mid = lo + (hi - lo) / <span class="tok-number">2</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> ti : t) {
             total += mid / ti;
-            if (total &gt;= n) break;
+            <span class="tok-keyword">if</span> (total &gt;= n) <span class="tok-keyword">break</span>;
         }
-        if (total &gt;= n) hi = mid;
-        else lo = mid + 1;
+        <span class="tok-keyword">if</span> (total &gt;= n) hi = mid;
+        <span class="tok-keyword">else</span> lo = mid + <span class="tok-number">1</span>;
     }
     cout &lt;&lt; lo &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -509,28 +521,28 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Binary search on the candidate maximum sum M. Feasibility check: greedily scan the array left to right, accumulating a running sum for the current subarray; whenever adding the next element would exceed M, start a new subarray there instead. Count how many subarrays this greedy scan needs; if that count is &lt;= k, M is feasible (we can always merge extra small pieces together without exceeding M, or simply use fewer than k cuts). Feasibility is monotonic in M (a larger cap can only need fewer or equal subarrays), so binary search between lo = max single element (a lower bound, since that element alone must fit in some subarray) and hi = total sum (trivially feasible with 1 subarray) finds the minimum feasible M.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n, k;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, k;
     cin &gt;&gt; n &gt;&gt; k;
-    vector&lt;long long&gt; a(n);
-    long long lo = 0, hi = 0;
-    for (auto &amp;x : a) { cin &gt;&gt; x; hi += x; lo = max(lo, x); }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> lo = <span class="tok-number">0</span>, hi = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) { cin &gt;&gt; x; hi += x; lo = max(lo, x); }
 
-    while (lo &lt; hi) {
-        long long mid = lo + (hi - lo) / 2;
-        long long parts = 1, cur = 0;
-        for (auto x : a) {
-            if (cur + x &gt; mid) { parts++; cur = x; }
-            else cur += x;
+    <span class="tok-keyword">while</span> (lo &lt; hi) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> mid = lo + (hi - lo) / <span class="tok-number">2</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> parts = <span class="tok-number">1</span>, cur = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> x : a) {
+            <span class="tok-keyword">if</span> (cur + x &gt; mid) { parts++; cur = x; }
+            <span class="tok-keyword">else</span> cur += x;
         }
-        if (parts &lt;= k) hi = mid;
-        else lo = mid + 1;
+        <span class="tok-keyword">if</span> (parts &lt;= k) hi = mid;
+        <span class="tok-keyword">else</span> lo = mid + <span class="tok-number">1</span>;
     }
     cout &lt;&lt; lo &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -548,32 +560,32 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort the array. Binary search on the candidate distance d in [0, max-min]. The feasibility check counts how many pairs have distance &lt;= d: after sorting, use a two-pointer sliding window — for each right endpoint, advance left while a[right]-a[left] &gt; d, then every index between left and right (inclusive on the left side) pairs with right at distance &lt;= d, contributing (right - left) pairs; summing this over all right endpoints is an O(n) pass (each pointer moves forward only). This count is monotonic non-decreasing in d, so binary search for the smallest d with count(d) &gt;= k gives exactly the k-th smallest pair distance.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    int k;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">int</span> k;
     cin &gt;&gt; k;
 
     sort(a.begin(), a.end());
-    int lo = 0, hi = a[n - 1] - a[0];
-    while (lo &lt; hi) {
-        int mid = lo + (hi - lo) / 2;
-        long long count = 0;
-        int left = 0;
-        for (int right = 0; right &lt; n; right++) {
-            while (a[right] - a[left] &gt; mid) left++;
+    <span class="tok-keyword">int</span> lo = <span class="tok-number">0</span>, hi = a[n - <span class="tok-number">1</span>] - a[<span class="tok-number">0</span>];
+    <span class="tok-keyword">while</span> (lo &lt; hi) {
+        <span class="tok-keyword">int</span> mid = lo + (hi - lo) / <span class="tok-number">2</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> count = <span class="tok-number">0</span>;
+        <span class="tok-keyword">int</span> left = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> right = <span class="tok-number">0</span>; right &lt; n; right++) {
+            <span class="tok-keyword">while</span> (a[right] - a[left] &gt; mid) left++;
             count += (right - left);
         }
-        if (count &gt;= k) hi = mid;
-        else lo = mid + 1;
+        <span class="tok-keyword">if</span> (count &gt;= k) hi = mid;
+        <span class="tok-keyword">else</span> lo = mid + <span class="tok-number">1</span>;
     }
     cout &lt;&lt; lo &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -600,37 +612,37 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>For a fixed x, the weakness is max(maximum subarray sum of (a_i - x), -(minimum subarray sum of (a_i - x))), both computed with a standard O(n) Kadane pass. As a function of x, the weakness is a maximum of two functions, each of which is convex in x (a maximum/minimum subarray sum, viewed as a max/min over a finite set of LINEAR functions of x -- one per subarray -- is itself convex, since a pointwise maximum of linear functions is always convex, and negating a concave minimum keeps it convex too); a maximum of convex functions is convex, so weakness(x) is convex, hence unimodal, and ternary search applies directly on the real line. Run ternary search with a fixed number of iterations (200, far more than needed for 1e-6 precision) over a sufficiently wide range, evaluating weakness(x) via Kadane at each of the two candidate points per iteration, and narrow toward the minimum. Verified by brute-force scanning weakness(x) on a fine grid (step 0.0001) for the sample input, confirming the ternary search converges to the same minimum (x=2, weakness=1.0 for input [1,2,3]).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;double&gt; a;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">double</span>&gt; a;
 
-double weakness(double x) {
-    // compute max subarray sum and min subarray sum of (a[i]-x) via Kadane
-    double curMax = 0, maxSum = -1e18;
-    double curMin = 0, minSum = 1e18;
-    for (int i = 0; i &lt; n; i++) {
-        double v = a[i] - x;
+<span class="tok-keyword">double</span> weakness(<span class="tok-keyword">double</span> x) {
+    <span class="tok-comment">// compute max subarray sum and min subarray sum of (a[i]-x) via Kadane</span>
+    <span class="tok-keyword">double</span> curMax = <span class="tok-number">0</span>, maxSum = -<span class="tok-number">1e18</span>;
+    <span class="tok-keyword">double</span> curMin = <span class="tok-number">0</span>, minSum = <span class="tok-number">1e18</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">double</span> v = a[i] - x;
         curMax = max(v, curMax + v);
         maxSum = max(maxSum, curMax);
         curMin = min(v, curMin + v);
         minSum = min(minSum, curMin);
     }
-    return max(maxSum, -minSum);
+    <span class="tok-keyword">return</span> max(maxSum, -minSum);
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    a.assign(n, 0);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    double lo = -1e6, hi = 1e6;
-    for (int it = 0; it &lt; 200; it++) {
-        double m1 = lo + (hi - lo) / 3;
-        double m2 = hi - (hi - lo) / 3;
-        if (weakness(m1) &lt;= weakness(m2)) hi = m2; else lo = m1;
+    a.assign(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">double</span> lo = -<span class="tok-number">1e6</span>, hi = <span class="tok-number">1e6</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> it = <span class="tok-number">0</span>; it &lt; <span class="tok-number">200</span>; it++) {
+        <span class="tok-keyword">double</span> m1 = lo + (hi - lo) / <span class="tok-number">3</span>;
+        <span class="tok-keyword">double</span> m2 = hi - (hi - lo) / <span class="tok-number">3</span>;
+        <span class="tok-keyword">if</span> (weakness(m1) &lt;= weakness(m2)) hi = m2; <span class="tok-keyword">else</span> lo = m1;
     }
-    double ans = weakness((lo + hi) / 2);
-    cout &lt;&lt; fixed &lt;&lt; setprecision(6) &lt;&lt; ans &lt;&lt; endl;
+    <span class="tok-keyword">double</span> ans = weakness((lo + hi) / <span class="tok-number">2</span>);
+    cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="tok-number">6</span>) &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -648,34 +660,34 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>cost(T) = sum of |h[i] - T| is a sum of convex (absolute-value) functions of T, hence convex, hence unimodal (minimized, with possibly a flat plateau at the median when n is even) -- a textbook target for integer ternary search. Because integer ternary search can behave incorrectly right at the boundary of a very small range or on a plateau, use the robust pattern: shrink the range [lo, hi] only while hi - lo &gt; 2, using two interior points m1, m2 at roughly the 1/3 and 2/3 marks, and comparing cost(m1) &lt;= cost(m2) to decide which side to discard (convexity guarantees the true minimum is never discarded by this rule, even on a plateau, because it never discards past the point where cost stops being provably worse). Once the range has shrunk to at most 3 candidates, brute-force evaluate cost at each remaining integer and take the best (and, for tie-breaking to the smallest T, scan candidates in increasing order and only replace the best on a STRICT improvement). This correctly reproduces the well-known fact that the optimum is the median of h[].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;long long&gt; h;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; h;
 
-long long cost(long long target) {
-    long long c = 0;
-    for (int i = 0; i &lt; n; i++) c += llabs(h[i] - target);
-    return c;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cost(<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> target) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) c += llabs(h[i] - target);
+    <span class="tok-keyword">return</span> c;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    h.assign(n, 0);
-    for (auto &amp;x : h) cin &gt;&gt; x;
-    long long lo = *min_element(h.begin(), h.end());
-    long long hi = *max_element(h.begin(), h.end());
-    while (hi - lo &gt; 2) {
-        long long m1 = lo + (hi - lo) / 3;
-        long long m2 = hi - (hi - lo) / 3;
-        if (cost(m1) &lt;= cost(m2)) hi = m2; else lo = m1 + 1;
+    h.assign(n, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : h) cin &gt;&gt; x;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> lo = *min_element(h.begin(), h.end());
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> hi = *max_element(h.begin(), h.end());
+    <span class="tok-keyword">while</span> (hi - lo &gt; <span class="tok-number">2</span>) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> m1 = lo + (hi - lo) / <span class="tok-number">3</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> m2 = hi - (hi - lo) / <span class="tok-number">3</span>;
+        <span class="tok-keyword">if</span> (cost(m1) &lt;= cost(m2)) hi = m2; <span class="tok-keyword">else</span> lo = m1 + <span class="tok-number">1</span>;
     }
-    long long best = LLONG_MAX, bestH = lo;
-    for (long long height = lo; height &lt;= hi; height++) {
-        long long c = cost(height);
-        if (c &lt; best) { best = c; bestH = height; }
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = LLONG_MAX, bestH = lo;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> height = lo; height &lt;= hi; height++) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c = cost(height);
+        <span class="tok-keyword">if</span> (c &lt; best) { best = c; bestH = height; }
     }
-    cout &lt;&lt; bestH &lt;&lt; &quot; &quot; &lt;&lt; best &lt;&lt; endl;
+    cout &lt;&lt; bestH &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; best &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -701,35 +713,35 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Split the projects into two groups: &#x27;gainers&#x27; with b[i] &gt;= 0, and &#x27;spenders&#x27; with b[i] &lt; 0. Do all gainers first, sorted ascending by a[i] -- an exchange argument shows that if two gainers could be swapped to violate this order and still be feasible, swapping them back to ascending-a order is also feasible (a gainer only helps future rating, so unlocking the cheapest requirement first is never worse). Then do all spenders, sorted DESCENDING by (a[i] + b[i]) -- the rating immediately after completing the project -- again by an exchange argument: for two adjacent spenders i, j, doing i before j requires rating &gt;= max(a[i], a[j] - b[i]) at that point, while doing j before i requires rating &gt;= max(a[j], a[i] - b[j]); algebraic manipulation shows that ordering by descending post-completion value (a[i]+b[i]) never requires a strictly higher minimum starting rating than any other order, so it&#x27;s always safe to prefer it. Simulate both groups in this fixed order, tracking the running rating and failing immediately if any project&#x27;s requirement isn&#x27;t met or if the rating would go negative afterward. This crafted test demonstrates the necessity of the (a+b)-descending rule: sorting spenders by requirement &#x27;a&#x27; ascending instead would process a=4 before a=5, whose simulation fails, even though the correct (a+b)-descending order (a=5 before a=4) succeeds from the same starting rating.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; long long R;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> R;
     cin &gt;&gt; n &gt;&gt; R;
-    vector&lt;pair&lt;long long,long long&gt;&gt; pos, neg; // (a, b)
-    for (int i = 0; i &lt; n; i++) {
-        long long a, b; cin &gt;&gt; a &gt;&gt; b;
-        if (b &gt;= 0) pos.push_back({a, b});
-        else neg.push_back({a, b});
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; pos, neg; <span class="tok-comment">// (a, b)</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a, b; cin &gt;&gt; a &gt;&gt; b;
+        <span class="tok-keyword">if</span> (b &gt;= <span class="tok-number">0</span>) pos.push_back({a, b});
+        <span class="tok-keyword">else</span> neg.push_back({a, b});
     }
-    sort(pos.begin(), pos.end(), [](auto &amp;p, auto &amp;q){ return p.first &lt; q.first; });
-    sort(neg.begin(), neg.end(), [](auto &amp;p, auto &amp;q){
-        return (p.first + p.second) &gt; (q.first + q.second);
+    sort(pos.begin(), pos.end(), [](<span class="tok-keyword">auto</span> &amp;p, <span class="tok-keyword">auto</span> &amp;q){ <span class="tok-keyword">return</span> p.first &lt; q.first; });
+    sort(neg.begin(), neg.end(), [](<span class="tok-keyword">auto</span> &amp;p, <span class="tok-keyword">auto</span> &amp;q){
+        <span class="tok-keyword">return</span> (p.first + p.second) &gt; (q.first + q.second);
     });
-    long long rating = R;
-    bool ok = true;
-    for (auto &amp;pr : pos) {
-        if (rating &lt; pr.first) { ok = false; break; }
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> rating = R;
+    <span class="tok-keyword">bool</span> ok = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;pr : pos) {
+        <span class="tok-keyword">if</span> (rating &lt; pr.first) { ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
         rating += pr.second;
     }
-    if (ok) {
-        for (auto &amp;pr : neg) {
-            if (rating &lt; pr.first) { ok = false; break; }
+    <span class="tok-keyword">if</span> (ok) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;pr : neg) {
+            <span class="tok-keyword">if</span> (rating &lt; pr.first) { ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
             rating += pr.second;
-            if (rating &lt; 0) { ok = false; break; }
+            <span class="tok-keyword">if</span> (rating &lt; <span class="tok-number">0</span>) { ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
         }
     }
-    cout &lt;&lt; (ok ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; endl;
+    cout &lt;&lt; (ok ? <span class="tok-string">&quot;YES&quot;</span> : <span class="tok-string">&quot;NO&quot;</span>) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -748,22 +760,22 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort courses ascending by deadline -- this is the key comparator choice, because it lets you consider courses in an order where, once you decide to &#x27;tentatively take&#x27; a course, every course considered afterward has an equal or later deadline, so there is never a reason to prefer a not-yet-seen course over one already tentatively scheduled except on duration. Greedily try to take every course in this deadline order, maintaining a running total time and a max-heap of the durations of courses currently scheduled. After tentatively adding a course (adding its duration to the running time and pushing it to the heap), check if the running time now exceeds this course&#x27;s deadline; if so, the schedule is currently infeasible, so retroactively REMOVE the single longest-duration course scheduled so far (found instantly via the max-heap) -- this is always at least as good as removing the just-added course, since it frees up the most possible time while keeping the same count of courses scheduled, and it cannot violate any earlier deadline (all remaining courses have equal-or-later, already-satisfied deadlines). The final answer is the number of courses remaining in the heap.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;pair&lt;long long,long long&gt;&gt; courses(n); // duration, lastDay
-    for (auto &amp;c : courses) cin &gt;&gt; c.first &gt;&gt; c.second;
-    sort(courses.begin(), courses.end(), [](auto &amp;a, auto &amp;b){
-        return a.second &lt; b.second; // sort by deadline ascending
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; courses(n); <span class="tok-comment">// duration, lastDay</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;c : courses) cin &gt;&gt; c.first &gt;&gt; c.second;
+    sort(courses.begin(), courses.end(), [](<span class="tok-keyword">auto</span> &amp;a, <span class="tok-keyword">auto</span> &amp;b){
+        <span class="tok-keyword">return</span> a.second &lt; b.second; <span class="tok-comment">// sort by deadline ascending</span>
     });
-    priority_queue&lt;long long&gt; maxHeap; // durations taken so far
-    long long curTime = 0;
-    for (auto &amp;c : courses) {
-        long long dur = c.first, deadline = c.second;
+    <span class="tok-type">priority_queue</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; maxHeap; <span class="tok-comment">// durations taken so far</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> curTime = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;c : courses) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dur = c.first, deadline = c.second;
         curTime += dur;
         maxHeap.push(dur);
-        if (curTime &gt; deadline) {
+        <span class="tok-keyword">if</span> (curTime &gt; deadline) {
             curTime -= maxHeap.top();
             maxHeap.pop();
         }
@@ -797,34 +809,34 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Use Hoare-style partitioning with a RANDOMLY chosen pivot (to make worst-case O(n^2) behavior astronomically unlikely regardless of input order): pick a random index in the current subrange, swap that pivot value to the end, then scan the rest of the subrange moving every element smaller than the pivot to the front (tracked by a &#x27;store&#x27; index), and finally swap the pivot into position &#x27;store&#x27; -- its final sorted position within this subrange. If store equals the 0-indexed target k-1, return the pivot immediately. Otherwise, recurse (via a loop, not actual recursion, to keep it iterative) into only the side of the partition that must contain the target: the left part if the target index is less than store, the right part otherwise. This discards, on average, half the remaining array at each step, giving expected O(n) total work despite each partition step itself costing O(current subrange size). A fixed random seed is used here only so the output is reproducible for testing; a real submission could seed from time or use std::random_device.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-mt19937 rng(12345); // fixed seed for reproducible output
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+mt19937 rng(<span class="tok-number">12345</span>); <span class="tok-comment">// fixed seed for reproducible output</span>
 
-int quickselect(vector&lt;long long&gt;&amp; a, int lo, int hi, int k) {
-    // returns the k-th smallest (0-indexed) element of a[lo..hi]
-    while (true) {
-        if (lo == hi) return a[lo];
-        int pivotIdx = lo + rng() % (hi - lo + 1);
-        long long pivot = a[pivotIdx];
+<span class="tok-keyword">int</span> quickselect(<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&amp; a, <span class="tok-keyword">int</span> lo, <span class="tok-keyword">int</span> hi, <span class="tok-keyword">int</span> k) {
+    <span class="tok-comment">// returns the k-th smallest (0-indexed) element of a[lo..hi]</span>
+    <span class="tok-keyword">while</span> (<span class="tok-keyword">true</span>) {
+        <span class="tok-keyword">if</span> (lo == hi) <span class="tok-keyword">return</span> a[lo];
+        <span class="tok-keyword">int</span> pivotIdx = lo + rng() % (hi - lo + <span class="tok-number">1</span>);
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> pivot = a[pivotIdx];
         swap(a[pivotIdx], a[hi]);
-        int store = lo;
-        for (int i = lo; i &lt; hi; i++) {
-            if (a[i] &lt; pivot) { swap(a[i], a[store]); store++; }
+        <span class="tok-keyword">int</span> store = lo;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = lo; i &lt; hi; i++) {
+            <span class="tok-keyword">if</span> (a[i] &lt; pivot) { swap(a[i], a[store]); store++; }
         }
         swap(a[store], a[hi]);
-        if (store == k) return a[store];
-        else if (k &lt; store) hi = store - 1;
-        else lo = store + 1;
+        <span class="tok-keyword">if</span> (store == k) <span class="tok-keyword">return</span> a[store];
+        <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (k &lt; store) hi = store - <span class="tok-number">1</span>;
+        <span class="tok-keyword">else</span> lo = store + <span class="tok-number">1</span>;
     }
 }
 
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    int k; cin &gt;&gt; k; // 1-indexed k-th smallest
-    cout &lt;&lt; quickselect(a, 0, n-1, k-1) &lt;&lt; endl;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">int</span> k; cin &gt;&gt; k; <span class="tok-comment">// 1-indexed k-th smallest</span>
+    cout &lt;&lt; quickselect(a, <span class="tok-number">0</span>, n-<span class="tok-number">1</span>, k-<span class="tok-number">1</span>) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -843,25 +855,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Enumerating all C(n,2) distances directly is too slow for large n, but the number of pairs with distance &lt;= v is easy to COUNT for a fixed v: sort the array, then for each right pointer, advance a left pointer forward while nums[right] - nums[left] &gt; v, and add (right - left) to the count (every index from left to right-1 pairs with right to form a distance &lt;= v) -- this two-pointer count runs in O(n) since both pointers only move forward, for a total of O(n) per candidate v. Since count(&lt;=v) is monotonically non-decreasing in v, binary search on v over the range [0, max-min] for the smallest v with count(&lt;=v) &gt;= k; that v is guaranteed to actually be an achievable pairwise distance (not just a threshold), because count(&lt;=v) only changes at values that are themselves actual pairwise distances. Total time is O(n log n) for the sort plus O(n log(max-min)) for the binary search with its O(n) counting step.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    long long k; cin &gt;&gt; k;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> k; cin &gt;&gt; k;
     sort(a.begin(), a.end());
-    long long lo = 0, hi = a[n-1] - a[0];
-    while (lo &lt; hi) {
-        long long mid = lo + (hi - lo) / 2;
-        // count pairs with distance &lt;= mid using two pointers
-        long long cnt = 0;
-        int left = 0;
-        for (int right = 0; right &lt; n; right++) {
-            while (a[right] - a[left] &gt; mid) left++;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> lo = <span class="tok-number">0</span>, hi = a[n-<span class="tok-number">1</span>] - a[<span class="tok-number">0</span>];
+    <span class="tok-keyword">while</span> (lo &lt; hi) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> mid = lo + (hi - lo) / <span class="tok-number">2</span>;
+        <span class="tok-comment">// count pairs with distance &lt;= mid using two pointers</span>
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cnt = <span class="tok-number">0</span>;
+        <span class="tok-keyword">int</span> left = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> right = <span class="tok-number">0</span>; right &lt; n; right++) {
+            <span class="tok-keyword">while</span> (a[right] - a[left] &gt; mid) left++;
             cnt += right - left;
         }
-        if (cnt &gt;= k) hi = mid; else lo = mid + 1;
+        <span class="tok-keyword">if</span> (cnt &gt;= k) hi = mid; <span class="tok-keyword">else</span> lo = mid + <span class="tok-number">1</span>;
     }
     cout &lt;&lt; lo &lt;&lt; endl;
 }

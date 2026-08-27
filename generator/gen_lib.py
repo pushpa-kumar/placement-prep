@@ -10,6 +10,46 @@ def inline_code(s):
     paras = e.split("\n\n")
     return "".join(f"<p>{p.replace(chr(10), '<br>')}</p>" for p in paras if p.strip())
 
+_CPP_KEYWORDS = (
+    r'alignas|alignof|and|and_eq|asm|auto|bitand|bitor|bool|break|case|catch|char|'
+    r'char8_t|char16_t|char32_t|class|compl|concept|const|consteval|constexpr|constinit|'
+    r'const_cast|continue|co_await|co_return|co_yield|decltype|default|delete|do|double|'
+    r'dynamic_cast|else|enum|explicit|export|extern|false|final|float|for|friend|goto|if|'
+    r'inline|int|long|mutable|namespace|new|noexcept|not|not_eq|nullptr|operator|or|or_eq|'
+    r'override|private|protected|public|register|reinterpret_cast|requires|return|short|'
+    r'signed|sizeof|static|static_assert|static_cast|struct|switch|template|this|'
+    r'thread_local|throw|true|try|typedef|typeid|typename|union|unsigned|using|virtual|'
+    r'void|volatile|wchar_t|while|xor|xor_eq'
+)
+_CPP_TYPES = (
+    r'string|vector|map|unordered_map|unordered_set|set|multiset|multimap|pair|tuple|'
+    r'queue|priority_queue|stack|deque|array|list|forward_list|bitset|complex|size_t|'
+    r'ssize_t|int8_t|int16_t|int32_t|int64_t|uint8_t|uint16_t|uint32_t|uint64_t'
+)
+_CPP_TOKEN_RE = re.compile(
+    r'(?P<comment>//[^\n]*|/\*[\s\S]*?\*/)'
+    r'|(?P<preproc>^[ \t]*#.*)'
+    r'|(?P<string>"(?:\\.|[^"\\\n])*")'
+    r'|(?P<char>\'(?:\\.|[^\'\\\n])*\')'
+    r'|(?P<number>\b0[xX][0-9a-fA-F]+[uUlL]*\b|\b\d+\.?\d*(?:[eE][+-]?\d+)?[fFuUlL]*\b)'
+    r'|(?P<keyword>\b(?:' + _CPP_KEYWORDS + r')\b)'
+    r'|(?P<type>\b(?:' + _CPP_TYPES + r')\b)',
+    re.MULTILINE,
+)
+
+def highlight_cpp(code):
+    """Syntax-highlight a C++ snippet into HTML with <span class="tok-*"> wrappers."""
+    code = code or ""
+    out = []
+    pos = 0
+    for m in _CPP_TOKEN_RE.finditer(code):
+        if m.start() > pos:
+            out.append(esc(code[pos:m.start()]))
+        out.append(f'<span class="tok-{m.lastgroup}">{esc(m.group())}</span>')
+        pos = m.end()
+    out.append(esc(code[pos:]))
+    return "".join(out)
+
 HEAD_CSS = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +62,8 @@ HEAD_CSS = """
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -34,6 +76,8 @@ HEAD_CSS = """
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -43,6 +87,8 @@ HEAD_CSS = """
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -165,6 +211,12 @@ HEAD_CSS = """
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }

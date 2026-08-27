@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -252,26 +264,26 @@
   <div class="intro"><p>Marking parameters, member functions, and variables <code>const</code> wherever they aren&#x27;t meant to change lets the compiler catch accidental mutation AT COMPILE TIME and documents intent for every reader of the code. A <code>const</code> member function promises not to modify the object&#x27;s observable state (mutable members are a deliberate, narrow escape hatch — see below) and, crucially, can be called on <code>const</code> objects and <code>const&amp;</code> references, which non-const member functions cannot.</p></div>
   <div class="example-box">
   <div class="ex-title">const-correctness enabling a function to accept read-only access</div>
-  <pre><code>class Account {
-    double balance;
-public:
-    double getBalance() const { return balance; }   // promises not to mutate *this
-    void deposit(double amt) { balance += amt; }      // genuinely mutates -- not const
+  <pre><code><span class="tok-keyword">class</span> Account {
+    <span class="tok-keyword">double</span> balance;
+<span class="tok-keyword">public</span>:
+    <span class="tok-keyword">double</span> getBalance() <span class="tok-keyword">const</span> { <span class="tok-keyword">return</span> balance; }   <span class="tok-comment">// promises not to mutate *this</span>
+    <span class="tok-keyword">void</span> deposit(<span class="tok-keyword">double</span> amt) { balance += amt; }      <span class="tok-comment">// genuinely mutates -- not const</span>
 };
 
-void printBalance(const Account&amp; a) {
-    std::cout &lt;&lt; a.getBalance();  // OK: getBalance() is const, callable on a const&amp;
-    // a.deposit(100);            // ERROR: deposit() is non-const, cannot be called on a const&amp;
+<span class="tok-keyword">void</span> printBalance(<span class="tok-keyword">const</span> Account&amp; a) {
+    std::cout &lt;&lt; a.getBalance();  <span class="tok-comment">// OK: getBalance() is const, callable on a const&amp;</span>
+    <span class="tok-comment">// a.deposit(100);            // ERROR: deposit() is non-const, cannot be called on a const&amp;</span>
 }</code></pre>
   <div class="ex-explain"><p>Because <code>printBalance</code> takes its parameter as <code>const Account&amp;</code>, only <code>const</code>-qualified member functions are callable on it — the compiler is enforcing, at the type-system level, that this function cannot mutate the account it was given, exactly matching its intent.</p></div>
 </div><div class="example-box">
   <div class="ex-title">mutable: the narrow, deliberate escape hatch</div>
-  <pre><code>class ExpensiveComputation {
-    mutable std::optional&lt;int&gt; cache;
-public:
-    int compute() const {
-        if (!cache) cache = /* ...expensive work... */ 42;  // legal despite compute() being const
-        return *cache;
+  <pre><code><span class="tok-keyword">class</span> ExpensiveComputation {
+    <span class="tok-keyword">mutable</span> std::optional&lt;<span class="tok-keyword">int</span>&gt; cache;
+<span class="tok-keyword">public</span>:
+    <span class="tok-keyword">int</span> compute() <span class="tok-keyword">const</span> {
+        <span class="tok-keyword">if</span> (!cache) cache = <span class="tok-comment">/* ...expensive work... */</span> <span class="tok-number">42</span>;  <span class="tok-comment">// legal despite compute() being const</span>
+        <span class="tok-keyword">return</span> *cache;
     }
 };</code></pre>
   <div class="ex-explain"><p><code>compute()</code> is logically read-only from the caller&#x27;s perspective (calling it twice gives the same answer, no observable side effect) even though it physically mutates the internal cache — <code>mutable</code> is specifically for this &quot;physically mutates, logically const&quot; case, and should be used sparingly and deliberately, not as a way to bypass const-correctness when you&#x27;re just being lazy.</p></div>
@@ -284,24 +296,24 @@ public:
   <div class="intro"><p><code>const</code> means &quot;this value will not change after it&#x27;s initialized&quot; — but that initial value might still only be knowable at RUNTIME. <code>constexpr</code> is a stronger, different promise: this value (or function result) MUST be computable at compile time, given constexpr-compatible inputs — which unlocks using it in contexts that genuinely require a compile-time constant, like array bounds and template arguments, and often means the value is baked directly into the compiled binary rather than computed at runtime at all.</p></div>
   <div class="example-box">
   <div class="ex-title">const doesn&#x27;t imply compile-time; constexpr does</div>
-  <pre><code>int readConfigValue();  // some runtime computation, e.g. reads a file
+  <pre><code><span class="tok-keyword">int</span> readConfigValue();  <span class="tok-comment">// some runtime computation, e.g. reads a file</span>
 
-const int a = readConfigValue();   // fine: const, but its value is only known at RUNTIME
-constexpr int b = 2 * 21;          // must be computable at COMPILE time -- and it is: 42
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> a = readConfigValue();   <span class="tok-comment">// fine: const, but its value is only known at RUNTIME</span>
+<span class="tok-keyword">constexpr</span> <span class="tok-keyword">int</span> b = <span class="tok-number">2</span> * <span class="tok-number">21</span>;          <span class="tok-comment">// must be computable at COMPILE time -- and it is: 42</span>
 
-int arr[b];       // OK: b is a genuine compile-time constant, valid as an array bound
-// int arr2[a];   // ERROR: a is const but NOT a compile-time constant -- invalid as a bound</code></pre>
+<span class="tok-keyword">int</span> arr[b];       <span class="tok-comment">// OK: b is a genuine compile-time constant, valid as an array bound</span>
+<span class="tok-comment">// int arr2[a];   // ERROR: a is const but NOT a compile-time constant -- invalid as a bound</span></code></pre>
   <div class="ex-explain"><p>Both <code>a</code> and <code>b</code> are immutable after initialization (that&#x27;s what <code>const</code> gives you either way), but only <code>b</code> satisfies the stronger &quot;known at compile time&quot; requirement that things like array bounds and template non-type parameters demand.</p></div>
 </div><div class="example-box">
   <div class="ex-title">constexpr functions: computed at compile time when possible</div>
-  <pre><code>constexpr int factorial(int n) {
-    return n &lt;= 1 ? 1 : n * factorial(n - 1);
+  <pre><code><span class="tok-keyword">constexpr</span> <span class="tok-keyword">int</span> factorial(<span class="tok-keyword">int</span> n) {
+    <span class="tok-keyword">return</span> n &lt;= <span class="tok-number">1</span> ? <span class="tok-number">1</span> : n * factorial(n - <span class="tok-number">1</span>);
 }
 
-constexpr int f5 = factorial(5);  // computed entirely at COMPILE time -- 120 is baked into the binary
-int x = getRuntimeValue();
-int fx = factorial(x);            // x isn&#x27;t known at compile time -&gt; falls back to a normal
-                                   // RUNTIME function call, computing the same way at runtime instead</code></pre>
+<span class="tok-keyword">constexpr</span> <span class="tok-keyword">int</span> f5 = factorial(<span class="tok-number">5</span>);  <span class="tok-comment">// computed entirely at COMPILE time -- 120 is baked into the binary</span>
+<span class="tok-keyword">int</span> x = getRuntimeValue();
+<span class="tok-keyword">int</span> fx = factorial(x);            <span class="tok-comment">// x isn&#x27;t known at compile time -&gt; falls back to a normal</span>
+                                   <span class="tok-comment">// RUNTIME function call, computing the same way at runtime instead</span></code></pre>
   <div class="ex-explain"><p>The same <code>constexpr</code> function can be evaluated at compile time OR at runtime, depending on whether its actual arguments are compile-time constants — this dual nature is exactly what makes constexpr functions broadly useful rather than a narrow special case.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming <code>constexpr</code> GUARANTEES compile-time evaluation in every call — it only guarantees the function is ELIGIBLE to be evaluated at compile time when given compile-time-constant arguments; called with a runtime value, it silently falls back to ordinary runtime execution (as shown above), with no error and no warning.</p></li></ul></div>
@@ -312,23 +324,23 @@ int fx = factorial(x);            // x isn&#x27;t known at compile time -&gt; fa
   <div class="intro"><p>In modern C++, <code>inline</code> primarily changes LINKAGE, not compiler inlining behavior — a common misconception baked right into the keyword&#x27;s name. What <code>inline</code> actually does is permit a function (or, since C++17, a variable) to be DEFINED IDENTICALLY in multiple translation units without violating the One Definition Rule, letting the linker merge those duplicate definitions into one. That&#x27;s precisely why any non-template function DEFINED (not just declared) directly in a header file must be marked <code>inline</code> — every .cpp file that includes that header gets its own copy of the definition, and without <code>inline</code>, that&#x27;s an ODR violation caught (usually) as a duplicate-symbol linker error. Whether the compiler actually inlines a given CALL to that function (substituting the call site with the function body) is a completely separate decision the compiler makes on its own cost-based heuristics, regardless of the <code>inline</code> keyword.</p></div>
   <div class="example-box">
   <div class="ex-title">Why headers need inline on function definitions</div>
-  <pre><code>// math_utils.h -- included by both a.cpp and b.cpp
-int square(int x) { return x * x; }        // WITHOUT inline: ODR violation!
-                                             // a.cpp and b.cpp each get their own
-                                             // definition of square -&gt; &quot;duplicate symbol&quot; linker error
+  <pre><code><span class="tok-comment">// math_utils.h -- included by both a.cpp and b.cpp</span>
+<span class="tok-keyword">int</span> square(<span class="tok-keyword">int</span> x) { <span class="tok-keyword">return</span> x * x; }        <span class="tok-comment">// WITHOUT inline: ODR violation!</span>
+                                             <span class="tok-comment">// a.cpp and b.cpp each get their own</span>
+                                             <span class="tok-comment">// definition of square -&gt; &quot;duplicate symbol&quot; linker error</span>
 
-inline int square(int x) { return x * x; }  // WITH inline: legal -- the linker merges
-                                             // the identical definitions from a.o and b.o into one</code></pre>
+<span class="tok-keyword">inline</span> <span class="tok-keyword">int</span> square(<span class="tok-keyword">int</span> x) { <span class="tok-keyword">return</span> x * x; }  <span class="tok-comment">// WITH inline: legal -- the linker merges</span>
+                                             <span class="tok-comment">// the identical definitions from a.o and b.o into one</span></code></pre>
   <div class="ex-explain"><p>The <code>inline</code> keyword here is solely about satisfying the linker&#x27;s ODR requirements across translation units — it has nothing to do with whether calls to <code>square()</code> actually get inlined at their call sites.</p></div>
 </div><div class="example-box">
   <div class="ex-title">The compiler ignores `inline` for its actual inlining decision</div>
-  <pre><code>inline int trivial(int x) { return x + 1; }  // likely WILL be inlined -- tiny, simple
-inline int huge(int x) {                      // marked inline, but...
-    // ...200 lines of complex logic, several loops...
-    return result;
-}                                              // the compiler will likely NOT inline this at call
-                                               // sites, despite the `inline` keyword being present --
-                                               // it&#x27;s just too large/complex to be worth it</code></pre>
+  <pre><code><span class="tok-keyword">inline</span> <span class="tok-keyword">int</span> trivial(<span class="tok-keyword">int</span> x) { <span class="tok-keyword">return</span> x + <span class="tok-number">1</span>; }  <span class="tok-comment">// likely WILL be inlined -- tiny, simple</span>
+<span class="tok-keyword">inline</span> <span class="tok-keyword">int</span> huge(<span class="tok-keyword">int</span> x) {                      <span class="tok-comment">// marked inline, but...</span>
+    <span class="tok-comment">// ...200 lines of complex logic, several loops...</span>
+    <span class="tok-keyword">return</span> result;
+}                                              <span class="tok-comment">// the compiler will likely NOT inline this at call</span>
+                                               <span class="tok-comment">// sites, despite the `inline` keyword being present --</span>
+                                               <span class="tok-comment">// it&#x27;s just too large/complex to be worth it</span></code></pre>
   <div class="ex-explain"><p><code>huge</code>&#x27;s <code>inline</code> keyword is still necessary for ODR reasons (if it&#x27;s defined in a header), but it has essentially no bearing on the compiler&#x27;s actual cost/benefit inlining decision, which looks at the function&#x27;s size and complexity, not this keyword.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Believing that marking a function <code>inline</code> will make it faster by forcing the compiler to inline its calls — this is almost entirely backwards from what the keyword does in modern compilers; use compiler-specific attributes like <code>[[gnu::always_inline]]</code> if you genuinely need to force inlining (rare, and usually a sign of over-optimization before profiling).</p></li></ul></div>
@@ -339,25 +351,25 @@ inline int huge(int x) {                      // marked inline, but...
   <div class="intro"><p>Every non-inline function, non-inline variable, class, and template specialization must have EXACTLY ONE definition across the entire linked program (inline entities are the deliberate exception — they may be defined identically in multiple translation units, and the linker merges them). Violating the ODR — most commonly, defining the same non-inline function differently in two different .cpp files that both end up linked into the same binary — is undefined behavior. Sometimes this is caught cleanly at link time as a &quot;duplicate symbol&quot; error; other times (especially across shared libraries, or with subtly-different-but-same-named definitions) it silently compiles and links, producing inconsistent behavior depending on which definition happens to get used where.</p></div>
   <div class="example-box">
   <div class="ex-title">A caught ODR violation (link error)</div>
-  <pre><code>// a.cpp
-int helper() { return 1; }
+  <pre><code><span class="tok-comment">// a.cpp</span>
+<span class="tok-keyword">int</span> helper() { <span class="tok-keyword">return</span> <span class="tok-number">1</span>; }
 
-// b.cpp
-int helper() { return 2; }   // same signature, different body, both non-inline, both linked --
-                              // typically caught as a &quot;duplicate symbol: helper&quot; LINKER error</code></pre>
+<span class="tok-comment">// b.cpp</span>
+<span class="tok-keyword">int</span> helper() { <span class="tok-keyword">return</span> <span class="tok-number">2</span>; }   <span class="tok-comment">// same signature, different body, both non-inline, both linked --</span>
+                              <span class="tok-comment">// typically caught as a &quot;duplicate symbol: helper&quot; LINKER error</span></code></pre>
   <div class="ex-explain"><p>Because neither definition is <code>inline</code>, the linker expects exactly one definition of <code>helper</code> across the whole program — finding two, it (usually) refuses to link at all, which is the BENIGN outcome of an ODR violation.</p></div>
 </div><div class="example-box">
   <div class="ex-title">A silent, dangerous ODR violation</div>
-  <pre><code>// widget_v1.h -- included only by a.cpp
-struct Widget { int x; };
+  <pre><code><span class="tok-comment">// widget_v1.h -- included only by a.cpp</span>
+<span class="tok-keyword">struct</span> Widget { <span class="tok-keyword">int</span> x; };
 
-// widget_v2.h -- included only by b.cpp, but ALSO named &quot;Widget&quot;
-struct Widget { int x; double y; };   // a DIFFERENT layout, same class NAME
+<span class="tok-comment">// widget_v2.h -- included only by b.cpp, but ALSO named &quot;Widget&quot;</span>
+<span class="tok-keyword">struct</span> Widget { <span class="tok-keyword">int</span> x; <span class="tok-keyword">double</span> y; };   <span class="tok-comment">// a DIFFERENT layout, same class NAME</span>
 
-// If both a.o and b.o are linked together, this is an ODR violation the linker
-// often CANNOT detect (inline/header-only class definitions frequently aren&#x27;t
-// flagged the way duplicate non-inline FUNCTION symbols are) -- code compiled
-// against the first Widget may end up operating on memory laid out per the second</code></pre>
+<span class="tok-comment">// If both a.o and b.o are linked together, this is an ODR violation the linker</span>
+<span class="tok-comment">// often CANNOT detect (inline/header-only class definitions frequently aren&#x27;t</span>
+<span class="tok-comment">// flagged the way duplicate non-inline FUNCTION symbols are) -- code compiled</span>
+<span class="tok-comment">// against the first Widget may end up operating on memory laid out per the second</span></code></pre>
   <div class="ex-explain"><p>This is the genuinely dangerous case: two different definitions of a class with the same name, each visible only in part of the program, that the linker doesn&#x27;t reliably catch — producing subtle, hard-to-diagnose memory corruption rather than a clean build failure.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming ODR violations always produce a clear linker error — for classes/templates/inline functions specifically, silent, undetected ODR violations are a real and much scarier failure mode than the &quot;duplicate symbol&quot; case for plain non-inline functions.</p></li><li><p>Defining the same-named class differently in two headers included by different parts of a large codebase (a common accident in big projects with loosely-namespaced internal helper types) — always use unique, sufficiently-namespaced names for anything defined in a widely-included header.</p></li></ul></div>
@@ -368,24 +380,24 @@ struct Widget { int x; double y; };   // a DIFFERENT layout, same class NAME
   <div class="intro"><p>When you call an unqualified function, the compiler doesn&#x27;t only look in the local/enclosing/global scope for candidates — it ALSO looks in the namespaces associated with the types of the function call&#x27;s arguments. This is why <code>swap(a, b)</code>, called unqualified on some user-defined type from <code>mylib</code>, usually finds <code>mylib::swap</code> correctly even without a <code>using mylib::swap;</code> or fully qualifying the call — ADL adds <code>mylib</code>&#x27;s namespace to the lookup purely because one of the arguments&#x27; type lives there.</p></div>
   <div class="example-box">
   <div class="ex-title">ADL finding a namespace-scoped swap without any using-declaration</div>
-  <pre><code>namespace mylib {
-    struct Widget { int data; };
-    void swap(Widget&amp; a, Widget&amp; b) { std::swap(a.data, b.data); }
+  <pre><code><span class="tok-keyword">namespace</span> mylib {
+    <span class="tok-keyword">struct</span> Widget { <span class="tok-keyword">int</span> data; };
+    <span class="tok-keyword">void</span> swap(Widget&amp; a, Widget&amp; b) { std::swap(a.data, b.data); }
 }
 
-void useIt(mylib::Widget&amp; a, mylib::Widget&amp; b) {
-    swap(a, b);   // unqualified call -- ADL looks in mylib (because a and b are mylib::Widget)
-                  // and finds mylib::swap, even with no `using mylib::swap;` anywhere
+<span class="tok-keyword">void</span> useIt(mylib::Widget&amp; a, mylib::Widget&amp; b) {
+    swap(a, b);   <span class="tok-comment">// unqualified call -- ADL looks in mylib (because a and b are mylib::Widget)</span>
+                  <span class="tok-comment">// and finds mylib::swap, even with no `using mylib::swap;` anywhere</span>
 }</code></pre>
   <div class="ex-explain"><p>Without ADL, <code>swap(a, b)</code> here would only find whatever <code>swap</code> is visible via ordinary (non-argument-dependent) lookup in the caller&#x27;s own scope — likely std::swap via a <code>using namespace std;</code>, or nothing at all. ADL is specifically what makes the CORRECT, type-specific <code>mylib::swap</code> get found automatically.</p></div>
 </div><div class="example-box">
   <div class="ex-title">Why this matters for the &quot;swap idiom&quot; and generic code</div>
-  <pre><code>template &lt;class T&gt;
-void genericAlgorithm(T&amp; a, T&amp; b) {
-    using std::swap;   // bring std::swap into scope as a FALLBACK candidate
-    swap(a, b);          // unqualified call: ADL will still prefer a type-specific swap
-                          // (like mylib::swap above) if T&#x27;s own namespace defines one,
-                          // but falls back to std::swap via the using-declaration otherwise
+  <pre><code><span class="tok-keyword">template</span> &lt;<span class="tok-keyword">class</span> T&gt;
+<span class="tok-keyword">void</span> genericAlgorithm(T&amp; a, T&amp; b) {
+    <span class="tok-keyword">using</span> std::swap;   <span class="tok-comment">// bring std::swap into scope as a FALLBACK candidate</span>
+    swap(a, b);          <span class="tok-comment">// unqualified call: ADL will still prefer a type-specific swap</span>
+                          <span class="tok-comment">// (like mylib::swap above) if T&#x27;s own namespace defines one,</span>
+                          <span class="tok-comment">// but falls back to std::swap via the using-declaration otherwise</span>
 }</code></pre>
   <div class="ex-explain"><p>This <code>using std::swap; swap(a, b);</code> pattern is the standard idiom precisely because it lets ADL pick a more specific, type-appropriate swap when one exists, while still having std::swap available as a fallback for types that don&#x27;t define their own — this is exactly how std::sort and friends achieve efficient swapping for arbitrary user types.</p></div>
 </div>
@@ -397,29 +409,29 @@ void genericAlgorithm(T&amp; a, T&amp; b) {
   <div class="intro"><p>The relative initialization order of non-local static/global objects defined in DIFFERENT translation units is left UNSPECIFIED by the standard (within a single translation unit, order is well-defined: top to bottom). If one such global&#x27;s constructor depends on another global — defined in a different .cpp file — already being initialized, whether the program works correctly ends up depending on arbitrary link order, which can silently change across compilers, compiler versions, or even just reordering source files in a build. This is the &quot;static initialization order fiasco,&quot; and it&#x27;s a real, if increasingly rare (thanks to modern idioms), source of hard-to-reproduce startup bugs.</p></div>
   <div class="example-box">
   <div class="ex-title">The fiasco: a fragile dependency across translation units</div>
-  <pre><code>// file1.cpp
-MyType globalA = computeUsingGlobalB();  // depends on globalB already existing --
-                                          // but is globalB initialized yet?? UNSPECIFIED.
+  <pre><code><span class="tok-comment">// file1.cpp</span>
+MyType globalA = computeUsingGlobalB();  <span class="tok-comment">// depends on globalB already existing --</span>
+                                          <span class="tok-comment">// but is globalB initialized yet?? UNSPECIFIED.</span>
 
-// file2.cpp
-MyType globalB = /* some initial value */;
+<span class="tok-comment">// file2.cpp</span>
+MyType globalB = <span class="tok-comment">/* some initial value */</span>;
 
-// Whether this program works correctly depends entirely on which translation
-// unit&#x27;s globals happen to get initialized first -- NOT guaranteed by the
-// standard, and effectively determined by arbitrary link order</code></pre>
+<span class="tok-comment">// Whether this program works correctly depends entirely on which translation</span>
+<span class="tok-comment">// unit&#x27;s globals happen to get initialized first -- NOT guaranteed by the</span>
+<span class="tok-comment">// standard, and effectively determined by arbitrary link order</span></code></pre>
   <div class="ex-explain"><p>There&#x27;s no reliable, portable way to make this work as written — the standard simply does not promise anything about the relative order of globalA&#x27;s and globalB&#x27;s initialization across these two files.</p></div>
 </div><div class="example-box">
   <div class="ex-title">The standard fix: construct-on-first-use</div>
   <pre><code>MyType&amp; getGlobalA() {
-    static MyType instance = computeUsingGlobalB();  // a FUNCTION-LOCAL static
-    return instance;    // C++11 guarantees this is initialized exactly once,
-}                        // on first call, in a thread-safe way -- and &quot;first call&quot;
-                         // naturally happens only once getGlobalB() has already run,
-                         // if getGlobalA()&#x27;s initializer itself calls getGlobalB()
+    <span class="tok-keyword">static</span> MyType instance = computeUsingGlobalB();  <span class="tok-comment">// a FUNCTION-LOCAL static</span>
+    <span class="tok-keyword">return</span> instance;    <span class="tok-comment">// C++11 guarantees this is initialized exactly once,</span>
+}                        <span class="tok-comment">// on first call, in a thread-safe way -- and &quot;first call&quot;</span>
+                         <span class="tok-comment">// naturally happens only once getGlobalB() has already run,</span>
+                         <span class="tok-comment">// if getGlobalA()&#x27;s initializer itself calls getGlobalB()</span>
 
 MyType&amp; getGlobalB() {
-    static MyType instance = /* some initial value */;
-    return instance;
+    <span class="tok-keyword">static</span> MyType instance = <span class="tok-comment">/* some initial value */</span>;
+    <span class="tok-keyword">return</span> instance;
 }</code></pre>
   <div class="ex-explain"><p>By wrapping each global in an accessor function that returns a reference to a function-local static, initialization order becomes driven by which accessor is CALLED first — which you control by simply calling getGlobalB() before (or from within) getGlobalA()&#x27;s initialization — rather than by unspecified cross-translation-unit static-init order.</p></div>
 </div>

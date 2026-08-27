@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,24 +281,24 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>Define dp[x] = minimum coins to make amount x, with dp[0] = 0 as the base case (zero coins needed for zero amount). For every amount x from 1 up to the target, and for every coin c &lt;= x, dp[x] = min(dp[x], dp[x - c] + 1) — you are trying &#x27;what if the last coin used was c&#x27;, and the rest (x - c) is a strictly smaller subproblem already solved because we iterate x in increasing order (bottom-up tabulation). Initialize all dp entries to infinity except dp[0]; if dp[amount] is still infinity at the end, it is unreachable, so print -1. This is the unbounded-knapsack recurrence (each coin may be reused, which is exactly why the inner loop iterates coins for a fixed x rather than the other way around with a descending sweep, the way bounded 0/1 knapsack requires).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; long long amount;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> amount;
     cin &gt;&gt; n &gt;&gt; amount;
-    vector&lt;long long&gt; coins(n);
-    for (auto &amp;c : coins) cin &gt;&gt; c;
-    const long long INF = LLONG_MAX / 2;
-    vector&lt;long long&gt; dp(amount + 1, INF);
-    dp[0] = 0;
-    for (long long x = 1; x &lt;= amount; x++) {
-        for (long long c : coins) {
-            if (c &lt;= x &amp;&amp; dp[x - c] + 1 &lt; dp[x]) dp[x] = dp[x - c] + 1;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; coins(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;c : coins) cin &gt;&gt; c;
+    <span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> INF = LLONG_MAX / <span class="tok-number">2</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dp(amount + <span class="tok-number">1</span>, INF);
+    dp[<span class="tok-number">0</span>] = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x = <span class="tok-number">1</span>; x &lt;= amount; x++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c : coins) {
+            <span class="tok-keyword">if</span> (c &lt;= x &amp;&amp; dp[x - c] + <span class="tok-number">1</span> &lt; dp[x]) dp[x] = dp[x - c] + <span class="tok-number">1</span>;
         }
     }
-    if (dp[amount] &gt;= INF) cout &lt;&lt; -1 &lt;&lt; endl;
-    else cout &lt;&lt; dp[amount] &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">if</span> (dp[amount] &gt;= INF) cout &lt;&lt; -<span class="tok-number">1</span> &lt;&lt; endl;
+    <span class="tok-keyword">else</span> cout &lt;&lt; dp[amount] &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -304,28 +316,28 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Define lis(i) = length of the longest strictly increasing subsequence that ends exactly at index i. The recurrence is lis(i) = 1 + max(lis(j)) over all j &lt; i with a[j] &lt; a[i], or just 1 if no such j exists (the subsequence containing only a[i]). Written as a plain recursive function this naturally calls lis(j) for every j &lt; i, and the same lis(j) gets requested again for every larger i — classic overlapping subproblems — so we memoize with an array memo[i] initialized to -1 (uncomputed). The final answer is max(lis(i)) over all i, since the longest increasing subsequence can end anywhere. This is the O(n^2) DP (as opposed to the O(n log n) patience-sorting method), presented top-down to contrast with the bottom-up tabulation used in the coin-change example above — note it computes lis(i) purely from smaller indices, so the memoized recursion never needs to worry about cyclic dependencies.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;int&gt; a;
-vector&lt;int&gt; memo;
-int lis(int i){
-    if (memo[i] != -1) return memo[i];
-    int best = 1;
-    for (int j = 0; j &lt; i; j++){
-        if (a[j] &lt; a[i]) best = max(best, 1 + lis(j));
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; memo;
+<span class="tok-keyword">int</span> lis(<span class="tok-keyword">int</span> i){
+    <span class="tok-keyword">if</span> (memo[i] != -<span class="tok-number">1</span>) <span class="tok-keyword">return</span> memo[i];
+    <span class="tok-keyword">int</span> best = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; i; j++){
+        <span class="tok-keyword">if</span> (a[j] &lt; a[i]) best = max(best, <span class="tok-number">1</span> + lis(j));
     }
-    return memo[i] = best;
+    <span class="tok-keyword">return</span> memo[i] = best;
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
     a.resize(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    memo.assign(n, -1);
-    int ans = 0;
-    for (int i = 0; i &lt; n; i++) ans = max(ans, lis(i));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    memo.assign(n, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">int</span> ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) ans = max(ans, lis(i));
     cout &lt;&lt; ans &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -351,27 +363,27 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort jobs by end time. Let dp[i] = the maximum profit achievable using only the first i jobs in this sorted order (job i itself is optional). For the i-th job (1-indexed after sorting) with (s, e, p): either skip it, giving dp[i-1], or take it, giving p plus the best profit obtainable from jobs that finish at or before s. Because jobs are sorted by end time, &#x27;jobs finishing at or before s&#x27; is a prefix of the sorted list, so its boundary can be located with binary search (upper_bound on the array of sorted end times) rather than a linear scan, giving dp[i] = max(dp[i-1], dp[k] + p) where k is the count of earlier jobs ending at or before s. dp[0] = 0 is the base case (no jobs used). The final answer is dp[n].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; s(n), e(n), p(n);
-    for (auto &amp;x : s) cin &gt;&gt; x;
-    for (auto &amp;x : e) cin &gt;&gt; x;
-    for (auto &amp;x : p) cin &gt;&gt; x;
-    vector&lt;int&gt; idx(n);
-    iota(idx.begin(), idx.end(), 0);
-    sort(idx.begin(), idx.end(), [&amp;](int a, int b){ return e[a] &lt; e[b]; });
-    vector&lt;long long&gt; endsSorted(n);
-    for (int i = 0; i &lt; n; i++) endsSorted[i] = e[idx[i]];
-    vector&lt;long long&gt; dp(n + 1, 0);
-    for (int i = 1; i &lt;= n; i++){
-        int job = idx[i - 1];
-        int pos = upper_bound(endsSorted.begin(), endsSorted.begin() + (i - 1), s[job]) - endsSorted.begin();
-        dp[i] = max(dp[i - 1], dp[pos] + p[job]);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; s(n), e(n), p(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : s) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : e) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : p) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; idx(n);
+    iota(idx.begin(), idx.end(), <span class="tok-number">0</span>);
+    sort(idx.begin(), idx.end(), [&amp;](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){ <span class="tok-keyword">return</span> e[a] &lt; e[b]; });
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; endsSorted(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) endsSorted[i] = e[idx[i]];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dp(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++){
+        <span class="tok-keyword">int</span> job = idx[i - <span class="tok-number">1</span>];
+        <span class="tok-keyword">int</span> pos = upper_bound(endsSorted.begin(), endsSorted.begin() + (i - <span class="tok-number">1</span>), s[job]) - endsSorted.begin();
+        dp[i] = max(dp[i - <span class="tok-number">1</span>], dp[pos] + p[job]);
     }
     cout &lt;&lt; dp[n] &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -391,21 +403,21 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>The natural DP dp[moves][eggs] = &#x27;worst-case floors resolvable&#x27; would need an inner search over which floor to drop from first, giving O(k n^2) or O(k n log n) — workable but not the cleanest. The key reformulation: instead of asking &#x27;how many moves to solve n floors with k eggs&#x27;, ask f(t, k) = &#x27;the maximum number of floors distinguishable using at most t moves and k eggs&#x27;. Dropping an egg from some floor either breaks it (reducing to f(t-1, k-1) floors above) or survives (reducing to f(t-1, k) floors below), plus the floor you just tested itself, so f(t, k) = f(t-1, k-1) + f(t-1, k) + 1, with base cases f(t, 0) = 0 and f(0, k) = 0. This DP is monotone increasing in t, so the answer is the smallest t with f(t, k) &gt;= n — found by simply incrementing t and filling one new row of the table at a time until the threshold is reached. Because f(t, 1) = t, t never needs to exceed n, bounding the loop.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int k, n;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> k, n;
     cin &gt;&gt; k &gt;&gt; n;
-    vector&lt;vector&lt;long long&gt;&gt; f(n + 1, vector&lt;long long&gt;(k + 1, 0));
-    int t = 0;
-    while (f[t][k] &lt; n){
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; f(n + <span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(k + <span class="tok-number">1</span>, <span class="tok-number">0</span>));
+    <span class="tok-keyword">int</span> t = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (f[t][k] &lt; n){
         t++;
-        for (int j = 1; j &lt;= k; j++){
-            f[t][j] = f[t - 1][j - 1] + f[t - 1][j] + 1;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= k; j++){
+            f[t][j] = f[t - <span class="tok-number">1</span>][j - <span class="tok-number">1</span>] + f[t - <span class="tok-number">1</span>][j] + <span class="tok-number">1</span>;
         }
     }
     cout &lt;&lt; t &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -422,25 +434,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort envelopes by width ascending; to correctly forbid nesting two envelopes of equal width inside each other, break width ties by sorting height descending. After this sort, the problem reduces exactly to finding the length of the longest strictly increasing subsequence of the height sequence: because widths are non-decreasing left to right and equal-width groups have their heights in decreasing order, any strictly increasing run of heights automatically comes from strictly increasing widths too (equal-width envelopes can never both appear in an increasing height run, since within a tie group heights only decrease). Solve this reduced LIS with the O(n log n) patience-sorting technique: maintain an array &#x27;tails&#x27; where tails[len-1] is the smallest possible tail value of an increasing subsequence of length len; for each height, binary search (lower_bound) for where it belongs and either extend or replace.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;pair&lt;int,int&gt;&gt; env(n);
-    for (auto &amp;p : env) cin &gt;&gt; p.first &gt;&gt; p.second;
-    sort(env.begin(), env.end(), [](const pair&lt;int,int&gt;&amp;a, const pair&lt;int,int&gt;&amp;b){
-        if (a.first != b.first) return a.first &lt; b.first;
-        return a.second &gt; b.second;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; env(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;p : env) cin &gt;&gt; p.first &gt;&gt; p.second;
+    sort(env.begin(), env.end(), [](<span class="tok-keyword">const</span> <span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&amp;a, <span class="tok-keyword">const</span> <span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&amp;b){
+        <span class="tok-keyword">if</span> (a.first != b.first) <span class="tok-keyword">return</span> a.first &lt; b.first;
+        <span class="tok-keyword">return</span> a.second &gt; b.second;
     });
-    vector&lt;int&gt; tails;
-    for (auto &amp;p : env){
-        int h = p.second;
-        auto it = lower_bound(tails.begin(), tails.end(), h);
-        if (it == tails.end()) tails.push_back(h);
-        else *it = h;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; tails;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;p : env){
+        <span class="tok-keyword">int</span> h = p.second;
+        <span class="tok-keyword">auto</span> it = lower_bound(tails.begin(), tails.end(), h);
+        <span class="tok-keyword">if</span> (it == tails.end()) tails.push_back(h);
+        <span class="tok-keyword">else</span> *it = h;
     }
     cout &lt;&lt; tails.size() &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -469,28 +481,28 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Define dp[r][c] as the minimum health required upon ENTERING cell (r,c) so that the knight can survive optimally all the way to the bottom-right corner. This must be computed backward, starting from the destination: dp[m-1][n-1] = max(1, 1 - grid[m-1][n-1]) (need at least 1 health after applying that cell&#x27;s effect, and at least 1 overall). For any other cell, the knight will move to whichever of the right/down neighbor needs less incoming health, so dp[r][c] = max(1, min(dp[r+1][c], dp[r][c+1]) - grid[r][c]) (cells on the last row/column only have one neighbor). The answer is dp[0][0]. Computing forward from the start does not work because &#x27;maximum health accumulated so far&#x27; is not a valid state — a path arriving with more current health can still be worse overall if it is about to walk into a large negative cell that a different, lower-health path would have avoided.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int m, n; cin &gt;&gt; m &gt;&gt; n;
-    vector&lt;vector&lt;long long&gt;&gt; g(m, vector&lt;long long&gt;(n));
-    for (auto &amp;row : g) for (auto &amp;x : row) cin &gt;&gt; x;
-    vector&lt;vector&lt;long long&gt;&gt; dp(m, vector&lt;long long&gt;(n));
-    for (int i = m - 1; i &gt;= 0; i--){
-        for (int j = n - 1; j &gt;= 0; j--){
-            if (i == m - 1 &amp;&amp; j == n - 1){
-                dp[i][j] = max(1LL, 1 - g[i][j]);
-            } else if (i == m - 1){
-                dp[i][j] = max(1LL, dp[i][j + 1] - g[i][j]);
-            } else if (j == n - 1){
-                dp[i][j] = max(1LL, dp[i + 1][j] - g[i][j]);
-            } else {
-                dp[i][j] = max(1LL, min(dp[i + 1][j], dp[i][j + 1]) - g[i][j]);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m, n; cin &gt;&gt; m &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; g(m, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;row : g) <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : row) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(m, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = m - <span class="tok-number">1</span>; i &gt;= <span class="tok-number">0</span>; i--){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = n - <span class="tok-number">1</span>; j &gt;= <span class="tok-number">0</span>; j--){
+            <span class="tok-keyword">if</span> (i == m - <span class="tok-number">1</span> &amp;&amp; j == n - <span class="tok-number">1</span>){
+                dp[i][j] = max(<span class="tok-number">1LL</span>, <span class="tok-number">1</span> - g[i][j]);
+            } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (i == m - <span class="tok-number">1</span>){
+                dp[i][j] = max(<span class="tok-number">1LL</span>, dp[i][j + <span class="tok-number">1</span>] - g[i][j]);
+            } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (j == n - <span class="tok-number">1</span>){
+                dp[i][j] = max(<span class="tok-number">1LL</span>, dp[i + <span class="tok-number">1</span>][j] - g[i][j]);
+            } <span class="tok-keyword">else</span> {
+                dp[i][j] = max(<span class="tok-number">1LL</span>, min(dp[i + <span class="tok-number">1</span>][j], dp[i][j + <span class="tok-number">1</span>]) - g[i][j]);
             }
         }
     }
-    cout &lt;&lt; dp[0][0] &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; dp[<span class="tok-number">0</span>][<span class="tok-number">0</span>] &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -510,26 +522,26 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>State: dp[r][c1][c2] = maximum cherries collectible from row r onward, given robot 1 is at column c1 and robot 2 is at column c2 in row r. Base case, the last row: dp[rows-1][c1][c2] = grid[rows-1][c1] + (c1 != c2 ? grid[rows-1][c2] : 0). For earlier rows, both robots simultaneously choose one of 3 moves each (9 combinations), so dp[r][c1][c2] = grid[r][c1] + (c1 != c2 ? grid[r][c2] : 0) + max over the 9 valid (c1+d1, c2+d2) combinations of dp[r+1][c1+d1][c2+d2], with d1, d2 in {-1,0,1} and bounds-checked. This is filled bottom-up from the last row upward. The answer is dp[0][0][cols-1], the robots&#x27; starting positions.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int rows, cols; cin &gt;&gt; rows &gt;&gt; cols;
-    vector&lt;vector&lt;int&gt;&gt; g(rows, vector&lt;int&gt;(cols));
-    for (auto &amp;row : g) for (auto &amp;x : row) cin &gt;&gt; x;
-    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(rows, vector&lt;vector&lt;int&gt;&gt;(cols, vector&lt;int&gt;(cols, 0)));
-    for (int r = rows - 1; r &gt;= 0; r--){
-        for (int c1 = 0; c1 &lt; cols; c1++){
-            for (int c2 = 0; c2 &lt; cols; c2++){
-                int cherries = g[r][c1] + (c1 != c2 ? g[r][c2] : 0);
-                if (r == rows - 1){
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> rows, cols; cin &gt;&gt; rows &gt;&gt; cols;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; g(rows, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(cols));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;row : g) <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : row) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt;&gt; dp(rows, <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt;(cols, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(cols, <span class="tok-number">0</span>)));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> r = rows - <span class="tok-number">1</span>; r &gt;= <span class="tok-number">0</span>; r--){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c1 = <span class="tok-number">0</span>; c1 &lt; cols; c1++){
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c2 = <span class="tok-number">0</span>; c2 &lt; cols; c2++){
+                <span class="tok-keyword">int</span> cherries = g[r][c1] + (c1 != c2 ? g[r][c2] : <span class="tok-number">0</span>);
+                <span class="tok-keyword">if</span> (r == rows - <span class="tok-number">1</span>){
                     dp[r][c1][c2] = cherries;
-                } else {
-                    int best = 0;
-                    for (int d1 = -1; d1 &lt;= 1; d1++){
-                        for (int d2 = -1; d2 &lt;= 1; d2++){
-                            int nc1 = c1 + d1, nc2 = c2 + d2;
-                            if (nc1 &lt; 0 || nc1 &gt;= cols || nc2 &lt; 0 || nc2 &gt;= cols) continue;
-                            best = max(best, dp[r + 1][nc1][nc2]);
+                } <span class="tok-keyword">else</span> {
+                    <span class="tok-keyword">int</span> best = <span class="tok-number">0</span>;
+                    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d1 = -<span class="tok-number">1</span>; d1 &lt;= <span class="tok-number">1</span>; d1++){
+                        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d2 = -<span class="tok-number">1</span>; d2 &lt;= <span class="tok-number">1</span>; d2++){
+                            <span class="tok-keyword">int</span> nc1 = c1 + d1, nc2 = c2 + d2;
+                            <span class="tok-keyword">if</span> (nc1 &lt; <span class="tok-number">0</span> || nc1 &gt;= cols || nc2 &lt; <span class="tok-number">0</span> || nc2 &gt;= cols) <span class="tok-keyword">continue</span>;
+                            best = max(best, dp[r + <span class="tok-number">1</span>][nc1][nc2]);
                         }
                     }
                     dp[r][c1][c2] = cherries + best;
@@ -537,8 +549,8 @@ int main(){
             }
         }
     }
-    cout &lt;&lt; dp[0][0][cols - 1] &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; dp[<span class="tok-number">0</span>][<span class="tok-number">0</span>][cols - <span class="tok-number">1</span>] &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -559,46 +571,46 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Because the total number of non-obstacle cells is at most 20, the set of already-visited cells fits in a bitmask. Define a search dfs(r, c, mask) = number of ways to complete the tour to the end cell, given the current position is (r,c) and mask records every cell visited so far (including (r,c) itself). If (r,c) is the end cell, the path is only valid if mask has visited every free cell (popcount(mask) == total free cells) — return 1 if so, else 0. Otherwise, try all 4 neighbors that are in bounds, not an obstacle, and not already set in mask, recursing with the bit for that neighbor added. Crucially, the future count from (r,c,mask) depends only on the current position and which cells remain available — not on the order in which they were visited — so (r,c,mask) can be safely memoized, turning an otherwise exponential backtracking search into a bitmask DP over at most (m*n) * 2^(m*n) states.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int m, n;
-vector&lt;vector&lt;int&gt;&gt; g;
-int endR, endC, totalFree;
-unordered_map&lt;long long, long long&gt; memo;
-long long dfs(int r, int c, int mask){
-    if (r == endR &amp;&amp; c == endC){
-        return (__builtin_popcount((unsigned)mask) == totalFree) ? 1 : 0;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> m, n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; g;
+<span class="tok-keyword">int</span> endR, endC, totalFree;
+<span class="tok-type">unordered_map</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; memo;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dfs(<span class="tok-keyword">int</span> r, <span class="tok-keyword">int</span> c, <span class="tok-keyword">int</span> mask){
+    <span class="tok-keyword">if</span> (r == endR &amp;&amp; c == endC){
+        <span class="tok-keyword">return</span> (__builtin_popcount((<span class="tok-keyword">unsigned</span>)mask) == totalFree) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
     }
-    long long key = ((long long)(r * n + c) &lt;&lt; 24) | (long long)mask;
-    auto it = memo.find(key);
-    if (it != memo.end()) return it-&gt;second;
-    long long ways = 0;
-    int dr[4] = {-1, 1, 0, 0}, dc[4] = {0, 0, -1, 1};
-    for (int d = 0; d &lt; 4; d++){
-        int nr = r + dr[d], nc = c + dc[d];
-        if (nr &lt; 0 || nr &gt;= m || nc &lt; 0 || nc &gt;= n) continue;
-        if (g[nr][nc] == -1) continue;
-        int bit = nr * n + nc;
-        if (mask &amp; (1 &lt;&lt; bit)) continue;
-        ways += dfs(nr, nc, mask | (1 &lt;&lt; bit));
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> key = ((<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)(r * n + c) &lt;&lt; <span class="tok-number">24</span>) | (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)mask;
+    <span class="tok-keyword">auto</span> it = memo.find(key);
+    <span class="tok-keyword">if</span> (it != memo.end()) <span class="tok-keyword">return</span> it-&gt;second;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ways = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> dr[<span class="tok-number">4</span>] = {-<span class="tok-number">1</span>, <span class="tok-number">1</span>, <span class="tok-number">0</span>, <span class="tok-number">0</span>}, dc[<span class="tok-number">4</span>] = {<span class="tok-number">0</span>, <span class="tok-number">0</span>, -<span class="tok-number">1</span>, <span class="tok-number">1</span>};
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">0</span>; d &lt; <span class="tok-number">4</span>; d++){
+        <span class="tok-keyword">int</span> nr = r + dr[d], nc = c + dc[d];
+        <span class="tok-keyword">if</span> (nr &lt; <span class="tok-number">0</span> || nr &gt;= m || nc &lt; <span class="tok-number">0</span> || nc &gt;= n) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">if</span> (g[nr][nc] == -<span class="tok-number">1</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">int</span> bit = nr * n + nc;
+        <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span> &lt;&lt; bit)) <span class="tok-keyword">continue</span>;
+        ways += dfs(nr, nc, mask | (<span class="tok-number">1</span> &lt;&lt; bit));
     }
     memo[key] = ways;
-    return ways;
+    <span class="tok-keyword">return</span> ways;
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; m &gt;&gt; n;
-    g.assign(m, vector&lt;int&gt;(n));
-    int startR = 0, startC = 0;
-    totalFree = 0;
-    for (int i = 0; i &lt; m; i++) for (int j = 0; j &lt; n; j++){
+    g.assign(m, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(n));
+    <span class="tok-keyword">int</span> startR = <span class="tok-number">0</span>, startC = <span class="tok-number">0</span>;
+    totalFree = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; n; j++){
         cin &gt;&gt; g[i][j];
-        if (g[i][j] == 1) { startR = i; startC = j; }
-        if (g[i][j] == 2) { endR = i; endC = j; }
-        if (g[i][j] != -1) totalFree++;
+        <span class="tok-keyword">if</span> (g[i][j] == <span class="tok-number">1</span>) { startR = i; startC = j; }
+        <span class="tok-keyword">if</span> (g[i][j] == <span class="tok-number">2</span>) { endR = i; endC = j; }
+        <span class="tok-keyword">if</span> (g[i][j] != -<span class="tok-number">1</span>) totalFree++;
     }
-    int startMask = 1 &lt;&lt; (startR * n + startC);
+    <span class="tok-keyword">int</span> startMask = <span class="tok-number">1</span> &lt;&lt; (startR * n + startC);
     cout &lt;&lt; dfs(startR, startC, startMask) &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -626,25 +638,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Let S = n(n+1)/2. If S is odd, no equal split exists, so the answer is 0. Otherwise the target for one side is T = S/2, and we need the number of subsets of {1,...,n} summing exactly to T — a classic 0/1 knapsack counting DP: dp[0] = 1 (the empty subset sums to 0), and for each value i from 1 to n, iterate the sum s from T DOWN to i, doing dp[s] += dp[s-i] (decreasing order is essential so each i is only used once per subset). After processing all n values, dp[T] counts every subset summing to T; each such subset A and its complement (which also sums to T, since the total is 2T) form the same unordered partition into two sets, and A can never equal its own complement (they&#x27;re disjoint and both non-empty for n &gt;= 1), so dividing dp[T] by 2 (via the modular inverse of 2, since the modulus is an odd prime) gives the number of unordered partitions.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long MOD = 1000000007;
-int main(){
-    long long n; cin &gt;&gt; n;
-    long long S = n * (n + 1) / 2;
-    if (S % 2 == 1){ cout &lt;&lt; 0 &lt;&lt; endl; return 0; }
-    long long target = S / 2;
-    vector&lt;long long&gt; dp(target + 1, 0);
-    dp[0] = 1;
-    for (long long i = 1; i &lt;= n; i++){
-        for (long long s = target; s &gt;= i; s--){
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> n; cin &gt;&gt; n;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> S = n * (n + <span class="tok-number">1</span>) / <span class="tok-number">2</span>;
+    <span class="tok-keyword">if</span> (S % <span class="tok-number">2</span> == <span class="tok-number">1</span>){ cout &lt;&lt; <span class="tok-number">0</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> target = S / <span class="tok-number">2</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dp(target + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    dp[<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> i = <span class="tok-number">1</span>; i &lt;= n; i++){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s = target; s &gt;= i; s--){
             dp[s] = (dp[s] + dp[s - i]) % MOD;
         }
     }
-    long long inv2 = (MOD + 1) / 2;
-    long long ans = dp[target] * inv2 % MOD;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> inv2 = (MOD + <span class="tok-number">1</span>) / <span class="tok-number">2</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ans = dp[target] * inv2 % MOD;
     cout &lt;&lt; ans &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -661,34 +673,34 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is bin-packing: minimize the number of bins (rides) of capacity x. With n &lt;= 20, track a bitmask of which people have already been transported. For each mask, store the Pareto-optimal pair (rides used so far, capacity remaining in the current/last ride), preferring fewer rides, and among equal ride counts, more remaining capacity. Base case dp[empty mask] = (1 ride started, x capacity available, nobody boarded yet). To compute dp[mask], pick any person i in mask, look at dp[mask without i] = (r, cap): if person i&#x27;s weight fits in the remaining capacity cap, they join the current ride, giving (r, cap - weight[i]); otherwise they need a new ride, giving (r+1, x - weight[i]). Take the best candidate over all choices of i (any valid i gives a correct, though not necessarily optimal, decomposition order, and trying every i and keeping the best guarantees optimality). The answer is the ride count of dp[full mask].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; long long x;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x;
     cin &gt;&gt; n &gt;&gt; x;
-    vector&lt;long long&gt; w(n);
-    for (auto &amp;v : w) cin &gt;&gt; v;
-    int full = 1 &lt;&lt; n;
-    vector&lt;int&gt; rides(full);
-    vector&lt;long long&gt; cap(full);
-    rides[0] = 1; cap[0] = x;
-    for (int mask = 1; mask &lt; full; mask++){
-        int bestRides = INT_MAX; long long bestCap = -1;
-        for (int i = 0; i &lt; n; i++){
-            if (!(mask &amp; (1 &lt;&lt; i))) continue;
-            int prev = mask ^ (1 &lt;&lt; i);
-            int pr = rides[prev]; long long pc = cap[prev];
-            int nr; long long nc;
-            if (w[i] &lt;= pc){ nr = pr; nc = pc - w[i]; }
-            else { nr = pr + 1; nc = x - w[i]; }
-            if (nr &lt; bestRides || (nr == bestRides &amp;&amp; nc &gt; bestCap)){
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; w(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;v : w) cin &gt;&gt; v;
+    <span class="tok-keyword">int</span> full = <span class="tok-number">1</span> &lt;&lt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; rides(full);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cap(full);
+    rides[<span class="tok-number">0</span>] = <span class="tok-number">1</span>; cap[<span class="tok-number">0</span>] = x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">1</span>; mask &lt; full; mask++){
+        <span class="tok-keyword">int</span> bestRides = INT_MAX; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> bestCap = -<span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++){
+            <span class="tok-keyword">if</span> (!(mask &amp; (<span class="tok-number">1</span> &lt;&lt; i))) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">int</span> prev = mask ^ (<span class="tok-number">1</span> &lt;&lt; i);
+            <span class="tok-keyword">int</span> pr = rides[prev]; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> pc = cap[prev];
+            <span class="tok-keyword">int</span> nr; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> nc;
+            <span class="tok-keyword">if</span> (w[i] &lt;= pc){ nr = pr; nc = pc - w[i]; }
+            <span class="tok-keyword">else</span> { nr = pr + <span class="tok-number">1</span>; nc = x - w[i]; }
+            <span class="tok-keyword">if</span> (nr &lt; bestRides || (nr == bestRides &amp;&amp; nc &gt; bestCap)){
                 bestRides = nr; bestCap = nc;
             }
         }
         rides[mask] = bestRides; cap[mask] = bestCap;
     }
-    cout &lt;&lt; rides[full - 1] &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; rides[full - <span class="tok-number">1</span>] &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -706,30 +718,30 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a 2D 0/1 knapsack: the two resource axes are members used (bounded by G) and profit achieved (bounded below by P, but since profits beyond P are all equally &#x27;sufficient&#x27;, clamp the tracked profit at min(actual, P) to keep this axis&#x27;s size at P+1 instead of unboundedly large). Let dp[j][k] = number of subsets of crimes considered so far that use exactly j members and achieve clamped profit exactly k. Base case dp[0][0] = 1 (the empty subset). For each crime (g, p), update in 0/1-knapsack fashion by iterating j from G down to g (so each crime is only counted once per subset), and for every k from 0 to P, add dp[j-g][k] into dp[j][min(P, k+p)]. After processing all crimes, the answer is the sum of dp[j][P] over every j from 0 to G — every subset whose clamped profit reached exactly P has real profit &gt;= P.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long MOD = 1000000007;
-int main(){
-    int n; long long G, P;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> G, P;
     cin &gt;&gt; n &gt;&gt; G &gt;&gt; P;
-    vector&lt;long long&gt; grp(n), prof(n);
-    for (auto &amp;v : grp) cin &gt;&gt; v;
-    for (auto &amp;v : prof) cin &gt;&gt; v;
-    vector&lt;vector&lt;long long&gt;&gt; dp(G + 1, vector&lt;long long&gt;(P + 1, 0));
-    dp[0][0] = 1;
-    for (int c = 0; c &lt; n; c++){
-        long long g = grp[c], p = prof[c];
-        for (long long j = G; j &gt;= g; j--){
-            for (long long k = 0; k &lt;= P; k++){
-                long long np = min(P, k + p);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; grp(n), prof(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;v : grp) cin &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;v : prof) cin &gt;&gt; v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(G + <span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(P + <span class="tok-number">1</span>, <span class="tok-number">0</span>));
+    dp[<span class="tok-number">0</span>][<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; n; c++){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> g = grp[c], p = prof[c];
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> j = G; j &gt;= g; j--){
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> k = <span class="tok-number">0</span>; k &lt;= P; k++){
+                <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> np = min(P, k + p);
                 dp[j][np] = (dp[j][np] + dp[j - g][k]) % MOD;
             }
         }
     }
-    long long ans = 0;
-    for (long long j = 0; j &lt;= G; j++) ans = (ans + dp[j][P]) % MOD;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> j = <span class="tok-number">0</span>; j &lt;= G; j++) ans = (ans + dp[j][P]) % MOD;
     cout &lt;&lt; ans &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -756,29 +768,29 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Pad the array with a sentinel value 1 at both ends: a[0] = 1, a[n+1] = 1, a[1..n] = the original values. Define dp[l][r] = the maximum coins obtainable from bursting every balloon strictly between indices l and r (exclusive), given a[l] and a[r] are NOT burst as part of this subproblem (they persist as the current boundary). Considering balloon k (l &lt; k &lt; r) as the LAST one burst in this range means that at the moment it&#x27;s burst, everything else strictly between l and r is already gone, so its neighbors at that moment are guaranteed to be exactly a[l] and a[r]: dp[l][r] = max over k in (l,r) of dp[l][k] + dp[k][r] + a[l]*a[k]*a[r]. Base case dp[l][r] = 0 whenever r &lt;= l+1 (no balloons strictly between them). Fill by increasing interval length. The answer is dp[0][n+1].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; nums(n);
-    for (auto &amp;v : nums) cin &gt;&gt; v;
-    vector&lt;long long&gt; a(n + 2);
-    a[0] = 1; a[n + 1] = 1;
-    for (int i = 0; i &lt; n; i++) a[i + 1] = nums[i];
-    vector&lt;vector&lt;long long&gt;&gt; dp(n + 2, vector&lt;long long&gt;(n + 2, 0));
-    for (int len = 2; len &lt;= n + 1; len++){
-        for (int l = 0; l + len &lt;= n + 1; l++){
-            int r = l + len;
-            long long best = 0;
-            for (int k = l + 1; k &lt; r; k++){
-                long long val = dp[l][k] + dp[k][r] + a[l] * a[k] * a[r];
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; nums(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;v : nums) cin &gt;&gt; v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n + <span class="tok-number">2</span>);
+    a[<span class="tok-number">0</span>] = <span class="tok-number">1</span>; a[n + <span class="tok-number">1</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) a[i + <span class="tok-number">1</span>] = nums[i];
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(n + <span class="tok-number">2</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n + <span class="tok-number">2</span>, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = <span class="tok-number">2</span>; len &lt;= n + <span class="tok-number">1</span>; len++){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> l = <span class="tok-number">0</span>; l + len &lt;= n + <span class="tok-number">1</span>; l++){
+            <span class="tok-keyword">int</span> r = l + len;
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = <span class="tok-number">0</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = l + <span class="tok-number">1</span>; k &lt; r; k++){
+                <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> val = dp[l][k] + dp[k][r] + a[l] * a[k] * a[r];
                 best = max(best, val);
             }
             dp[l][r] = best;
         }
     }
-    cout &lt;&lt; dp[0][n + 1] &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; dp[<span class="tok-number">0</span>][n + <span class="tok-number">1</span>] &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -796,27 +808,27 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Define dp[l][r] = the best score the player CURRENTLY TO MOVE can guarantee from the remaining subarray a[l..r]. If that player takes a[l], the rest a[l+1..r] becomes a game where the opponent moves first and (optimally) secures dp[l+1][r]; since the opponent&#x27;s optimal score plus the current player&#x27;s eventual score from that same subrange must sum to its total, the current player is left with sum(l+1,r) - dp[l+1][r] from all their own future turns in that range. Symmetric reasoning applies if they take a[r] instead. So dp[l][r] = max(a[l] + (sum(l+1,r) - dp[l+1][r]), a[r] + (sum(l,r-1) - dp[l,r-1])), with base case dp[i][i] = a[i] (only one number left, take it). Precompute prefix sums for O(1) range-sum queries. Fill by increasing interval length; the answer is dp[0][n-1].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;v : a) cin &gt;&gt; v;
-    vector&lt;long long&gt; pre(n + 1, 0);
-    for (int i = 0; i &lt; n; i++) pre[i + 1] = pre[i] + a[i];
-    auto S = [&amp;](int i, int j) -&gt; long long { return pre[j + 1] - pre[i]; };
-    vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(n, 0));
-    for (int i = 0; i &lt; n; i++) dp[i][i] = a[i];
-    for (int len = 2; len &lt;= n; len++){
-        for (int i = 0; i + len - 1 &lt; n; i++){
-            int j = i + len - 1;
-            long long takeLeft = a[i] + (S(i + 1, j) - dp[i + 1][j]);
-            long long takeRight = a[j] + (S(i, j - 1) - dp[i][j - 1]);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;v : a) cin &gt;&gt; v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; pre(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) pre[i + <span class="tok-number">1</span>] = pre[i] + a[i];
+    <span class="tok-keyword">auto</span> S = [&amp;](<span class="tok-keyword">int</span> i, <span class="tok-keyword">int</span> j) -&gt; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> { <span class="tok-keyword">return</span> pre[j + <span class="tok-number">1</span>] - pre[i]; };
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(n, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) dp[i][i] = a[i];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = <span class="tok-number">2</span>; len &lt;= n; len++){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i + len - <span class="tok-number">1</span> &lt; n; i++){
+            <span class="tok-keyword">int</span> j = i + len - <span class="tok-number">1</span>;
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> takeLeft = a[i] + (S(i + <span class="tok-number">1</span>, j) - dp[i + <span class="tok-number">1</span>][j]);
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> takeRight = a[j] + (S(i, j - <span class="tok-number">1</span>) - dp[i][j - <span class="tok-number">1</span>]);
             dp[i][j] = max(takeLeft, takeRight);
         }
     }
-    cout &lt;&lt; dp[0][n - 1] &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; dp[<span class="tok-number">0</span>][n - <span class="tok-number">1</span>] &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -834,25 +846,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Define dp[p][q] = minimum cuts to reduce a p x q rectangle entirely to squares. Base case dp[p][p] = 0 (already a square). Otherwise, one cut must be made first, either vertical (splitting p into i and p-i for some 1 &lt;= i &lt; p, giving two independent sub-rectangles i x q and (p-i) x q) or horizontal (splitting q similarly). Since the two pieces from a cut are handled by fully independent future cuts, their costs simply add: dp[p][q] = 1 + min( min over 1&lt;=i&lt;p of dp[i][q] + dp[p-i][q], min over 1&lt;=j&lt;q of dp[p][j] + dp[p][q-j] ). This is a 2D generalization of the classic &#x27;try every split point&#x27; interval DP, with the state now a pair of side lengths instead of a single range. Every term on the right has a strictly smaller p+q than dp[p][q], so filling states in increasing order of p+q guarantees dependencies are ready; the answer is dp[a][b].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int A, B; cin &gt;&gt; A &gt;&gt; B;
-    int M = max(A, B);
-    vector&lt;vector&lt;int&gt;&gt; dp(M + 1, vector&lt;int&gt;(M + 1, 0));
-    for (int s = 2; s &lt;= 2 * M; s++){
-        int aLo = max(1, s - M), aHi = min(M, s - 1);
-        for (int p = aLo; p &lt;= aHi; p++){
-            int q = s - p;
-            if (p == q){ dp[p][q] = 0; continue; }
-            int best = INT_MAX;
-            for (int i = 1; i &lt; p; i++) best = min(best, dp[i][q] + dp[p - i][q]);
-            for (int j = 1; j &lt; q; j++) best = min(best, dp[p][j] + dp[p][q - j]);
-            dp[p][q] = 1 + best;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> A, B; cin &gt;&gt; A &gt;&gt; B;
+    <span class="tok-keyword">int</span> M = max(A, B);
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; dp(M + <span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(M + <span class="tok-number">1</span>, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> s = <span class="tok-number">2</span>; s &lt;= <span class="tok-number">2</span> * M; s++){
+        <span class="tok-keyword">int</span> aLo = max(<span class="tok-number">1</span>, s - M), aHi = min(M, s - <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> p = aLo; p &lt;= aHi; p++){
+            <span class="tok-keyword">int</span> q = s - p;
+            <span class="tok-keyword">if</span> (p == q){ dp[p][q] = <span class="tok-number">0</span>; <span class="tok-keyword">continue</span>; }
+            <span class="tok-keyword">int</span> best = INT_MAX;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; p; i++) best = min(best, dp[i][q] + dp[p - i][q]);
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt; q; j++) best = min(best, dp[p][j] + dp[p][q - j]);
+            dp[p][q] = <span class="tok-number">1</span> + best;
         }
     }
     cout &lt;&lt; dp[A][B] &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -877,23 +889,23 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>dp[i][j] = edit distance between s[0..i) and t[0..j). Base cases: dp[0][j] = j (insert all of t&#x27;s first j characters into an empty s) and dp[i][0] = i (delete all of s&#x27;s first i characters to reach an empty t). Transition: if s[i-1] == t[j-1], the last characters already match for free, so dp[i][j] = dp[i-1][j-1]; otherwise dp[i][j] = 1 + min(dp[i-1][j] (delete s[i-1]), dp[i][j-1] (insert t[j-1]), dp[i-1][j-1] (substitute s[i-1] for t[j-1])). Fill row by row; the answer is dp[n][m].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    string s, t;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s, t;
     cin &gt;&gt; s &gt;&gt; t;
-    int n = s.size(), m = t.size();
-    vector&lt;vector&lt;int&gt;&gt; dp(n + 1, vector&lt;int&gt;(m + 1));
-    for (int j = 0; j &lt;= m; j++) dp[0][j] = j;
-    for (int i = 0; i &lt;= n; i++) dp[i][0] = i;
-    for (int i = 1; i &lt;= n; i++){
-        for (int j = 1; j &lt;= m; j++){
-            if (s[i - 1] == t[j - 1]) dp[i][j] = dp[i - 1][j - 1];
-            else dp[i][j] = 1 + min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});
+    <span class="tok-keyword">int</span> n = s.size(), m = t.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; dp(n + <span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(m + <span class="tok-number">1</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt;= m; j++) dp[<span class="tok-number">0</span>][j] = j;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt;= n; i++) dp[i][<span class="tok-number">0</span>] = i;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= m; j++){
+            <span class="tok-keyword">if</span> (s[i - <span class="tok-number">1</span>] == t[j - <span class="tok-number">1</span>]) dp[i][j] = dp[i - <span class="tok-number">1</span>][j - <span class="tok-number">1</span>];
+            <span class="tok-keyword">else</span> dp[i][j] = <span class="tok-number">1</span> + min({dp[i - <span class="tok-number">1</span>][j], dp[i][j - <span class="tok-number">1</span>], dp[i - <span class="tok-number">1</span>][j - <span class="tok-number">1</span>]});
         }
     }
     cout &lt;&lt; dp[n][m] &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -911,33 +923,33 @@ MOVIE
   <div class="section-label">Approach</div>
   <div class="prose"><p>dp[i][j] = true if s[0..i) matches p[0..j). Base case dp[0][0] = true (empty matches empty). dp[0][j] (matching empty s against a pattern prefix) is only true when p[j-1] is &#x27;*&#x27; and dp[0][j-2] is true (the starred element can vanish, leaving whatever was true before it). For i,j &gt;= 1: if p[j-1] == &#x27;*&#x27;, two ways to satisfy it: treat the preceding element as matched ZERO times, giving dp[i][j] |= dp[i][j-2] (skip the whole &#x27;element*&#x27; group entirely, WITHOUT consuming any of s); or, if the preceding pattern element (p[j-2]) matches s[i-1] (equal, or p[j-2] is &#x27;.&#x27;), treat it as matched one more time, giving dp[i][j] |= dp[i-1][j] (consume one character of s, stay on the same &#x27;*&#x27; pattern position since it can repeat). If p[j-1] is a literal or &#x27;.&#x27; (no following &#x27;*&#x27;), it must match s[i-1] directly: dp[i][j] = dp[i-1][j-1] if p[j-1] == &#x27;.&#x27; or p[j-1] == s[i-1], else false. The answer is dp[n][m].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    string s, p;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s, p;
     cin &gt;&gt; s &gt;&gt; p;
-    int n = s.size(), m = p.size();
-    vector&lt;vector&lt;char&gt;&gt; dp(n + 1, vector&lt;char&gt;(m + 1, 0));
-    dp[0][0] = 1;
-    for (int j = 1; j &lt;= m; j++){
-        if (p[j - 1] == &#x27;*&#x27; &amp;&amp; j &gt;= 2) dp[0][j] = dp[0][j - 2];
+    <span class="tok-keyword">int</span> n = s.size(), m = p.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt;&gt; dp(n + <span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt;(m + <span class="tok-number">1</span>, <span class="tok-number">0</span>));
+    dp[<span class="tok-number">0</span>][<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= m; j++){
+        <span class="tok-keyword">if</span> (p[j - <span class="tok-number">1</span>] == <span class="tok-char">&#x27;*&#x27;</span> &amp;&amp; j &gt;= <span class="tok-number">2</span>) dp[<span class="tok-number">0</span>][j] = dp[<span class="tok-number">0</span>][j - <span class="tok-number">2</span>];
     }
-    for (int i = 1; i &lt;= n; i++){
-        for (int j = 1; j &lt;= m; j++){
-            if (p[j - 1] == &#x27;*&#x27;){
-                bool zero = (j &gt;= 2) ? dp[i][j - 2] : false;
-                bool one = false;
-                if (j &gt;= 2 &amp;&amp; (p[j - 2] == &#x27;.&#x27; || p[j - 2] == s[i - 1])) one = dp[i - 1][j];
-                dp[i][j] = (zero || one) ? 1 : 0;
-            } else if (p[j - 1] == &#x27;.&#x27; || p[j - 1] == s[i - 1]){
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                dp[i][j] = 0;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= m; j++){
+            <span class="tok-keyword">if</span> (p[j - <span class="tok-number">1</span>] == <span class="tok-char">&#x27;*&#x27;</span>){
+                <span class="tok-keyword">bool</span> zero = (j &gt;= <span class="tok-number">2</span>) ? dp[i][j - <span class="tok-number">2</span>] : <span class="tok-keyword">false</span>;
+                <span class="tok-keyword">bool</span> one = <span class="tok-keyword">false</span>;
+                <span class="tok-keyword">if</span> (j &gt;= <span class="tok-number">2</span> &amp;&amp; (p[j - <span class="tok-number">2</span>] == <span class="tok-char">&#x27;.&#x27;</span> || p[j - <span class="tok-number">2</span>] == s[i - <span class="tok-number">1</span>])) one = dp[i - <span class="tok-number">1</span>][j];
+                dp[i][j] = (zero || one) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
+            } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (p[j - <span class="tok-number">1</span>] == <span class="tok-char">&#x27;.&#x27;</span> || p[j - <span class="tok-number">1</span>] == s[i - <span class="tok-number">1</span>]){
+                dp[i][j] = dp[i - <span class="tok-number">1</span>][j - <span class="tok-number">1</span>];
+            } <span class="tok-keyword">else</span> {
+                dp[i][j] = <span class="tok-number">0</span>;
             }
         }
     }
-    cout &lt;&lt; (dp[n][m] ? &quot;true&quot; : &quot;false&quot;) &lt;&lt; endl;
-    return 0;
+    cout &lt;&lt; (dp[n][m] ? <span class="tok-string">&quot;true&quot;</span> : <span class="tok-string">&quot;false&quot;</span>) &lt;&lt; endl;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -955,21 +967,21 @@ c*a*b
   <div class="section-label">Approach</div>
   <div class="prose"><p>dp[i][j] = number of ways t[0..j) is a subsequence of s[0..i). Base cases: dp[i][0] = 1 for every i (the empty string is a subsequence of anything in exactly one way — pick nothing), and dp[0][j] = 0 for j &gt;= 1 (a non-empty t cannot be a subsequence of an empty s). Transition: dp[i][j] = dp[i-1][j] (don&#x27;t use s[i-1] at all — every way of matching t[0..j) inside the shorter prefix s[0..i-1) still works) plus, if s[i-1] == t[j-1], dp[i-1][j-1] (do use s[i-1] to match the last character of t[0..j), reducing to matching t[0..j-1) inside s[0..i-1)). These two branches never overlap (one excludes s[i-1] from the match, the other requires it), so they simply add. The answer is dp[n][m].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    string s, t;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> s, t;
     cin &gt;&gt; s &gt;&gt; t;
-    int n = s.size(), m = t.size();
-    vector&lt;vector&lt;unsigned long long&gt;&gt; dp(n + 1, vector&lt;unsigned long long&gt;(m + 1, 0));
-    for (int i = 0; i &lt;= n; i++) dp[i][0] = 1;
-    for (int i = 1; i &lt;= n; i++){
-        for (int j = 1; j &lt;= m; j++){
-            dp[i][j] = dp[i - 1][j] + (s[i - 1] == t[j - 1] ? dp[i - 1][j - 1] : 0ULL);
+    <span class="tok-keyword">int</span> n = s.size(), m = t.size();
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(n + <span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(m + <span class="tok-number">1</span>, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt;= n; i++) dp[i][<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++){
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= m; j++){
+            dp[i][j] = dp[i - <span class="tok-number">1</span>][j] + (s[i - <span class="tok-number">1</span>] == t[j - <span class="tok-number">1</span>] ? dp[i - <span class="tok-number">1</span>][j - <span class="tok-number">1</span>] : <span class="tok-number">0ULL</span>);
         }
     }
     cout &lt;&lt; dp[n][m] &lt;&lt; endl;
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -995,36 +1007,36 @@ rabbit
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the classic Hamiltonian-path-flavored bitmask DP (as in &#x27;Kefa and Dishes&#x27;). State dp[mask][last] = maximum satisfaction achievable having eaten exactly the set of dishes in mask, with &#x27;last&#x27; being the most recently eaten dish (so the next bonus, if any, depends on last).</p><p>Base case: dp[1&lt;&lt;i][i] = a[i] for every dish i (eating only dish i, first in the sequence, so no bonus applies yet).</p><p>Transition: from a state (mask, last) with popcount(mask) &lt; m, try eating any unused dish nxt (bit nxt not set in mask): dp[mask | (1&lt;&lt;nxt)][nxt] = max(dp[mask | (1&lt;&lt;nxt)][nxt], dp[mask][last] + a[nxt] + bonus[last][nxt]), where bonus[last][nxt] is the extra value for eating nxt immediately after last (0 if no such bonus pair exists).</p><p>Answer: the maximum dp[mask][last] over all masks with popcount(mask) &lt;= m and all valid &#x27;last&#x27;. Since m &lt;= n &lt;= 15, iterating all 2^n masks and, for each, all n choices of &#x27;last&#x27; and all n choices of &#x27;nxt&#x27;, costs O(2^n * n^2), fast enough for n &lt;= 15.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    int q; cin &gt;&gt; q;
-    vector&lt;vector&lt;long long&gt;&gt; bonus(n, vector&lt;long long&gt;(n, 0));
-    for (int i = 0; i &lt; q; i++) {
-        int x, y; long long c;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">int</span> q; cin &gt;&gt; q;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; bonus(n, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; q; i++) {
+        <span class="tok-keyword">int</span> x, y; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> c;
         cin &gt;&gt; x &gt;&gt; y &gt;&gt; c;
         x--; y--;
         bonus[x][y] = c;
     }
-    int FULL = 1 &lt;&lt; n;
-    vector&lt;vector&lt;long long&gt;&gt; dp(FULL, vector&lt;long long&gt;(n, -1));
-    for (int i = 0; i &lt; n; i++) dp[1&lt;&lt;i][i] = a[i];
-    long long best = 0;
-    for (int mask = 1; mask &lt; FULL; mask++) {
-        int pc = __builtin_popcount(mask);
-        for (int last = 0; last &lt; n; last++) {
-            if (!(mask &amp; (1&lt;&lt;last))) continue;
-            if (dp[mask][last] &lt; 0) continue;
-            if (pc &lt;= m) best = max(best, dp[mask][last]);
-            if (pc == m) continue; // can&#x27;t extend further
-            for (int nxt = 0; nxt &lt; n; nxt++) {
-                if (mask &amp; (1&lt;&lt;nxt)) continue;
-                long long val = dp[mask][last] + a[nxt] + bonus[last][nxt];
-                int nm = mask | (1&lt;&lt;nxt);
+    <span class="tok-keyword">int</span> FULL = <span class="tok-number">1</span> &lt;&lt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(FULL, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n, -<span class="tok-number">1</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) dp[<span class="tok-number">1</span>&lt;&lt;i][i] = a[i];
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">1</span>; mask &lt; FULL; mask++) {
+        <span class="tok-keyword">int</span> pc = __builtin_popcount(mask);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> last = <span class="tok-number">0</span>; last &lt; n; last++) {
+            <span class="tok-keyword">if</span> (!(mask &amp; (<span class="tok-number">1</span>&lt;&lt;last))) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">if</span> (dp[mask][last] &lt; <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">if</span> (pc &lt;= m) best = max(best, dp[mask][last]);
+            <span class="tok-keyword">if</span> (pc == m) <span class="tok-keyword">continue</span>; <span class="tok-comment">// can&#x27;t extend further</span>
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> nxt = <span class="tok-number">0</span>; nxt &lt; n; nxt++) {
+                <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span>&lt;&lt;nxt)) <span class="tok-keyword">continue</span>;
+                <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> val = dp[mask][last] + a[nxt] + bonus[last][nxt];
+                <span class="tok-keyword">int</span> nm = mask | (<span class="tok-number">1</span>&lt;&lt;nxt);
                 dp[nm][nxt] = max(dp[nm][nxt], val);
             }
         }
@@ -1049,41 +1061,41 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the canonical &#x27;broken profile&#x27; bitmask DP. Number the n*m cells in row-major order, position pos = row*m + col, pos from 0 to n*m-1. Think of a sliding window of m bits: state (pos, mask) means we are about to decide cell pos, and bit j of mask (0&lt;=j&lt;m) tells us whether the cell at absolute position pos+j is ALREADY covered by a domino placed earlier (specifically, a vertical domino placed when we processed the cell directly above it, m positions earlier).</p><p>Recursion solve(pos, mask):<br>  - If pos == n*m: return 1 iff mask == 0 (a valid complete tiling leaves no dangling filled bits beyond the grid).<br>  - If bit 0 of mask is set, cell pos is already filled (by a vertical domino from above); nothing to decide, so move to solve(pos+1, mask&gt;&gt;1) (the window slides forward by one, dropping the resolved bit and bringing in a fresh 0 bit at the top automatically).<br>  - Otherwise cell pos is empty and must be covered now, by one of two choices (sum the ways from both if both are legal):<br>      (a) Vertical domino down: legal only if row+1 &lt; n. This pre-fills the cell directly below (m positions ahead), so we recurse into solve(pos+1, (mask&gt;&gt;1) | (1&lt;&lt;(m-1))).<br>      (b) Horizontal domino right: legal only if col+1 &lt; m AND bit 1 of mask is 0 (the cell to the right is not already filled). This fills both pos and pos+1 right now, so we recurse into solve(pos+1, (mask|2)&gt;&gt;1).<br>Memoize on (pos, mask); there are (n*m+1) * 2^m states, each O(1) work, giving O(n*m*2^m) total. This DP was cross-checked against known values (2x2 -&gt; 2, 4x4 -&gt; 36, 2x3 -&gt; 3) before being used here.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long MOD = 1000000007;
-int n, m;
-vector&lt;vector&lt;long long&gt;&gt; memo;
-vector&lt;vector&lt;char&gt;&gt; vis;
-long long solve(int pos, int mask) {
-    if (pos == n*m) return mask == 0 ? 1 : 0;
-    if (vis[pos][mask]) return memo[pos][mask];
-    vis[pos][mask] = 1;
-    int row = pos / m, col = pos % m;
-    long long res = 0;
-    if (mask &amp; 1) {
-        res = solve(pos+1, mask &gt;&gt; 1);
-    } else {
-        // place vertical domino down (needs row+1 &lt; n)
-        if (row + 1 &lt; n) {
-            int nm = (mask &gt;&gt; 1) | (1 &lt;&lt; (m-1));
-            res += solve(pos+1, nm);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">int</span> n, m;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; memo;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt;&gt; vis;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> solve(<span class="tok-keyword">int</span> pos, <span class="tok-keyword">int</span> mask) {
+    <span class="tok-keyword">if</span> (pos == n*m) <span class="tok-keyword">return</span> mask == <span class="tok-number">0</span> ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
+    <span class="tok-keyword">if</span> (vis[pos][mask]) <span class="tok-keyword">return</span> memo[pos][mask];
+    vis[pos][mask] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> row = pos / m, col = pos % m;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = <span class="tok-number">0</span>;
+    <span class="tok-keyword">if</span> (mask &amp; <span class="tok-number">1</span>) {
+        res = solve(pos+<span class="tok-number">1</span>, mask &gt;&gt; <span class="tok-number">1</span>);
+    } <span class="tok-keyword">else</span> {
+        <span class="tok-comment">// place vertical domino down (needs row+1 &lt; n)</span>
+        <span class="tok-keyword">if</span> (row + <span class="tok-number">1</span> &lt; n) {
+            <span class="tok-keyword">int</span> nm = (mask &gt;&gt; <span class="tok-number">1</span>) | (<span class="tok-number">1</span> &lt;&lt; (m-<span class="tok-number">1</span>));
+            res += solve(pos+<span class="tok-number">1</span>, nm);
         }
-        // place horizontal domino right (needs col+1&lt;m and that cell free)
-        if (col + 1 &lt; m &amp;&amp; !(mask &amp; 2)) {
-            int nm = (mask | 2) &gt;&gt; 1;
-            res += solve(pos+1, nm);
+        <span class="tok-comment">// place horizontal domino right (needs col+1&lt;m and that cell free)</span>
+        <span class="tok-keyword">if</span> (col + <span class="tok-number">1</span> &lt; m &amp;&amp; !(mask &amp; <span class="tok-number">2</span>)) {
+            <span class="tok-keyword">int</span> nm = (mask | <span class="tok-number">2</span>) &gt;&gt; <span class="tok-number">1</span>;
+            res += solve(pos+<span class="tok-number">1</span>, nm);
         }
         res %= MOD;
     }
     memo[pos][mask] = res % MOD;
-    return memo[pos][mask];
+    <span class="tok-keyword">return</span> memo[pos][mask];
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m;
-    memo.assign(n*m+1, vector&lt;long long&gt;(1&lt;&lt;m, 0));
-    vis.assign(n*m+1, vector&lt;char&gt;(1&lt;&lt;m, 0));
-    cout &lt;&lt; solve(0,0) &lt;&lt; endl;
+    memo.assign(n*m+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(<span class="tok-number">1</span>&lt;&lt;m, <span class="tok-number">0</span>));
+    vis.assign(n*m+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt;(<span class="tok-number">1</span>&lt;&lt;m, <span class="tok-number">0</span>));
+    cout &lt;&lt; solve(<span class="tok-number">0</span>,<span class="tok-number">0</span>) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1100,30 +1112,30 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a &#x27;partition a small set into minimum-cost groups&#x27; bitmask DP. For a subset mask of people, define dp[mask] = (rides, load): the minimum number of rides needed to carry exactly the people in mask, and, among all ways achieving that minimum ride count, the minimum leftover load already used in the LAST (currently open) ride -- keeping the last ride as empty as possible is what lets future people be added cheaply.</p><p>Base case dp[0] = (1, 0): with nobody to carry we still conceptually have one open, empty ride ready to use (this sentinel makes the transition below uniform).</p><p>Transition: to build dp[mask], consider every person i in mask and let prev = mask with bit i removed. Let (r, l) = dp[prev]. Adding person i either fits in the currently open ride (if l + w[i] &lt;= x, giving candidate (r, l + w[i])) or requires starting a new ride (giving candidate (r+1, w[i])). dp[mask] is the best candidate over all choices of i, compared first by fewer rides, then by smaller load. The final answer is the &#x27;rides&#x27; component of dp[(1&lt;&lt;n) - 1]. This runs in O(2^n * n) and was cross-checked against a brute-force search over all ways to distribute people into labeled rides for many random small cases.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, x;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, x;
     cin &gt;&gt; n &gt;&gt; x;
-    vector&lt;int&gt; w(n);
-    for (auto &amp;v : w) cin &gt;&gt; v;
-    int FULL = 1 &lt;&lt; n;
-    vector&lt;int&gt; rides(FULL), load(FULL);
-    rides[0] = 1; load[0] = 0;
-    for (int mask = 1; mask &lt; FULL; mask++) {
-        int bestR = INT_MAX, bestL = INT_MAX;
-        for (int i = 0; i &lt; n; i++) {
-            if (!(mask &amp; (1&lt;&lt;i))) continue;
-            int prev = mask ^ (1&lt;&lt;i);
-            int r = rides[prev], l = load[prev];
-            int nr, nl;
-            if (l + w[i] &lt;= x) { nr = r; nl = l + w[i]; }
-            else { nr = r + 1; nl = w[i]; }
-            if (nr &lt; bestR || (nr == bestR &amp;&amp; nl &lt; bestL)) { bestR = nr; bestL = nl; }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; w(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;v : w) cin &gt;&gt; v;
+    <span class="tok-keyword">int</span> FULL = <span class="tok-number">1</span> &lt;&lt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; rides(FULL), load(FULL);
+    rides[<span class="tok-number">0</span>] = <span class="tok-number">1</span>; load[<span class="tok-number">0</span>] = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">1</span>; mask &lt; FULL; mask++) {
+        <span class="tok-keyword">int</span> bestR = INT_MAX, bestL = INT_MAX;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+            <span class="tok-keyword">if</span> (!(mask &amp; (<span class="tok-number">1</span>&lt;&lt;i))) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">int</span> prev = mask ^ (<span class="tok-number">1</span>&lt;&lt;i);
+            <span class="tok-keyword">int</span> r = rides[prev], l = load[prev];
+            <span class="tok-keyword">int</span> nr, nl;
+            <span class="tok-keyword">if</span> (l + w[i] &lt;= x) { nr = r; nl = l + w[i]; }
+            <span class="tok-keyword">else</span> { nr = r + <span class="tok-number">1</span>; nl = w[i]; }
+            <span class="tok-keyword">if</span> (nr &lt; bestR || (nr == bestR &amp;&amp; nl &lt; bestL)) { bestR = nr; bestL = nl; }
         }
         rides[mask] = bestR; load[mask] = bestL;
     }
-    cout &lt;&lt; rides[FULL-1] &lt;&lt; endl;
+    cout &lt;&lt; rides[FULL-<span class="tok-number">1</span>] &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1149,35 +1161,35 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Direct generalization of the classic &#x27;tree diameter via DP&#x27; technique to weighted vertices. Root the tree anywhere (say node 1). Define dfs(u, parent) that returns down(u) = the best sum achievable on a downward chain starting at u and descending into at most one child subtree: down(u) = c[u] + max(0, best over children v of down(v)) (the max(0, ...) means we simply don&#x27;t extend into a child whose chain would be negative -- not an issue here since all c[i] &gt; 0, but it keeps the DP correct in general).</p><p>While computing down(u), also track the two LARGEST values of max(0, down(child)) among u&#x27;s children, call them m1 &gt;= m2. The best path that &#x27;bends&#x27; at u (uses u as its highest point, possibly going down two different children) has weight c[u] + m1 + m2. Update a global answer with this quantity at every node, then return down(u) = c[u] + m1 to the caller. The final answer, after visiting every node, is the maximum path weight over the whole tree. This is O(n) and was cross-validated against a brute-force all-pairs BFS search.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;long long&gt; w;
-vector&lt;vector&lt;int&gt;&gt; adj;
-long long best = LLONG_MIN;
-long long dfs(int u, int parent) {
-    long long m1 = 0, m2 = 0; // top two child chain values (&gt;=0)
-    for (int v : adj[u]) {
-        if (v == parent) continue;
-        long long d = dfs(v, u);
-        long long chain = max(0LL, d);
-        if (chain &gt; m1) { m2 = m1; m1 = chain; }
-        else if (chain &gt; m2) { m2 = chain; }
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; w;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = LLONG_MIN;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> m1 = <span class="tok-number">0</span>, m2 = <span class="tok-number">0</span>; <span class="tok-comment">// top two child chain values (&gt;=0)</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> d = dfs(v, u);
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> chain = max(<span class="tok-number">0LL</span>, d);
+        <span class="tok-keyword">if</span> (chain &gt; m1) { m2 = m1; m1 = chain; }
+        <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (chain &gt; m2) { m2 = chain; }
     }
     best = max(best, w[u] + m1 + m2);
-    return w[u] + m1;
+    <span class="tok-keyword">return</span> w[u] + m1;
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    w.assign(n+1, 0);
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; w[i];
-    adj.assign(n+1, {});
-    for (int i = 0; i &lt; n-1; i++) {
-        int a,b; cin &gt;&gt; a &gt;&gt; b;
+    w.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; w[i];
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n-<span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a,b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    dfs(1, 0);
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
     cout &lt;&lt; best &lt;&lt; endl;
 }
 </code></pre>
@@ -1200,46 +1212,46 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Textbook rerooting. Let S = total sum of all val[i]. Root the tree at node 1 and, with one DFS, compute subW[u] = sum of val[] over the subtree of u, and f(1) directly as sum(val[i] * depth(i)) using depths relative to root 1.</p><p>The key identity: if v is a child of u, moving the root from u to v changes every node&#x27;s distance by exactly +1 (nodes outside v&#x27;s subtree, now farther from the new root) or -1 (nodes inside v&#x27;s subtree, now closer). So f(v) = f(u) + (S - subW[v]) * (+1) + subW[v] * (-1) = f(u) + S - 2*subW[v].</p><p>A second DFS starting from the root propagates this relation to every node: f(v) = f(parent) + S - 2*subW[v] for each child v. Since each node&#x27;s f-value is derived from its parent&#x27;s in O(1), the whole tree&#x27;s f-values are computed in O(n) total (after the O(n) preprocessing DFS), versus O(n^2) from re-running a full DFS per candidate root. The answer is the maximum f-value over all nodes. Verified against a brute-force O(n^2) BFS-from-every-root reference.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;long long&gt; val;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;long long&gt; subW;
-vector&lt;long long&gt; f; // f[u] = sum of val[i]*dist(u,i) for that root
-long long S;
-long long f1accum;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; val;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; subW;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; f; <span class="tok-comment">// f[u] = sum of val[i]*dist(u,i) for that root</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> S;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> f1accum;
 
-void dfs1(int u, int parent, long long depth) {
+<span class="tok-keyword">void</span> dfs1(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> depth) {
     subW[u] = val[u];
-    f1accum += val[u]*depth; // accumulate f for root=1 (node 1)
-    for (int v : adj[u]) {
-        if (v == parent) continue;
-        dfs1(v, u, depth+1);
+    f1accum += val[u]*depth; <span class="tok-comment">// accumulate f for root=1 (node 1)</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
+        dfs1(v, u, depth+<span class="tok-number">1</span>);
         subW[u] += subW[v];
     }
 }
-void dfs2(int u, int parent) {
-    for (int v : adj[u]) {
-        if (v == parent) continue;
-        f[v] = f[u] + S - 2*subW[v];
+<span class="tok-keyword">void</span> dfs2(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
+        f[v] = f[u] + S - <span class="tok-number">2</span>*subW[v];
         dfs2(v, u);
     }
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    val.assign(n+1,0);
-    for (int i=1;i&lt;=n;i++) cin &gt;&gt; val[i];
-    adj.assign(n+1,{});
-    for (int i=0;i&lt;n-1;i++){int a,b;cin&gt;&gt;a&gt;&gt;b;adj[a].push_back(b);adj[b].push_back(a);}
-    subW.assign(n+1,0);
-    f.assign(n+1,0);
-    S = 0; for (int i=1;i&lt;=n;i++) S += val[i];
-    f1accum = 0;
-    dfs1(1, 0, 0);
-    f[1] = f1accum;
-    dfs2(1, 0);
-    long long best = *max_element(f.begin()+1, f.end());
+    val.assign(n+<span class="tok-number">1</span>,<span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">1</span>;i&lt;=n;i++) cin &gt;&gt; val[i];
+    adj.assign(n+<span class="tok-number">1</span>,{});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n-<span class="tok-number">1</span>;i++){<span class="tok-keyword">int</span> a,b;cin&gt;&gt;a&gt;&gt;b;adj[a].push_back(b);adj[b].push_back(a);}
+    subW.assign(n+<span class="tok-number">1</span>,<span class="tok-number">0</span>);
+    f.assign(n+<span class="tok-number">1</span>,<span class="tok-number">0</span>);
+    S = <span class="tok-number">0</span>; <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">1</span>;i&lt;=n;i++) S += val[i];
+    f1accum = <span class="tok-number">0</span>;
+    dfs1(<span class="tok-number">1</span>, <span class="tok-number">0</span>, <span class="tok-number">0</span>);
+    f[<span class="tok-number">1</span>] = f1accum;
+    dfs2(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = *max_element(f.begin()+<span class="tok-number">1</span>, f.end());
     cout &lt;&lt; best &lt;&lt; endl;
 }
 </code></pre>
@@ -1262,37 +1274,37 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Classic 3-state tree DP, processed bottom-up (post-order). Each node, after its subtree is fully decided, ends up in exactly one of three states: 0 = not yet covered by any camera, 1 = covered, but has no camera of its own (covered by a child&#x27;s camera), 2 = has its own camera.</p><p>A greedy-flavored rule (which is provably optimal, not just a heuristic) determines a node u&#x27;s state from its children&#x27;s states: if ANY child is in state 0 (uncovered), u MUST place a camera on itself (state 0 children can only be covered by their parent, since their own children are already resolved) -- this increments the camera count and sets u&#x27;s state to 2. Otherwise, if at least one child has a camera (state 2), u is covered by that child, so u&#x27;s state is 1 (covered, no camera needed). Otherwise (every child is state 1: covered, no camera), u itself is not covered by anything yet, so u&#x27;s state is 0, deferring the decision to u&#x27;s parent.</p><p>After the DFS finishes at the root, if the root ends in state 0 (nothing above it to cover it), one final camera must be added at the root. This greedy/DP hybrid is correct because delaying the camera placement as late as possible (to the parent) never hurts and sometimes helps (one parent camera can cover multiple state-0 children at once). Verified by brute force (trying all 2^n camera placements for small trees and checking minimum dominating set size) with zero mismatches over 300 random trees.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;vector&lt;int&gt;&gt; adj;
-int cameras = 0;
-// state: 0 = not covered, 1 = covered no camera, 2 = has camera
-int dfs(int u, int parent) {
-    vector&lt;int&gt; childStates;
-    for (int v : adj[u]) {
-        if (v == parent) continue;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-keyword">int</span> cameras = <span class="tok-number">0</span>;
+<span class="tok-comment">// state: 0 = not covered, 1 = covered no camera, 2 = has camera</span>
+<span class="tok-keyword">int</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; childStates;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
         childStates.push_back(dfs(v, u));
     }
-    bool hasUncovered = false, hasCamera = false;
-    for (int s : childStates) {
-        if (s == 0) hasUncovered = true;
-        if (s == 2) hasCamera = true;
+    <span class="tok-keyword">bool</span> hasUncovered = <span class="tok-keyword">false</span>, hasCamera = <span class="tok-keyword">false</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> s : childStates) {
+        <span class="tok-keyword">if</span> (s == <span class="tok-number">0</span>) hasUncovered = <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">if</span> (s == <span class="tok-number">2</span>) hasCamera = <span class="tok-keyword">true</span>;
     }
-    if (hasUncovered) {
+    <span class="tok-keyword">if</span> (hasUncovered) {
         cameras++;
-        return 2;
+        <span class="tok-keyword">return</span> <span class="tok-number">2</span>;
     }
-    if (hasCamera) return 1;
-    return 0;
+    <span class="tok-keyword">if</span> (hasCamera) <span class="tok-keyword">return</span> <span class="tok-number">1</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    adj.assign(n+1, {});
-    for (int i=0;i&lt;n-1;i++){int a,b;cin&gt;&gt;a&gt;&gt;b;adj[a].push_back(b);adj[b].push_back(a);}
-    if (n == 1) { cout &lt;&lt; 1 &lt;&lt; endl; return 0; }
-    int rootState = dfs(1, 0);
-    if (rootState == 0) cameras++;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n-<span class="tok-number">1</span>;i++){<span class="tok-keyword">int</span> a,b;cin&gt;&gt;a&gt;&gt;b;adj[a].push_back(b);adj[b].push_back(a);}
+    <span class="tok-keyword">if</span> (n == <span class="tok-number">1</span>) { cout &lt;&lt; <span class="tok-number">1</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-keyword">int</span> rootState = dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">if</span> (rootState == <span class="tok-number">0</span>) cameras++;
     cout &lt;&lt; cameras &lt;&lt; endl;
 }
 </code></pre>
@@ -1324,35 +1336,35 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Write count(N) = number of integers in [0, N] whose digit sum is divisible by K, then answer = count(R) - count(L-1).</p><p>For count(N): let s = decimal string of N. dfs(pos, sumMod, tight), where sumMod is the running digit sum taken modulo K (we never need the exact sum, only its residue, since only divisibility by K matters). At pos == len(s), return 1 if sumMod == 0 else 0. Otherwise, the digit at this position ranges from 0 to (tight ? s[pos] : 9); recurse with the new sumMod = (sumMod + digit) % K and new tight flag (tight &amp;&amp; digit == limit). Memoize on (pos, sumMod) whenever tight is false. This runs in O(len(s) * K) per call to count(), easily fast enough. Cross-checked against a brute-force loop over the range for 200 random (L, R, K) triples with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-string s;
-int K;
-long long memo[20][200];
-bool vis[20][200];
-// pos: current digit index, sumMod: digit sum so far mod K, tight: bound by s
-long long dfs(int pos, int sumMod, bool tight) {
-    if (pos == (int)s.size()) return sumMod == 0 ? 1 : 0;
-    if (!tight &amp;&amp; vis[pos][sumMod]) return memo[pos][sumMod];
-    int limit = tight ? (s[pos]-&#x27;0&#x27;) : 9;
-    long long res = 0;
-    for (int d = 0; d &lt;= limit; d++) {
-        res += dfs(pos+1, (sumMod+d)%K, tight &amp;&amp; (d==limit));
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-type">string</span> s;
+<span class="tok-keyword">int</span> K;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> memo[<span class="tok-number">20</span>][<span class="tok-number">200</span>];
+<span class="tok-keyword">bool</span> vis[<span class="tok-number">20</span>][<span class="tok-number">200</span>];
+<span class="tok-comment">// pos: current digit index, sumMod: digit sum so far mod K, tight: bound by s</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dfs(<span class="tok-keyword">int</span> pos, <span class="tok-keyword">int</span> sumMod, <span class="tok-keyword">bool</span> tight) {
+    <span class="tok-keyword">if</span> (pos == (<span class="tok-keyword">int</span>)s.size()) <span class="tok-keyword">return</span> sumMod == <span class="tok-number">0</span> ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
+    <span class="tok-keyword">if</span> (!tight &amp;&amp; vis[pos][sumMod]) <span class="tok-keyword">return</span> memo[pos][sumMod];
+    <span class="tok-keyword">int</span> limit = tight ? (s[pos]-<span class="tok-char">&#x27;0&#x27;</span>) : <span class="tok-number">9</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">0</span>; d &lt;= limit; d++) {
+        res += dfs(pos+<span class="tok-number">1</span>, (sumMod+d)%K, tight &amp;&amp; (d==limit));
     }
-    if (!tight) { vis[pos][sumMod] = true; memo[pos][sumMod] = res; }
-    return res;
+    <span class="tok-keyword">if</span> (!tight) { vis[pos][sumMod] = <span class="tok-keyword">true</span>; memo[pos][sumMod] = res; }
+    <span class="tok-keyword">return</span> res;
 }
-long long countUpTo(long long n, int k) {
-    if (n &lt; 0) return 0;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> countUpTo(<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> n, <span class="tok-keyword">int</span> k) {
+    <span class="tok-keyword">if</span> (n &lt; <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
     s = to_string(n);
     K = k;
-    memset(vis, 0, sizeof(vis));
-    return dfs(0, 0, true);
+    memset(vis, <span class="tok-number">0</span>, <span class="tok-keyword">sizeof</span>(vis));
+    <span class="tok-keyword">return</span> dfs(<span class="tok-number">0</span>, <span class="tok-number">0</span>, <span class="tok-keyword">true</span>);
 }
-int main(){
-    long long l, r; int k;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l, r; <span class="tok-keyword">int</span> k;
     cin &gt;&gt; l &gt;&gt; r &gt;&gt; k;
-    cout &lt;&lt; (countUpTo(r,k) - countUpTo(l-1,k)) &lt;&lt; endl;
+    cout &lt;&lt; (countUpTo(r,k) - countUpTo(l-<span class="tok-number">1</span>,k)) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1369,39 +1381,39 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Because the digit set never contains 0, every string of allowed digits is automatically a valid positive integer with no leading-zero issue -- this simplifies the classic &#x27;branch at the first strictly-smaller digit&#x27; digit DP into a clean closed form.</p><p>Let L = number of decimal digits of N. Every number with fewer than L digits (length 1 to L-1) is automatically &lt;= N and can use ANY of the m digits at each of its positions, contributing m^len choices for each length; sum these over len = 1..L-1.</p><p>For numbers with EXACTLY L digits, scan N&#x27;s digits left to right while tracking whether we&#x27;re still &#x27;tight&#x27; (matching N&#x27;s prefix exactly). At each position pos with N&#x27;s digit nd: every allowed digit strictly less than nd lets the remaining (L-1-pos) positions be filled freely with any of the m digits, contributing (count of allowed digits &lt; nd) * m^(L-1-pos) numbers that are guaranteed &lt; N from this position onward. Then check whether nd itself is an allowed digit: if not, no length-L number can stay tight past this position, so stop; if yes, continue to the next position while remaining tight, and if we reach the end of N while still tight, N itself is achievable, so add 1. This is an explicit unrolled version of the digit-DP recursion (equivalent to memoized dfs(pos, tight) with no extra state needed beyond the running power of m), verified against a brute-force scan over all integers up to N for 300 random digit sets and N.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int m; cin &gt;&gt; m;
-    vector&lt;int&gt; D(m);
-    for (auto &amp;d : D) cin &gt;&gt; d; // digits 1..9, given sorted ascending
-    long long N; cin &gt;&gt; N;
-    string s = to_string(N);
-    int L = s.size();
-    // lengths 1..L-1: all combinations valid (digits are 1-9, never leading zero issue)
-    long long total = 0;
-    long long p = 1; // m^0
-    for (int len = 1; len &lt; L; len++) {
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m; cin &gt;&gt; m;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; D(m);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;d : D) cin &gt;&gt; d; <span class="tok-comment">// digits 1..9, given sorted ascending</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> N; cin &gt;&gt; N;
+    <span class="tok-type">string</span> s = to_string(N);
+    <span class="tok-keyword">int</span> L = s.size();
+    <span class="tok-comment">// lengths 1..L-1: all combinations valid (digits are 1-9, never leading zero issue)</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> p = <span class="tok-number">1</span>; <span class="tok-comment">// m^0</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = <span class="tok-number">1</span>; len &lt; L; len++) {
         p *= m;
         total += p;
     }
-    // length == L: digit DP style scan
-    bool matchedFull = false;
-    for (int pos = 0; pos &lt; L; pos++) {
-        int nd = s[pos]-&#x27;0&#x27;;
-        int cntLess = 0;
-        for (int d : D) if (d &lt; nd) cntLess++;
-        long long power = 1;
-        for (int i = 0; i &lt; L-1-pos; i++) power *= m;
-        total += (long long)cntLess * power;
-        // check if nd itself is achievable (in D) to continue tight
-        bool found = false;
-        for (int d : D) if (d == nd) { found = true; break; }
-        if (!found) { matchedFull = false; goto done; }
-        if (pos == L-1) matchedFull = true;
+    <span class="tok-comment">// length == L: digit DP style scan</span>
+    <span class="tok-keyword">bool</span> matchedFull = <span class="tok-keyword">false</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> pos = <span class="tok-number">0</span>; pos &lt; L; pos++) {
+        <span class="tok-keyword">int</span> nd = s[pos]-<span class="tok-char">&#x27;0&#x27;</span>;
+        <span class="tok-keyword">int</span> cntLess = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d : D) <span class="tok-keyword">if</span> (d &lt; nd) cntLess++;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> power = <span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; L-<span class="tok-number">1</span>-pos; i++) power *= m;
+        total += (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)cntLess * power;
+        <span class="tok-comment">// check if nd itself is achievable (in D) to continue tight</span>
+        <span class="tok-keyword">bool</span> found = <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d : D) <span class="tok-keyword">if</span> (d == nd) { found = <span class="tok-keyword">true</span>; <span class="tok-keyword">break</span>; }
+        <span class="tok-keyword">if</span> (!found) { matchedFull = <span class="tok-keyword">false</span>; <span class="tok-keyword">goto</span> done; }
+        <span class="tok-keyword">if</span> (pos == L-<span class="tok-number">1</span>) matchedFull = <span class="tok-keyword">true</span>;
     }
     done:
-    if (matchedFull) total += 1;
+    <span class="tok-keyword">if</span> (matchedFull) total += <span class="tok-number">1</span>;
     cout &lt;&lt; total &lt;&lt; endl;
 }
 </code></pre>
@@ -1421,40 +1433,40 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>The difficulty versus the previous two examples is that the divisor (the digit sum) is not fixed -- it depends on the very number being counted. The safe, provably-correct approach: the digit sum of any number up to R is bounded (at most 9 * number_of_digits(R)). Enumerate every candidate digit-sum value V from 1 up to that bound, and for each V run a small digit DP that counts numbers whose digit sum is EXACTLY V and which are divisible by V, using state (pos, digitSumSoFar capped at V, remainder mod V, tight). Summing these counts over all candidate V gives count(N) = number of beautiful numbers in [0, N]; then answer = count(R) - count(L-1).</p><p>(Some editorials speed this further by tracking a remainder modulo LCM(1..9) = 2520 to reuse work across divisors -- but that shortcut is only valid when the candidate divisor divides 2520, which is not guaranteed once digit sums exceed 9, so this worked example deliberately uses the always-correct per-candidate-V version. It is still fast: for R up to 10^6 the total work across all V is negligible, and for R up to 10^18 the same idea works with the state space (pos &lt;= 19, V &lt;= 171) -- the CF-official-editorial LCM(1..9) optimization is an orthogonal speed-up on top of this, not a correctness requirement.)</p><p>Cross-checked against a brute-force digit-sum-and-mod scan over the range for many random sub-ranges, with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-string s;
-int V; // candidate digit sum target
-long long memo[20][170][170];
-bool vis[20][170][170];
-long long dfs(int pos, int sumSoFar, int rem, bool tight) {
-    if (sumSoFar &gt; V) return 0;
-    if (pos == (int)s.size()) return (sumSoFar == V &amp;&amp; rem == 0) ? 1 : 0;
-    if (!tight &amp;&amp; vis[pos][sumSoFar][rem]) return memo[pos][sumSoFar][rem];
-    int limit = tight ? (s[pos]-&#x27;0&#x27;) : 9;
-    long long res = 0;
-    for (int d = 0; d &lt;= limit; d++) {
-        int nrem = (rem*10+d) % V;
-        res += dfs(pos+1, sumSoFar+d, nrem, tight &amp;&amp; d==limit);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-type">string</span> s;
+<span class="tok-keyword">int</span> V; <span class="tok-comment">// candidate digit sum target</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> memo[<span class="tok-number">20</span>][<span class="tok-number">170</span>][<span class="tok-number">170</span>];
+<span class="tok-keyword">bool</span> vis[<span class="tok-number">20</span>][<span class="tok-number">170</span>][<span class="tok-number">170</span>];
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dfs(<span class="tok-keyword">int</span> pos, <span class="tok-keyword">int</span> sumSoFar, <span class="tok-keyword">int</span> rem, <span class="tok-keyword">bool</span> tight) {
+    <span class="tok-keyword">if</span> (sumSoFar &gt; V) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">if</span> (pos == (<span class="tok-keyword">int</span>)s.size()) <span class="tok-keyword">return</span> (sumSoFar == V &amp;&amp; rem == <span class="tok-number">0</span>) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
+    <span class="tok-keyword">if</span> (!tight &amp;&amp; vis[pos][sumSoFar][rem]) <span class="tok-keyword">return</span> memo[pos][sumSoFar][rem];
+    <span class="tok-keyword">int</span> limit = tight ? (s[pos]-<span class="tok-char">&#x27;0&#x27;</span>) : <span class="tok-number">9</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">0</span>; d &lt;= limit; d++) {
+        <span class="tok-keyword">int</span> nrem = (rem*<span class="tok-number">10</span>+d) % V;
+        res += dfs(pos+<span class="tok-number">1</span>, sumSoFar+d, nrem, tight &amp;&amp; d==limit);
     }
-    if (!tight) { vis[pos][sumSoFar][rem] = true; memo[pos][sumSoFar][rem] = res; }
-    return res;
+    <span class="tok-keyword">if</span> (!tight) { vis[pos][sumSoFar][rem] = <span class="tok-keyword">true</span>; memo[pos][sumSoFar][rem] = res; }
+    <span class="tok-keyword">return</span> res;
 }
-long long countUpTo(long long n) {
-    if (n &lt;= 0) return 0;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> countUpTo(<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> n) {
+    <span class="tok-keyword">if</span> (n &lt;= <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
     s = to_string(n);
-    long long total = 0;
-    int maxSum = 9 * (int)s.size();
-    for (V = 1; V &lt;= maxSum; V++) {
-        memset(vis, 0, sizeof(vis));
-        total += dfs(0, 0, 0, true);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> maxSum = <span class="tok-number">9</span> * (<span class="tok-keyword">int</span>)s.size();
+    <span class="tok-keyword">for</span> (V = <span class="tok-number">1</span>; V &lt;= maxSum; V++) {
+        memset(vis, <span class="tok-number">0</span>, <span class="tok-keyword">sizeof</span>(vis));
+        total += dfs(<span class="tok-number">0</span>, <span class="tok-number">0</span>, <span class="tok-number">0</span>, <span class="tok-keyword">true</span>);
     }
-    return total;
+    <span class="tok-keyword">return</span> total;
 }
-int main(){
-    long long l, r;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l, r;
     cin &gt;&gt; l &gt;&gt; r;
-    cout &lt;&lt; (countUpTo(r) - countUpTo(l-1)) &lt;&lt; endl;
+    cout &lt;&lt; (countUpTo(r) - countUpTo(l-<span class="tok-number">1</span>)) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1479,30 +1491,30 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Treat each cell as a DAG node with a directed edge to any orthogonal neighbor of strictly greater value. Because values strictly increase along every edge, this graph is automatically acyclic (a cycle would require a value to be both strictly greater and strictly less than itself along the loop) -- so a naive-looking recursive DFS is actually safe to memoize.</p><p>dfs(r, c) = 1 + max over the (up to 4) neighbors (nr, nc) with grid[nr][nc] &gt; grid[r][c] of dfs(nr, nc), or just 1 if no such neighbor exists. Memoize dfs(r, c) in a 2D array (each cell&#x27;s answer never changes once computed). The overall answer is the maximum dfs(r, c) over all cells. Each cell is computed exactly once (O(1) amortized per cell given memoization) and looks at O(1) neighbors, giving O(rows*cols) total. Verified against the two official LeetCode examples (both giving 4).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int R, C;
-vector&lt;vector&lt;int&gt;&gt; g;
-vector&lt;vector&lt;int&gt;&gt; memo;
-int dr[4]={-1,1,0,0}, dc[4]={0,0,-1,1};
-int dfs(int r, int c) {
-    if (memo[r][c] != -1) return memo[r][c];
-    int best = 1;
-    for (int k = 0; k &lt; 4; k++) {
-        int nr=r+dr[k], nc=c+dc[k];
-        if (nr&gt;=0 &amp;&amp; nr&lt;R &amp;&amp; nc&gt;=0 &amp;&amp; nc&lt;C &amp;&amp; g[nr][nc] &gt; g[r][c]) {
-            best = max(best, 1 + dfs(nr,nc));
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> R, C;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; g;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; memo;
+<span class="tok-keyword">int</span> dr[<span class="tok-number">4</span>]={-<span class="tok-number">1</span>,<span class="tok-number">1</span>,<span class="tok-number">0</span>,<span class="tok-number">0</span>}, dc[<span class="tok-number">4</span>]={<span class="tok-number">0</span>,<span class="tok-number">0</span>,-<span class="tok-number">1</span>,<span class="tok-number">1</span>};
+<span class="tok-keyword">int</span> dfs(<span class="tok-keyword">int</span> r, <span class="tok-keyword">int</span> c) {
+    <span class="tok-keyword">if</span> (memo[r][c] != -<span class="tok-number">1</span>) <span class="tok-keyword">return</span> memo[r][c];
+    <span class="tok-keyword">int</span> best = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = <span class="tok-number">0</span>; k &lt; <span class="tok-number">4</span>; k++) {
+        <span class="tok-keyword">int</span> nr=r+dr[k], nc=c+dc[k];
+        <span class="tok-keyword">if</span> (nr&gt;=<span class="tok-number">0</span> &amp;&amp; nr&lt;R &amp;&amp; nc&gt;=<span class="tok-number">0</span> &amp;&amp; nc&lt;C &amp;&amp; g[nr][nc] &gt; g[r][c]) {
+            best = max(best, <span class="tok-number">1</span> + dfs(nr,nc));
         }
     }
-    return memo[r][c] = best;
+    <span class="tok-keyword">return</span> memo[r][c] = best;
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; R &gt;&gt; C;
-    g.assign(R, vector&lt;int&gt;(C));
-    for (auto &amp;row : g) for (auto &amp;x : row) cin &gt;&gt; x;
-    memo.assign(R, vector&lt;int&gt;(C, -1));
-    int ans = 0;
-    for (int i=0;i&lt;R;i++) for (int j=0;j&lt;C;j++) ans = max(ans, dfs(i,j));
+    g.assign(R, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(C));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;row : g) <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : row) cin &gt;&gt; x;
+    memo.assign(R, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(C, -<span class="tok-number">1</span>));
+    <span class="tok-keyword">int</span> ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;R;i++) <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j=<span class="tok-number">0</span>;j&lt;C;j++) ans = max(ans, dfs(i,j));
     cout &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>
@@ -1523,32 +1535,32 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Reduce the multi-permutation LCS to a longest-path-in-a-DAG problem: define a directed edge u -&gt; v (for distinct values u, v in 1..n) if u appears strictly before v in EVERY one of the k permutations. Any chain u1 -&gt; u2 -&gt; ... -&gt; ut that follows these edges is, by construction, a common subsequence of all k permutations (each ui appears before u(i+1) in every permutation), and conversely every common subsequence corresponds to such a chain. So the answer is the length of the longest path in this DAG (counting nodes, not edges).</p><p>Crucially, this DAG&#x27;s edges all agree with the relative order given by permutation 1 (if u -&gt; v is an edge, u comes before v in every permutation, including permutation 1), so simply processing nodes in the order they appear in permutation 1 is already a valid topological order -- no separate topological sort is needed. dp[v] = 1 + max over already-processed u (earlier in permutation 1&#x27;s order) with an edge u-&gt;v of dp[u], defaulting to 1 if no valid predecessor exists. Checking whether an edge u-&gt;v exists costs O(k) (compare positions in every permutation), so the total cost is O(n^2 * k). The answer is the maximum dp value. Verified against the official Codeforces sample (answer 3) and against a brute-force common-subsequence search over many random small permutation sets.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, k;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, k;
     cin &gt;&gt; n &gt;&gt; k;
-    vector&lt;vector&lt;int&gt;&gt; perm(k, vector&lt;int&gt;(n));
-    vector&lt;vector&lt;int&gt;&gt; pos(k, vector&lt;int&gt;(n+1));
-    for (int i = 0; i &lt; k; i++) {
-        for (int j = 0; j &lt; n; j++) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; perm(k, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(n));
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; pos(k, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(n+<span class="tok-number">1</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; n; j++) {
             cin &gt;&gt; perm[i][j];
             pos[i][perm[i][j]] = j;
         }
     }
-    // edge u-&gt;v (u!=v) if pos[i][u] &lt; pos[i][v] for all i
-    // process nodes in order of perm[0] (topological order valid since all edges agree with perm0&#x27;s order)
-    vector&lt;int&gt; dp(n+1, 1);
-    int ans = 1;
-    for (int idx = 0; idx &lt; n; idx++) {
-        int v = perm[0][idx];
-        for (int jdx = 0; jdx &lt; idx; jdx++) {
-            int u = perm[0][jdx];
-            bool edge = true;
-            for (int i = 0; i &lt; k; i++) {
-                if (!(pos[i][u] &lt; pos[i][v])) { edge = false; break; }
+    <span class="tok-comment">// edge u-&gt;v (u!=v) if pos[i][u] &lt; pos[i][v] for all i</span>
+    <span class="tok-comment">// process nodes in order of perm[0] (topological order valid since all edges agree with perm0&#x27;s order)</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; dp(n+<span class="tok-number">1</span>, <span class="tok-number">1</span>);
+    <span class="tok-keyword">int</span> ans = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> idx = <span class="tok-number">0</span>; idx &lt; n; idx++) {
+        <span class="tok-keyword">int</span> v = perm[<span class="tok-number">0</span>][idx];
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> jdx = <span class="tok-number">0</span>; jdx &lt; idx; jdx++) {
+            <span class="tok-keyword">int</span> u = perm[<span class="tok-number">0</span>][jdx];
+            <span class="tok-keyword">bool</span> edge = <span class="tok-keyword">true</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
+                <span class="tok-keyword">if</span> (!(pos[i][u] &lt; pos[i][v])) { edge = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
             }
-            if (edge) dp[v] = max(dp[v], dp[u] + 1);
+            <span class="tok-keyword">if</span> (edge) dp[v] = max(dp[v], dp[u] + <span class="tok-number">1</span>);
         }
         ans = max(ans, dp[v]);
     }
@@ -1580,22 +1592,22 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Classic interval minimax DP tracking score DIFFERENCE. Let dp[i][j] = the best possible (current mover&#x27;s score - opponent&#x27;s score) achievable on the subarray a[i..j], for whichever player is about to move on that subarray. Base case dp[i][i] = a[i] (only one element left; the mover takes it). Recurrence: dp[i][j] = max(a[i] - dp[i+1][j], a[j] - dp[i][j-1]) -- taking a[i] yields a[i] now, then the opponent plays optimally on [i+1, j] achieving dp[i+1][j] as ITS OWN difference, which is subtracted from the current player&#x27;s perspective (symmetrically for taking a[j]).</p><p>Fill dp by increasing subarray length. Once dp[0][n-1] (the difference for the whole array) is known, note that (first player&#x27;s score) - (second player&#x27;s score) = dp[0][n-1] and (first player&#x27;s score) + (second player&#x27;s score) = total sum of a[]. Solving these two equations gives first player&#x27;s score = (total + dp[0][n-1]) / 2. Verified against a brute-force minimax recursion returning both players&#x27; actual scores, with zero mismatches over 200 random arrays, and matches the well-known reference example.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(n, 0));
-    for (int i = 0; i &lt; n; i++) dp[i][i] = a[i];
-    for (int len = 2; len &lt;= n; len++) {
-        for (int i = 0; i + len - 1 &lt; n; i++) {
-            int j = i + len - 1;
-            dp[i][j] = max(a[i] - dp[i+1][j], a[j] - dp[i][j-1]);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(n, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) dp[i][i] = a[i];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = <span class="tok-number">2</span>; len &lt;= n; len++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i + len - <span class="tok-number">1</span> &lt; n; i++) {
+            <span class="tok-keyword">int</span> j = i + len - <span class="tok-number">1</span>;
+            dp[i][j] = max(a[i] - dp[i+<span class="tok-number">1</span>][j], a[j] - dp[i][j-<span class="tok-number">1</span>]);
         }
     }
-    long long total = accumulate(a.begin(), a.end(), 0LL);
-    long long firstPlayer = (total + dp[0][n-1]) / 2;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = accumulate(a.begin(), a.end(), <span class="tok-number">0LL</span>);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> firstPlayer = (total + dp[<span class="tok-number">0</span>][n-<span class="tok-number">1</span>]) / <span class="tok-number">2</span>;
     cout &lt;&lt; firstPlayer &lt;&lt; endl;
 }
 </code></pre>
@@ -1614,25 +1626,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Suffix minimax DP tracking score difference, exactly analogous to the previous example but with a branching factor of 3 instead of 2 (since a move can take 1, 2, or 3 stones) and defined over SUFFIXES rather than general subarrays (because stones are only ever removed from the front, the remaining state is always a suffix, so a 1D array suffices instead of a 2D table).</p><p>Let dp[i] = best (current mover&#x27;s score - opponent&#x27;s score) achievable starting from index i to the end. dp[n] = 0 (nothing left). For i from n-1 down to 0: dp[i] = max over k in {1,2,3} with i+k &lt;= n of (sum(a[i..i+k-1]) - dp[i+k]) -- take k stones now (gaining their sum), then the opponent achieves dp[i+k] as their own best difference from what remains, which is subtracted from the current player&#x27;s perspective.</p><p>The overall answer is dp[0]: if positive, Alice (who moves first) wins; if negative, Bob wins; if zero, it&#x27;s a tie. Verified against all three official LeetCode examples ([1,2,3,7] -&gt; Bob, [1,2,3,-9] -&gt; Alice, [1,2,3,6] -&gt; Tie), all matching exactly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    vector&lt;long long&gt; dp(n+1, 0);
-    for (int i = n-1; i &gt;= 0; i--) {
-        long long best = LLONG_MIN;
-        long long sum = 0;
-        for (int k = 1; k &lt;= 3 &amp;&amp; i+k &lt;= n; k++) {
-            sum += a[i+k-1];
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dp(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = n-<span class="tok-number">1</span>; i &gt;= <span class="tok-number">0</span>; i--) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = LLONG_MIN;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> sum = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = <span class="tok-number">1</span>; k &lt;= <span class="tok-number">3</span> &amp;&amp; i+k &lt;= n; k++) {
+            sum += a[i+k-<span class="tok-number">1</span>];
             best = max(best, sum - dp[i+k]);
         }
         dp[i] = best;
     }
-    if (dp[0] &gt; 0) cout &lt;&lt; &quot;Alice&quot; &lt;&lt; endl;
-    else if (dp[0] &lt; 0) cout &lt;&lt; &quot;Bob&quot; &lt;&lt; endl;
-    else cout &lt;&lt; &quot;Tie&quot; &lt;&lt; endl;
+    <span class="tok-keyword">if</span> (dp[<span class="tok-number">0</span>] &gt; <span class="tok-number">0</span>) cout &lt;&lt; <span class="tok-string">&quot;Alice&quot;</span> &lt;&lt; endl;
+    <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (dp[<span class="tok-number">0</span>] &lt; <span class="tok-number">0</span>) cout &lt;&lt; <span class="tok-string">&quot;Bob&quot;</span> &lt;&lt; endl;
+    <span class="tok-keyword">else</span> cout &lt;&lt; <span class="tok-string">&quot;Tie&quot;</span> &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1650,24 +1662,24 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Pure win/lose combinatorial-game DP (the base case of Sprague-Grundy reasoning, without needing full Grundy numbers since there&#x27;s only one pile). Let win[s] = true if the player about to move, facing a pile of size s, can force a win. win[0] = false (no sticks left, no legal move, the player to move loses immediately).</p><p>For s from 1 to n: win[s] = true if there EXISTS an allowed move size m &lt;= s such that win[s - m] is false (i.e., making that move leaves the opponent in a losing position). If every legal move leads to a position where win[...] is true (opponent would then win), then win[s] is false. Since each win[s] only depends on smaller win[s&#x27;], filling the array left to right in increasing s is a valid order, costing O(n*k) total. For the classic moves {1, 2}, this correctly reproduces the well-known pattern: the position is losing exactly when s is a multiple of 3.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, k;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, k;
     cin &gt;&gt; n &gt;&gt; k;
-    vector&lt;int&gt; moves(k);
-    for (auto &amp;m : moves) cin &gt;&gt; m;
-    vector&lt;char&gt; win(n+1, false);
-    win[0] = false; // no sticks left, player to move loses
-    for (int i = 1; i &lt;= n; i++) {
-        bool w = false;
-        for (int m : moves) {
-            if (m &lt;= i &amp;&amp; !win[i-m]) { w = true; break; }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; moves(k);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;m : moves) cin &gt;&gt; m;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; win(n+<span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+    win[<span class="tok-number">0</span>] = <span class="tok-keyword">false</span>; <span class="tok-comment">// no sticks left, player to move loses</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        <span class="tok-keyword">bool</span> w = <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> m : moves) {
+            <span class="tok-keyword">if</span> (m &lt;= i &amp;&amp; !win[i-m]) { w = <span class="tok-keyword">true</span>; <span class="tok-keyword">break</span>; }
         }
         win[i] = w;
     }
-    for (int i = 1; i &lt;= n; i++) {
-        cout &lt;&lt; (win[i] ? &quot;First&quot; : &quot;Second&quot;) &lt;&lt; (i&lt;n? &quot; &quot; : &quot;\n&quot;);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        cout &lt;&lt; (win[i] ? <span class="tok-string">&quot;First&quot;</span> : <span class="tok-string">&quot;Second&quot;</span>) &lt;&lt; (i&lt;n? <span class="tok-string">&quot; &quot;</span> : <span class="tok-string">&quot;\n&quot;</span>);
     }
 }
 </code></pre>
@@ -1694,25 +1706,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Foundational probability DP. Let dp[i][s] = probability that the sum of the first i dice equals s. Base case dp[0][0] = 1 (before any rolls, the sum is 0 with certainty). Transition: dp[i][s] = (1/6) * sum over face = 1..6 of dp[i-1][s - face] (each of the 6 outcomes of the i-th roll is equally likely, and contributes its probability mass forward). The answer is sum over s in [a, b] of dp[n][s]. This runs in O(n * 6n * 6) = O(n^2) and was checked against exact fraction arithmetic (6/36 = 1/6 for n=2, a=b=7) and against brute-force enumeration of all 6^n outcomes for n=3.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, a, b;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, a, b;
     cin &gt;&gt; n &gt;&gt; a &gt;&gt; b;
-    vector&lt;vector&lt;double&gt;&gt; dp(n+1, vector&lt;double&gt;(6*n+1, 0.0));
-    dp[0][0] = 1.0;
-    for (int i = 1; i &lt;= n; i++) {
-        for (int s = i; s &lt;= 6*i; s++) {
-            double p = 0;
-            for (int face = 1; face &lt;= 6; face++) {
-                if (s - face &gt;= 0) p += dp[i-1][s-face];
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">double</span>&gt;&gt; dp(n+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">double</span>&gt;(<span class="tok-number">6</span>*n+<span class="tok-number">1</span>, <span class="tok-number">0.0</span>));
+    dp[<span class="tok-number">0</span>][<span class="tok-number">0</span>] = <span class="tok-number">1.0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> s = i; s &lt;= <span class="tok-number">6</span>*i; s++) {
+            <span class="tok-keyword">double</span> p = <span class="tok-number">0</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> face = <span class="tok-number">1</span>; face &lt;= <span class="tok-number">6</span>; face++) {
+                <span class="tok-keyword">if</span> (s - face &gt;= <span class="tok-number">0</span>) p += dp[i-<span class="tok-number">1</span>][s-face];
             }
-            dp[i][s] = p / 6.0;
+            dp[i][s] = p / <span class="tok-number">6.0</span>;
         }
     }
-    double ans = 0;
-    for (int s = a; s &lt;= b &amp;&amp; s &lt;= 6*n; s++) ans += dp[n][s];
-    cout &lt;&lt; fixed &lt;&lt; setprecision(6) &lt;&lt; ans &lt;&lt; endl;
+    <span class="tok-keyword">double</span> ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> s = a; s &lt;= b &amp;&amp; s &lt;= <span class="tok-number">6</span>*n; s++) ans += dp[n][s];
+    cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="tok-number">6</span>) &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1729,51 +1741,51 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>3-dimensional absorbing-Markov-chain DP over the state (r, s, p) = counts of each type currently alive. A state is absorbing (terminal) once at most one of the three counts is positive; at that point the surviving type (if any creatures remain) is determined outright.</p><p>For a non-absorbing state, same-type meetings don&#x27;t change the state, so it is valid (and standard for this class of problem) to condition the transition only on the meetings that DO change something: rock-vs-scissors meetings (count r*s, outcome: a scissors creature is eliminated, moving to state (r, s-1, p)), scissors-vs-paper meetings (count s*p, moving to (r, s, p-1)), and paper-vs-rock meetings (count p*r, moving to (r-1, s, p)). Renormalize by their sum (the total number of &#x27;interesting&#x27; pairs) to get transition probabilities that sum to 1, then recurse: solve(r,s,p) = weighted average of solve() at the three successor states, weighted by these renormalized probabilities. Memoize on (r, s, p) since the state space is only O(R*S*P). Verified against the official Codeforces sample (r=s=p=2 gives exactly 1/3, 1/3, 1/3 by symmetry) and against manually-checked asymmetric cases.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int R, S, P;
-map&lt;tuple&lt;int,int,int&gt;, array&lt;double,3&gt;&gt; memo;
-// returns {prob rock survives, prob scissors survives, prob paper survives}
-array&lt;double,3&gt; solve(int r, int s, int p) {
-    // check absorbing: at most one of r,s,p is positive
-    int nz = (r&gt;0) + (s&gt;0) + (p&gt;0);
-    if (nz &lt;= 1) {
-        array&lt;double,3&gt; res = {0,0,0};
-        if (r&gt;0) res[0]=1;
-        else if (s&gt;0) res[1]=1;
-        else if (p&gt;0) res[2]=1;
-        return res;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> R, S, P;
+<span class="tok-type">map</span>&lt;<span class="tok-type">tuple</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;, <span class="tok-type">array</span>&lt;<span class="tok-keyword">double</span>,<span class="tok-number">3</span>&gt;&gt; memo;
+<span class="tok-comment">// returns {prob rock survives, prob scissors survives, prob paper survives}</span>
+<span class="tok-type">array</span>&lt;<span class="tok-keyword">double</span>,<span class="tok-number">3</span>&gt; solve(<span class="tok-keyword">int</span> r, <span class="tok-keyword">int</span> s, <span class="tok-keyword">int</span> p) {
+    <span class="tok-comment">// check absorbing: at most one of r,s,p is positive</span>
+    <span class="tok-keyword">int</span> nz = (r&gt;<span class="tok-number">0</span>) + (s&gt;<span class="tok-number">0</span>) + (p&gt;<span class="tok-number">0</span>);
+    <span class="tok-keyword">if</span> (nz &lt;= <span class="tok-number">1</span>) {
+        <span class="tok-type">array</span>&lt;<span class="tok-keyword">double</span>,<span class="tok-number">3</span>&gt; res = {<span class="tok-number">0</span>,<span class="tok-number">0</span>,<span class="tok-number">0</span>};
+        <span class="tok-keyword">if</span> (r&gt;<span class="tok-number">0</span>) res[<span class="tok-number">0</span>]=<span class="tok-number">1</span>;
+        <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (s&gt;<span class="tok-number">0</span>) res[<span class="tok-number">1</span>]=<span class="tok-number">1</span>;
+        <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (p&gt;<span class="tok-number">0</span>) res[<span class="tok-number">2</span>]=<span class="tok-number">1</span>;
+        <span class="tok-keyword">return</span> res;
     }
-    auto key = make_tuple(r,s,p);
-    auto it = memo.find(key);
-    if (it != memo.end()) return it-&gt;second;
-    long long rockScissors = (long long)r*s; // rock beats scissors -&gt; s decreases
-    long long scissorsPaper = (long long)s*p; // scissors beats paper -&gt; p decreases
-    long long paperRock = (long long)p*r; // paper beats rock -&gt; r decreases
-    long long crossTotal = rockScissors + scissorsPaper + paperRock;
-    array&lt;double,3&gt; res = {0,0,0};
-    if (rockScissors &gt; 0) {
-        auto sub = solve(r, s-1, p);
-        double w = (double)rockScissors / crossTotal;
-        for (int i=0;i&lt;3;i++) res[i] += w*sub[i];
+    <span class="tok-keyword">auto</span> key = make_tuple(r,s,p);
+    <span class="tok-keyword">auto</span> it = memo.find(key);
+    <span class="tok-keyword">if</span> (it != memo.end()) <span class="tok-keyword">return</span> it-&gt;second;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> rockScissors = (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)r*s; <span class="tok-comment">// rock beats scissors -&gt; s decreases</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> scissorsPaper = (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)s*p; <span class="tok-comment">// scissors beats paper -&gt; p decreases</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> paperRock = (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)p*r; <span class="tok-comment">// paper beats rock -&gt; r decreases</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> crossTotal = rockScissors + scissorsPaper + paperRock;
+    <span class="tok-type">array</span>&lt;<span class="tok-keyword">double</span>,<span class="tok-number">3</span>&gt; res = {<span class="tok-number">0</span>,<span class="tok-number">0</span>,<span class="tok-number">0</span>};
+    <span class="tok-keyword">if</span> (rockScissors &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">auto</span> sub = solve(r, s-<span class="tok-number">1</span>, p);
+        <span class="tok-keyword">double</span> w = (<span class="tok-keyword">double</span>)rockScissors / crossTotal;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;<span class="tok-number">3</span>;i++) res[i] += w*sub[i];
     }
-    if (scissorsPaper &gt; 0) {
-        auto sub = solve(r, s, p-1);
-        double w = (double)scissorsPaper / crossTotal;
-        for (int i=0;i&lt;3;i++) res[i] += w*sub[i];
+    <span class="tok-keyword">if</span> (scissorsPaper &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">auto</span> sub = solve(r, s, p-<span class="tok-number">1</span>);
+        <span class="tok-keyword">double</span> w = (<span class="tok-keyword">double</span>)scissorsPaper / crossTotal;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;<span class="tok-number">3</span>;i++) res[i] += w*sub[i];
     }
-    if (paperRock &gt; 0) {
-        auto sub = solve(r-1, s, p);
-        double w = (double)paperRock / crossTotal;
-        for (int i=0;i&lt;3;i++) res[i] += w*sub[i];
+    <span class="tok-keyword">if</span> (paperRock &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">auto</span> sub = solve(r-<span class="tok-number">1</span>, s, p);
+        <span class="tok-keyword">double</span> w = (<span class="tok-keyword">double</span>)paperRock / crossTotal;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;<span class="tok-number">3</span>;i++) res[i] += w*sub[i];
     }
     memo[key] = res;
-    return res;
+    <span class="tok-keyword">return</span> res;
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; R &gt;&gt; S &gt;&gt; P;
-    auto res = solve(R,S,P);
-    cout &lt;&lt; fixed &lt;&lt; setprecision(6) &lt;&lt; res[0] &lt;&lt; &quot; &quot; &lt;&lt; res[1] &lt;&lt; &quot; &quot; &lt;&lt; res[2] &lt;&lt; endl;
+    <span class="tok-keyword">auto</span> res = solve(R,S,P);
+    cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="tok-number">6</span>) &lt;&lt; res[<span class="tok-number">0</span>] &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; res[<span class="tok-number">1</span>] &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; res[<span class="tok-number">2</span>] &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1790,25 +1802,25 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>By linearity of expectation, E[number of inversions] = sum over all pairs (i, j) with i &lt; j of P(value[i] &gt; value[j]) -- this holds regardless of any dependence between different pairs&#x27; outcomes, which is exactly what makes linearity of expectation so powerful here (we never need to reason about the full joint distribution over all n independent coin flips).</p><p>For a fixed pair (i, j), value[i] and value[j] are each uniformly one of two independent options, giving 4 equally likely combinations. P(value[i] &gt; value[j]) = (number of the 4 combinations where value[i] &gt; value[j]) / 4. Summing this local probability over all O(n^2) pairs gives the answer directly, with each pair costing O(1). (A faster O(n log n) version would maintain the running expectation via a Fenwick tree, aggregating &#x27;expected count of previously-seen values smaller than the current position&#x27;s expected contribution&#x27; -- the O(n^2) version shown here isolates the core probability/DP reasoning without that data-structure optimization.) Verified by brute-force enumeration over all 2^n equally likely assignments for n up to 10, with zero mismatches across 50 random test cases.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;int&gt; a(n), b(n);
-    for (int i = 0; i &lt; n; i++) cin &gt;&gt; a[i] &gt;&gt; b[i];
-    double expected = 0.0;
-    for (int i = 0; i &lt; n; i++) {
-        for (int j = i+1; j &lt; n; j++) {
-            int cnt = 0;
-            int vi[2] = {a[i], b[i]};
-            int vj[2] = {a[j], b[j]};
-            for (int x = 0; x &lt; 2; x++)
-                for (int y = 0; y &lt; 2; y++)
-                    if (vi[x] &gt; vj[y]) cnt++;
-            expected += cnt / 4.0;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n), b(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cin &gt;&gt; a[i] &gt;&gt; b[i];
+    <span class="tok-keyword">double</span> expected = <span class="tok-number">0.0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = i+<span class="tok-number">1</span>; j &lt; n; j++) {
+            <span class="tok-keyword">int</span> cnt = <span class="tok-number">0</span>;
+            <span class="tok-keyword">int</span> vi[<span class="tok-number">2</span>] = {a[i], b[i]};
+            <span class="tok-keyword">int</span> vj[<span class="tok-number">2</span>] = {a[j], b[j]};
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> x = <span class="tok-number">0</span>; x &lt; <span class="tok-number">2</span>; x++)
+                <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> y = <span class="tok-number">0</span>; y &lt; <span class="tok-number">2</span>; y++)
+                    <span class="tok-keyword">if</span> (vi[x] &gt; vj[y]) cnt++;
+            expected += cnt / <span class="tok-number">4.0</span>;
         }
     }
-    cout &lt;&lt; fixed &lt;&lt; setprecision(6) &lt;&lt; expected &lt;&lt; endl;
+    cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="tok-number">6</span>) &lt;&lt; expected &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1836,24 +1848,24 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Let dp[i] = the maximum sum of a valid subsequence that ENDS at index i (using nums[i] as its last element). Since the previous chosen element (if any) must be within the last k positions, dp[i] = nums[i] + max(0, max(dp[i-k], dp[i-k+1], ..., dp[i-1])) -- the max(0, ...) allows starting a fresh subsequence at i when every candidate predecessor&#x27;s dp-value is negative (better to not extend a negative chain). The naive computation of the window maximum costs O(k) per i, giving O(n*k) overall.</p><p>To speed this up, maintain a deque of indices whose dp-values are in strictly decreasing order (front = largest dp-value in the current window). Before computing dp[i]: pop any front index that has fallen outside [i-k, i-1]. The best previous value is then max(0, dp[deque.front()]) (or just 0 if the deque is empty). After computing dp[i], pop any back indices whose dp-value is &lt;= dp[i] (they can never again be the maximum, since dp[i] is both later, hence still in-window longer, and at least as large), then push i. Each index enters and leaves the deque at most once, so the total cost is O(n). The answer is the maximum dp[i] over all i. Verified against the official LeetCode 1425 example (answer 37) and against an O(n*k) brute-force window-max reference across 300 random tests with zero mismatches, including all-negative arrays.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, k;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, k;
     cin &gt;&gt; n &gt;&gt; k;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    vector&lt;long long&gt; dp(n);
-    deque&lt;int&gt; dq; // stores indices, dp values decreasing front to back
-    long long ans = LLONG_MIN;
-    for (int i = 0; i &lt; n; i++) {
-        // pop indices out of window [i-k, i-1]
-        while (!dq.empty() &amp;&amp; dq.front() &lt; i - k) dq.pop_front();
-        long long best = dq.empty() ? 0 : max(0LL, dp[dq.front()]);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dp(n);
+    <span class="tok-type">deque</span>&lt;<span class="tok-keyword">int</span>&gt; dq; <span class="tok-comment">// stores indices, dp values decreasing front to back</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ans = LLONG_MIN;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-comment">// pop indices out of window [i-k, i-1]</span>
+        <span class="tok-keyword">while</span> (!dq.empty() &amp;&amp; dq.front() &lt; i - k) dq.pop_front();
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = dq.empty() ? <span class="tok-number">0</span> : max(<span class="tok-number">0LL</span>, dp[dq.front()]);
         dp[i] = a[i] + best;
         ans = max(ans, dp[i]);
-        // maintain decreasing order
-        while (!dq.empty() &amp;&amp; dp[dq.back()] &lt;= dp[i]) dq.pop_back();
+        <span class="tok-comment">// maintain decreasing order</span>
+        <span class="tok-keyword">while</span> (!dq.empty() &amp;&amp; dp[dq.back()] &lt;= dp[i]) dq.pop_back();
         dq.push_back(i);
     }
     cout &lt;&lt; ans &lt;&lt; endl;
@@ -1874,43 +1886,43 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Let dp[i] = minimum cost to reach checkpoint i from checkpoint 1 (dp[1] = 0). The natural recurrence dp[i] = min over j &lt; i of (dp[j] + (h[i]-h[j])^2 + C) costs O(n) per i (O(n^2) total) if evaluated directly.</p><p>Expand the square: dp[i] = h[i]^2 + C + min over j &lt; i of ( (dp[j] + h[j]^2) - 2*h[j]*h[i] ). This is exactly the convex hull trick pattern: define, for each j, a line with slope m_j = -2*h[j] and intercept b_j = dp[j] + h[j]^2; then the min-over-j term is the lower envelope of all lines for j &lt; i, evaluated at x = h[i]. dp[i] is then h[i]^2 + C plus that envelope value.</p><p>Because h[] is strictly increasing, lines are inserted in order of strictly DECREASING slope (m_j = -2h[j] decreases as j, hence h[j], increases), and queries x = h[i] arrive in strictly INCREASING order -- exactly the conditions for the simple monotonic (deque-based) convex hull trick, with no need for a Li Chao tree. New lines are appended to a deque after popping any trailing line that a geometric bad()-test shows is now dominated everywhere it used to matter (comparing the intersection x-coordinate of the new line against the last two lines already on the hull). Queries advance a monotonic pointer forward along the hull (never backward, since queries only increase), giving O(1) amortized per query and O(1) amortized per insertion, for O(n) total. This was stress-tested against an O(n^2) brute-force reference over 500 random instances (n up to 60, random strictly-increasing h, random C) with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-struct Line { long long m, b; };
-double interX(const Line&amp;a, const Line&amp;b){
-    return (double)(b.b - a.b) / (double)(a.m - b.m);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">struct</span> Line { <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> m, b; };
+<span class="tok-keyword">double</span> interX(<span class="tok-keyword">const</span> Line&amp;a, <span class="tok-keyword">const</span> Line&amp;b){
+    <span class="tok-keyword">return</span> (<span class="tok-keyword">double</span>)(b.b - a.b) / (<span class="tok-keyword">double</span>)(a.m - b.m);
 }
-bool bad(const Line&amp;a, const Line&amp;b, const Line&amp;c){
-    // returns true if line b is unnecessary given a and c
-    return interX(a,c) &lt;= interX(a,b);
+<span class="tok-keyword">bool</span> bad(<span class="tok-keyword">const</span> Line&amp;a, <span class="tok-keyword">const</span> Line&amp;b, <span class="tok-keyword">const</span> Line&amp;c){
+    <span class="tok-comment">// returns true if line b is unnecessary given a and c</span>
+    <span class="tok-keyword">return</span> interX(a,c) &lt;= interX(a,b);
 }
-int main(){
-    int n; long long C;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> C;
     cin &gt;&gt; n &gt;&gt; C;
-    vector&lt;long long&gt; h(n);
-    for (auto &amp;x : h) cin &gt;&gt; x;
-    vector&lt;long long&gt; dp(n);
-    dp[0] = 0;
-    deque&lt;Line&gt; hull;
-    // insert line for j=0
-    hull.push_back({-2*h[0], dp[0] + h[0]*h[0]});
-    int ptr = 0;
-    for (int i = 1; i &lt; n; i++) {
-        long long x = h[i];
-        if (ptr &gt;= (int)hull.size()) ptr = (int)hull.size()-1;
-        while (ptr+1 &lt; (int)hull.size() &amp;&amp;
-               hull[ptr+1].m*x + hull[ptr+1].b &lt;= hull[ptr].m*x + hull[ptr].b) ptr++;
-        long long minVal = hull[ptr].m*x + hull[ptr].b;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; h(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : h) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dp(n);
+    dp[<span class="tok-number">0</span>] = <span class="tok-number">0</span>;
+    <span class="tok-type">deque</span>&lt;Line&gt; hull;
+    <span class="tok-comment">// insert line for j=0</span>
+    hull.push_back({-<span class="tok-number">2</span>*h[<span class="tok-number">0</span>], dp[<span class="tok-number">0</span>] + h[<span class="tok-number">0</span>]*h[<span class="tok-number">0</span>]});
+    <span class="tok-keyword">int</span> ptr = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x = h[i];
+        <span class="tok-keyword">if</span> (ptr &gt;= (<span class="tok-keyword">int</span>)hull.size()) ptr = (<span class="tok-keyword">int</span>)hull.size()-<span class="tok-number">1</span>;
+        <span class="tok-keyword">while</span> (ptr+<span class="tok-number">1</span> &lt; (<span class="tok-keyword">int</span>)hull.size() &amp;&amp;
+               hull[ptr+<span class="tok-number">1</span>].m*x + hull[ptr+<span class="tok-number">1</span>].b &lt;= hull[ptr].m*x + hull[ptr].b) ptr++;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> minVal = hull[ptr].m*x + hull[ptr].b;
         dp[i] = x*x + C + minVal;
-        // insert line for j=i
-        Line nl = {-2*h[i], dp[i] + h[i]*h[i]};
-        while (hull.size() &gt;= 2 &amp;&amp; bad(hull[hull.size()-2], hull.back(), nl)) {
+        <span class="tok-comment">// insert line for j=i</span>
+        Line nl = {-<span class="tok-number">2</span>*h[i], dp[i] + h[i]*h[i]};
+        <span class="tok-keyword">while</span> (hull.size() &gt;= <span class="tok-number">2</span> &amp;&amp; bad(hull[hull.size()-<span class="tok-number">2</span>], hull.back(), nl)) {
             hull.pop_back();
-            if (ptr &gt;= (int)hull.size()) ptr = (int)hull.size()-1;
+            <span class="tok-keyword">if</span> (ptr &gt;= (<span class="tok-keyword">int</span>)hull.size()) ptr = (<span class="tok-keyword">int</span>)hull.size()-<span class="tok-number">1</span>;
         }
         hull.push_back(nl);
     }
-    cout &lt;&lt; dp[n-1] &lt;&lt; endl;
+    cout &lt;&lt; dp[n-<span class="tok-number">1</span>] &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1936,17 +1948,17 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Maintain tails[], where after processing a prefix of the array, tails[k] (0-indexed) holds the smallest possible last value among all strictly increasing subsequences of length k+1 discovered so far within that prefix; tails[] is always sorted in increasing order (this invariant is what makes binary search valid).</p><p>For each new value x: binary search (lower_bound) for the first entry in tails[] that is &gt;= x. If none exists, x extends the longest subsequence found so far, so append it. Otherwise, overwrite that entry with x -- x cannot make an existing subsequence longer right now, but replacing a larger tail with the smaller x can only help future extensions (any suffix that could extend after the old, larger tail can also extend after x). The final length of tails[] is the LIS length (note tails[] itself is generally NOT an actual longest subsequence, only its LENGTH is meaningful). Each element does O(log n) work via binary search, giving O(n log n) total. Verified against the well-known LeetCode example ([10,9,2,5,3,7,101,18] -&gt; 4) and against an O(n^2) brute-force DP reference over 200 random arrays.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    vector&lt;long long&gt; tails; // tails[k] = smallest possible tail value of an increasing subsequence of length k+1
-    for (long long x : a) {
-        auto it = lower_bound(tails.begin(), tails.end(), x);
-        if (it == tails.end()) tails.push_back(x);
-        else *it = x;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; tails; <span class="tok-comment">// tails[k] = smallest possible tail value of an increasing subsequence of length k+1</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x : a) {
+        <span class="tok-keyword">auto</span> it = lower_bound(tails.begin(), tails.end(), x);
+        <span class="tok-keyword">if</span> (it == tails.end()) tails.push_back(x);
+        <span class="tok-keyword">else</span> *it = x;
     }
     cout &lt;&lt; tails.size() &lt;&lt; endl;
 }
@@ -1966,52 +1978,52 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a direct 2D generalization of the O(n log n) LIS trick. Sort all points by x ascending. For a point at compressed y-rank r (after coordinate-compressing all y-values), define dp(point) = 1 + (maximum dp-value among all ALREADY-PROCESSED points with y &lt;= this point&#x27;s y). A Fenwick tree keyed on the compressed y-rank, supporting prefix-maximum queries and point updates, answers this in O(log n) per point, for O(n log n) total.</p><p>The subtle correctness requirement is handling points that share the same x-value: since x must be STRICTLY increasing between chosen points, two points with equal x can never both appear in a valid chain, so neither should be able to &#x27;see&#x27; the other&#x27;s dp contribution via the Fenwick tree. The safe fix is to process points in BATCHES by x-value: for every group of points sharing the same x, first compute EVERY point&#x27;s query (using only Fenwick state left over from strictly smaller x-values), and only AFTER the whole group&#x27;s queries are done, apply all of that group&#x27;s Fenwick updates. (A tempting but WRONG shortcut -- sorting same-x ties by descending y and updating immediately -- silently breaks when two points in the group also share the same y-value, since the descending-y tie-break then provides no separation and the second point&#x27;s query incorrectly retrieves the first point&#x27;s just-applied update; this was caught during testing by constructing exactly such a duplicate-point case.) The final answer is the maximum dp-value seen across all points. Verified against an O(n^2) brute-force reference across 500 random point sets, including many with duplicate x and y values, with zero mismatches after the fix.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-struct Fenwick {
-    int n;
-    vector&lt;int&gt; t;
-    Fenwick(int n): n(n), t(n+1, 0) {}
-    void update(int i, int v) { // i is 1-indexed
-        for (; i &lt;= n; i += i &amp; (-i)) t[i] = max(t[i], v);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">struct</span> Fenwick {
+    <span class="tok-keyword">int</span> n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; t;
+    Fenwick(<span class="tok-keyword">int</span> n): n(n), t(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>) {}
+    <span class="tok-keyword">void</span> update(<span class="tok-keyword">int</span> i, <span class="tok-keyword">int</span> v) { <span class="tok-comment">// i is 1-indexed</span>
+        <span class="tok-keyword">for</span> (; i &lt;= n; i += i &amp; (-i)) t[i] = max(t[i], v);
     }
-    int query(int i) { // max over [1..i]
-        int res = 0;
-        for (; i &gt; 0; i -= i &amp; (-i)) res = max(res, t[i]);
-        return res;
+    <span class="tok-keyword">int</span> query(<span class="tok-keyword">int</span> i) { <span class="tok-comment">// max over [1..i]</span>
+        <span class="tok-keyword">int</span> res = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (; i &gt; <span class="tok-number">0</span>; i -= i &amp; (-i)) res = max(res, t[i]);
+        <span class="tok-keyword">return</span> res;
     }
 };
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;int&gt; x(n), y(n);
-    for (int i = 0; i &lt; n; i++) cin &gt;&gt; x[i] &gt;&gt; y[i];
-    vector&lt;int&gt; idx(n);
-    iota(idx.begin(), idx.end(), 0);
-    sort(idx.begin(), idx.end(), [&amp;](int a, int b){
-        if (x[a] != x[b]) return x[a] &lt; x[b];
-        return y[a] &gt; y[b]; // secondary order doesn&#x27;t matter given batching below
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; x(n), y(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cin &gt;&gt; x[i] &gt;&gt; y[i];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; idx(n);
+    iota(idx.begin(), idx.end(), <span class="tok-number">0</span>);
+    sort(idx.begin(), idx.end(), [&amp;](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){
+        <span class="tok-keyword">if</span> (x[a] != x[b]) <span class="tok-keyword">return</span> x[a] &lt; x[b];
+        <span class="tok-keyword">return</span> y[a] &gt; y[b]; <span class="tok-comment">// secondary order doesn&#x27;t matter given batching below</span>
     });
-    vector&lt;int&gt; ys = y;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; ys = y;
     sort(ys.begin(), ys.end());
     ys.erase(unique(ys.begin(), ys.end()), ys.end());
-    auto comp = [&amp;](int v){ return lower_bound(ys.begin(), ys.end(), v) - ys.begin() + 1; };
-    Fenwick fen((int)ys.size());
-    int ans = 0;
-    int i = 0;
-    while (i &lt; n) {
-        int j = i;
-        while (j &lt; n &amp;&amp; x[idx[j]] == x[idx[i]]) j++;
-        // process points with this x value as a batch: query first, then apply all updates
-        vector&lt;pair&lt;int,int&gt;&gt; pending; // (compressed y, new dp value)
-        for (int t = i; t &lt; j; t++) {
-            int id = idx[t];
-            int c = comp(y[id]);
-            int best = fen.query(c); // only sees points with strictly smaller x
-            int dp = best + 1;
+    <span class="tok-keyword">auto</span> comp = [&amp;](<span class="tok-keyword">int</span> v){ <span class="tok-keyword">return</span> lower_bound(ys.begin(), ys.end(), v) - ys.begin() + <span class="tok-number">1</span>; };
+    Fenwick fen((<span class="tok-keyword">int</span>)ys.size());
+    <span class="tok-keyword">int</span> ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> i = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (i &lt; n) {
+        <span class="tok-keyword">int</span> j = i;
+        <span class="tok-keyword">while</span> (j &lt; n &amp;&amp; x[idx[j]] == x[idx[i]]) j++;
+        <span class="tok-comment">// process points with this x value as a batch: query first, then apply all updates</span>
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; pending; <span class="tok-comment">// (compressed y, new dp value)</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> t = i; t &lt; j; t++) {
+            <span class="tok-keyword">int</span> id = idx[t];
+            <span class="tok-keyword">int</span> c = comp(y[id]);
+            <span class="tok-keyword">int</span> best = fen.query(c); <span class="tok-comment">// only sees points with strictly smaller x</span>
+            <span class="tok-keyword">int</span> dp = best + <span class="tok-number">1</span>;
             ans = max(ans, dp);
             pending.push_back({c, dp});
         }
-        for (auto &amp;pr : pending) fen.update(pr.first, pr.second);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;pr : pending) fen.update(pr.first, pr.second);
         i = j;
     }
     cout &lt;&lt; ans &lt;&lt; endl;
@@ -2036,35 +2048,35 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Extends the O(n log n) LIS idea from LENGTH to COUNTING. Let dp[i] = the number of strictly increasing subsequences that END exactly at index i (including the length-1 subsequence consisting of just a[i] itself): dp[i] = 1 + sum over all j &lt; i with a[j] &lt; a[i] of dp[j].</p><p>Rather than a Fenwick tree that tracks a running MAXIMUM (as in plain LIS), here the Fenwick tree tracks a running SUM keyed on (coordinate-compressed) value: fen.query(r-1) returns the sum of dp[j] over all previously-processed j whose (compressed) value rank is strictly less than a[i]&#x27;s rank r (i.e., a[j] &lt; a[i], enforcing strict increase), and fen.update(r, dp[i]) adds dp[i] into the running sum at rank r for future queries. Both operations are O(log n), so computing all dp[i] and summing them into the final answer (total = sum of dp[i] for all i, taken mod 10^9+7) costs O(n log n). Verified against a brute-force enumeration of all 2^n subsets, checking strict monotonicity, across 150 random arrays (including many repeated values) with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long MOD = 1000000007;
-struct Fenwick {
-    int n;
-    vector&lt;long long&gt; t;
-    Fenwick(int n): n(n), t(n+1, 0) {}
-    void update(int i, long long v) {
-        for (; i &lt;= n; i += i &amp; (-i)) t[i] = (t[i] + v) % MOD;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">struct</span> Fenwick {
+    <span class="tok-keyword">int</span> n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; t;
+    Fenwick(<span class="tok-keyword">int</span> n): n(n), t(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>) {}
+    <span class="tok-keyword">void</span> update(<span class="tok-keyword">int</span> i, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> v) {
+        <span class="tok-keyword">for</span> (; i &lt;= n; i += i &amp; (-i)) t[i] = (t[i] + v) % MOD;
     }
-    long long query(int i) { // sum over [1..i]
-        long long res = 0;
-        for (; i &gt; 0; i -= i &amp; (-i)) res = (res + t[i]) % MOD;
-        return res;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> query(<span class="tok-keyword">int</span> i) { <span class="tok-comment">// sum over [1..i]</span>
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (; i &gt; <span class="tok-number">0</span>; i -= i &amp; (-i)) res = (res + t[i]) % MOD;
+        <span class="tok-keyword">return</span> res;
     }
 };
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    vector&lt;long long&gt; comp = a;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; comp = a;
     sort(comp.begin(), comp.end());
     comp.erase(unique(comp.begin(), comp.end()), comp.end());
-    auto rank = [&amp;](long long v){ return lower_bound(comp.begin(), comp.end(), v) - comp.begin() + 1; };
-    Fenwick fen((int)comp.size());
-    long long total = 0;
-    for (int i = 0; i &lt; n; i++) {
-        int r = rank(a[i]);
-        long long dp = (1 + fen.query(r-1)) % MOD; // strictly smaller values -&gt; prefix up to r-1
+    <span class="tok-keyword">auto</span> rank = [&amp;](<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> v){ <span class="tok-keyword">return</span> lower_bound(comp.begin(), comp.end(), v) - comp.begin() + <span class="tok-number">1</span>; };
+    Fenwick fen((<span class="tok-keyword">int</span>)comp.size());
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> r = rank(a[i]);
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dp = (<span class="tok-number">1</span> + fen.query(r-<span class="tok-number">1</span>)) % MOD; <span class="tok-comment">// strictly smaller values -&gt; prefix up to r-1</span>
         total = (total + dp) % MOD;
         fen.update(r, dp);
     }

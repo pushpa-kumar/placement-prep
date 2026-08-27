@@ -1,6 +1,6 @@
 import json, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import esc, inline_code, HEAD_CSS, site_nav, FOOTER
+from gen_lib import esc, inline_code, highlight_cpp, HEAD_CSS, site_nav, FOOTER
 
 GROUP_FILES = [
     ("concepts_group1_value_categories.json", "Value Categories & Move Semantics"),
@@ -33,7 +33,7 @@ def concept_card_html(c, group_slug):
     anchor = slugify(c["term"])
     examples_html = "".join(f'''<div class="example-box">
   <div class="ex-title">{esc(ex["title"])}</div>
-  <pre><code>{esc(ex["code"])}</code></pre>
+  <pre><code>{highlight_cpp(ex["code"])}</code></pre>
   <div class="ex-explain">{inline_code(ex["explanation"])}</div>
 </div>''' for ex in c["examples"])
     pitfalls_html = ""

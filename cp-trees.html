@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,61 +281,61 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Build the tree as an adjacency list and run one DFS from the root to compute tin[v] and tout[v] (the Euler-tour entry/exit timestamps), so the subtree of v occupies the contiguous range [tin[v], tout[v]].<br>2. Build a Fenwick tree (BIT) over an array of size n, placing the initial value of vertex v at index tin[v].<br>3. For an update &quot;U i x&quot;, compute delta = x - old_value[i], apply a point update of +delta at index tin[i], and remember the new value.<br>4. For a query &quot;Q v&quot;, answer with the BIT&#x27;s range-sum over [tin[v], tout[v]] — the whole subtree in one O(log n) range query, since Euler tour turned the subtree into a contiguous block.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n, q;
-vector&lt;int&gt; adj[200005];
-long long a[200005];
-int tin_[200005], tout_[200005], timer_ = 0;
-long long bit_[200005];
+<span class="tok-keyword">int</span> n, q;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> tin_[<span class="tok-number">200005</span>], tout_[<span class="tok-number">200005</span>], timer_ = <span class="tok-number">0</span>;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> bit_[<span class="tok-number">200005</span>];
 
-void dfs(int v, int p) {
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
     tin_[v] = timer_++;
-    for (int c : adj[v]) if (c != p) dfs(c, v);
-    tout_[v] = timer_ - 1;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) <span class="tok-keyword">if</span> (c != p) dfs(c, v);
+    tout_[v] = timer_ - <span class="tok-number">1</span>;
 }
 
-void update(int i, long long delta) {
-    for (; i &lt;= n; i += i &amp; (-i)) bit_[i] += delta;
+<span class="tok-keyword">void</span> update(<span class="tok-keyword">int</span> i, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> delta) {
+    <span class="tok-keyword">for</span> (; i &lt;= n; i += i &amp; (-i)) bit_[i] += delta;
 }
-long long query(int i) {
-    long long s = 0;
-    for (; i &gt; 0; i -= i &amp; (-i)) s += bit_[i];
-    return s;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> query(<span class="tok-keyword">int</span> i) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (; i &gt; <span class="tok-number">0</span>; i -= i &amp; (-i)) s += bit_[i];
+    <span class="tok-keyword">return</span> s;
 }
-long long rangeSum(int l, int r) { // 1-indexed inclusive
-    if (l &gt; r) return 0;
-    return query(r) - query(l - 1);
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r) { <span class="tok-comment">// 1-indexed inclusive</span>
+    <span class="tok-keyword">if</span> (l &gt; r) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">return</span> query(r) - query(l - <span class="tok-number">1</span>);
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
-    dfs(1, 0);
-    // Fenwick tree is 1-indexed over Euler tour positions; shift tin_ (0-indexed) by +1
-    for (int i = 1; i &lt;= n; i++) update(tin_[i] + 1, a[i]);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; a[i];
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-comment">// Fenwick tree is 1-indexed over Euler tour positions; shift tin_ (0-indexed) by +1</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) update(tin_[i] + <span class="tok-number">1</span>, a[i]);
 
     cin &gt;&gt; q;
-    while (q--) {
-        string type; cin &gt;&gt; type;
-        if (type == &quot;U&quot;) {
-            int idx; long long x; cin &gt;&gt; idx &gt;&gt; x;
-            long long delta = x - a[idx];
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-type">string</span> type; cin &gt;&gt; type;
+        <span class="tok-keyword">if</span> (type == <span class="tok-string">&quot;U&quot;</span>) {
+            <span class="tok-keyword">int</span> idx; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x; cin &gt;&gt; idx &gt;&gt; x;
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> delta = x - a[idx];
             a[idx] = x;
-            update(tin_[idx] + 1, delta);
-        } else {
-            int v; cin &gt;&gt; v;
-            cout &lt;&lt; rangeSum(tin_[v] + 1, tout_[v] + 1) &lt;&lt; &quot;\n&quot;;
+            update(tin_[idx] + <span class="tok-number">1</span>, delta);
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">int</span> v; cin &gt;&gt; v;
+            cout &lt;&lt; rangeSum(tin_[v] + <span class="tok-number">1</span>, tout_[v] + <span class="tok-number">1</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
         }
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -359,38 +371,38 @@ Q 1
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Run one DFS from the root computing tin[v] and tout[v] exactly as in the Euler-tour setup.<br>2. u is an ancestor of v if and only if v&#x27;s interval [tin[v], tout[v]] is nested inside u&#x27;s interval, i.e. tin[u] &lt;= tin[v] AND tout[v] &lt;= tout[u]. This is O(1) per query with no traversal at all — it falls directly out of the fact that DFS visits an entire subtree as one contiguous block of time.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n, q;
-vector&lt;int&gt; adj[200005];
-int tin_[200005], tout_[200005], timer_ = 0;
+<span class="tok-keyword">int</span> n, q;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> tin_[<span class="tok-number">200005</span>], tout_[<span class="tok-number">200005</span>], timer_ = <span class="tok-number">0</span>;
 
-void dfs(int v, int p) {
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
     tin_[v] = timer_++;
-    for (int c : adj[v]) if (c != p) dfs(c, v);
-    tout_[v] = timer_ - 1;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) <span class="tok-keyword">if</span> (c != p) dfs(c, v);
+    tout_[v] = timer_ - <span class="tok-number">1</span>;
 }
 
-bool isAncestor(int u, int v) {
-    return tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
+<span class="tok-keyword">bool</span> isAncestor(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">return</span> tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    dfs(1, 0);
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
     cin &gt;&gt; q;
-    while (q--) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
-        cout &lt;&lt; (isAncestor(u, v) ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; (isAncestor(u, v) ? <span class="tok-string">&quot;YES&quot;</span> : <span class="tok-string">&quot;NO&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -431,60 +443,60 @@ NO</code></pre>
   <div class="section-label">Approach</div>
   <div class="prose"><p>Precompute depth[] and the binary-lifting table up[v][j] with one DFS from the root. For each query, lift the deeper vertex to the shallower vertex&#x27;s depth using the depth-difference bits, then binary search upward on both vertices together (jumping while their 2^j-th ancestors still differ), landing one step below the LCA; the LCA is that vertex&#x27;s direct parent (or the vertex itself if it was already equal to the other after the depth equalization).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-const int LOG = 20;
-int n, q;
-vector&lt;int&gt; adj[200005];
-int up_[200005][LOG];
-int depth_[200005];
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> LOG = <span class="tok-number">20</span>;
+<span class="tok-keyword">int</span> n, q;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> up_[<span class="tok-number">200005</span>][LOG];
+<span class="tok-keyword">int</span> depth_[<span class="tok-number">200005</span>];
 
-void dfs(int v, int p) {
-    up_[v][0] = p;
-    for (int j = 1; j &lt; LOG; j++)
-        up_[v][j] = up_[up_[v][j-1]][j-1];
-    for (int c : adj[v]) {
-        if (c != p) {
-            depth_[c] = depth_[v] + 1;
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
+    up_[v][<span class="tok-number">0</span>] = p;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt; LOG; j++)
+        up_[v][j] = up_[up_[v][j-<span class="tok-number">1</span>]][j-<span class="tok-number">1</span>];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p) {
+            depth_[c] = depth_[v] + <span class="tok-number">1</span>;
             dfs(c, v);
         }
     }
 }
 
-int lca(int u, int v) {
-    if (depth_[u] &lt; depth_[v]) swap(u, v);
-    int diff = depth_[u] - depth_[v];
-    for (int j = 0; j &lt; LOG; j++)
-        if ((diff &gt;&gt; j) &amp; 1) u = up_[u][j];
-    if (u == v) return u;
-    for (int j = LOG - 1; j &gt;= 0; j--) {
-        if (up_[u][j] != up_[v][j]) {
+<span class="tok-keyword">int</span> lca(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">if</span> (depth_[u] &lt; depth_[v]) swap(u, v);
+    <span class="tok-keyword">int</span> diff = depth_[u] - depth_[v];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; LOG; j++)
+        <span class="tok-keyword">if</span> ((diff &gt;&gt; j) &amp; <span class="tok-number">1</span>) u = up_[u][j];
+    <span class="tok-keyword">if</span> (u == v) <span class="tok-keyword">return</span> u;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = LOG - <span class="tok-number">1</span>; j &gt;= <span class="tok-number">0</span>; j--) {
+        <span class="tok-keyword">if</span> (up_[u][j] != up_[v][j]) {
             u = up_[u][j];
             v = up_[v][j];
         }
     }
-    return up_[u][0];
+    <span class="tok-keyword">return</span> up_[u][<span class="tok-number">0</span>];
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int a, b; cin &gt;&gt; a &gt;&gt; b;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    depth_[1] = 0;
-    up_[1][0] = 0; // node 0 is a sentinel &quot;no parent&quot;
-    dfs(1, 0);
+    depth_[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    up_[<span class="tok-number">1</span>][<span class="tok-number">0</span>] = <span class="tok-number">0</span>; <span class="tok-comment">// node 0 is a sentinel &quot;no parent&quot;</span>
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
 
     cin &gt;&gt; q;
-    while (q--) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
-        cout &lt;&lt; lca(u, v) &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; lca(u, v) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -518,65 +530,65 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>The path between u and v necessarily passes through LCA(u, v): it goes up from u to the LCA, then down from the LCA to v. So dist(u, v) = depth[u] + depth[v] - 2*depth[LCA(u, v)] — each of the two climbs contributes depth[x] - depth[LCA], and adding them together and rearranging gives this formula. Reuse the exact same binary-lifting LCA routine from the previous example and plug into that formula.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-const int LOG = 20;
-int n, q;
-vector&lt;int&gt; adj[200005];
-int up_[200005][LOG];
-int depth_[200005];
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> LOG = <span class="tok-number">20</span>;
+<span class="tok-keyword">int</span> n, q;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> up_[<span class="tok-number">200005</span>][LOG];
+<span class="tok-keyword">int</span> depth_[<span class="tok-number">200005</span>];
 
-void dfs(int v, int p) {
-    up_[v][0] = p;
-    for (int j = 1; j &lt; LOG; j++)
-        up_[v][j] = up_[up_[v][j-1]][j-1];
-    for (int c : adj[v]) {
-        if (c != p) {
-            depth_[c] = depth_[v] + 1;
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
+    up_[v][<span class="tok-number">0</span>] = p;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt; LOG; j++)
+        up_[v][j] = up_[up_[v][j-<span class="tok-number">1</span>]][j-<span class="tok-number">1</span>];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p) {
+            depth_[c] = depth_[v] + <span class="tok-number">1</span>;
             dfs(c, v);
         }
     }
 }
 
-int lca(int u, int v) {
-    if (depth_[u] &lt; depth_[v]) swap(u, v);
-    int diff = depth_[u] - depth_[v];
-    for (int j = 0; j &lt; LOG; j++)
-        if ((diff &gt;&gt; j) &amp; 1) u = up_[u][j];
-    if (u == v) return u;
-    for (int j = LOG - 1; j &gt;= 0; j--) {
-        if (up_[u][j] != up_[v][j]) {
+<span class="tok-keyword">int</span> lca(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">if</span> (depth_[u] &lt; depth_[v]) swap(u, v);
+    <span class="tok-keyword">int</span> diff = depth_[u] - depth_[v];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; LOG; j++)
+        <span class="tok-keyword">if</span> ((diff &gt;&gt; j) &amp; <span class="tok-number">1</span>) u = up_[u][j];
+    <span class="tok-keyword">if</span> (u == v) <span class="tok-keyword">return</span> u;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = LOG - <span class="tok-number">1</span>; j &gt;= <span class="tok-number">0</span>; j--) {
+        <span class="tok-keyword">if</span> (up_[u][j] != up_[v][j]) {
             u = up_[u][j];
             v = up_[v][j];
         }
     }
-    return up_[u][0];
+    <span class="tok-keyword">return</span> up_[u][<span class="tok-number">0</span>];
 }
 
-int dist(int u, int v) {
-    int a = lca(u, v);
-    return depth_[u] + depth_[v] - 2 * depth_[a];
+<span class="tok-keyword">int</span> dist(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">int</span> a = lca(u, v);
+    <span class="tok-keyword">return</span> depth_[u] + depth_[v] - <span class="tok-number">2</span> * depth_[a];
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int a, b; cin &gt;&gt; a &gt;&gt; b;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    depth_[1] = 0;
-    up_[1][0] = 0;
-    dfs(1, 0);
+    depth_[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    up_[<span class="tok-number">1</span>][<span class="tok-number">0</span>] = <span class="tok-number">0</span>;
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
 
     cin &gt;&gt; q;
-    while (q--) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
-        cout &lt;&lt; dist(u, v) &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
+        cout &lt;&lt; dist(u, v) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -610,52 +622,52 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the same up[v][j] binary-lifting table (using vertex 0 as a sentinel &quot;no ancestor&quot; value). For a query (v, k): if k &gt; depth[v], the ancestor doesn&#x27;t exist, answer -1. Otherwise, decompose k in binary and, for each set bit j, jump v to up[v][j] — after processing all set bits, v has moved exactly k steps up the tree. This is the same jump machinery used inside the LCA routine, applied directly instead of as a subroutine of a binary search.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-const int LOG = 20;
-int n, q;
-vector&lt;int&gt; adj[200005];
-int up_[200005][LOG];
-int depth_[200005];
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> LOG = <span class="tok-number">20</span>;
+<span class="tok-keyword">int</span> n, q;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> up_[<span class="tok-number">200005</span>][LOG];
+<span class="tok-keyword">int</span> depth_[<span class="tok-number">200005</span>];
 
-void dfs(int v, int p) {
-    up_[v][0] = p; // 0 means &quot;no such ancestor&quot; (sentinel)
-    for (int j = 1; j &lt; LOG; j++)
-        up_[v][j] = up_[v][j-1] == 0 ? 0 : up_[up_[v][j-1]][j-1];
-    for (int c : adj[v]) {
-        if (c != p) {
-            depth_[c] = depth_[v] + 1;
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
+    up_[v][<span class="tok-number">0</span>] = p; <span class="tok-comment">// 0 means &quot;no such ancestor&quot; (sentinel)</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt; LOG; j++)
+        up_[v][j] = up_[v][j-<span class="tok-number">1</span>] == <span class="tok-number">0</span> ? <span class="tok-number">0</span> : up_[up_[v][j-<span class="tok-number">1</span>]][j-<span class="tok-number">1</span>];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p) {
+            depth_[c] = depth_[v] + <span class="tok-number">1</span>;
             dfs(c, v);
         }
     }
 }
 
-// returns 0-indexed sentinel-free result, or -1 if it doesn&#x27;t exist
-int kthAncestor(int v, int k) {
-    if (k &gt; depth_[v]) return -1;
-    for (int j = 0; j &lt; LOG &amp;&amp; v != 0; j++)
-        if ((k &gt;&gt; j) &amp; 1) v = up_[v][j];
-    return v;
+<span class="tok-comment">// returns 0-indexed sentinel-free result, or -1 if it doesn&#x27;t exist</span>
+<span class="tok-keyword">int</span> kthAncestor(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> k) {
+    <span class="tok-keyword">if</span> (k &gt; depth_[v]) <span class="tok-keyword">return</span> -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; LOG &amp;&amp; v != <span class="tok-number">0</span>; j++)
+        <span class="tok-keyword">if</span> ((k &gt;&gt; j) &amp; <span class="tok-number">1</span>) v = up_[v][j];
+    <span class="tok-keyword">return</span> v;
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int a, b; cin &gt;&gt; a &gt;&gt; b;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    depth_[1] = 0;
-    dfs(1, 0);
+    depth_[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
 
     cin &gt;&gt; q;
-    while (q--) {
-        int v, k; cin &gt;&gt; v &gt;&gt; k;
-        cout &lt;&lt; kthAncestor(v, k) &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> v, k; cin &gt;&gt; v &gt;&gt; k;
+        cout &lt;&lt; kthAncestor(v, k) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -701,43 +713,43 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run BFS from an arbitrary vertex (vertex 1) and record the farthest vertex found, call it a. Run BFS again from a; the farthest distance found in this second BFS is the diameter. This works because a is guaranteed to be an endpoint of some diameter.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;int&gt; adj[200005];
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
 
-pair&lt;int,int&gt; bfsFarthest(int src) {
-    vector&lt;int&gt; dist(n + 1, -1);
-    queue&lt;int&gt; q;
-    dist[src] = 0;
+<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt; bfsFarthest(<span class="tok-keyword">int</span> src) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; dist(n + <span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+    dist[src] = <span class="tok-number">0</span>;
     q.push(src);
-    int farNode = src, farDist = 0;
-    while (!q.empty()) {
-        int v = q.front(); q.pop();
-        if (dist[v] &gt; farDist) { farDist = dist[v]; farNode = v; }
-        for (int c : adj[v]) {
-            if (dist[c] == -1) {
-                dist[c] = dist[v] + 1;
+    <span class="tok-keyword">int</span> farNode = src, farDist = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (!q.empty()) {
+        <span class="tok-keyword">int</span> v = q.front(); q.pop();
+        <span class="tok-keyword">if</span> (dist[v] &gt; farDist) { farDist = dist[v]; farNode = v; }
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+            <span class="tok-keyword">if</span> (dist[c] == -<span class="tok-number">1</span>) {
+                dist[c] = dist[v] + <span class="tok-number">1</span>;
                 q.push(c);
             }
         }
     }
-    return {farNode, farDist};
+    <span class="tok-keyword">return</span> {farNode, farDist};
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    auto [a, d1] = bfsFarthest(1);
-    auto [b, diameter] = bfsFarthest(a);
-    cout &lt;&lt; diameter &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-keyword">auto</span> [a, d1] = bfsFarthest(<span class="tok-number">1</span>);
+    <span class="tok-keyword">auto</span> [b, diameter] = bfsFarthest(a);
+    cout &lt;&lt; diameter &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -759,38 +771,38 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Root the tree at vertex 1 and DFS. For each vertex v, after recursing into all children, compute the top two values of (edge weight to child c) + (longest downward path from c), among all children. Update a running global answer with their sum (the best path bending at v), and return the single largest of those values as v&#x27;s own longest downward path, for its parent to use. Double BFS does not directly generalize to needing the two largest branch lengths at every internal vertex the way this DP does, though double BFS still correctly finds just the diameter *length* even with weights.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;pair&lt;int,long long&gt;&gt; adj[200005]; // (neighbor, weight)
-long long best = 0;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; adj[<span class="tok-number">200005</span>]; <span class="tok-comment">// (neighbor, weight)</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = <span class="tok-number">0</span>;
 
-// returns the longest downward path starting at v (within v&#x27;s subtree, rooted at call site)
-long long dfs(int v, int p) {
-    long long top1 = 0, top2 = 0; // two longest downward branch lengths from v
-    for (auto [c, w] : adj[v]) {
-        if (c == p) continue;
-        long long down = dfs(c, v) + w;
-        if (down &gt; top1) { top2 = top1; top1 = down; }
-        else if (down &gt; top2) { top2 = down; }
+<span class="tok-comment">// returns the longest downward path starting at v (within v&#x27;s subtree, rooted at call site)</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dfs(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> top1 = <span class="tok-number">0</span>, top2 = <span class="tok-number">0</span>; <span class="tok-comment">// two longest downward branch lengths from v</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> [c, w] : adj[v]) {
+        <span class="tok-keyword">if</span> (c == p) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> down = dfs(c, v) + w;
+        <span class="tok-keyword">if</span> (down &gt; top1) { top2 = top1; top1 = down; }
+        <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (down &gt; top2) { top2 = down; }
     }
-    best = max(best, top1 + top2); // best path that bends at v
-    return top1;
+    best = max(best, top1 + top2); <span class="tok-comment">// best path that bends at v</span>
+    <span class="tok-keyword">return</span> top1;
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; long long w;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
         adj[u].push_back({v, w});
         adj[v].push_back({u, w});
     }
-    dfs(1, 0);
-    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
-    return 0;
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    cout &lt;&lt; best &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -811,50 +823,50 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Same two-BFS idea as before, but each BFS also records a parent pointer for every vertex it visits. The first BFS (from vertex 1) finds endpoint a; the second BFS (from a) finds the true far endpoint b and, thanks to its parent pointers, lets you walk back from b to a one parent at a time to recover the whole path.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;int&gt; adj[200005];
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
 
-// BFS from src; returns (farthest node, its distance, parent[] array to reconstruct the path)
-tuple&lt;int,int,vector&lt;int&gt;&gt; bfsFarthest(int src) {
-    vector&lt;int&gt; dist(n + 1, -1), par(n + 1, -1);
-    queue&lt;int&gt; q;
-    dist[src] = 0;
+<span class="tok-comment">// BFS from src; returns (farthest node, its distance, parent[] array to reconstruct the path)</span>
+<span class="tok-type">tuple</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>,<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; bfsFarthest(<span class="tok-keyword">int</span> src) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; dist(n + <span class="tok-number">1</span>, -<span class="tok-number">1</span>), par(n + <span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+    dist[src] = <span class="tok-number">0</span>;
     q.push(src);
-    int farNode = src, farDist = 0;
-    while (!q.empty()) {
-        int v = q.front(); q.pop();
-        if (dist[v] &gt; farDist) { farDist = dist[v]; farNode = v; }
-        for (int c : adj[v]) {
-            if (dist[c] == -1) {
-                dist[c] = dist[v] + 1;
+    <span class="tok-keyword">int</span> farNode = src, farDist = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (!q.empty()) {
+        <span class="tok-keyword">int</span> v = q.front(); q.pop();
+        <span class="tok-keyword">if</span> (dist[v] &gt; farDist) { farDist = dist[v]; farNode = v; }
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+            <span class="tok-keyword">if</span> (dist[c] == -<span class="tok-number">1</span>) {
+                dist[c] = dist[v] + <span class="tok-number">1</span>;
                 par[c] = v;
                 q.push(c);
             }
         }
     }
-    return {farNode, farDist, par};
+    <span class="tok-keyword">return</span> {farNode, farDist, par};
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    auto [a, d1, par1] = bfsFarthest(1);
-    auto [b, diameter, par2] = bfsFarthest(a);
+    <span class="tok-keyword">auto</span> [a, d1, par1] = bfsFarthest(<span class="tok-number">1</span>);
+    <span class="tok-keyword">auto</span> [b, diameter, par2] = bfsFarthest(a);
 
-    cout &lt;&lt; diameter &lt;&lt; &quot;\n&quot;;
-    vector&lt;int&gt; path;
-    for (int cur = b; cur != -1; cur = par2[cur]) path.push_back(cur);
-    // path currently goes b -&gt; ... -&gt; a; print it in that order
-    for (size_t i = 0; i &lt; path.size(); i++) cout &lt;&lt; path[i] &lt;&lt; &quot; \n&quot;[i + 1 == path.size()];
-    return 0;
+    cout &lt;&lt; diameter &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; path;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> cur = b; cur != -<span class="tok-number">1</span>; cur = par2[cur]) path.push_back(cur);
+    <span class="tok-comment">// path currently goes b -&gt; ... -&gt; a; print it in that order</span>
+    <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; path.size(); i++) cout &lt;&lt; path[i] &lt;&lt; <span class="tok-string">&quot; \n&quot;</span>[i + <span class="tok-number">1</span> == path.size()];
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -885,106 +897,106 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. First DFS: compute parent[], depth[], subtree size[], and each vertex&#x27;s heavy child (the child with the largest subtree).<br>2. Second DFS: assign each vertex a position pos[v] in a flat array and a chain head head[v], always recursing into the heavy child first (so a whole heavy chain gets consecutive positions) before recursing into light children (each of which starts a brand-new chain headed at itself).<br>3. Build a segment tree over the pos[] array supporting point update and range maximum.<br>4. To update vertex i: point-update the segment tree at pos[i].<br>5. To query the path between u and v: while head[u] != head[v], move whichever of u, v has the *deeper* chain head up to that head&#x27;s parent, first querying the range [pos[head], pos[that vertex]] along the way. Once u and v share a chain head, do one last range query between pos[u] and pos[v] (after possibly swapping so pos[u] &lt;= pos[v]) and combine it with the running maximum.</p><p>Worked check on the sample: the tree is 1-(2,3), 2-(4,5), 4-6, 3-7, 7-8 with values [5,2,3,9,1,7,4,6]. Heavy child of 1 is 2 (subtree size 4 vs 3), heavy child of 2 is 4, heavy child of 3 is 7, heavy child of 7 is 8, heavy child of 4 is 6. So the heavy chains are {1,2,4,6}, {5}, {3,7,8}. Query &quot;6 8&quot; walks: head(6)=1, head(8)=3 (different, and depth(head 6)=0 &lt; depth(head 8)=1, so jump 8 up first) -&gt; range-query chain {3,7,8} restricted to [pos(3), pos(8)] = max(3,4,6)=6, then move to parent(3)=1; now head(1)=head(6)=1, so a final query over [pos(1),pos(6)] on chain {1,2,4,6} = max(5,2,9,7)=9; overall answer max(6,9)=9, matching the values along the true path 6-4-2-1-3-7-8 = [7,9,2,5,3,4,6].</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long NEG = LLONG_MIN;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> NEG = LLONG_MIN;
 
-int n, q;
-vector&lt;int&gt; adj[200005];
-long long a[200005];
-int par[200005], depth_[200005], heavy[200005], headArr[200005], pos_[200005], sz[200005];
-int curPos = 0;
+<span class="tok-keyword">int</span> n, q;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">200005</span>];
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> par[<span class="tok-number">200005</span>], depth_[<span class="tok-number">200005</span>], heavy[<span class="tok-number">200005</span>], headArr[<span class="tok-number">200005</span>], pos_[<span class="tok-number">200005</span>], sz[<span class="tok-number">200005</span>];
+<span class="tok-keyword">int</span> curPos = <span class="tok-number">0</span>;
 
-int dfs1(int v, int p) {
+<span class="tok-keyword">int</span> dfs1(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
     par[v] = p;
-    sz[v] = 1;
-    int maxSub = 0;
-    heavy[v] = -1;
-    for (int c : adj[v]) {
-        if (c == p) continue;
-        depth_[c] = depth_[v] + 1;
-        int csz = dfs1(c, v);
+    sz[v] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> maxSub = <span class="tok-number">0</span>;
+    heavy[v] = -<span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c == p) <span class="tok-keyword">continue</span>;
+        depth_[c] = depth_[v] + <span class="tok-number">1</span>;
+        <span class="tok-keyword">int</span> csz = dfs1(c, v);
         sz[v] += csz;
-        if (csz &gt; maxSub) { maxSub = csz; heavy[v] = c; }
+        <span class="tok-keyword">if</span> (csz &gt; maxSub) { maxSub = csz; heavy[v] = c; }
     }
-    return sz[v];
+    <span class="tok-keyword">return</span> sz[v];
 }
 
-void dfs2(int v, int h) {
+<span class="tok-keyword">void</span> dfs2(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> h) {
     headArr[v] = h;
     pos_[v] = curPos++;
-    if (heavy[v] != -1) dfs2(heavy[v], h);
-    for (int c : adj[v]) {
-        if (c != par[v] &amp;&amp; c != heavy[v]) dfs2(c, c);
+    <span class="tok-keyword">if</span> (heavy[v] != -<span class="tok-number">1</span>) dfs2(heavy[v], h);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != par[v] &amp;&amp; c != heavy[v]) dfs2(c, c);
     }
 }
 
-// segment tree: range max, point update
-struct SegTree {
-    int n;
-    vector&lt;long long&gt; t;
-    void init(int n_) { n = n_; t.assign(2 * n, NEG); }
-    void build(vector&lt;long long&gt;&amp; base) {
-        for (int i = 0; i &lt; n; i++) t[n + i] = base[i];
-        for (int i = n - 1; i &gt;= 1; i--) t[i] = max(t[2*i], t[2*i+1]);
+<span class="tok-comment">// segment tree: range max, point update</span>
+<span class="tok-keyword">struct</span> SegTree {
+    <span class="tok-keyword">int</span> n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; t;
+    <span class="tok-keyword">void</span> init(<span class="tok-keyword">int</span> n_) { n = n_; t.assign(<span class="tok-number">2</span> * n, NEG); }
+    <span class="tok-keyword">void</span> build(<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&amp; base) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) t[n + i] = base[i];
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = n - <span class="tok-number">1</span>; i &gt;= <span class="tok-number">1</span>; i--) t[i] = max(t[<span class="tok-number">2</span>*i], t[<span class="tok-number">2</span>*i+<span class="tok-number">1</span>]);
     }
-    void update(int i, long long val) {
+    <span class="tok-keyword">void</span> update(<span class="tok-keyword">int</span> i, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> val) {
         i += n; t[i] = val;
-        for (i /= 2; i &gt;= 1; i /= 2) t[i] = max(t[2*i], t[2*i+1]);
+        <span class="tok-keyword">for</span> (i /= <span class="tok-number">2</span>; i &gt;= <span class="tok-number">1</span>; i /= <span class="tok-number">2</span>) t[i] = max(t[<span class="tok-number">2</span>*i], t[<span class="tok-number">2</span>*i+<span class="tok-number">1</span>]);
     }
-    long long query(int l, int r) { // inclusive, 0-indexed
-        long long res = NEG;
-        for (l += n, r += n + 1; l &lt; r; l /= 2, r /= 2) {
-            if (l &amp; 1) res = max(res, t[l++]);
-            if (r &amp; 1) res = max(res, t[--r]);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> query(<span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r) { <span class="tok-comment">// inclusive, 0-indexed</span>
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = NEG;
+        <span class="tok-keyword">for</span> (l += n, r += n + <span class="tok-number">1</span>; l &lt; r; l /= <span class="tok-number">2</span>, r /= <span class="tok-number">2</span>) {
+            <span class="tok-keyword">if</span> (l &amp; <span class="tok-number">1</span>) res = max(res, t[l++]);
+            <span class="tok-keyword">if</span> (r &amp; <span class="tok-number">1</span>) res = max(res, t[--r]);
         }
-        return res;
+        <span class="tok-keyword">return</span> res;
     }
 } seg;
 
-long long pathMax(int u, int v) {
-    long long res = NEG;
-    while (headArr[u] != headArr[v]) {
-        if (depth_[headArr[u]] &lt; depth_[headArr[v]]) swap(u, v);
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> pathMax(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = NEG;
+    <span class="tok-keyword">while</span> (headArr[u] != headArr[v]) {
+        <span class="tok-keyword">if</span> (depth_[headArr[u]] &lt; depth_[headArr[v]]) swap(u, v);
         res = max(res, seg.query(pos_[headArr[u]], pos_[u]));
         u = par[headArr[u]];
     }
-    if (depth_[u] &gt; depth_[v]) swap(u, v);
+    <span class="tok-keyword">if</span> (depth_[u] &gt; depth_[v]) swap(u, v);
     res = max(res, seg.query(pos_[u], pos_[v]));
-    return res;
+    <span class="tok-keyword">return</span> res;
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; a[i];
 
-    depth_[1] = 0;
-    dfs1(1, 0);
-    dfs2(1, 1);
+    depth_[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    dfs1(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    dfs2(<span class="tok-number">1</span>, <span class="tok-number">1</span>);
 
-    vector&lt;long long&gt; base(n);
-    for (int i = 1; i &lt;= n; i++) base[pos_[i]] = a[i];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; base(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) base[pos_[i]] = a[i];
     seg.init(n);
     seg.build(base);
 
     cin &gt;&gt; q;
-    while (q--) {
-        string type; cin &gt;&gt; type;
-        if (type == &quot;U&quot;) {
-            int idx; long long x; cin &gt;&gt; idx &gt;&gt; x;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-type">string</span> type; cin &gt;&gt; type;
+        <span class="tok-keyword">if</span> (type == <span class="tok-string">&quot;U&quot;</span>) {
+            <span class="tok-keyword">int</span> idx; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x; cin &gt;&gt; idx &gt;&gt; x;
             seg.update(pos_[idx], x);
-        } else {
-            int u, v; cin &gt;&gt; u &gt;&gt; v;
-            cout &lt;&lt; pathMax(u, v) &lt;&lt; &quot;\n&quot;;
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
+            cout &lt;&lt; pathMax(u, v) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
         }
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1025,79 +1037,79 @@ Q 4 6
   <div class="section-label">Approach</div>
   <div class="prose"><p>Recursively decompose the tree by centroid. At each centroid c: every counted pair must have c as the highest point of its path (handled at this level) or lie entirely within one component after removing c (handled recursively at a deeper level). Maintain a hashmap cnt of &quot;how many already-processed vertices are at distance d from c&quot;, seeded with cnt[0] = 1 for c itself. Process c&#x27;s neighbor-subtrees one at a time: for each vertex found in the current subtree at depth d from c (depth capped early once d &gt; K, since it can never complete a valid pair), add cnt[K - d] to the answer (this uses only vertices from *earlier* subtrees or c itself, so within-subtree pairs are never double-counted), then fold this subtree&#x27;s depths into cnt for the next subtree to use. Finally, remove c and recurse into each remaining component.</p><p>Worked check on the sample tree (1-(2,3), 2-(4,5), 3-(6,7), 7-8, K=3): the very first centroid found is vertex 1 itself (both children&#x27;s subtrees have size &lt;= 4, not exceeding half of 8), and processing its two branches finds pairs (3,4), (3,5), (2,6), (2,7), and (1,8) — five pairs whose path passes through vertex 1. The sixth valid pair, (6,8) (path 6-3-7-8, length 3), does *not* pass through vertex 1, so it is correctly missed at this level and only found when the recursion reaches the centroid of the remaining {3,6,7,8} component (which turns out to be vertex 3 itself), illustrating why the recursive step into leftover components is essential, not optional.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n, K;
-vector&lt;int&gt; adj[100005];
-bool removed_[100005];
-int sz[100005];
-long long ans = 0;
+<span class="tok-keyword">int</span> n, K;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">100005</span>];
+<span class="tok-keyword">bool</span> removed_[<span class="tok-number">100005</span>];
+<span class="tok-keyword">int</span> sz[<span class="tok-number">100005</span>];
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ans = <span class="tok-number">0</span>;
 
-int compSize(int v, int p) {
-    sz[v] = 1;
-    for (int c : adj[v]) {
-        if (c != p &amp;&amp; !removed_[c]) sz[v] += compSize(c, v);
+<span class="tok-keyword">int</span> compSize(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
+    sz[v] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p &amp;&amp; !removed_[c]) sz[v] += compSize(c, v);
     }
-    return sz[v];
+    <span class="tok-keyword">return</span> sz[v];
 }
 
-int getCentroid(int v, int p, int treeSize) {
-    for (int c : adj[v]) {
-        if (c != p &amp;&amp; !removed_[c] &amp;&amp; sz[c] &gt; treeSize / 2) {
-            return getCentroid(c, v, treeSize);
+<span class="tok-keyword">int</span> getCentroid(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p, <span class="tok-keyword">int</span> treeSize) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p &amp;&amp; !removed_[c] &amp;&amp; sz[c] &gt; treeSize / <span class="tok-number">2</span>) {
+            <span class="tok-keyword">return</span> getCentroid(c, v, treeSize);
         }
     }
-    return v;
+    <span class="tok-keyword">return</span> v;
 }
 
-void getDepths(int v, int p, int d, vector&lt;int&gt;&amp; depths) {
-    if (d &gt; K) return; // depths beyond K can never combine with a nonnegative depth to hit K
+<span class="tok-keyword">void</span> getDepths(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p, <span class="tok-keyword">int</span> d, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; depths) {
+    <span class="tok-keyword">if</span> (d &gt; K) <span class="tok-keyword">return</span>; <span class="tok-comment">// depths beyond K can never combine with a nonnegative depth to hit K</span>
     depths.push_back(d);
-    for (int c : adj[v]) {
-        if (c != p &amp;&amp; !removed_[c]) getDepths(c, v, d + 1, depths);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p &amp;&amp; !removed_[c]) getDepths(c, v, d + <span class="tok-number">1</span>, depths);
     }
 }
 
-void decompose(int v) {
-    int treeSize = compSize(v, -1);
-    int centroid = getCentroid(v, -1, treeSize);
-    removed_[centroid] = true;
+<span class="tok-keyword">void</span> decompose(<span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">int</span> treeSize = compSize(v, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">int</span> centroid = getCentroid(v, -<span class="tok-number">1</span>, treeSize);
+    removed_[centroid] = <span class="tok-keyword">true</span>;
 
-    unordered_map&lt;int, long long&gt; cnt;
-    cnt[0] = 1; // the centroid itself sits at distance 0 from itself
-    for (int c : adj[centroid]) {
-        if (removed_[c]) continue;
-        vector&lt;int&gt; depths;
-        getDepths(c, centroid, 1, depths);
-        // count pairs (node in this subtree, node already seen: earlier subtree or the centroid)
-        for (int d : depths) {
-            int need = K - d;
-            if (need &gt;= 0) {
-                auto it = cnt.find(need);
-                if (it != cnt.end()) ans += it-&gt;second;
+    <span class="tok-type">unordered_map</span>&lt;<span class="tok-keyword">int</span>, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt;
+    cnt[<span class="tok-number">0</span>] = <span class="tok-number">1</span>; <span class="tok-comment">// the centroid itself sits at distance 0 from itself</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[centroid]) {
+        <span class="tok-keyword">if</span> (removed_[c]) <span class="tok-keyword">continue</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; depths;
+        getDepths(c, centroid, <span class="tok-number">1</span>, depths);
+        <span class="tok-comment">// count pairs (node in this subtree, node already seen: earlier subtree or the centroid)</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d : depths) {
+            <span class="tok-keyword">int</span> need = K - d;
+            <span class="tok-keyword">if</span> (need &gt;= <span class="tok-number">0</span>) {
+                <span class="tok-keyword">auto</span> it = cnt.find(need);
+                <span class="tok-keyword">if</span> (it != cnt.end()) ans += it-&gt;second;
             }
         }
-        // now fold this subtree&#x27;s depths into cnt for subsequent subtrees
-        for (int d : depths) cnt[d]++;
+        <span class="tok-comment">// now fold this subtree&#x27;s depths into cnt for subsequent subtrees</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d : depths) cnt[d]++;
     }
 
-    for (int c : adj[centroid]) {
-        if (!removed_[c]) decompose(c);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[centroid]) {
+        <span class="tok-keyword">if</span> (!removed_[c]) decompose(c);
     }
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n &gt;&gt; K;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    decompose(1);
-    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
-    return 0;
+    decompose(<span class="tok-number">1</span>);
+    cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1120,79 +1132,79 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is worth tracing by hand because a path is the worst case for naive recursive splitting (an arbitrary vertex removal can leave an unbalanced O(n)-size remainder), yet centroid decomposition still guarantees balance: the centroid of a path of length n is always its middle vertex. Here, starting the search from vertex 1, the algorithm still correctly walks to vertex 3 (the middle of 1..6) as the first centroid, since removing vertex 3 leaves two components {1,2} and {4,5,6}, each of size &lt;= 3 = 6/2. Processing branches {1,2} then {4,5,6} from centroid 3 immediately finds all three valid pairs at distance 3 — (1,4), (2,5), and (3,6) — because on a path every pair at distance K straddles the midpoint when K is large enough relative to the two half-lengths; recursing further into the two remaining halves (each of size &lt;= 3, too small to contain another distance-3 pair) correctly contributes nothing more.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n, K;
-vector&lt;int&gt; adj[100005];
-bool removed_[100005];
-int sz[100005];
-long long ans = 0;
+<span class="tok-keyword">int</span> n, K;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; adj[<span class="tok-number">100005</span>];
+<span class="tok-keyword">bool</span> removed_[<span class="tok-number">100005</span>];
+<span class="tok-keyword">int</span> sz[<span class="tok-number">100005</span>];
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ans = <span class="tok-number">0</span>;
 
-int compSize(int v, int p) {
-    sz[v] = 1;
-    for (int c : adj[v]) {
-        if (c != p &amp;&amp; !removed_[c]) sz[v] += compSize(c, v);
+<span class="tok-keyword">int</span> compSize(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p) {
+    sz[v] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p &amp;&amp; !removed_[c]) sz[v] += compSize(c, v);
     }
-    return sz[v];
+    <span class="tok-keyword">return</span> sz[v];
 }
 
-int getCentroid(int v, int p, int treeSize) {
-    for (int c : adj[v]) {
-        if (c != p &amp;&amp; !removed_[c] &amp;&amp; sz[c] &gt; treeSize / 2) {
-            return getCentroid(c, v, treeSize);
+<span class="tok-keyword">int</span> getCentroid(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p, <span class="tok-keyword">int</span> treeSize) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p &amp;&amp; !removed_[c] &amp;&amp; sz[c] &gt; treeSize / <span class="tok-number">2</span>) {
+            <span class="tok-keyword">return</span> getCentroid(c, v, treeSize);
         }
     }
-    return v;
+    <span class="tok-keyword">return</span> v;
 }
 
-void getDepths(int v, int p, int d, vector&lt;int&gt;&amp; depths) {
-    if (d &gt; K) return; // depths beyond K can never combine with a nonnegative depth to hit K
+<span class="tok-keyword">void</span> getDepths(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> p, <span class="tok-keyword">int</span> d, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&amp; depths) {
+    <span class="tok-keyword">if</span> (d &gt; K) <span class="tok-keyword">return</span>; <span class="tok-comment">// depths beyond K can never combine with a nonnegative depth to hit K</span>
     depths.push_back(d);
-    for (int c : adj[v]) {
-        if (c != p &amp;&amp; !removed_[c]) getDepths(c, v, d + 1, depths);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[v]) {
+        <span class="tok-keyword">if</span> (c != p &amp;&amp; !removed_[c]) getDepths(c, v, d + <span class="tok-number">1</span>, depths);
     }
 }
 
-void decompose(int v) {
-    int treeSize = compSize(v, -1);
-    int centroid = getCentroid(v, -1, treeSize);
-    removed_[centroid] = true;
+<span class="tok-keyword">void</span> decompose(<span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">int</span> treeSize = compSize(v, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">int</span> centroid = getCentroid(v, -<span class="tok-number">1</span>, treeSize);
+    removed_[centroid] = <span class="tok-keyword">true</span>;
 
-    unordered_map&lt;int, long long&gt; cnt;
-    cnt[0] = 1; // the centroid itself sits at distance 0 from itself
-    for (int c : adj[centroid]) {
-        if (removed_[c]) continue;
-        vector&lt;int&gt; depths;
-        getDepths(c, centroid, 1, depths);
-        // count pairs (node in this subtree, node already seen: earlier subtree or the centroid)
-        for (int d : depths) {
-            int need = K - d;
-            if (need &gt;= 0) {
-                auto it = cnt.find(need);
-                if (it != cnt.end()) ans += it-&gt;second;
+    <span class="tok-type">unordered_map</span>&lt;<span class="tok-keyword">int</span>, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt;
+    cnt[<span class="tok-number">0</span>] = <span class="tok-number">1</span>; <span class="tok-comment">// the centroid itself sits at distance 0 from itself</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[centroid]) {
+        <span class="tok-keyword">if</span> (removed_[c]) <span class="tok-keyword">continue</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; depths;
+        getDepths(c, centroid, <span class="tok-number">1</span>, depths);
+        <span class="tok-comment">// count pairs (node in this subtree, node already seen: earlier subtree or the centroid)</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d : depths) {
+            <span class="tok-keyword">int</span> need = K - d;
+            <span class="tok-keyword">if</span> (need &gt;= <span class="tok-number">0</span>) {
+                <span class="tok-keyword">auto</span> it = cnt.find(need);
+                <span class="tok-keyword">if</span> (it != cnt.end()) ans += it-&gt;second;
             }
         }
-        // now fold this subtree&#x27;s depths into cnt for subsequent subtrees
-        for (int d : depths) cnt[d]++;
+        <span class="tok-comment">// now fold this subtree&#x27;s depths into cnt for subsequent subtrees</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d : depths) cnt[d]++;
     }
 
-    for (int c : adj[centroid]) {
-        if (!removed_[c]) decompose(c);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : adj[centroid]) {
+        <span class="tok-keyword">if</span> (!removed_[c]) decompose(c);
     }
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>); cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n &gt;&gt; K;
-    for (int i = 0; i &lt; n - 1; i++) {
-        int u, v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    decompose(1);
-    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
-    return 0;
+    decompose(<span class="tok-number">1</span>);
+    cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1221,68 +1233,68 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the canonical small-to-large merging problem (Codeforces 600E, &quot;Lomsat gelral&quot;). Give every vertex v a small structure Data{cnt, maxFreq, sumAtMax}, where cnt is a hash map from color to how many times that color appears in v&#x27;s subtree so far, maxFreq is the current highest count in cnt, and sumAtMax is the running sum of every color currently achieving maxFreq. A helper addColor(d, color, delta) increments cnt[color] by delta and then updates maxFreq/sumAtMax in O(1): if the new count strictly exceeds maxFreq, this color becomes the sole maximum (maxFreq = new count, sumAtMax = color); if it ties the current maxFreq, it joins the tied set (sumAtMax += color); otherwise nothing changes.</p><p>Process the tree with a post-order DFS. At a leaf, create a fresh Data containing just that vertex&#x27;s own color (count 1). At an internal vertex u, first build Data for u containing just c[u] alone, then, after recursively solving each child v, compare the SIZE of u&#x27;s current cnt map against child v&#x27;s cnt map: if v&#x27;s map is larger, swap which map belongs to u and which belongs to v (this is the whole trick -- always keep the bigger one and dump the smaller one into it). Then iterate over every (color, count) entry remaining in the smaller map and call addColor on u&#x27;s map for each, so the smaller map&#x27;s contribution is folded into the larger one; discard the now-empty smaller map. After all children are merged in this way, u&#x27;s Data represents its ENTIRE subtree, and the answer for u is simply its current sumAtMax -- no separate pass or recount is needed.</p><p>A common bug is forgetting to re-add the current vertex&#x27;s own color when the larger child&#x27;s map is adopted as the base -- this implementation avoids that failure mode entirely by initializing u&#x27;s own Data with c[u] BEFORE merging any children, so u&#x27;s own contribution is always present in whichever map ends up being the survivor of the swaps. Another common bug is stale pointers after a swap; here nodeData[u] and nodeData[v] are accessed as references into the same vector&lt;Data*&gt;, so swap(pu, pv) correctly updates which slot each vertex&#x27;s pointer lives in, and the discarded map is deleted exactly once. To build confidence, this solution was checked against a brute-force program that, for every vertex, explicitly walks its whole subtree, tallies colors in a hash map, and recomputes the maximum-frequency sum directly -- the two agreed on the worked example below and on 500 randomly generated trees with n from 1 to 10 and colors drawn from a small alphabet, with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;int&gt; color_;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;long long&gt; answer;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; color_;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; answer;
 
-struct Data {
-    unordered_map&lt;int,long long&gt; cnt;
-    long long maxFreq = 0;
-    long long sumAtMax = 0;
+<span class="tok-keyword">struct</span> Data {
+    <span class="tok-type">unordered_map</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> maxFreq = <span class="tok-number">0</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> sumAtMax = <span class="tok-number">0</span>;
 };
 
-vector&lt;Data*&gt; nodeData;
+<span class="tok-type">vector</span>&lt;Data*&gt; nodeData;
 
-void addColor(Data* d, int c, long long delta) {
+<span class="tok-keyword">void</span> addColor(Data* d, <span class="tok-keyword">int</span> c, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> delta) {
     d-&gt;cnt[c] += delta;
-    long long v = d-&gt;cnt[c];
-    if (v &gt; d-&gt;maxFreq) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> v = d-&gt;cnt[c];
+    <span class="tok-keyword">if</span> (v &gt; d-&gt;maxFreq) {
         d-&gt;maxFreq = v;
         d-&gt;sumAtMax = c;
-    } else if (v == d-&gt;maxFreq) {
+    } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (v == d-&gt;maxFreq) {
         d-&gt;sumAtMax += c;
     }
 }
 
-void dfs(int u, int parent) {
-    Data* du = new Data();
-    addColor(du, color_[u], 1);
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent) {
+    Data* du = <span class="tok-keyword">new</span> Data();
+    addColor(du, color_[u], <span class="tok-number">1</span>);
     nodeData[u] = du;
-    for (int v : adj[u]) {
-        if (v == parent) continue;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
         dfs(v, u);
         Data*&amp; pu = nodeData[u];
         Data*&amp; pv = nodeData[v];
-        if (pv-&gt;cnt.size() &gt; pu-&gt;cnt.size()) swap(pu, pv);
-        // merge smaller (pv) into larger (pu)
-        for (auto&amp; [c, cnt] : pv-&gt;cnt) {
+        <span class="tok-keyword">if</span> (pv-&gt;cnt.size() &gt; pu-&gt;cnt.size()) swap(pu, pv);
+        <span class="tok-comment">// merge smaller (pv) into larger (pu)</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; [c, cnt] : pv-&gt;cnt) {
             addColor(pu, c, cnt);
         }
-        delete pv;
-        pv = nullptr;
+        <span class="tok-keyword">delete</span> pv;
+        pv = <span class="tok-keyword">nullptr</span>;
     }
     answer[u] = nodeData[u]-&gt;sumAtMax;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    color_.assign(n+1, 0);
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; color_[i];
-    adj.assign(n+1, {});
-    for (int i = 0; i &lt; n-1; i++) {
-        int a, b; cin &gt;&gt; a &gt;&gt; b;
+    color_.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; color_[i];
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n-<span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    answer.assign(n+1, 0);
-    nodeData.assign(n+1, nullptr);
-    dfs(1, 0);
-    for (int i = 1; i &lt;= n; i++) {
-        cout &lt;&lt; answer[i] &lt;&lt; (i&lt;n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    answer.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    nodeData.assign(n+<span class="tok-number">1</span>, <span class="tok-keyword">nullptr</span>);
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        cout &lt;&lt; answer[i] &lt;&lt; (i&lt;n ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -1308,70 +1320,70 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is Codeforces 1009F, &quot;Dominant Indices,&quot; the classic example of small-to-large merging where the per-vertex aggregate is an ARRAY (a histogram of counts by depth) rather than a single scalar, which is exactly the setting where naive array-merging is tempting but quadratic. The subtlety versus example 1 is reindexing: a child&#x27;s &quot;relative depth 0&quot; is the parent&#x27;s &quot;relative depth 1&quot;, so naively merging a child&#x27;s depth-count array into the parent&#x27;s would require shifting every entry up by one index -- and if that shift is applied to whichever array happens to be the LARGER one (which, done carelessly, happens routinely), the O(n log n) bound is destroyed, because the expensive operation would then hit large arrays over and over.</p><p>The fix used here is to sidestep reindexing entirely by keying every vertex&#x27;s histogram on ABSOLUTE depth from the root instead of relative depth from that vertex. Absolute depth of a given descendant does not depend on which ancestor is asking, so merging a child&#x27;s histogram into a parent&#x27;s is pure elementwise addition -- no shifting, ever. Concretely: give every vertex v a Data{cnt, bestCount, bestDepth} where cnt maps absolute depth to how many vertices at that absolute depth appear in v&#x27;s subtree so far, and bestCount/bestDepth track the running best (largest count, tie-broken toward smallest absolute depth) exactly as in example 1&#x27;s maxFreq/sumAtMax. A DFS assigns depth_[u] = depth_[parent] + 1 while descending, initializes u&#x27;s own Data with a single entry at depth_[u], and after solving each child v, compares map sizes and swaps so the LARGER map survives as u&#x27;s map, then folds every entry of the smaller map into it. Because both maps use the SAME absolute-depth coordinate system, this fold is always a plain add -- never a shift -- so the small-to-large accounting argument applies cleanly and the whole tree costs O(n log n).</p><p>Finally, since the question asks for the depth RELATIVE to v (not absolute), the answer at v is recovered at the very end as bestDepth - depth_[u] (the absolute depth of the best level, minus v&#x27;s own absolute depth) -- a single O(1) subtraction per vertex, done only once all of v&#x27;s children have been merged in. This was cross-checked against a brute-force program that, for every vertex, walks its subtree explicitly while tracking TRUE relative depth and picks the smallest depth achieving the maximum count; the two agreed on the worked example below and on 500 randomly generated trees with n from 1 to 12, with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;int&gt; depth_;
-vector&lt;int&gt; answer;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; depth_;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; answer;
 
-struct Data {
-    unordered_map&lt;int,long long&gt; cnt;  // key = ABSOLUTE depth from root
-    long long bestCount = 0;
-    int bestDepth = -1;                // absolute depth achieving bestCount, smallest wins ties
+<span class="tok-keyword">struct</span> Data {
+    <span class="tok-type">unordered_map</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt;  <span class="tok-comment">// key = ABSOLUTE depth from root</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> bestCount = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> bestDepth = -<span class="tok-number">1</span>;                <span class="tok-comment">// absolute depth achieving bestCount, smallest wins ties</span>
 };
 
-vector&lt;Data*&gt; nodeData;
+<span class="tok-type">vector</span>&lt;Data*&gt; nodeData;
 
-void addAt(Data* d, int absDepth, long long delta) {
+<span class="tok-keyword">void</span> addAt(Data* d, <span class="tok-keyword">int</span> absDepth, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> delta) {
     d-&gt;cnt[absDepth] += delta;
-    long long v = d-&gt;cnt[absDepth];
-    if (v &gt; d-&gt;bestCount || (v == d-&gt;bestCount &amp;&amp; absDepth &lt; d-&gt;bestDepth)) {
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> v = d-&gt;cnt[absDepth];
+    <span class="tok-keyword">if</span> (v &gt; d-&gt;bestCount || (v == d-&gt;bestCount &amp;&amp; absDepth &lt; d-&gt;bestDepth)) {
         d-&gt;bestCount = v;
         d-&gt;bestDepth = absDepth;
     }
 }
 
-void dfs(int u, int parent) {
-    Data* du = new Data();
-    addAt(du, depth_[u], 1);
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent) {
+    Data* du = <span class="tok-keyword">new</span> Data();
+    addAt(du, depth_[u], <span class="tok-number">1</span>);
     nodeData[u] = du;
-    for (int v : adj[u]) {
-        if (v == parent) continue;
-        depth_[v] = depth_[u] + 1;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
+        depth_[v] = depth_[u] + <span class="tok-number">1</span>;
         dfs(v, u);
         Data*&amp; pu = nodeData[u];
         Data*&amp; pv = nodeData[v];
-        // Because both maps are keyed by the SAME absolute-depth coordinate
-        // system, merging never requires re-indexing/shifting -- we can
-        // simply keep whichever map is larger and fold the smaller one in.
-        if (pv-&gt;cnt.size() &gt; pu-&gt;cnt.size()) swap(pu, pv);
-        for (auto&amp; [d, c] : pv-&gt;cnt) {
+        <span class="tok-comment">// Because both maps are keyed by the SAME absolute-depth coordinate</span>
+        <span class="tok-comment">// system, merging never requires re-indexing/shifting -- we can</span>
+        <span class="tok-comment">// simply keep whichever map is larger and fold the smaller one in.</span>
+        <span class="tok-keyword">if</span> (pv-&gt;cnt.size() &gt; pu-&gt;cnt.size()) swap(pu, pv);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; [d, c] : pv-&gt;cnt) {
             addAt(pu, d, c);
         }
-        delete pv;
-        pv = nullptr;
+        <span class="tok-keyword">delete</span> pv;
+        pv = <span class="tok-keyword">nullptr</span>;
     }
-    // relative depth = absolute depth of the best level minus u&#x27;s own absolute depth
+    <span class="tok-comment">// relative depth = absolute depth of the best level minus u&#x27;s own absolute depth</span>
     answer[u] = nodeData[u]-&gt;bestDepth - depth_[u];
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
-    adj.assign(n+1, {});
-    for (int i = 0; i &lt; n-1; i++) {
-        int a, b; cin &gt;&gt; a &gt;&gt; b;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n-<span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    depth_.assign(n+1, 0);
-    answer.assign(n+1, 0);
-    nodeData.assign(n+1, nullptr);
-    depth_[1] = 0;
-    dfs(1, 0);
-    for (int i = 1; i &lt;= n; i++) {
-        cout &lt;&lt; answer[i] &lt;&lt; (i&lt;n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    depth_.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    answer.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    nodeData.assign(n+<span class="tok-number">1</span>, <span class="tok-keyword">nullptr</span>);
+    depth_[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    dfs(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        cout &lt;&lt; answer[i] &lt;&lt; (i&lt;n ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -1406,104 +1418,104 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the cleanest possible demonstration of the virtual-tree construction itself, because the final answer is nothing more than the sum of the constructed virtual tree&#x27;s edge weights: it is a standard fact that when a virtual tree&#x27;s edges are weighted by the real tree-path distance between their endpoints, those edges exactly tile the minimal Steiner tree connecting S with no overlap and no gaps (every real-tree edge used by some S-to-S path is &#x27;covered&#x27; by exactly one virtual-tree edge, and the virtual-tree edges use no real-tree edge more than once).</p><p>Step 1 (preprocessing, once): run one DFS from root 1 building the Euler in-time/out-time (for O(1) ancestor tests), an unweighted depth[] array (edge count from the root, used only to order the stack correctly), a binary-lifting ancestor table for O(log n) LCA queries, and distW[] = sum of edge weights from the root to each vertex (so that the real weighted distance between any vertex and one of its ancestors is a simple subtraction of distW values).</p><p>Step 2 (per query): sort S by in-time. Walk consecutive pairs of the sorted S and compute their LCA, adding each to the vertex set; sort the combined set by in-time again and deduplicate -- this gives the virtual tree&#x27;s vertex set, of size at most 2k-1.</p><p>Step 3 (stack-based edge construction): maintain a stack representing the current rightmost path. Push the first (smallest in-time) vertex. For each next vertex v: let l = LCA(stack.top(), v). While the stack has &gt;1 element and depth of the second-from-top is &gt;= depth(l), pop the top, adding distW[popped] - distW[newTop] to a running total (this is exactly the weight of the real tree-path segment between the popped vertex and its new virtual-tree parent). If, after popping, the new top differs from l, add distW[top] - distW[l] to the total, pop it, and push l (inserting l as a new branch point). Finally push v. After processing all vertices, drain the remaining stack the same way (popping and accumulating distW differences) until only the root remains. The accumulated total is exactly the Steiner tree&#x27;s weight -- no explicit tree structure needs to be stored at all for this particular question, since summing weights as edges are &#x27;attached&#x27; during construction already gives the final answer.</p><p>This was verified against an independent brute-force reference that, for each pair of vertices in S, walks the real tree path (via parent pointers from a fixed BFS root) and inserts every traversed edge into a set, then sums the distinct edges&#x27; weights -- 300 random trees (n up to 12) with random weighted edges and 1-5 random queries each produced identical results between the virtual-tree construction and the brute-force union-of-paths computation.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj; // (to, weight)
-int LOG;
-vector&lt;vector&lt;int&gt;&gt; up_;
-vector&lt;int&gt; depth_, tin_, tout_;
-vector&lt;long long&gt; distW;
-int timer_ = 0;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt;&gt; adj; <span class="tok-comment">// (to, weight)</span>
+<span class="tok-keyword">int</span> LOG;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; up_;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; depth_, tin_, tout_;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; distW;
+<span class="tok-keyword">int</span> timer_ = <span class="tok-number">0</span>;
 
-void dfs(int u, int p, int w) {
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> p, <span class="tok-keyword">int</span> w) {
     tin_[u] = timer_++;
-    up_[0][u] = p;
-    depth_[u] = (p == -1) ? 0 : depth_[p] + 1;
-    distW[u] = (p == -1) ? 0 : distW[p] + w;
-    for (int k = 1; k &lt; LOG; k++)
-        up_[k][u] = (up_[k-1][u] == -1) ? -1 : up_[k-1][up_[k-1][u]];
-    for (auto &amp;e : adj[u]) {
-        int v = e.first, wt = e.second;
-        if (v != p) dfs(v, u, wt);
+    up_[<span class="tok-number">0</span>][u] = p;
+    depth_[u] = (p == -<span class="tok-number">1</span>) ? <span class="tok-number">0</span> : depth_[p] + <span class="tok-number">1</span>;
+    distW[u] = (p == -<span class="tok-number">1</span>) ? <span class="tok-number">0</span> : distW[p] + w;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = <span class="tok-number">1</span>; k &lt; LOG; k++)
+        up_[k][u] = (up_[k-<span class="tok-number">1</span>][u] == -<span class="tok-number">1</span>) ? -<span class="tok-number">1</span> : up_[k-<span class="tok-number">1</span>][up_[k-<span class="tok-number">1</span>][u]];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;e : adj[u]) {
+        <span class="tok-keyword">int</span> v = e.first, wt = e.second;
+        <span class="tok-keyword">if</span> (v != p) dfs(v, u, wt);
     }
     tout_[u] = timer_++;
 }
 
-bool isAncestor(int u, int v) {
-    return tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
+<span class="tok-keyword">bool</span> isAncestor(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">return</span> tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
 }
 
-int lca(int u, int v) {
-    if (isAncestor(u, v)) return u;
-    if (isAncestor(v, u)) return v;
-    for (int k = LOG - 1; k &gt;= 0; k--) {
-        if (up_[k][u] != -1 &amp;&amp; !isAncestor(up_[k][u], v)) u = up_[k][u];
+<span class="tok-keyword">int</span> lca(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">if</span> (isAncestor(u, v)) <span class="tok-keyword">return</span> u;
+    <span class="tok-keyword">if</span> (isAncestor(v, u)) <span class="tok-keyword">return</span> v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = LOG - <span class="tok-number">1</span>; k &gt;= <span class="tok-number">0</span>; k--) {
+        <span class="tok-keyword">if</span> (up_[k][u] != -<span class="tok-number">1</span> &amp;&amp; !isAncestor(up_[k][u], v)) u = up_[k][u];
     }
-    return up_[0][u];
+    <span class="tok-keyword">return</span> up_[<span class="tok-number">0</span>][u];
 }
 
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+<span class="tok-keyword">int</span> main() {
+    ios_base::sync_with_stdio(<span class="tok-keyword">false</span>);
+    cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    adj.assign(n + 1, {});
-    for (int i = 0; i &lt; n - 1; i++) {
-        int a, b, w;
+    adj.assign(n + <span class="tok-number">1</span>, {});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b, w;
         cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
         adj[a].push_back({b, w});
         adj[b].push_back({a, w});
     }
-    LOG = 1;
-    while ((1 &lt;&lt; LOG) &lt; n + 1) LOG++;
+    LOG = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> ((<span class="tok-number">1</span> &lt;&lt; LOG) &lt; n + <span class="tok-number">1</span>) LOG++;
     LOG++;
-    up_.assign(LOG, vector&lt;int&gt;(n + 1, -1));
-    depth_.assign(n + 1, 0);
-    tin_.assign(n + 1, 0);
-    tout_.assign(n + 1, 0);
-    distW.assign(n + 1, 0);
-    dfs(1, -1, 0);
+    up_.assign(LOG, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(n + <span class="tok-number">1</span>, -<span class="tok-number">1</span>));
+    depth_.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    tin_.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    tout_.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    distW.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    dfs(<span class="tok-number">1</span>, -<span class="tok-number">1</span>, <span class="tok-number">0</span>);
 
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int k;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> k;
         cin &gt;&gt; k;
-        vector&lt;int&gt; S(k);
-        for (auto &amp;x : S) cin &gt;&gt; x;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; S(k);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : S) cin &gt;&gt; x;
 
-        sort(S.begin(), S.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+        sort(S.begin(), S.end(), [](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b) { <span class="tok-keyword">return</span> tin_[a] &lt; tin_[b]; });
 
-        vector&lt;int&gt; nodes = S;
-        for (int i = 1; i &lt; k; i++) nodes.push_back(lca(S[i-1], S[i]));
-        sort(nodes.begin(), nodes.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; nodes = S;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; k; i++) nodes.push_back(lca(S[i-<span class="tok-number">1</span>], S[i]));
+        sort(nodes.begin(), nodes.end(), [](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b) { <span class="tok-keyword">return</span> tin_[a] &lt; tin_[b]; });
         nodes.erase(unique(nodes.begin(), nodes.end()), nodes.end());
 
-        long long total = 0;
-        vector&lt;int&gt; stk;
-        stk.push_back(nodes[0]);
-        for (int i = 1; i &lt; (int)nodes.size(); i++) {
-            int v = nodes[i];
-            int l = lca(stk.back(), v);
-            while (stk.size() &gt; 1 &amp;&amp; depth_[stk[stk.size()-2]] &gt;= depth_[l]) {
-                total += distW[stk.back()] - distW[stk[stk.size()-2]];
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; stk;
+        stk.push_back(nodes[<span class="tok-number">0</span>]);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; (<span class="tok-keyword">int</span>)nodes.size(); i++) {
+            <span class="tok-keyword">int</span> v = nodes[i];
+            <span class="tok-keyword">int</span> l = lca(stk.back(), v);
+            <span class="tok-keyword">while</span> (stk.size() &gt; <span class="tok-number">1</span> &amp;&amp; depth_[stk[stk.size()-<span class="tok-number">2</span>]] &gt;= depth_[l]) {
+                total += distW[stk.back()] - distW[stk[stk.size()-<span class="tok-number">2</span>]];
                 stk.pop_back();
             }
-            if (stk.back() != l) {
+            <span class="tok-keyword">if</span> (stk.back() != l) {
                 total += distW[stk.back()] - distW[l];
                 stk.pop_back();
                 stk.push_back(l);
             }
             stk.push_back(v);
         }
-        while (stk.size() &gt; 1) {
-            total += distW[stk.back()] - distW[stk[stk.size()-2]];
+        <span class="tok-keyword">while</span> (stk.size() &gt; <span class="tok-number">1</span>) {
+            total += distW[stk.back()] - distW[stk[stk.size()-<span class="tok-number">2</span>]];
             stk.pop_back();
         }
-        cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1536,157 +1548,157 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the textbook auxiliary-tree problem (Codeforces 613D). Build the virtual tree of the k capitals plus their pairwise-consecutive LCAs exactly as in the construction above (here unweighted, so a virtual-tree edge&#x27;s &#x27;length&#x27; is simply the depth difference between its endpoints in the original tree -- length 1 means the two virtual-tree endpoints are literally adjacent in the real tree, with no vertex between them to remove; length &gt; 1 means there is at least one removable non-capital vertex somewhere along that compressed edge). Mark which virtual-tree vertices are actual capitals (the inserted LCAs may or may not themselves be capitals).</p><p>Run a post-order DP on the virtual tree. solve(u) returns true if an unguarded capital&#x27;s connection still reaches u from below (no vertex has yet been removed to block it). At u, classify each child c with solve(c) == true by the real edge length: &#x27;hard&#x27; if length 1 (u and c are actually adjacent, so nothing can be removed between them -- the connection is forced to pass straight through to u), &#x27;soft&#x27; if length &gt; 1 (there is room to remove an intermediate vertex on that edge if needed).</p><p>If u itself is a capital: any hard incoming connection means a capital is directly, unremovably adjacent to another capital -- immediately impossible, answer -1. Otherwise, every soft incoming connection must be cut (u, being a capital, cannot let anything reach it unguarded), costing one removal each; u then becomes a fresh unguarded source itself (return true).</p><p>If u is not a capital: two or more hard connections meeting at u cannot be resolved by cutting edges (there is nothing to remove on a length-1 edge), so the only fix is to remove u itself (cost 1, and this blocks every branch below at once -- return false). Otherwise (at most one hard connection), compare two options: (A) remove u itself, cost 1, blocking everything (return false); (B) instead cut just enough soft edges to leave at most one connection (the existing hard one, if any) passing through for free, costing max(0, soft - (1 - hard)) (return true if anything remains unblocked). Take whichever option costs less, preferring option A on a tie since returning false can never cause a problem further up. This greedy choice is optimal by a standard exchange argument: deferring a soft cut costs nothing now and at worst costs exactly 1 later, so never cutting more than necessary before it is forced never loses to cutting eagerly, while removing a hub vertex outright is essential whenever three or more independent capital branches would otherwise require cutting three or more separate edges.</p><p>The virtual tree&#x27;s own root needs no further resolution (there is nothing above it). This DP, and the -1 detection, were verified against an exhaustive brute-force solver (trying every subset of non-capital vertices to delete, by increasing size, and checking that no connected component of the remaining graph contains more than one capital) across 500 random small trees (n up to 12) with random capital sets and multiple queries per tree -- zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;vector&lt;int&gt;&gt; adj;
-int LOG;
-vector&lt;vector&lt;int&gt;&gt; up_;
-vector&lt;int&gt; depth_, tin_, tout_;
-int timer_ = 0;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-keyword">int</span> LOG;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; up_;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; depth_, tin_, tout_;
+<span class="tok-keyword">int</span> timer_ = <span class="tok-number">0</span>;
 
-void dfs(int u, int p) {
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> p) {
     tin_[u] = timer_++;
-    up_[0][u] = p;
-    depth_[u] = (p == -1) ? 0 : depth_[p] + 1;
-    for (int k = 1; k &lt; LOG; k++)
-        up_[k][u] = (up_[k-1][u] == -1) ? -1 : up_[k-1][up_[k-1][u]];
-    for (int v : adj[u]) if (v != p) dfs(v, u);
+    up_[<span class="tok-number">0</span>][u] = p;
+    depth_[u] = (p == -<span class="tok-number">1</span>) ? <span class="tok-number">0</span> : depth_[p] + <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = <span class="tok-number">1</span>; k &lt; LOG; k++)
+        up_[k][u] = (up_[k-<span class="tok-number">1</span>][u] == -<span class="tok-number">1</span>) ? -<span class="tok-number">1</span> : up_[k-<span class="tok-number">1</span>][up_[k-<span class="tok-number">1</span>][u]];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) <span class="tok-keyword">if</span> (v != p) dfs(v, u);
     tout_[u] = timer_++;
 }
 
-bool isAncestor(int u, int v) {
-    return tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
+<span class="tok-keyword">bool</span> isAncestor(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">return</span> tin_[u] &lt;= tin_[v] &amp;&amp; tout_[v] &lt;= tout_[u];
 }
 
-int lca(int u, int v) {
-    if (isAncestor(u, v)) return u;
-    if (isAncestor(v, u)) return v;
-    for (int k = LOG - 1; k &gt;= 0; k--) {
-        if (up_[k][u] != -1 &amp;&amp; !isAncestor(up_[k][u], v)) u = up_[k][u];
+<span class="tok-keyword">int</span> lca(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
+    <span class="tok-keyword">if</span> (isAncestor(u, v)) <span class="tok-keyword">return</span> u;
+    <span class="tok-keyword">if</span> (isAncestor(v, u)) <span class="tok-keyword">return</span> v;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = LOG - <span class="tok-number">1</span>; k &gt;= <span class="tok-number">0</span>; k--) {
+        <span class="tok-keyword">if</span> (up_[k][u] != -<span class="tok-number">1</span> &amp;&amp; !isAncestor(up_[k][u], v)) u = up_[k][u];
     }
-    return up_[0][u];
+    <span class="tok-keyword">return</span> up_[<span class="tok-number">0</span>][u];
 }
 
-vector&lt;vector&lt;int&gt;&gt; vAdj;   // virtual tree children lists (reset per query)
-vector&lt;char&gt; isCapital;
-long long ansCount;
-bool impossible;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; vAdj;   <span class="tok-comment">// virtual tree children lists (reset per query)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; isCapital;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ansCount;
+<span class="tok-keyword">bool</span> impossible;
 
-// Returns true if an unguarded capital&#x27;s path still reaches u without a placed guard.
-bool solve(int u) {
-    int hard = 0, soft = 0; // active children merging via edge length 1 (&quot;hard&quot;, no room to cut) vs &gt;1 (&quot;soft&quot;, cuttable)
-    for (int c : vAdj[u]) {
-        bool activeChild = solve(c);
-        if (activeChild) {
-            int elen = depth_[c] - depth_[u];
-            if (elen == 1) hard++; else soft++;
+<span class="tok-comment">// Returns true if an unguarded capital&#x27;s path still reaches u without a placed guard.</span>
+<span class="tok-keyword">bool</span> solve(<span class="tok-keyword">int</span> u) {
+    <span class="tok-keyword">int</span> hard = <span class="tok-number">0</span>, soft = <span class="tok-number">0</span>; <span class="tok-comment">// active children merging via edge length 1 (&quot;hard&quot;, no room to cut) vs &gt;1 (&quot;soft&quot;, cuttable)</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : vAdj[u]) {
+        <span class="tok-keyword">bool</span> activeChild = solve(c);
+        <span class="tok-keyword">if</span> (activeChild) {
+            <span class="tok-keyword">int</span> elen = depth_[c] - depth_[u];
+            <span class="tok-keyword">if</span> (elen == <span class="tok-number">1</span>) hard++; <span class="tok-keyword">else</span> soft++;
         }
     }
-    if (isCapital[u]) {
-        if (hard &gt; 0) { impossible = true; }
-        ansCount += soft; // every soft (cuttable) incoming branch must be cut; u itself is a capital, can&#x27;t absorb anything
-        return true;
-    } else {
-        if (hard &gt;= 2) {
-            // two or more capital branches meet at u via direct real-tree edges: only way to
-            // separate them is to remove u itself.
-            ansCount += 1;
-            return false;
+    <span class="tok-keyword">if</span> (isCapital[u]) {
+        <span class="tok-keyword">if</span> (hard &gt; <span class="tok-number">0</span>) { impossible = <span class="tok-keyword">true</span>; }
+        ansCount += soft; <span class="tok-comment">// every soft (cuttable) incoming branch must be cut; u itself is a capital, can&#x27;t absorb anything</span>
+        <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
+    } <span class="tok-keyword">else</span> {
+        <span class="tok-keyword">if</span> (hard &gt;= <span class="tok-number">2</span>) {
+            <span class="tok-comment">// two or more capital branches meet at u via direct real-tree edges: only way to</span>
+            <span class="tok-comment">// separate them is to remove u itself.</span>
+            ansCount += <span class="tok-number">1</span>;
+            <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
         }
-        int costB = max(0, soft - (1 - hard)); // cut down soft branches, keep at most (1-hard) of them free
-        int costA = 1; // remove u itself, absorbing everything
-        if (costA &lt;= costB) {
+        <span class="tok-keyword">int</span> costB = max(<span class="tok-number">0</span>, soft - (<span class="tok-number">1</span> - hard)); <span class="tok-comment">// cut down soft branches, keep at most (1-hard) of them free</span>
+        <span class="tok-keyword">int</span> costA = <span class="tok-number">1</span>; <span class="tok-comment">// remove u itself, absorbing everything</span>
+        <span class="tok-keyword">if</span> (costA &lt;= costB) {
             ansCount += costA;
-            return false;
-        } else {
+            <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
+        } <span class="tok-keyword">else</span> {
             ansCount += costB;
-            return (hard + soft) &gt; 0;
+            <span class="tok-keyword">return</span> (hard + soft) &gt; <span class="tok-number">0</span>;
         }
     }
 }
 
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+<span class="tok-keyword">int</span> main() {
+    ios_base::sync_with_stdio(<span class="tok-keyword">false</span>);
+    cin.tie(<span class="tok-keyword">nullptr</span>);
     cin &gt;&gt; n;
-    adj.assign(n + 1, {});
-    for (int i = 0; i &lt; n - 1; i++) {
-        int a, b;
+    adj.assign(n + <span class="tok-number">1</span>, {});
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n - <span class="tok-number">1</span>; i++) {
+        <span class="tok-keyword">int</span> a, b;
         cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back(b);
         adj[b].push_back(a);
     }
-    LOG = 1;
-    while ((1 &lt;&lt; LOG) &lt; n + 1) LOG++;
+    LOG = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> ((<span class="tok-number">1</span> &lt;&lt; LOG) &lt; n + <span class="tok-number">1</span>) LOG++;
     LOG++;
-    up_.assign(LOG, vector&lt;int&gt;(n + 1, -1));
-    depth_.assign(n + 1, 0);
-    tin_.assign(n + 1, 0);
-    tout_.assign(n + 1, 0);
-    dfs(1, -1);
+    up_.assign(LOG, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(n + <span class="tok-number">1</span>, -<span class="tok-number">1</span>));
+    depth_.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    tin_.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    tout_.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    dfs(<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
 
-    vAdj.assign(n + 1, {});
-    isCapital.assign(n + 1, 0);
+    vAdj.assign(n + <span class="tok-number">1</span>, {});
+    isCapital.assign(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
 
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int k;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> k;
         cin &gt;&gt; k;
-        vector&lt;int&gt; S(k);
-        for (auto &amp;x : S) cin &gt;&gt; x;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; S(k);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : S) cin &gt;&gt; x;
 
-        vector&lt;int&gt; touched; // every vertex that becomes part of the virtual tree this query
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; touched; <span class="tok-comment">// every vertex that becomes part of the virtual tree this query</span>
 
-        sort(S.begin(), S.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
-        for (int v : S) isCapital[v] = 1;
+        sort(S.begin(), S.end(), [](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b) { <span class="tok-keyword">return</span> tin_[a] &lt; tin_[b]; });
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : S) isCapital[v] = <span class="tok-number">1</span>;
 
-        vector&lt;int&gt; nodes = S;
-        for (int i = 1; i &lt; k; i++) nodes.push_back(lca(S[i-1], S[i]));
-        sort(nodes.begin(), nodes.end(), [](int a, int b) { return tin_[a] &lt; tin_[b]; });
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; nodes = S;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; k; i++) nodes.push_back(lca(S[i-<span class="tok-number">1</span>], S[i]));
+        sort(nodes.begin(), nodes.end(), [](<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b) { <span class="tok-keyword">return</span> tin_[a] &lt; tin_[b]; });
         nodes.erase(unique(nodes.begin(), nodes.end()), nodes.end());
         touched = nodes;
 
-        int root;
-        if (nodes.size() == 1) {
-            root = nodes[0];
-        } else {
-            vector&lt;int&gt; stk;
-            stk.push_back(nodes[0]);
-            for (int i = 1; i &lt; (int)nodes.size(); i++) {
-                int v = nodes[i];
-                int l = lca(stk.back(), v);
-                while (stk.size() &gt; 1 &amp;&amp; depth_[stk[stk.size()-2]] &gt;= depth_[l]) {
-                    vAdj[stk[stk.size()-2]].push_back(stk.back());
+        <span class="tok-keyword">int</span> root;
+        <span class="tok-keyword">if</span> (nodes.size() == <span class="tok-number">1</span>) {
+            root = nodes[<span class="tok-number">0</span>];
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; stk;
+            stk.push_back(nodes[<span class="tok-number">0</span>]);
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; (<span class="tok-keyword">int</span>)nodes.size(); i++) {
+                <span class="tok-keyword">int</span> v = nodes[i];
+                <span class="tok-keyword">int</span> l = lca(stk.back(), v);
+                <span class="tok-keyword">while</span> (stk.size() &gt; <span class="tok-number">1</span> &amp;&amp; depth_[stk[stk.size()-<span class="tok-number">2</span>]] &gt;= depth_[l]) {
+                    vAdj[stk[stk.size()-<span class="tok-number">2</span>]].push_back(stk.back());
                     stk.pop_back();
                 }
-                if (stk.back() != l) {
+                <span class="tok-keyword">if</span> (stk.back() != l) {
                     vAdj[l].push_back(stk.back());
                     stk.pop_back();
                     stk.push_back(l);
                 }
                 stk.push_back(v);
             }
-            while (stk.size() &gt; 1) {
-                vAdj[stk[stk.size()-2]].push_back(stk.back());
+            <span class="tok-keyword">while</span> (stk.size() &gt; <span class="tok-number">1</span>) {
+                vAdj[stk[stk.size()-<span class="tok-number">2</span>]].push_back(stk.back());
                 stk.pop_back();
             }
-            root = stk[0];
+            root = stk[<span class="tok-number">0</span>];
         }
 
-        ansCount = 0;
-        impossible = false;
+        ansCount = <span class="tok-number">0</span>;
+        impossible = <span class="tok-keyword">false</span>;
         solve(root);
 
-        cout &lt;&lt; (impossible ? -1 : ansCount) &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; (impossible ? -<span class="tok-number">1</span> : ansCount) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 
-        // reset state for next query
-        for (int v : touched) { vAdj[v].clear(); }
-        for (int v : S) isCapital[v] = 0;
+        <span class="tok-comment">// reset state for next query</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : touched) { vAdj[v].clear(); }
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : S) isCapital[v] = <span class="tok-number">0</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1729,57 +1741,57 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a direct application of the AHU canonical-label algorithm on two already-rooted trees. Build a children[] adjacency list for each tree straight from its parent array (children[p_i] gets i appended, for i from 2 to n). Then run a single shared post-order labeling procedure computeLabel(u): recursively compute the canonical label of every child of u first, collect those labels into a vector, SORT the vector (this is the step that makes child order irrelevant -- two vertices whose children have the same multiset of shapes, listed in any order, must produce the same sorted vector), and then look this sorted vector up in a shared map&lt;vector&lt;long long&gt;, long long&gt; that assigns the next unused small integer id the first time any given sorted-children-shape is encountered (and reuses the existing id on every subsequent match). This map is deliberately SHARED across both trees in the current test case (and reset between test cases), so that identical subtree shapes occurring anywhere in either tree -- including a shape from tree 1 matching a shape from tree 2 -- collapse onto the same integer automatically.</p><p>Two trees of different vertex counts can never be isomorphic, so that case is answered immediately without running the labeling procedure. Otherwise, the two trees are isomorphic exactly when computeLabel(root1) == computeLabel(root2), since equal canonical ids at the root mean the entire recursive subtree structure matched, all the way down to the leaves (which naturally get the same id, since an empty children vector always maps to the same dictionary entry).</p><p>The provided sample deliberately includes three pairs designed to stress exactly the failure modes a buggy implementation would fall into: pair 1 is isomorphic but the second tree relabels vertices AND swaps which branch is listed as &#x27;the first child&#x27; versus &#x27;the second child&#x27; relative to the first tree (an implementation that forgets to sort children labels before combining them would wrongly report NO here); pair 2 has the same vertex count and the same overall degree sequence ({3,3,2,1,1,1,1} counting both parent and child edges) in both trees, and even the same root-children-count (2 children each), yet the trees are genuinely different shapes (one is &#x27;balanced&#x27;: both of the root&#x27;s children have exactly two leaf children each; the other is &#x27;unbalanced&#x27;: one branch descends three levels while a sibling leaf hangs directly off an intermediate vertex) -- an implementation that shortcuts to comparing degree sequences or child counts alone would wrongly report YES here; pair 3 is two small identical 4-vertex star trees, included as a trivial sanity check. This solution was additionally stress-tested against a brute-force checker (trying all permutations of vertex labels 2..n with vertex 1 fixed as root, checking the parent relation is preserved exactly) over 300 random small trees (n up to 8): 150 pairs built by taking a random tree and relabeling it with a random permutation (guaranteed isomorphic), and 150 pairs of two fully independent random trees (usually non-isomorphic); all 300 trials matched the brute force with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-// Shared canonical-label map for the current pair of trees being compared.
-// Mapping a SORTED vector of children canonical-ids -&gt; a compact new id.
-map&lt;vector&lt;long long&gt;, long long&gt; labelId;
-long long nextId = 1;
+<span class="tok-comment">// Shared canonical-label map for the current pair of trees being compared.</span>
+<span class="tok-comment">// Mapping a SORTED vector of children canonical-ids -&gt; a compact new id.</span>
+<span class="tok-type">map</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; labelId;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> nextId = <span class="tok-number">1</span>;
 
-long long computeLabel(int u, vector&lt;vector&lt;int&gt;&gt;&amp; children) {
-    vector&lt;long long&gt; childLabels;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> computeLabel(<span class="tok-keyword">int</span> u, <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt;&amp; children) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; childLabels;
     childLabels.reserve(children[u].size());
-    for (int c : children[u]) childLabels.push_back(computeLabel(c, children));
-    sort(childLabels.begin(), childLabels.end()); // order of children is irrelevant to isomorphism
-    auto it = labelId.find(childLabels);
-    if (it != labelId.end()) return it-&gt;second;
-    long long id = nextId++;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c : children[u]) childLabels.push_back(computeLabel(c, children));
+    sort(childLabels.begin(), childLabels.end()); <span class="tok-comment">// order of children is irrelevant to isomorphism</span>
+    <span class="tok-keyword">auto</span> it = labelId.find(childLabels);
+    <span class="tok-keyword">if</span> (it != labelId.end()) <span class="tok-keyword">return</span> it-&gt;second;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> id = nextId++;
     labelId[childLabels] = id;
-    return id;
+    <span class="tok-keyword">return</span> id;
 }
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t;
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>);
+    cin.tie(<span class="tok-keyword">nullptr</span>);
+    <span class="tok-keyword">int</span> t;
     cin &gt;&gt; t;
-    while (t--) {
-        int n1;
+    <span class="tok-keyword">while</span> (t--) {
+        <span class="tok-keyword">int</span> n1;
         cin &gt;&gt; n1;
-        vector&lt;vector&lt;int&gt;&gt; children1(n1 + 1);
-        for (int i = 2; i &lt;= n1; i++) {
-            int p; cin &gt;&gt; p;
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; children1(n1 + <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">2</span>; i &lt;= n1; i++) {
+            <span class="tok-keyword">int</span> p; cin &gt;&gt; p;
             children1[p].push_back(i);
         }
-        int n2;
+        <span class="tok-keyword">int</span> n2;
         cin &gt;&gt; n2;
-        vector&lt;vector&lt;int&gt;&gt; children2(n2 + 1);
-        for (int i = 2; i &lt;= n2; i++) {
-            int p; cin &gt;&gt; p;
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; children2(n2 + <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">2</span>; i &lt;= n2; i++) {
+            <span class="tok-keyword">int</span> p; cin &gt;&gt; p;
             children2[p].push_back(i);
         }
-        if (n1 != n2) {
-            cout &lt;&lt; &quot;NO\n&quot;;
-            continue;
+        <span class="tok-keyword">if</span> (n1 != n2) {
+            cout &lt;&lt; <span class="tok-string">&quot;NO\n&quot;</span>;
+            <span class="tok-keyword">continue</span>;
         }
         labelId.clear();
-        nextId = 1;
-        long long l1 = computeLabel(1, children1);
-        long long l2 = computeLabel(1, children2);
-        cout &lt;&lt; (l1 == l2 ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+        nextId = <span class="tok-number">1</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l1 = computeLabel(<span class="tok-number">1</span>, children1);
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l2 = computeLabel(<span class="tok-number">1</span>, children2);
+        cout &lt;&lt; (l1 == l2 ? <span class="tok-string">&quot;YES&quot;</span> : <span class="tok-string">&quot;NO&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1810,99 +1822,99 @@ YES
   <div class="section-label">Approach</div>
   <div class="prose"><p>Since AHU as described only compares ROOTED trees (root must map to root), an unrooted tree first needs a canonical vertex (or vertex pair) to root at, chosen so that any valid isomorphism is guaranteed to map that choice in tree A to the corresponding choice in tree B. The CENTROID has exactly this property: compute subtree sizes with one DFS from an arbitrary vertex (say vertex 1), then for every vertex u take maxComponent(u) = max(n - size[u], max over u&#x27;s children v of size[v]) -- the size of the largest piece the tree splits into if u is removed. Every tree has either one centroid (maxComponent(u) &lt;= n/2 for exactly one u) or two centroids, which are always adjacent to each other.</p><p>If a tree has a single centroid, root the whole tree there and compute its AHU canonical label exactly as in the rooted version (dfsLabel(u, parent) collects the sorted canonical labels of u&#x27;s non-parent neighbors, looks the sorted vector up in the shared compaction map, and returns the resulting id). If a tree has two centroids c1 and c2, neither can be treated as &#x27;the&#x27; root in isolation, because a valid isomorphism might send c1 of tree A to either centroid of tree B -- so instead compute BOTH half-labels: l1 = dfsLabel(c1, blocking the edge toward c2) and l2 = dfsLabel(c2, blocking the edge toward c1), then combine the SORTED pair {min(l1,l2), max(l1,l2)} through the same shared compaction map to get one final signature. This is equivalent to inserting a virtual vertex on the edge between c1 and c2 and rooting there, and it is symmetric in c1/c2 by construction, so it does not matter which centroid the isomorphism happens to associate with which. The two trees are isomorphic iff their final signatures (computed this same way, using one shared compaction map reset per test case) are equal; a mismatched vertex count is answered NO immediately.</p><p>The sample deliberately covers all three required stress cases: pair 1 is isomorphic via a single centroid but with completely different vertex numbering and a swapped branch structure (tree 2&#x27;s &#x27;two-leaf&#x27; branch and &#x27;chain&#x27; branch are attached to different centroid-relative positions than tree 1&#x27;s, which only an order-independent sorted comparison gets right); pair 2 has identical vertex count (7), identical overall degree sequence {3,3,2,1,1,1,1}, and identical root/centroid-children counts, yet is a genuinely different tree shape (same adversarial pair used in Example 1, re-expressed as edge lists); pair 3 exercises the two-centroid branch explicitly -- both trees are 4-vertex paths (which always have exactly two centroids, the two middle vertices), given with completely different vertex numbering along the path, and are correctly reported isomorphic. This solution was stress-tested against a brute-force checker (trying all n! permutations of the full vertex set and directly verifying the adjacency matrices correspond) over 300 random small trees (n up to 8, including single-vertex trees): 150 pairs built by relabeling one random tree with a random permutation of ALL n vertices (guaranteed isomorphic, and free to change which vertices end up as centroids), and 150 pairs of independent random trees; all 300 trials matched the brute force with zero mismatches, including cases where the random trees landed on both the one-centroid and two-centroid code paths.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-// Shared canonical-label map for the current pair of trees being compared.
-map&lt;vector&lt;long long&gt;, long long&gt; labelId;
-long long nextId = 1;
+<span class="tok-comment">// Shared canonical-label map for the current pair of trees being compared.</span>
+<span class="tok-type">map</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; labelId;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> nextId = <span class="tok-number">1</span>;
 
-long long dfsLabel(int u, int parent, vector&lt;vector&lt;int&gt;&gt;&amp; adj) {
-    vector&lt;long long&gt; childLabels;
-    for (int v : adj[u]) {
-        if (v == parent) continue;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> dfsLabel(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parent, <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt;&amp; adj) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; childLabels;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) {
+        <span class="tok-keyword">if</span> (v == parent) <span class="tok-keyword">continue</span>;
         childLabels.push_back(dfsLabel(v, u, adj));
     }
     sort(childLabels.begin(), childLabels.end());
-    auto it = labelId.find(childLabels);
-    if (it != labelId.end()) return it-&gt;second;
-    long long id = nextId++;
+    <span class="tok-keyword">auto</span> it = labelId.find(childLabels);
+    <span class="tok-keyword">if</span> (it != labelId.end()) <span class="tok-keyword">return</span> it-&gt;second;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> id = nextId++;
     labelId[childLabels] = id;
-    return id;
+    <span class="tok-keyword">return</span> id;
 }
 
-// Find the 1 or 2 centroids of the tree rooted arbitrarily at vertex 1.
-vector&lt;int&gt; findCentroids(int n, vector&lt;vector&lt;int&gt;&gt;&amp; adj) {
-    vector&lt;int&gt; sz(n + 1, 0), par(n + 1, 0);
-    function&lt;void(int,int)&gt; dfsSize = [&amp;](int u, int p) {
+<span class="tok-comment">// Find the 1 or 2 centroids of the tree rooted arbitrarily at vertex 1.</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; findCentroids(<span class="tok-keyword">int</span> n, <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt;&amp; adj) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; sz(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>), par(n + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    function&lt;<span class="tok-keyword">void</span>(<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>)&gt; dfsSize = [&amp;](<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> p) {
         par[u] = p;
-        sz[u] = 1;
-        for (int v : adj[u]) if (v != p) { dfsSize(v, u); sz[u] += sz[v]; }
+        sz[u] = <span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) <span class="tok-keyword">if</span> (v != p) { dfsSize(v, u); sz[u] += sz[v]; }
     };
-    dfsSize(1, 0);
-    vector&lt;int&gt; centroids;
-    for (int u = 1; u &lt;= n; u++) {
-        int mx = n - sz[u]; // component through the &quot;parent&quot; direction
-        for (int v : adj[u]) if (v != par[u]) mx = max(mx, sz[v]);
-        if (mx &lt;= n / 2) centroids.push_back(u);
+    dfsSize(<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; centroids;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u = <span class="tok-number">1</span>; u &lt;= n; u++) {
+        <span class="tok-keyword">int</span> mx = n - sz[u]; <span class="tok-comment">// component through the &quot;parent&quot; direction</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : adj[u]) <span class="tok-keyword">if</span> (v != par[u]) mx = max(mx, sz[v]);
+        <span class="tok-keyword">if</span> (mx &lt;= n / <span class="tok-number">2</span>) centroids.push_back(u);
     }
-    return centroids;
+    <span class="tok-keyword">return</span> centroids;
 }
 
-// Canonical form of an unrooted tree: root at the centroid.
-// If there are two centroids (always adjacent), combine the two
-// centroid-rooted subtree labels (each blocking the edge toward the other)
-// as if there were a virtual root between them.
-long long canonicalForm(int n, vector&lt;vector&lt;int&gt;&gt;&amp; adj) {
-    vector&lt;int&gt; centroids = findCentroids(n, adj);
-    if (centroids.size() == 1) {
-        return dfsLabel(centroids[0], 0, adj);
-    } else {
-        int c1 = centroids[0], c2 = centroids[1];
-        long long l1 = dfsLabel(c1, c2, adj); // c1&#x27;s subtree, blocking edge to c2
-        long long l2 = dfsLabel(c2, c1, adj); // c2&#x27;s subtree, blocking edge to c1
-        vector&lt;long long&gt; combo = {min(l1, l2), max(l1, l2)};
-        auto it = labelId.find(combo);
-        if (it != labelId.end()) return it-&gt;second;
-        long long id = nextId++;
+<span class="tok-comment">// Canonical form of an unrooted tree: root at the centroid.</span>
+<span class="tok-comment">// If there are two centroids (always adjacent), combine the two</span>
+<span class="tok-comment">// centroid-rooted subtree labels (each blocking the edge toward the other)</span>
+<span class="tok-comment">// as if there were a virtual root between them.</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> canonicalForm(<span class="tok-keyword">int</span> n, <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt;&amp; adj) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; centroids = findCentroids(n, adj);
+    <span class="tok-keyword">if</span> (centroids.size() == <span class="tok-number">1</span>) {
+        <span class="tok-keyword">return</span> dfsLabel(centroids[<span class="tok-number">0</span>], <span class="tok-number">0</span>, adj);
+    } <span class="tok-keyword">else</span> {
+        <span class="tok-keyword">int</span> c1 = centroids[<span class="tok-number">0</span>], c2 = centroids[<span class="tok-number">1</span>];
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l1 = dfsLabel(c1, c2, adj); <span class="tok-comment">// c1&#x27;s subtree, blocking edge to c2</span>
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l2 = dfsLabel(c2, c1, adj); <span class="tok-comment">// c2&#x27;s subtree, blocking edge to c1</span>
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; combo = {min(l1, l2), max(l1, l2)};
+        <span class="tok-keyword">auto</span> it = labelId.find(combo);
+        <span class="tok-keyword">if</span> (it != labelId.end()) <span class="tok-keyword">return</span> it-&gt;second;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> id = nextId++;
         labelId[combo] = id;
-        return id;
+        <span class="tok-keyword">return</span> id;
     }
 }
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t;
+<span class="tok-keyword">int</span> main(){
+    ios::sync_with_stdio(<span class="tok-keyword">false</span>);
+    cin.tie(<span class="tok-keyword">nullptr</span>);
+    <span class="tok-keyword">int</span> t;
     cin &gt;&gt; t;
-    while (t--) {
-        int n1;
+    <span class="tok-keyword">while</span> (t--) {
+        <span class="tok-keyword">int</span> n1;
         cin &gt;&gt; n1;
-        vector&lt;vector&lt;int&gt;&gt; adj1(n1 + 1);
-        for (int i = 0; i &lt; n1 - 1; i++) {
-            int a, b; cin &gt;&gt; a &gt;&gt; b;
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj1(n1 + <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n1 - <span class="tok-number">1</span>; i++) {
+            <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
             adj1[a].push_back(b);
             adj1[b].push_back(a);
         }
-        int n2;
+        <span class="tok-keyword">int</span> n2;
         cin &gt;&gt; n2;
-        vector&lt;vector&lt;int&gt;&gt; adj2(n2 + 1);
-        for (int i = 0; i &lt; n2 - 1; i++) {
-            int a, b; cin &gt;&gt; a &gt;&gt; b;
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj2(n2 + <span class="tok-number">1</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n2 - <span class="tok-number">1</span>; i++) {
+            <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
             adj2[a].push_back(b);
             adj2[b].push_back(a);
         }
-        if (n1 != n2) {
-            cout &lt;&lt; &quot;NO\n&quot;;
-            continue;
+        <span class="tok-keyword">if</span> (n1 != n2) {
+            cout &lt;&lt; <span class="tok-string">&quot;NO\n&quot;</span>;
+            <span class="tok-keyword">continue</span>;
         }
         labelId.clear();
-        nextId = 1;
-        long long l1 = canonicalForm(n1, adj1);
-        long long l2 = canonicalForm(n2, adj2);
-        cout &lt;&lt; (l1 == l2 ? &quot;YES&quot; : &quot;NO&quot;) &lt;&lt; &quot;\n&quot;;
+        nextId = <span class="tok-number">1</span>;
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l1 = canonicalForm(n1, adj1);
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> l2 = canonicalForm(n2, adj2);
+        cout &lt;&lt; (l1 == l2 ? <span class="tok-string">&quot;YES&quot;</span> : <span class="tok-string">&quot;NO&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>

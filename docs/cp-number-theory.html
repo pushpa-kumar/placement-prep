@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,33 +281,33 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run the extended Euclidean algorithm on (a, m) to obtain g = gcd(a, m) and integers x, y with a*x + m*y = g. If g != 1, a has no inverse mod m (since a*x mod m can only ever be a multiple of g). Otherwise a*x ≡ 1 (mod m) directly, so the answer is x taken into the range [0, m): ((x % m) + m) % m, which handles the case where x came back negative from the recursion.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
 
-// Returns g = gcd(a, b) and sets x, y such that a*x + b*y = g
+<span class="tok-comment">// Returns g = gcd(a, b) and sets x, y such that a*x + b*y = g</span>
 ll extgcd(ll a, ll b, ll &amp;x, ll &amp;y) {
-    if (b == 0) { x = 1; y = 0; return a; }
+    <span class="tok-keyword">if</span> (b == <span class="tok-number">0</span>) { x = <span class="tok-number">1</span>; y = <span class="tok-number">0</span>; <span class="tok-keyword">return</span> a; }
     ll x1, y1;
     ll g = extgcd(b, a % b, x1, y1);
     x = y1;
     y = x1 - (a / b) * y1;
-    return g;
+    <span class="tok-keyword">return</span> g;
 }
 
-int main(){
-    int q;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
+    <span class="tok-keyword">while</span> (q--) {
         ll a, m;
         cin &gt;&gt; a &gt;&gt; m;
         ll x, y;
         ll g = extgcd(a, m, x, y);
-        if (g != 1) {
-            cout &lt;&lt; &quot;no inverse\n&quot;;
-        } else {
+        <span class="tok-keyword">if</span> (g != <span class="tok-number">1</span>) {
+            cout &lt;&lt; <span class="tok-string">&quot;no inverse\n&quot;</span>;
+        } <span class="tok-keyword">else</span> {
             ll inv = ((x % m) + m) % m;
-            cout &lt;&lt; inv &lt;&lt; &quot;\n&quot;;
+            cout &lt;&lt; inv &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
         }
     }
 }
@@ -319,53 +331,53 @@ no inverse
   <div class="section-label">Approach</div>
   <div class="prose"><p>Fold the congruences left to right, merging the running solution (r, m) (initially the first congruence) with the next congruence (r2, m2) at each step. To merge x ≡ r (mod m) with x ≡ r2 (mod m2): write x = r + m*t, so m*t ≡ (r2 - r) (mod m2). Let g = gcd(m, m2); this linear congruence in t has a solution iff g divides (r2 - r) — if not, the whole system is infeasible and we can stop early. Otherwise use extended Euclid to get the inverse of (m/g) modulo (m2/g), solve for t mod (m2/g), and combine into the new congruence r&#x27; = r + m*t (mod lcm(m, m2)), m&#x27; = lcm(m, m2). __int128 (or equivalent) is needed for the intermediate products since m and t can each be close to 10^9.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
 ll extgcd(ll a, ll b, ll &amp;x, ll &amp;y) {
-    if (b == 0) { x = 1; y = 0; return a; }
+    <span class="tok-keyword">if</span> (b == <span class="tok-number">0</span>) { x = <span class="tok-number">1</span>; y = <span class="tok-number">0</span>; <span class="tok-keyword">return</span> a; }
     ll x1, y1;
     ll g = extgcd(b, a % b, x1, y1);
     x = y1;
     y = x1 - (a / b) * y1;
-    return g;
+    <span class="tok-keyword">return</span> g;
 }
 
-// Merge x ≡ r1 (mod m1) and x ≡ r2 (mod m2) into x ≡ r (mod m), m = lcm(m1,m2)
-bool merge(ll r1, ll m1, ll r2, ll m2, ll &amp;r, ll &amp;m) {
+<span class="tok-comment">// Merge x ≡ r1 (mod m1) and x ≡ r2 (mod m2) into x ≡ r (mod m), m = lcm(m1,m2)</span>
+<span class="tok-keyword">bool</span> merge(ll r1, ll m1, ll r2, ll m2, ll &amp;r, ll &amp;m) {
     ll x, y;
-    ll g = extgcd(m1, m2, x, y); // m1*x + m2*y = g
+    ll g = extgcd(m1, m2, x, y); <span class="tok-comment">// m1*x + m2*y = g</span>
     ll diff = r2 - r1;
-    if (diff % g != 0) return false;
+    <span class="tok-keyword">if</span> (diff % g != <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
     ll mod2 = m2 / g;
     ll lcm = m1 / g * m2;
     lll t = ((lll)(diff / g) % mod2) * ((lll)(x % mod2)) % mod2;
-    if (t &lt; 0) t += mod2;
+    <span class="tok-keyword">if</span> (t &lt; <span class="tok-number">0</span>) t += mod2;
     lll res = (lll)r1 + (lll)m1 * t;
     ll modr = (ll)(((res % lcm) + lcm) % lcm);
     r = modr;
     m = lcm;
-    return true;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
 }
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
     ll r, m;
     cin &gt;&gt; r &gt;&gt; m;
-    bool ok = true;
-    for (int i = 1; i &lt; n; i++) {
+    <span class="tok-keyword">bool</span> ok = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
         ll r2, m2;
         cin &gt;&gt; r2 &gt;&gt; m2;
-        if (!ok) continue;
+        <span class="tok-keyword">if</span> (!ok) <span class="tok-keyword">continue</span>;
         ll nr, nm;
-        if (!merge(r, m, r2, m2, nr, nm)) ok = false;
-        else { r = nr; m = nm; }
+        <span class="tok-keyword">if</span> (!merge(r, m, r2, m2, nr, nm)) ok = <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">else</span> { r = nr; m = nm; }
     }
-    if (!ok) cout &lt;&lt; &quot;no solution\n&quot;;
-    else cout &lt;&lt; r &lt;&lt; &quot; &quot; &lt;&lt; m &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">if</span> (!ok) cout &lt;&lt; <span class="tok-string">&quot;no solution\n&quot;</span>;
+    <span class="tok-keyword">else</span> cout &lt;&lt; r &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; m &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -393,30 +405,30 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Implement binary exponentiation: repeatedly square the base while shifting the exponent right by one bit, multiplying the running result by the current power of the base whenever the current bit of the exponent is 1. Use a 128-bit intermediate (or unsigned 64-bit with care) for the multiplication before taking % to avoid overflow, since two numbers just under 10^9 multiply to just under 10^18, which still fits in a signed 64-bit product but is right at the edge — __int128 removes any doubt.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007LL;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>;
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-int main(){
-    int q;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
+    <span class="tok-keyword">while</span> (q--) {
         ll b, e;
         cin &gt;&gt; b &gt;&gt; e;
-        cout &lt;&lt; power(b, e, MOD) &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; power(b, e, MOD) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -439,50 +451,50 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>The outer exponent b^c can have up to a billion binary digits, so it must be reduced before being fed to fast exponentiation on a. Since MOD = 10^9+7 is prime and a &lt; MOD, a is coprime to MOD unless a == 0, so Fermat&#x27;s little theorem applies cleanly: a^(b^c) mod MOD = a^(E) mod MOD where E = (b^c) mod (MOD-1) — and this remains correct even when the true exponent b^c is a large multiple of (MOD-1) reduced to E=0, because a^(k*(MOD-1)) ≡ 1 = a^0 (mod MOD) for any a coprime to MOD. Compute E with the convention: if c == 0 then b^c == 1 for every b (including 0^0); else if b == 0 then b^c == 0; else compute E via fast exponentiation of b to c modulo (MOD-1). Finally, special-case a == 0: the result is 1 if E == 0 (this is the 0^0 = 1 convention applied to the outer power) and 0 otherwise; for a != 0, the result is fast-exponentiation of a to E modulo MOD.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007LL; // prime
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>; <span class="tok-comment">// prime</span>
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-int main(){
-    int q;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
+    <span class="tok-keyword">while</span> (q--) {
         ll a, b, c;
         cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
 
-        // Step 1: compute E = b^c under the convention 0^0 = 1,
-        // reduced modulo (MOD - 1) so it is safe to use as an exponent
-        // for a via Fermat&#x27;s little theorem (valid because a &lt; MOD, so
-        // a is coprime to MOD whenever a != 0).
+        <span class="tok-comment">// Step 1: compute E = b^c under the convention 0^0 = 1,</span>
+        <span class="tok-comment">// reduced modulo (MOD - 1) so it is safe to use as an exponent</span>
+        <span class="tok-comment">// for a via Fermat&#x27;s little theorem (valid because a &lt; MOD, so</span>
+        <span class="tok-comment">// a is coprime to MOD whenever a != 0).</span>
         ll E;
-        if (c == 0) {
-            E = 1;              // b^0 = 1 for every b, including 0^0
-        } else if (b == 0) {
-            E = 0;              // 0^c = 0 for c &gt; 0
-        } else {
-            E = power(b, c, MOD - 1); // huge exponent, reduce mod (p-1)
+        <span class="tok-keyword">if</span> (c == <span class="tok-number">0</span>) {
+            E = <span class="tok-number">1</span>;              <span class="tok-comment">// b^0 = 1 for every b, including 0^0</span>
+        } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span> (b == <span class="tok-number">0</span>) {
+            E = <span class="tok-number">0</span>;              <span class="tok-comment">// 0^c = 0 for c &gt; 0</span>
+        } <span class="tok-keyword">else</span> {
+            E = power(b, c, MOD - <span class="tok-number">1</span>); <span class="tok-comment">// huge exponent, reduce mod (p-1)</span>
         }
 
         ll ans;
-        if (a == 0) {
-            ans = (E == 0) ? 1 : 0; // 0^0 = 1 (convention), 0^(positive) = 0
-        } else {
+        <span class="tok-keyword">if</span> (a == <span class="tok-number">0</span>) {
+            ans = (E == <span class="tok-number">0</span>) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>; <span class="tok-comment">// 0^0 = 1 (convention), 0^(positive) = 0</span>
+        } <span class="tok-keyword">else</span> {
             ans = power(a, E, MOD);
         }
-        cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -511,51 +523,51 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Enumerate divisors in O(sqrt(n)) by checking i from 1 to sqrt(n); each i dividing n contributes the pair (i, n/i), contributing 2 to the divisor count unless i*i == n (the square-root divisor, which contributes only 1). Divisors pair up so that each pair multiplies to exactly n, so if τ(n) is the total divisor count, the product of all divisors is n^(τ(n)/2) when τ(n) is even, or n^(τ(n)/2) * sqrt(n) when τ(n) is odd (n a perfect square) — computed with one fast exponentiation of (n mod p) to the power τ(n)/2 (integer division), times sqrt(n) mod p in the odd case.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007LL;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>;
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll n;
     cin &gt;&gt; n;
 
-    // Count divisors of n in O(sqrt(n))
-    ll cnt = 0;
-    for (ll i = 1; (__int128)i * i &lt;= n; i++) {
-        if (n % i == 0) {
-            cnt += 2;
-            if (i * i == n) cnt--; // perfect square: i paired with itself
+    <span class="tok-comment">// Count divisors of n in O(sqrt(n))</span>
+    ll cnt = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (ll i = <span class="tok-number">1</span>; (__int128)i * i &lt;= n; i++) {
+        <span class="tok-keyword">if</span> (n % i == <span class="tok-number">0</span>) {
+            cnt += <span class="tok-number">2</span>;
+            <span class="tok-keyword">if</span> (i * i == n) cnt--; <span class="tok-comment">// perfect square: i paired with itself</span>
         }
     }
 
-    // Divisors pair up as (d, n/d) with product n, except the square root
-    // (if n is a perfect square) which pairs with itself.
-    // So product of all divisors = n^(cnt/2) if cnt is even,
-    // or n^(cnt/2) * sqrt(n) if cnt is odd (n is a perfect square).
+    <span class="tok-comment">// Divisors pair up as (d, n/d) with product n, except the square root</span>
+    <span class="tok-comment">// (if n is a perfect square) which pairs with itself.</span>
+    <span class="tok-comment">// So product of all divisors = n^(cnt/2) if cnt is even,</span>
+    <span class="tok-comment">// or n^(cnt/2) * sqrt(n) if cnt is odd (n is a perfect square).</span>
     ll ans;
-    if (cnt % 2 == 0) {
-        ans = power(n % MOD, cnt / 2, MOD);
-    } else {
-        ll sq = (ll)round(sqrt((double)n));
-        while (sq * sq &gt; n) sq--;
-        while ((sq + 1) * (sq + 1) &lt;= n) sq++;
-        ans = power(n % MOD, cnt / 2, MOD);
+    <span class="tok-keyword">if</span> (cnt % <span class="tok-number">2</span> == <span class="tok-number">0</span>) {
+        ans = power(n % MOD, cnt / <span class="tok-number">2</span>, MOD);
+    } <span class="tok-keyword">else</span> {
+        ll sq = (ll)round(sqrt((<span class="tok-keyword">double</span>)n));
+        <span class="tok-keyword">while</span> (sq * sq &gt; n) sq--;
+        <span class="tok-keyword">while</span> ((sq + <span class="tok-number">1</span>) * (sq + <span class="tok-number">1</span>) &lt;= n) sq++;
+        ans = power(n % MOD, cnt / <span class="tok-number">2</span>, MOD);
         ans = (__int128)ans * (sq % MOD) % MOD;
     }
-    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -580,42 +592,42 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Precompute an array spf[1..10^6] where spf[i] is the smallest prime factor of i, using a sieve: for each i from 2 upward, if spf[i] is still unset then i is prime, so mark spf[j] = i for every unmarked multiple j of i (starting at j = i). This runs in O(V log log V). Then each query factorizes x in O(log x) by repeatedly taking p = spf[x], counting how many times p divides x, dividing it out, and continuing with the reduced x until x == 1.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
 
-const int MAXV = 1000000;
-int spf[MAXV + 1]; // smallest prime factor
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXV = <span class="tok-number">1000000</span>;
+<span class="tok-keyword">int</span> spf[MAXV + <span class="tok-number">1</span>]; <span class="tok-comment">// smallest prime factor</span>
 
-void buildSieve() {
-    for (int i = 2; i &lt;= MAXV; i++) {
-        if (spf[i] == 0) { // i is prime
-            for (long long j = i; j &lt;= MAXV; j += i) {
-                if (spf[(int)j] == 0) spf[(int)j] = i;
+<span class="tok-keyword">void</span> buildSieve() {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">2</span>; i &lt;= MAXV; i++) {
+        <span class="tok-keyword">if</span> (spf[i] == <span class="tok-number">0</span>) { <span class="tok-comment">// i is prime</span>
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> j = i; j &lt;= MAXV; j += i) {
+                <span class="tok-keyword">if</span> (spf[(<span class="tok-keyword">int</span>)j] == <span class="tok-number">0</span>) spf[(<span class="tok-keyword">int</span>)j] = i;
             }
         }
     }
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     buildSieve();
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int x;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> x;
         cin &gt;&gt; x;
-        vector&lt;pair&lt;int,int&gt;&gt; factors;
-        while (x &gt; 1) {
-            int p = spf[x];
-            int e = 0;
-            while (x % p == 0) { x /= p; e++; }
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; factors;
+        <span class="tok-keyword">while</span> (x &gt; <span class="tok-number">1</span>) {
+            <span class="tok-keyword">int</span> p = spf[x];
+            <span class="tok-keyword">int</span> e = <span class="tok-number">0</span>;
+            <span class="tok-keyword">while</span> (x % p == <span class="tok-number">0</span>) { x /= p; e++; }
             factors.push_back({p, e});
         }
-        for (size_t i = 0; i &lt; factors.size(); i++) {
-            if (i) cout &lt;&lt; &quot; &quot;;
-            cout &lt;&lt; factors[i].first &lt;&lt; &quot;^&quot; &lt;&lt; factors[i].second;
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; factors.size(); i++) {
+            <span class="tok-keyword">if</span> (i) cout &lt;&lt; <span class="tok-string">&quot; &quot;</span>;
+            cout &lt;&lt; factors[i].first &lt;&lt; <span class="tok-string">&quot;^&quot;</span> &lt;&lt; factors[i].second;
         }
-        cout &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -638,46 +650,46 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Rewrite S using the identity sum_{i=1}^{n} sigma(i) = sum_{d=1}^{n} d * floor(n/d): divisor d contributes d to sigma(i) for every i that is a multiple of d, and there are floor(n/d) such multiples in [1, n]. The function floor(n/d) takes only O(sqrt(n)) distinct values as d ranges over 1..n, each constant on a contiguous block [lo, hi] where hi = n / (n/lo) (integer division). For each block, the contribution is floor(n/lo) times the sum of d over [lo, hi], computed in O(1) via the arithmetic series formula (lo+hi)*(hi-lo+1)/2 (implemented mod p using the modular inverse of 2, since the numerator is always even as an exact integer before reduction). Summing over all O(sqrt(n)) blocks gives S in O(sqrt(n)) total.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
-const ll MOD = 1000000007LL;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ull;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>;
 
-// modular inverse of 2 mod MOD (MOD is prime)
+<span class="tok-comment">// modular inverse of 2 mod MOD (MOD is prime)</span>
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll n;
     cin &gt;&gt; n;
-    ll inv2 = power(2, MOD - 2, MOD);
+    ll inv2 = power(<span class="tok-number">2</span>, MOD - <span class="tok-number">2</span>, MOD);
 
-    // We want S = sum_{i=1}^{n} sigma(i) = sum_{d=1}^{n} d * floor(n/d)
-    // (each divisor d contributes d to every multiple of d up to n,
-    // and there are floor(n/d) multiples of d in [1,n]).
-    // Evaluate with floor-division blocks: floor(n/d) is constant on
-    // O(sqrt(n)) ranges [lo, hi].
-    ll ans = 0;
-    for (ll lo = 1, hi; lo &lt;= n; lo = hi + 1) {
+    <span class="tok-comment">// We want S = sum_{i=1}^{n} sigma(i) = sum_{d=1}^{n} d * floor(n/d)</span>
+    <span class="tok-comment">// (each divisor d contributes d to every multiple of d up to n,</span>
+    <span class="tok-comment">// and there are floor(n/d) multiples of d in [1,n]).</span>
+    <span class="tok-comment">// Evaluate with floor-division blocks: floor(n/d) is constant on</span>
+    <span class="tok-comment">// O(sqrt(n)) ranges [lo, hi].</span>
+    ll ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (ll lo = <span class="tok-number">1</span>, hi; lo &lt;= n; lo = hi + <span class="tok-number">1</span>) {
         ll q = n / lo;
-        hi = n / q; // largest index with the same quotient q
+        hi = n / q; <span class="tok-comment">// largest index with the same quotient q</span>
         ll loM = lo % MOD, hiM = hi % MOD;
-        // sum of d from lo to hi = (lo+hi)*(hi-lo+1)/2, done mod p using inv2
-        ll cnt = ((hiM - loM + MOD) % MOD + 1) % MOD;
+        <span class="tok-comment">// sum of d from lo to hi = (lo+hi)*(hi-lo+1)/2, done mod p using inv2</span>
+        ll cnt = ((hiM - loM + MOD) % MOD + <span class="tok-number">1</span>) % MOD;
         ll sumD = (loM + hiM) % MOD * cnt % MOD * inv2 % MOD;
         ans = (ans + sumD * (q % MOD)) % MOD;
     }
-    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -694,60 +706,60 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>First compute cntDiv[d], the number of array elements divisible by d, for every d from 1 to V, by iterating d and summing the frequency of every multiple of d (Θ(V log V) total). Any non-empty subset drawn entirely from the elements divisible by d has a GCD that is itself a multiple of d, and conversely, so f[d] = 2^cntDiv[d] - 1 counts exactly the subsequences whose GCD is a multiple of d. To isolate subsequences whose GCD is *exactly* d, process d from V down to 1 and subtract, from f[d], the already-finalized exact[k*d] for every multiple k*d &gt; d — what remains after removing every proper multiple&#x27;s contribution is exact[d]. This downward sieve is the same technique used in Codeforces 1139D (Steps to One), which needs exactly these exact-GCD counts to build a probability distribution.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007LL;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>;
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; a(n);
-    int V = 0;
-    for (auto &amp;x : a) { cin &gt;&gt; x; V = max(V, x); }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n);
+    <span class="tok-keyword">int</span> V = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) { cin &gt;&gt; x; V = max(V, x); }
 
-    vector&lt;int&gt; freq(V + 1, 0);
-    for (int x : a) freq[x]++;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; freq(V + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> x : a) freq[x]++;
 
-    // cntDiv[d] = number of array elements divisible by d
-    vector&lt;int&gt; cntDiv(V + 1, 0);
-    for (int d = 1; d &lt;= V; d++)
-        for (int m = d; m &lt;= V; m += d)
+    <span class="tok-comment">// cntDiv[d] = number of array elements divisible by d</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; cntDiv(V + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">1</span>; d &lt;= V; d++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> m = d; m &lt;= V; m += d)
             cntDiv[d] += freq[m];
 
-    // f[d] = number of non-empty subsequences whose GCD is a MULTIPLE of d
-    //      = 2^cntDiv[d] - 1 (choose any non-empty subset of the elements
-    //        that are divisible by d; their GCD is automatically a
-    //        multiple of d)
-    vector&lt;ll&gt; exact(V + 1, 0);
-    for (int d = 1; d &lt;= V; d++)
-        exact[d] = (power(2, cntDiv[d], MOD) - 1 + MOD) % MOD;
+    <span class="tok-comment">// f[d] = number of non-empty subsequences whose GCD is a MULTIPLE of d</span>
+    <span class="tok-comment">//      = 2^cntDiv[d] - 1 (choose any non-empty subset of the elements</span>
+    <span class="tok-comment">//        that are divisible by d; their GCD is automatically a</span>
+    <span class="tok-comment">//        multiple of d)</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; exact(V + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">1</span>; d &lt;= V; d++)
+        exact[d] = (power(<span class="tok-number">2</span>, cntDiv[d], MOD) - <span class="tok-number">1</span> + MOD) % MOD;
 
-    // Sieve downward: subtract, from exact[d], the subsequences that were
-    // counted in f[d] but actually have GCD equal to a proper multiple of
-    // d (i.e. GCD exactly k*d for some k &gt;= 2), leaving only GCD == d.
-    for (int d = V; d &gt;= 1; d--)
-        for (int m = 2 * d; m &lt;= V; m += d)
+    <span class="tok-comment">// Sieve downward: subtract, from exact[d], the subsequences that were</span>
+    <span class="tok-comment">// counted in f[d] but actually have GCD equal to a proper multiple of</span>
+    <span class="tok-comment">// d (i.e. GCD exactly k*d for some k &gt;= 2), leaving only GCD == d.</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = V; d &gt;= <span class="tok-number">1</span>; d--)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> m = <span class="tok-number">2</span> * d; m &lt;= V; m += d)
             exact[d] = ((exact[d] - exact[m]) % MOD + MOD) % MOD;
 
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int d;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> d;
         cin &gt;&gt; d;
-        cout &lt;&lt; (d &lt;= V ? exact[d] : 0) &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; (d &lt;= V ? exact[d] : <span class="tok-number">0</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -786,59 +798,59 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Trial division up to sqrt(n) (~10^6) per candidate, repeated over the average prime gap near n (which can require checking dozens of candidates) across up to 20 queries, is too slow within a tight time limit. Instead, implement Miller-Rabin with the fixed witness set {2,3,5,7,11,13,17,19,23,29,31,37}, which is a proven-correct deterministic primality test for every 64-bit integer. Starting from candidate = n+1, test each successive candidate with Miller-Rabin in O(log^3 candidate) until one comes back prime.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ull;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
-ll mulmod(ll a, ll b, ll m) { return (ll)((lll)a * b % m); }
+ll mulmod(ll a, ll b, ll m) { <span class="tok-keyword">return</span> (ll)((lll)a * b % m); }
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = mulmod(result, base, mod);
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = mulmod(result, base, mod);
         base = mulmod(base, base, mod);
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-// Deterministic Miller-Rabin, correct for all 64-bit unsigned integers
-// when using this specific witness set.
-bool isPrime(ll n) {
-    if (n &lt; 2) return false;
-    for (ll p : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
-        if (n % p == 0) return n == p;
+<span class="tok-comment">// Deterministic Miller-Rabin, correct for all 64-bit unsigned integers</span>
+<span class="tok-comment">// when using this specific witness set.</span>
+<span class="tok-keyword">bool</span> isPrime(ll n) {
+    <span class="tok-keyword">if</span> (n &lt; <span class="tok-number">2</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
+    <span class="tok-keyword">for</span> (ll p : {<span class="tok-number">2</span>, <span class="tok-number">3</span>, <span class="tok-number">5</span>, <span class="tok-number">7</span>, <span class="tok-number">11</span>, <span class="tok-number">13</span>, <span class="tok-number">17</span>, <span class="tok-number">19</span>, <span class="tok-number">23</span>, <span class="tok-number">29</span>, <span class="tok-number">31</span>, <span class="tok-number">37</span>}) {
+        <span class="tok-keyword">if</span> (n % p == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> n == p;
     }
-    ll d = n - 1;
-    int r = 0;
-    while (d % 2 == 0) { d /= 2; r++; }
-    for (ll a : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
-        if (a &gt;= n) continue;
+    ll d = n - <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> r = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (d % <span class="tok-number">2</span> == <span class="tok-number">0</span>) { d /= <span class="tok-number">2</span>; r++; }
+    <span class="tok-keyword">for</span> (ll a : {<span class="tok-number">2</span>, <span class="tok-number">3</span>, <span class="tok-number">5</span>, <span class="tok-number">7</span>, <span class="tok-number">11</span>, <span class="tok-number">13</span>, <span class="tok-number">17</span>, <span class="tok-number">19</span>, <span class="tok-number">23</span>, <span class="tok-number">29</span>, <span class="tok-number">31</span>, <span class="tok-number">37</span>}) {
+        <span class="tok-keyword">if</span> (a &gt;= n) <span class="tok-keyword">continue</span>;
         ll x = power(a, d, n);
-        if (x == 1 || x == n - 1) continue;
-        bool composite = true;
-        for (int i = 0; i &lt; r - 1; i++) {
+        <span class="tok-keyword">if</span> (x == <span class="tok-number">1</span> || x == n - <span class="tok-number">1</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">bool</span> composite = <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; r - <span class="tok-number">1</span>; i++) {
             x = mulmod(x, x, n);
-            if (x == n - 1) { composite = false; break; }
+            <span class="tok-keyword">if</span> (x == n - <span class="tok-number">1</span>) { composite = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
         }
-        if (composite) return false;
+        <span class="tok-keyword">if</span> (composite) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
     }
-    return true;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
 }
 
-int main(){
-    int q;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
+    <span class="tok-keyword">while</span> (q--) {
         ll n;
         cin &gt;&gt; n;
-        ll cand = n + 1;
-        while (!isPrime(cand)) cand++;
-        cout &lt;&lt; cand &lt;&lt; &quot;\n&quot;;
+        ll cand = n + <span class="tok-number">1</span>;
+        <span class="tok-keyword">while</span> (!isPrime(cand)) cand++;
+        cout &lt;&lt; cand &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -861,89 +873,89 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Trial division up to sqrt(n) is O(10^9) per query in the worst case (n a product of two ~10^9 primes) — far too slow. Instead, recursively factor n: if n == 1 stop; if Miller-Rabin says n is prime, record it; otherwise run Pollard&#x27;s rho to find a non-trivial factor d (iterating x -&gt; (x^2+c) mod n with Floyd cycle detection and gcd checks, retrying with new random parameters if a run degenerates), then recurse on d and n/d separately, merging their factorizations. Each Miller-Rabin/Pollard&#x27;s rho primitive operates in the 64-bit range with 128-bit intermediate products for the modular multiplications to avoid overflow.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ull;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
-ll mulmod(ll a, ll b, ll m) { return (ll)((lll)a * b % m); }
+ll mulmod(ll a, ll b, ll m) { <span class="tok-keyword">return</span> (ll)((lll)a * b % m); }
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = mulmod(result, base, mod);
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = mulmod(result, base, mod);
         base = mulmod(base, base, mod);
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-bool isPrime(ll n) {
-    if (n &lt; 2) return false;
-    for (ll p : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
-        if (n % p == 0) return n == p;
+<span class="tok-keyword">bool</span> isPrime(ll n) {
+    <span class="tok-keyword">if</span> (n &lt; <span class="tok-number">2</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
+    <span class="tok-keyword">for</span> (ll p : {<span class="tok-number">2</span>, <span class="tok-number">3</span>, <span class="tok-number">5</span>, <span class="tok-number">7</span>, <span class="tok-number">11</span>, <span class="tok-number">13</span>, <span class="tok-number">17</span>, <span class="tok-number">19</span>, <span class="tok-number">23</span>, <span class="tok-number">29</span>, <span class="tok-number">31</span>, <span class="tok-number">37</span>}) {
+        <span class="tok-keyword">if</span> (n % p == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> n == p;
     }
-    ll d = n - 1;
-    int r = 0;
-    while (d % 2 == 0) { d /= 2; r++; }
-    for (ll a : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
-        if (a &gt;= n) continue;
+    ll d = n - <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> r = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span> (d % <span class="tok-number">2</span> == <span class="tok-number">0</span>) { d /= <span class="tok-number">2</span>; r++; }
+    <span class="tok-keyword">for</span> (ll a : {<span class="tok-number">2</span>, <span class="tok-number">3</span>, <span class="tok-number">5</span>, <span class="tok-number">7</span>, <span class="tok-number">11</span>, <span class="tok-number">13</span>, <span class="tok-number">17</span>, <span class="tok-number">19</span>, <span class="tok-number">23</span>, <span class="tok-number">29</span>, <span class="tok-number">31</span>, <span class="tok-number">37</span>}) {
+        <span class="tok-keyword">if</span> (a &gt;= n) <span class="tok-keyword">continue</span>;
         ll x = power(a, d, n);
-        if (x == 1 || x == n - 1) continue;
-        bool composite = true;
-        for (int i = 0; i &lt; r - 1; i++) {
+        <span class="tok-keyword">if</span> (x == <span class="tok-number">1</span> || x == n - <span class="tok-number">1</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">bool</span> composite = <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; r - <span class="tok-number">1</span>; i++) {
             x = mulmod(x, x, n);
-            if (x == n - 1) { composite = false; break; }
+            <span class="tok-keyword">if</span> (x == n - <span class="tok-number">1</span>) { composite = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
         }
-        if (composite) return false;
+        <span class="tok-keyword">if</span> (composite) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
     }
-    return true;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
 }
 
 ll pollardRho(ll n) {
-    if (n % 2 == 0) return 2;
-    static mt19937_64 rng(1234567891ULL); // fixed seed for reproducibility
-    ll x = rng() % (n - 2) + 2;
+    <span class="tok-keyword">if</span> (n % <span class="tok-number">2</span> == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-number">2</span>;
+    <span class="tok-keyword">static</span> mt19937_64 rng(<span class="tok-number">1234567891ULL</span>); <span class="tok-comment">// fixed seed for reproducibility</span>
+    ll x = rng() % (n - <span class="tok-number">2</span>) + <span class="tok-number">2</span>;
     ll y = x;
-    ll c = rng() % (n - 1) + 1;
-    ll d = 1;
-    while (d == 1) {
+    ll c = rng() % (n - <span class="tok-number">1</span>) + <span class="tok-number">1</span>;
+    ll d = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (d == <span class="tok-number">1</span>) {
         x = (mulmod(x, x, n) + c) % n;
         y = (mulmod(y, y, n) + c) % n;
         y = (mulmod(y, y, n) + c) % n;
         d = __gcd(abs(x - y), n);
     }
-    return d != n ? d : pollardRho(n); // retry with new random params on failure
+    <span class="tok-keyword">return</span> d != n ? d : pollardRho(n); <span class="tok-comment">// retry with new random params on failure</span>
 }
 
-void factor(ll n, map&lt;ll,int&gt; &amp;result) {
-    if (n == 1) return;
-    if (isPrime(n)) { result[n]++; return; }
+<span class="tok-keyword">void</span> factor(ll n, <span class="tok-type">map</span>&lt;ll,<span class="tok-keyword">int</span>&gt; &amp;result) {
+    <span class="tok-keyword">if</span> (n == <span class="tok-number">1</span>) <span class="tok-keyword">return</span>;
+    <span class="tok-keyword">if</span> (isPrime(n)) { result[n]++; <span class="tok-keyword">return</span>; }
     ll d = n;
-    while (d == n) d = pollardRho(n);
+    <span class="tok-keyword">while</span> (d == n) d = pollardRho(n);
     factor(d, result);
     factor(n / d, result);
 }
 
-int main(){
-    int q;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
+    <span class="tok-keyword">while</span> (q--) {
         ll n;
         cin &gt;&gt; n;
-        if (n == 1) { cout &lt;&lt; &quot;1\n&quot;; continue; }
-        map&lt;ll,int&gt; result;
+        <span class="tok-keyword">if</span> (n == <span class="tok-number">1</span>) { cout &lt;&lt; <span class="tok-string">&quot;1\n&quot;</span>; <span class="tok-keyword">continue</span>; }
+        <span class="tok-type">map</span>&lt;ll,<span class="tok-keyword">int</span>&gt; result;
         factor(n, result);
-        bool first = true;
-        for (auto &amp;pr : result) {
-            if (!first) cout &lt;&lt; &quot; &quot;;
-            cout &lt;&lt; pr.first &lt;&lt; &quot;^&quot; &lt;&lt; pr.second;
-            first = false;
+        <span class="tok-keyword">bool</span> first = <span class="tok-keyword">true</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;pr : result) {
+            <span class="tok-keyword">if</span> (!first) cout &lt;&lt; <span class="tok-string">&quot; &quot;</span>;
+            cout &lt;&lt; pr.first &lt;&lt; <span class="tok-string">&quot;^&quot;</span> &lt;&lt; pr.second;
+            first = <span class="tok-keyword">false</span>;
         }
-        cout &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -966,44 +978,44 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>A full sieve up to R (10^12) is impossible to fit in memory or time. Instead, sieve all base primes up to sqrt(R) (~10^6) with a standard Eratosthenes sieve. Then, for the window [L, R] represented as a boolean array of size R-L+1, mark composite every multiple of each base prime p that falls in the window, starting from max(p*p, the smallest multiple of p that is &gt;= L). Any composite number in [L, R] must have a prime factor &lt;= sqrt(R) &lt;= sqrt of that composite&#x27;s own square root bound, so this correctly marks every composite in the window; whatever remains unmarked (and is at least 2) is prime.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll L, R;
     cin &gt;&gt; L &gt;&gt; R;
-    if (L &lt; 2) L = 2;
+    <span class="tok-keyword">if</span> (L &lt; <span class="tok-number">2</span>) L = <span class="tok-number">2</span>;
 
-    // Step 1: sieve all primes up to sqrt(R) with a plain Eratosthenes sieve
-    ll limit = (ll)sqrt((double)R) + 2;
-    while (limit * limit &gt; R + 1) limit--; // trim just in case of fp error
-    while ((limit + 1) * (limit + 1) &lt;= R) limit++;
-    vector&lt;bool&gt; isComposite(limit + 1, false);
-    vector&lt;ll&gt; basePrimes;
-    for (ll i = 2; i &lt;= limit; i++) {
-        if (!isComposite[i]) {
+    <span class="tok-comment">// Step 1: sieve all primes up to sqrt(R) with a plain Eratosthenes sieve</span>
+    ll limit = (ll)sqrt((<span class="tok-keyword">double</span>)R) + <span class="tok-number">2</span>;
+    <span class="tok-keyword">while</span> (limit * limit &gt; R + <span class="tok-number">1</span>) limit--; <span class="tok-comment">// trim just in case of fp error</span>
+    <span class="tok-keyword">while</span> ((limit + <span class="tok-number">1</span>) * (limit + <span class="tok-number">1</span>) &lt;= R) limit++;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; isComposite(limit + <span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+    <span class="tok-type">vector</span>&lt;ll&gt; basePrimes;
+    <span class="tok-keyword">for</span> (ll i = <span class="tok-number">2</span>; i &lt;= limit; i++) {
+        <span class="tok-keyword">if</span> (!isComposite[i]) {
             basePrimes.push_back(i);
-            for (ll j = i * i; j &lt;= limit; j += i) isComposite[j] = true;
+            <span class="tok-keyword">for</span> (ll j = i * i; j &lt;= limit; j += i) isComposite[j] = <span class="tok-keyword">true</span>;
         }
     }
 
-    // Step 2: mark composites in the window [L, R] using each base prime
-    ll size = R - L + 1;
-    vector&lt;bool&gt; windowComposite(size, false);
-    for (ll p : basePrimes) {
-        ll start = max(p * p, ((L + p - 1) / p) * p); // first multiple of p that is &gt;= L
-        for (ll j = start; j &lt;= R; j += p) {
-            windowComposite[j - L] = true;
+    <span class="tok-comment">// Step 2: mark composites in the window [L, R] using each base prime</span>
+    ll size = R - L + <span class="tok-number">1</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; windowComposite(size, <span class="tok-keyword">false</span>);
+    <span class="tok-keyword">for</span> (ll p : basePrimes) {
+        ll start = max(p * p, ((L + p - <span class="tok-number">1</span>) / p) * p); <span class="tok-comment">// first multiple of p that is &gt;= L</span>
+        <span class="tok-keyword">for</span> (ll j = start; j &lt;= R; j += p) {
+            windowComposite[j - L] = <span class="tok-keyword">true</span>;
         }
     }
 
-    ll count = 0;
-    for (ll i = 0; i &lt; size; i++) {
+    ll count = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (ll i = <span class="tok-number">0</span>; i &lt; size; i++) {
         ll val = L + i;
-        if (!windowComposite[i] &amp;&amp; val &gt;= 2) count++;
+        <span class="tok-keyword">if</span> (!windowComposite[i] &amp;&amp; val &gt;= <span class="tok-number">2</span>) count++;
     }
-    cout &lt;&lt; count &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; count &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1028,47 +1040,47 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Precompute fact[0..10^6] and invFact[0..10^6] once: fact iteratively by multiplying, and invFact by computing only invFact[MAXN-1] via Fermat&#x27;s little theorem (power(fact[MAXN-1], MOD-2, MOD)) and then filling downward with invFact[i] = invFact[i+1] * (i+1) mod p. Each query then answers in O(1) via fact[a] * invFact[b] * invFact[a-b] mod p.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007LL;
-const int MAXN = 1000006;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXN = <span class="tok-number">1000006</span>;
 
 ll fact[MAXN], invFact[MAXN];
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-void precompute() {
-    fact[0] = 1;
-    for (int i = 1; i &lt; MAXN; i++) fact[i] = (__int128)fact[i-1] * i % MOD;
-    invFact[MAXN - 1] = power(fact[MAXN - 1], MOD - 2, MOD);
-    for (int i = MAXN - 2; i &gt;= 0; i--)
-        invFact[i] = (__int128)invFact[i+1] * (i + 1) % MOD;
+<span class="tok-keyword">void</span> precompute() {
+    fact[<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; MAXN; i++) fact[i] = (__int128)fact[i-<span class="tok-number">1</span>] * i % MOD;
+    invFact[MAXN - <span class="tok-number">1</span>] = power(fact[MAXN - <span class="tok-number">1</span>], MOD - <span class="tok-number">2</span>, MOD);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = MAXN - <span class="tok-number">2</span>; i &gt;= <span class="tok-number">0</span>; i--)
+        invFact[i] = (__int128)invFact[i+<span class="tok-number">1</span>] * (i + <span class="tok-number">1</span>) % MOD;
 }
 
-ll nCr(int n, int r) {
-    if (r &lt; 0 || r &gt; n || n &lt; 0) return 0;
-    return (__int128)fact[n] * invFact[r] % MOD * invFact[n-r] % MOD;
+ll nCr(<span class="tok-keyword">int</span> n, <span class="tok-keyword">int</span> r) {
+    <span class="tok-keyword">if</span> (r &lt; <span class="tok-number">0</span> || r &gt; n || n &lt; <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">return</span> (__int128)fact[n] * invFact[r] % MOD * invFact[n-r] % MOD;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     precompute();
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int a, b;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> a, b;
         cin &gt;&gt; a &gt;&gt; b;
-        cout &lt;&lt; nCr(a, b) &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; nCr(a, b) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -1093,40 +1105,40 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>n is far too large to iterate directly, but the given primes are pairwise coprime by definition, so inclusion-exclusion applies cleanly: for every non-empty subset S of the k primes (enumerated as a bitmask from 1 to 2^k - 1), the count of integers in [1,n] divisible by every prime in S is floor(n / product(S)). Add this count if |S| is odd, subtract if |S| is even. Use a 128-bit accumulator for the running product and bail out of a subset early (treating its contribution as 0) once the product exceeds n, since floor(n/product) would be 0 anyway and continuing risks overflow.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ull;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll n;
-    int k;
+    <span class="tok-keyword">int</span> k;
     cin &gt;&gt; n &gt;&gt; k;
-    vector&lt;ll&gt; p(k);
-    for (auto &amp;x : p) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;ll&gt; p(k);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : p) cin &gt;&gt; x;
 
-    // Inclusion-exclusion over all 2^k non-empty subsets of the primes.
-    // For a subset S, the numbers in [1,n] divisible by ALL primes in S
-    // are exactly the multiples of prod(S); there are floor(n/prod(S)) of
-    // them. Add for odd |S|, subtract for even |S|.
-    ll answer = 0;
-    for (int mask = 1; mask &lt; (1 &lt;&lt; k); mask++) {
-        lll product = 1;
-        int bits = __builtin_popcount(mask);
-        bool overflow = false;
-        for (int i = 0; i &lt; k; i++) {
-            if (mask &amp; (1 &lt;&lt; i)) {
+    <span class="tok-comment">// Inclusion-exclusion over all 2^k non-empty subsets of the primes.</span>
+    <span class="tok-comment">// For a subset S, the numbers in [1,n] divisible by ALL primes in S</span>
+    <span class="tok-comment">// are exactly the multiples of prod(S); there are floor(n/prod(S)) of</span>
+    <span class="tok-comment">// them. Add for odd |S|, subtract for even |S|.</span>
+    ll answer = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">1</span>; mask &lt; (<span class="tok-number">1</span> &lt;&lt; k); mask++) {
+        lll product = <span class="tok-number">1</span>;
+        <span class="tok-keyword">int</span> bits = __builtin_popcount(mask);
+        <span class="tok-keyword">bool</span> overflow = <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; k; i++) {
+            <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span> &lt;&lt; i)) {
                 product *= p[i];
-                if (product &gt; (lll)n) { overflow = true; break; }
+                <span class="tok-keyword">if</span> (product &gt; (lll)n) { overflow = <span class="tok-keyword">true</span>; <span class="tok-keyword">break</span>; }
             }
         }
-        if (overflow) continue; // product &gt; n means floor(n/product) = 0
+        <span class="tok-keyword">if</span> (overflow) <span class="tok-keyword">continue</span>; <span class="tok-comment">// product &gt; n means floor(n/product) = 0</span>
         ll cnt = (ll)((lll)n / product);
-        if (bits % 2 == 1) answer += cnt;
-        else answer -= cnt;
+        <span class="tok-keyword">if</span> (bits % <span class="tok-number">2</span> == <span class="tok-number">1</span>) answer += cnt;
+        <span class="tok-keyword">else</span> answer -= cnt;
     }
-    cout &lt;&lt; answer &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; answer &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1144,51 +1156,51 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Rewrite C(n,k) as C(n, n-k), turning the sum into sum_k C(m,k) * C(n, n-k). This is exactly the Vandermonde convolution sum_k C(m,k)*C(n,r-k) = C(m+n,r) with r = n, so S = C(m+n, n). With factorials and inverse factorials precomputed up to 2*10^6 (the largest possible m+n), each query now costs a single O(1) binomial-coefficient lookup instead of an O(min(m,n)) summation.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007LL;
-const int MAXN = 2000006;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007LL</span>;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXN = <span class="tok-number">2000006</span>;
 
 ll fact[MAXN], invFact[MAXN];
 
 ll power(ll base, ll exp, ll mod) {
     base %= mod;
-    if (base &lt; 0) base += mod;
-    ll result = 1;
-    while (exp &gt; 0) {
-        if (exp &amp; 1) result = (__int128)result * base % mod;
+    <span class="tok-keyword">if</span> (base &lt; <span class="tok-number">0</span>) base += mod;
+    ll result = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (exp &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (exp &amp; <span class="tok-number">1</span>) result = (__int128)result * base % mod;
         base = (__int128)base * base % mod;
-        exp &gt;&gt;= 1;
+        exp &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-void precompute() {
-    fact[0] = 1;
-    for (int i = 1; i &lt; MAXN; i++) fact[i] = (__int128)fact[i-1] * i % MOD;
-    invFact[MAXN - 1] = power(fact[MAXN - 1], MOD - 2, MOD);
-    for (int i = MAXN - 2; i &gt;= 0; i--)
-        invFact[i] = (__int128)invFact[i+1] * (i + 1) % MOD;
+<span class="tok-keyword">void</span> precompute() {
+    fact[<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; MAXN; i++) fact[i] = (__int128)fact[i-<span class="tok-number">1</span>] * i % MOD;
+    invFact[MAXN - <span class="tok-number">1</span>] = power(fact[MAXN - <span class="tok-number">1</span>], MOD - <span class="tok-number">2</span>, MOD);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = MAXN - <span class="tok-number">2</span>; i &gt;= <span class="tok-number">0</span>; i--)
+        invFact[i] = (__int128)invFact[i+<span class="tok-number">1</span>] * (i + <span class="tok-number">1</span>) % MOD;
 }
 
-ll nCr(int n, int r) {
-    if (r &lt; 0 || r &gt; n || n &lt; 0) return 0;
-    return (__int128)fact[n] * invFact[r] % MOD * invFact[n-r] % MOD;
+ll nCr(<span class="tok-keyword">int</span> n, <span class="tok-keyword">int</span> r) {
+    <span class="tok-keyword">if</span> (r &lt; <span class="tok-number">0</span> || r &gt; n || n &lt; <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">return</span> (__int128)fact[n] * invFact[r] % MOD * invFact[n-r] % MOD;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     precompute();
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int m, n;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> m, n;
         cin &gt;&gt; m &gt;&gt; n;
-        // We want S = sum_{k=0}^{min(m,n)} C(m,k) * C(n,k) mod p.
-        // By Vandermonde&#x27;s identity, C(n,k) = C(n,n-k), so
-        // S = sum_k C(m,k) * C(n, n-k) = C(m+n, n)  (Vandermonde convolution).
-        // This turns an O(min(m,n)) summation into an O(1) lookup.
-        cout &lt;&lt; nCr(m + n, n) &lt;&lt; &quot;\n&quot;;
+        <span class="tok-comment">// We want S = sum_{k=0}^{min(m,n)} C(m,k) * C(n,k) mod p.</span>
+        <span class="tok-comment">// By Vandermonde&#x27;s identity, C(n,k) = C(n,n-k), so</span>
+        <span class="tok-comment">// S = sum_k C(m,k) * C(n, n-k) = C(m+n, n)  (Vandermonde convolution).</span>
+        <span class="tok-comment">// This turns an O(min(m,n)) summation into an O(1) lookup.</span>
+        cout &lt;&lt; nCr(m + n, n) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -1217,49 +1229,49 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the textbook coprime-CRT construction (Sun Tzu / Garner). Compute M = product of all m_i. For each sensor i, compute M_i = M / m_i and its modular inverse y_i modulo m_i via the extended Euclidean algorithm (this inverse is guaranteed to exist because gcd(M_i, m_i) = 1, which follows from pairwise coprimality of all the moduli). The unique answer modulo M is x = (sum_i r_i * M_i * y_i) mod M.</p><p>Because M_i can be almost as large as M itself (up to ~9*10^18 given the stated bound), and it gets multiplied by r_i * y_i (each up to ~10^9), the running sum must be accumulated in __int128 to avoid overflow before the final reduction mod M brings the value back into 64-bit range. This was verified against the hand-computable case moduli {3,5,7} with residues {2,3,2}: x=23 is the unique value in [0,105) with 23 mod 3 = 2, 23 mod 5 = 3, 23 mod 7 = 2.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
 ll extgcd(ll a, ll b, ll &amp;x, ll &amp;y) {
-    if (b == 0) { x = 1; y = 0; return a; }
+    <span class="tok-keyword">if</span> (b == <span class="tok-number">0</span>) { x = <span class="tok-number">1</span>; y = <span class="tok-number">0</span>; <span class="tok-keyword">return</span> a; }
     ll x1, y1;
     ll g = extgcd(b, a % b, x1, y1);
     x = y1;
     y = x1 - (a / b) * y1;
-    return g;
+    <span class="tok-keyword">return</span> g;
 }
 
 ll modinv(ll a, ll m) {
     ll x, y;
     extgcd(a, m, x, y);
     x %= m;
-    if (x &lt; 0) x += m;
-    return x;
+    <span class="tok-keyword">if</span> (x &lt; <span class="tok-number">0</span>) x += m;
+    <span class="tok-keyword">return</span> x;
 }
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;ll&gt; r(n), m(n);
-    for (int i = 0; i &lt; n; i++) cin &gt;&gt; r[i] &gt;&gt; m[i];
-    // moduli are guaranteed pairwise coprime
-    lll M = 1;
-    for (int i = 0; i &lt; n; i++) M *= m[i];
-    lll x = 0;
-    for (int i = 0; i &lt; n; i++) {
+    <span class="tok-type">vector</span>&lt;ll&gt; r(n), m(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cin &gt;&gt; r[i] &gt;&gt; m[i];
+    <span class="tok-comment">// moduli are guaranteed pairwise coprime</span>
+    lll M = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) M *= m[i];
+    lll x = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
         lll Mi = M / m[i];
         ll Mi_mod = (ll)(Mi % m[i]);
         ll inv = modinv(Mi_mod, m[i]);
         x += Mi * ((lll)((r[i] * (lll)inv) % m[i]));
     }
     x %= M;
-    if (x &lt; 0) x += M;
-    // print x (fits since we only test with values fitting in long long for this example)
+    <span class="tok-keyword">if</span> (x &lt; <span class="tok-number">0</span>) x += M;
+    <span class="tok-comment">// print x (fits since we only test with values fitting in long long for this example)</span>
     ll xl = (ll)x;
     ll Ml = (ll)M;
-    cout &lt;&lt; xl &lt;&lt; &quot; &quot; &lt;&lt; Ml &lt;&lt; endl;
+    cout &lt;&lt; xl &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; Ml &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1279,44 +1291,44 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Use the general (non-coprime) CRT merge, applied iteratively left to right. Maintain a running merged congruence (curR, curM), initialized to (0, 1) (the trivial congruence &quot;x ≡ 0 (mod 1)&quot;, satisfied by every x). For each new congruence (r_i, m_i), merge it with the running one via the extended Euclidean algorithm: let g = gcd(curM, m_i); the merge is only consistent if (r_i - curR) is divisible by g, in which case the merged modulus becomes lcm(curM, m_i) and the merged remainder is computed via the Bezout coefficients of curM and m_i (scaled and reduced modulo m_i/g, using __int128 throughout to avoid overflow in the intermediate product curM * t). If any merge step is inconsistent, output -1 immediately.</p><p>After merging all n congruences, curR is already the smallest non-negative solution modulo curM (the merge routine always normalizes its result into [0, curM)). This was verified two ways: the solvable chain (2 mod 4), (4 mod 6), (1 mod 15) merges step by step to (10 mod 12) then to (46 mod 60) — confirmed by direct check (46 mod 4 = 2, 46 mod 6 = 4, 46 mod 15 = 1); and the inconsistent pair (0 mod 4), (1 mod 2) correctly reports -1, since x ≡ 0 (mod 4) forces x ≡ 0 (mod 2), contradicting x ≡ 1 (mod 2).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-typedef __int128 lll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">typedef</span> __int128 lll;
 
 ll extgcd(ll a, ll b, ll &amp;x, ll &amp;y) {
-    if (b == 0) { x = 1; y = 0; return a; }
+    <span class="tok-keyword">if</span> (b == <span class="tok-number">0</span>) { x = <span class="tok-number">1</span>; y = <span class="tok-number">0</span>; <span class="tok-keyword">return</span> a; }
     ll x1, y1;
     ll g = extgcd(b, a % b, x1, y1);
     x = y1;
     y = x1 - (a / b) * y1;
-    return g;
+    <span class="tok-keyword">return</span> g;
 }
 
-// merge x=r1 (mod m1) and x=r2 (mod m2) into x=r (mod lcm); works even when gcd(m1,m2) &gt; 1
-bool merge(ll r1, ll m1, ll r2, ll m2, ll &amp;r, ll &amp;m) {
+<span class="tok-comment">// merge x=r1 (mod m1) and x=r2 (mod m2) into x=r (mod lcm); works even when gcd(m1,m2) &gt; 1</span>
+<span class="tok-keyword">bool</span> merge(ll r1, ll m1, ll r2, ll m2, ll &amp;r, ll &amp;m) {
     ll p, q;
     ll g = extgcd(m1, m2, p, q);
-    if (((r2 - r1) % g + g) % g != 0) return false; // inconsistent residues
+    <span class="tok-keyword">if</span> (((r2 - r1) % g + g) % g != <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>; <span class="tok-comment">// inconsistent residues</span>
     ll mod2 = m2 / g;
     lll t = ((lll)(((r2 - r1) / g) % mod2) * (p % mod2)) % mod2;
     ll tt = (ll)((t % mod2 + mod2) % mod2);
     ll lcm = m1 / g * m2;
     ll x = (ll)(((lll)r1 + (lll)m1 * tt) % lcm);
-    if (x &lt; 0) x += lcm;
+    <span class="tok-keyword">if</span> (x &lt; <span class="tok-number">0</span>) x += lcm;
     r = x; m = lcm;
-    return true;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
 }
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    ll curR = 0, curM = 1;
-    for (int i = 0; i &lt; n; i++) {
+    ll curR = <span class="tok-number">0</span>, curM = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
         ll r, m;
         cin &gt;&gt; r &gt;&gt; m;
         ll nr, nm;
-        if (!merge(curR, curM, r, m, nr, nm)) { cout &lt;&lt; -1 &lt;&lt; endl; return 0; }
+        <span class="tok-keyword">if</span> (!merge(curR, curM, r, m, nr, nm)) { cout &lt;&lt; -<span class="tok-number">1</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
         curR = nr; curM = nm;
     }
     cout &lt;&lt; curR &lt;&lt; endl;
@@ -1347,62 +1359,62 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Let f(n) = number of throw-sequences summing to exactly n, with f(0) = 1 (the empty sequence, base case) and f(n) = 0 for n &lt; 0. Conditioning on the value of the LAST throw (which can be any of 1..6, as long as it does not exceed the remaining sum) gives the order-6 linear recurrence f(n) = f(n-1) + f(n-2) + f(n-3) + f(n-4) + f(n-5) + f(n-6) for n &gt;= 1 (terms with negative index contribute 0). For n &lt;= 6, compute f directly by unrolling this recurrence with the known base case. For n &gt; 6, build the 6x6 companion transition matrix T (first row all 1s, sub-diagonal shifted identity below it), form the state vector [f(6), f(5), f(4), f(3), f(2), f(1)], and compute T^(n-6) applied to this state via fast matrix exponentiation, reading off the first coordinate as f(n).</p><p>Hand-verification: f(1)=1, f(2)=2, f(3)=4, f(4)=8, f(5)=16, f(6)=32 (each simply doubles while n &lt;= 6, since every earlier f(i) for i&lt;n contributes once), and f(7) = f(6)+f(5)+f(4)+f(3)+f(2)+f(1) = 32+16+8+4+2+1 = 63, matching this example&#x27;s test case exactly (this is also the well-known CSES &#x27;Throwing Dice&#x27; sample answer).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007;
-const int K = 6;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> K = <span class="tok-number">6</span>;
 
-typedef vector&lt;vector&lt;ll&gt;&gt; Mat;
+<span class="tok-keyword">typedef</span> <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;ll&gt;&gt; Mat;
 
-Mat matmul(const Mat &amp;A, const Mat &amp;B) {
-    int n = A.size(), m = B[0].size(), k = B.size();
-    Mat C(n, vector&lt;ll&gt;(m, 0));
-    for (int i = 0; i &lt; n; i++)
-        for (int t = 0; t &lt; k; t++) {
-            if (A[i][t] == 0) continue;
-            for (int j = 0; j &lt; m; j++)
+Mat matmul(<span class="tok-keyword">const</span> Mat &amp;A, <span class="tok-keyword">const</span> Mat &amp;B) {
+    <span class="tok-keyword">int</span> n = A.size(), m = B[<span class="tok-number">0</span>].size(), k = B.size();
+    Mat C(n, <span class="tok-type">vector</span>&lt;ll&gt;(m, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> t = <span class="tok-number">0</span>; t &lt; k; t++) {
+            <span class="tok-keyword">if</span> (A[i][t] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; m; j++)
                 C[i][j] = (C[i][j] + A[i][t] * B[t][j]) % MOD;
         }
-    return C;
+    <span class="tok-keyword">return</span> C;
 }
 
 Mat matpow(Mat A, ll p) {
-    int n = A.size();
-    Mat R(n, vector&lt;ll&gt;(n, 0));
-    for (int i = 0; i &lt; n; i++) R[i][i] = 1;
-    while (p &gt; 0) {
-        if (p &amp; 1) R = matmul(R, A);
+    <span class="tok-keyword">int</span> n = A.size();
+    Mat R(n, <span class="tok-type">vector</span>&lt;ll&gt;(n, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) R[i][i] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (p &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (p &amp; <span class="tok-number">1</span>) R = matmul(R, A);
         A = matmul(A, A);
-        p &gt;&gt;= 1;
+        p &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return R;
+    <span class="tok-keyword">return</span> R;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll n;
     cin &gt;&gt; n;
-    // f(0) = 1, f(negative) = 0, f(i) = sum_{d=1}^{6} f(i-d)
-    if (n == 0) { cout &lt;&lt; 1 &lt;&lt; endl; return 0; }
-    // base vector for indices [1..6] via direct DP if n small, else matrix expo
-    ll limit = min(n, (ll)6);
-    vector&lt;ll&gt; f(limit + 1, 0);
-    f[0] = 1;
-    for (ll i = 1; i &lt;= limit; i++) {
-        ll s = 0;
-        for (int d = 1; d &lt;= 6 &amp;&amp; d &lt;= i; d++) s = (s + f[i-d]) % MOD;
+    <span class="tok-comment">// f(0) = 1, f(negative) = 0, f(i) = sum_{d=1}^{6} f(i-d)</span>
+    <span class="tok-keyword">if</span> (n == <span class="tok-number">0</span>) { cout &lt;&lt; <span class="tok-number">1</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-comment">// base vector for indices [1..6] via direct DP if n small, else matrix expo</span>
+    ll limit = min(n, (ll)<span class="tok-number">6</span>);
+    <span class="tok-type">vector</span>&lt;ll&gt; f(limit + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    f[<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (ll i = <span class="tok-number">1</span>; i &lt;= limit; i++) {
+        ll s = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">1</span>; d &lt;= <span class="tok-number">6</span> &amp;&amp; d &lt;= i; d++) s = (s + f[i-d]) % MOD;
         f[i] = s;
     }
-    if (n &lt;= 6) { cout &lt;&lt; f[n] &lt;&lt; endl; return 0; }
-    // transition matrix for state vector [f(i), f(i-1), ..., f(i-5)]
-    Mat T(K, vector&lt;ll&gt;(K, 0));
-    for (int j = 0; j &lt; K; j++) T[0][j] = 1;
-    for (int i = 1; i &lt; K; i++) T[i][i-1] = 1;
-    // state at i=6: [f(6),f(5),f(4),f(3),f(2),f(1)]
-    vector&lt;ll&gt; state = {f[6], f[5], f[4], f[3], f[2], f[1]};
-    Mat Tp = matpow(T, n - 6);
-    ll ans = 0;
-    for (int j = 0; j &lt; K; j++) ans = (ans + Tp[0][j] * state[j]) % MOD;
+    <span class="tok-keyword">if</span> (n &lt;= <span class="tok-number">6</span>) { cout &lt;&lt; f[n] &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-comment">// transition matrix for state vector [f(i), f(i-1), ..., f(i-5)]</span>
+    Mat T(K, <span class="tok-type">vector</span>&lt;ll&gt;(K, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; K; j++) T[<span class="tok-number">0</span>][j] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; K; i++) T[i][i-<span class="tok-number">1</span>] = <span class="tok-number">1</span>;
+    <span class="tok-comment">// state at i=6: [f(6),f(5),f(4),f(3),f(2),f(1)]</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; state = {f[<span class="tok-number">6</span>], f[<span class="tok-number">5</span>], f[<span class="tok-number">4</span>], f[<span class="tok-number">3</span>], f[<span class="tok-number">2</span>], f[<span class="tok-number">1</span>]};
+    Mat Tp = matpow(T, n - <span class="tok-number">6</span>);
+    ll ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; K; j++) ans = (ans + Tp[<span class="tok-number">0</span>][j] * state[j]) % MOD;
     cout &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>
@@ -1420,59 +1432,59 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Let f(n) = number of ordered gem sequences summing to exactly n units. A sequence summing to n either ends with an ordinary gem (1 unit), in which case the rest sums to n-1, or ends with a magic gem (M units), in which case the rest sums to n-M. This gives the order-M linear recurrence f(n) = f(n-1) + f(n-M) for n &gt;= M, with base cases f(0) = 1 (empty sequence) and f(i) = 1 for 0 &lt; i &lt; M (the only way to reach a total less than M is to use i ordinary gems in a row — a single fixed sequence, since a magic gem alone would already overshoot).</p><p>Build the base state directly (f(0) through f(M)), then, for N &gt; M, form the M x M transition matrix (row 0 has a 1 in column 0 and a 1 in column M-1, encoding f(i+1) = f(i) + f(i-M+1); remaining rows shift the state down by one) and raise it to the power N - M via fast matrix exponentiation applied to the state vector [f(M), f(M-1), ..., f(1)]. Hand-verified with M=3: the sequence f(0..10) = 1,1,1,2,3,4,6,9,13,19,28 was checked by direct recurrence unrolling (f(3)=f(2)+f(0)=1+1=2, f(4)=f(3)+f(1)=2+1=3, ..., f(10)=f(9)+f(7)=19+9=28), and the program reproduces f(10)=28 exactly via its matrix-exponentiation code path (since 10 &gt; M=3, the matrix-power branch is actually exercised, not just the small-case fallback).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007;
-typedef vector&lt;vector&lt;ll&gt;&gt; Mat;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">typedef</span> <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;ll&gt;&gt; Mat;
 
-Mat matmul(const Mat &amp;A, const Mat &amp;B) {
-    int n = A.size(), m = B[0].size(), k = B.size();
-    Mat C(n, vector&lt;ll&gt;(m, 0));
-    for (int i = 0; i &lt; n; i++)
-        for (int t = 0; t &lt; k; t++) {
-            if (A[i][t] == 0) continue;
-            for (int j = 0; j &lt; m; j++)
+Mat matmul(<span class="tok-keyword">const</span> Mat &amp;A, <span class="tok-keyword">const</span> Mat &amp;B) {
+    <span class="tok-keyword">int</span> n = A.size(), m = B[<span class="tok-number">0</span>].size(), k = B.size();
+    Mat C(n, <span class="tok-type">vector</span>&lt;ll&gt;(m, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> t = <span class="tok-number">0</span>; t &lt; k; t++) {
+            <span class="tok-keyword">if</span> (A[i][t] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; m; j++)
                 C[i][j] = (C[i][j] + A[i][t] * B[t][j]) % MOD;
         }
-    return C;
+    <span class="tok-keyword">return</span> C;
 }
 Mat matpow(Mat A, ll p) {
-    int n = A.size();
-    Mat R(n, vector&lt;ll&gt;(n, 0));
-    for (int i = 0; i &lt; n; i++) R[i][i] = 1;
-    while (p &gt; 0) {
-        if (p &amp; 1) R = matmul(R, A);
+    <span class="tok-keyword">int</span> n = A.size();
+    Mat R(n, <span class="tok-type">vector</span>&lt;ll&gt;(n, <span class="tok-number">0</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) R[i][i] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (p &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (p &amp; <span class="tok-number">1</span>) R = matmul(R, A);
         A = matmul(A, A);
-        p &gt;&gt;= 1;
+        p &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return R;
+    <span class="tok-keyword">return</span> R;
 }
 
-int main(){
-    ll n; int M;
+<span class="tok-keyword">int</span> main(){
+    ll n; <span class="tok-keyword">int</span> M;
     cin &gt;&gt; n &gt;&gt; M;
-    // f(i) = 1 for 0 &lt;= i &lt; M ; f(i) = f(i-1) + f(i-M) for i &gt;= M
-    vector&lt;ll&gt; f(min(n, (ll)M) + 1, 0);
-    for (ll i = 0; i &lt;= min(n, (ll)(M-1)); i++) f[i] = 1;
-    if (n &lt; M) { cout &lt;&lt; f[n] &lt;&lt; endl; return 0; }
-    // compute f[0..M] directly with simple DP (small, only M+1 terms needed as base state)
-    vector&lt;ll&gt; full(M+1);
-    for (int i = 0; i &lt; M; i++) full[i] = 1;
-    full[M] = (full[M-1] + full[0]) % MOD; // f(M) = f(M-1) + f(0)
-    if (n == M) { cout &lt;&lt; full[M] &lt;&lt; endl; return 0; }
-    // state vector at index M: [f(M), f(M-1), ..., f(M-M+1)] = [f(M), f(M-1), ..., f(1)]
-    vector&lt;ll&gt; state(M);
-    for (int j = 0; j &lt; M; j++) state[j] = full[M - j];
-    // transition matrix T (M x M): new[0] = old[0] + old[M-1] (f(i)=f(i-1)+f(i-M))
-    // state = [f(i), f(i-1), ..., f(i-M+1)]
-    // next state = [f(i+1), f(i), ..., f(i-M+2)] where f(i+1) = f(i) + f(i-M+1) = state[0] + state[M-1]
-    Mat T(M, vector&lt;ll&gt;(M, 0));
-    T[0][0] = 1; T[0][M-1] = 1;
-    for (int i = 1; i &lt; M; i++) T[i][i-1] = 1;
+    <span class="tok-comment">// f(i) = 1 for 0 &lt;= i &lt; M ; f(i) = f(i-1) + f(i-M) for i &gt;= M</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; f(min(n, (ll)M) + <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (ll i = <span class="tok-number">0</span>; i &lt;= min(n, (ll)(M-<span class="tok-number">1</span>)); i++) f[i] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">if</span> (n &lt; M) { cout &lt;&lt; f[n] &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-comment">// compute f[0..M] directly with simple DP (small, only M+1 terms needed as base state)</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; full(M+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; M; i++) full[i] = <span class="tok-number">1</span>;
+    full[M] = (full[M-<span class="tok-number">1</span>] + full[<span class="tok-number">0</span>]) % MOD; <span class="tok-comment">// f(M) = f(M-1) + f(0)</span>
+    <span class="tok-keyword">if</span> (n == M) { cout &lt;&lt; full[M] &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-comment">// state vector at index M: [f(M), f(M-1), ..., f(M-M+1)] = [f(M), f(M-1), ..., f(1)]</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; state(M);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; M; j++) state[j] = full[M - j];
+    <span class="tok-comment">// transition matrix T (M x M): new[0] = old[0] + old[M-1] (f(i)=f(i-1)+f(i-M))</span>
+    <span class="tok-comment">// state = [f(i), f(i-1), ..., f(i-M+1)]</span>
+    <span class="tok-comment">// next state = [f(i+1), f(i), ..., f(i-M+2)] where f(i+1) = f(i) + f(i-M+1) = state[0] + state[M-1]</span>
+    Mat T(M, <span class="tok-type">vector</span>&lt;ll&gt;(M, <span class="tok-number">0</span>));
+    T[<span class="tok-number">0</span>][<span class="tok-number">0</span>] = <span class="tok-number">1</span>; T[<span class="tok-number">0</span>][M-<span class="tok-number">1</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; M; i++) T[i][i-<span class="tok-number">1</span>] = <span class="tok-number">1</span>;
     Mat Tp = matpow(T, n - M);
-    ll ans = 0;
-    for (int j = 0; j &lt; M; j++) ans = (ans + Tp[0][j] * state[j]) % MOD;
+    ll ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; M; j++) ans = (ans + Tp[<span class="tok-number">0</span>][j] * state[j]) % MOD;
     cout &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>
@@ -1498,47 +1510,47 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Direct application of Lucas&#x27; theorem. First, precompute factorials and inverse factorials modulo p for all values 0..p-1 (using Fermat&#x27;s little theorem for the modular inverse of (p-1)!, then working backward to fill in every inverse factorial in O(p) total). Define smallComb(a, b) for 0 &lt;= a, b &lt; p as fact[a] * invfact[b] * invfact[a-b] mod p (0 if b &gt; a).</p><p>Then recursively peel off the least-significant base-p digit of n and k: lucas(n, k) = smallComb(n mod p, k mod p) * lucas(n/p, k/p), with the base case lucas(0, 0) = 1 (and lucas(n,0) = 1 for any remaining n, handled by the k==0 early return). If at any digit position k mod p exceeds n mod p, smallComb returns 0 immediately, which propagates to make the whole product 0 — correctly capturing that no valid &quot;carry-free&quot; combination exists at that digit (Kummer&#x27;s theorem interpretation).</p><p>Hand-verified: C(10,2) = 45. In base 7, 10 = (1,3)_7 and 2 = (0,2)_7. Lucas gives C(3,2) * C(1,0) mod 7 = 3 * 1 = 3, and indeed 45 mod 7 = 3 (45 = 6*7 + 3), confirming the implementation.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
 
-ll P; // prime modulus
-vector&lt;ll&gt; fact, inv_fact;
+ll P; <span class="tok-comment">// prime modulus</span>
+<span class="tok-type">vector</span>&lt;ll&gt; fact, inv_fact;
 
 ll power(ll a, ll e, ll mod) {
-    a %= mod; if (a &lt; 0) a += mod;
-    ll r = 1;
-    while (e &gt; 0) {
-        if (e &amp; 1) r = r * a % mod;
+    a %= mod; <span class="tok-keyword">if</span> (a &lt; <span class="tok-number">0</span>) a += mod;
+    ll r = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (e &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (e &amp; <span class="tok-number">1</span>) r = r * a % mod;
         a = a * a % mod;
-        e &gt;&gt;= 1;
+        e &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return r;
+    <span class="tok-keyword">return</span> r;
 }
 
-void precompute(ll p) {
-    fact.assign(p, 1);
-    for (ll i = 1; i &lt; p; i++) fact[i] = fact[i-1] * i % p;
-    inv_fact.assign(p, 1);
-    inv_fact[p-1] = power(fact[p-1], p-2, p);
-    for (ll i = p-1; i &gt;= 1; i--) inv_fact[i-1] = inv_fact[i] * i % p;
+<span class="tok-keyword">void</span> precompute(ll p) {
+    fact.assign(p, <span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (ll i = <span class="tok-number">1</span>; i &lt; p; i++) fact[i] = fact[i-<span class="tok-number">1</span>] * i % p;
+    inv_fact.assign(p, <span class="tok-number">1</span>);
+    inv_fact[p-<span class="tok-number">1</span>] = power(fact[p-<span class="tok-number">1</span>], p-<span class="tok-number">2</span>, p);
+    <span class="tok-keyword">for</span> (ll i = p-<span class="tok-number">1</span>; i &gt;= <span class="tok-number">1</span>; i--) inv_fact[i-<span class="tok-number">1</span>] = inv_fact[i] * i % p;
 }
 
-// C(n, k) mod p for small n, k &lt; p
+<span class="tok-comment">// C(n, k) mod p for small n, k &lt; p</span>
 ll smallComb(ll n, ll k, ll p) {
-    if (k &lt; 0 || k &gt; n) return 0;
-    return fact[n] * inv_fact[k] % p * inv_fact[n-k] % p;
+    <span class="tok-keyword">if</span> (k &lt; <span class="tok-number">0</span> || k &gt; n) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">return</span> fact[n] * inv_fact[k] % p * inv_fact[n-k] % p;
 }
 
-// Lucas&#x27; theorem: C(n, k) mod p for huge n, k, prime p
+<span class="tok-comment">// Lucas&#x27; theorem: C(n, k) mod p for huge n, k, prime p</span>
 ll lucas(ll n, ll k, ll p) {
-    if (k == 0) return 1;
+    <span class="tok-keyword">if</span> (k == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-number">1</span>;
     ll ni = n % p, ki = k % p;
-    if (ki &gt; ni) return 0;
-    return smallComb(ni, ki, p) * lucas(n / p, k / p, p) % p;
+    <span class="tok-keyword">if</span> (ki &gt; ni) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">return</span> smallComb(ni, ki, p) * lucas(n / p, k / p, p) % p;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll n, k, p;
     cin &gt;&gt; n &gt;&gt; k &gt;&gt; p;
     precompute(p);
@@ -1559,48 +1571,48 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Direct application of the Mobius-inversion counting template. First sieve the Mobius function μ(d) for all d up to the maximum array value, using a smallest-prime-factor sieve (mu[1]=1; for composite/prime i, if i&#x27;s smallest-prime-factor divides i/spf[i] again — i.e. i has a repeated prime factor — mu[i]=0, otherwise mu[i] = -mu[i/spf[i]]).</p><p>Next compute cnt[d] = number of array elements divisible by d, for every d from 1 up to the max value, via a harmonic-sum divisor pass (for each d, sum the frequency of every multiple of d that appears in the array) — this costs O(V log V) where V is the max value, since it is exactly the same summation pattern as a sieve of Eratosthenes. Finally, the number of coprime pairs is sum_d μ(d) * C(cnt[d], 2): for each d, C(cnt[d], 2) counts all pairs where BOTH elements are divisible by d (i.e., pairs whose gcd is a multiple of d), and the Mobius-weighted sum over all d cancels out every pair whose gcd is greater than 1, leaving exactly the pairs with gcd exactly 1.</p><p>Verified by brute force (checking gcd of every pair directly) against several arrays, including this example&#x27;s array [2,3,4,6,9]: the coprime pairs are (2,3), (2,9), (3,4), and (4,9) — 4 pairs total (every other pair shares a common factor: (2,4),(2,6),(4,6) share 2, and (3,6),(3,9),(6,9) share 3) — matching both the brute-force cross-check and the Mobius-sieve program&#x27;s output.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; a(n);
-    int maxV = 1;
-    for (auto &amp;x : a) { cin &gt;&gt; x; maxV = max(maxV, x); }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n);
+    <span class="tok-keyword">int</span> maxV = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) { cin &gt;&gt; x; maxV = max(maxV, x); }
 
-    // sieve smallest prime factor for Mobius function
-    vector&lt;int&gt; spf(maxV+1, 0);
-    for (int i = 2; i &lt;= maxV; i++) {
-        if (spf[i] == 0) {
-            for (int j = i; j &lt;= maxV; j += i) {
-                if (spf[j] == 0) spf[j] = i;
+    <span class="tok-comment">// sieve smallest prime factor for Mobius function</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; spf(maxV+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">2</span>; i &lt;= maxV; i++) {
+        <span class="tok-keyword">if</span> (spf[i] == <span class="tok-number">0</span>) {
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = i; j &lt;= maxV; j += i) {
+                <span class="tok-keyword">if</span> (spf[j] == <span class="tok-number">0</span>) spf[j] = i;
             }
         }
     }
-    vector&lt;int&gt; mu(maxV+1, 0);
-    mu[1] = 1;
-    for (int i = 2; i &lt;= maxV; i++) {
-        int x = i / spf[i];
-        if (x % spf[i] == 0) mu[i] = 0; // squared prime factor
-        else mu[i] = -mu[x];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; mu(maxV+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    mu[<span class="tok-number">1</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">2</span>; i &lt;= maxV; i++) {
+        <span class="tok-keyword">int</span> x = i / spf[i];
+        <span class="tok-keyword">if</span> (x % spf[i] == <span class="tok-number">0</span>) mu[i] = <span class="tok-number">0</span>; <span class="tok-comment">// squared prime factor</span>
+        <span class="tok-keyword">else</span> mu[i] = -mu[x];
     }
 
-    // cnt[d] = number of array elements divisible by d
-    vector&lt;ll&gt; cnt(maxV+1, 0);
-    vector&lt;ll&gt; freq(maxV+1, 0);
-    for (int x : a) freq[x]++;
-    for (int d = 1; d &lt;= maxV; d++) {
-        for (int m = d; m &lt;= maxV; m += d) cnt[d] += freq[m];
+    <span class="tok-comment">// cnt[d] = number of array elements divisible by d</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; cnt(maxV+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-type">vector</span>&lt;ll&gt; freq(maxV+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> x : a) freq[x]++;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">1</span>; d &lt;= maxV; d++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> m = d; m &lt;= maxV; m += d) cnt[d] += freq[m];
     }
 
-    // answer = sum_d mu(d) * C(cnt[d], 2)
-    ll ans = 0;
-    for (int d = 1; d &lt;= maxV; d++) {
-        if (mu[d] == 0) continue;
+    <span class="tok-comment">// answer = sum_d mu(d) * C(cnt[d], 2)</span>
+    ll ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">1</span>; d &lt;= maxV; d++) {
+        <span class="tok-keyword">if</span> (mu[d] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
         ll c = cnt[d];
-        ans += (ll)mu[d] * (c * (c-1) / 2);
+        ans += (ll)mu[d] * (c * (c-<span class="tok-number">1</span>) / <span class="tok-number">2</span>);
     }
     cout &lt;&lt; ans &lt;&lt; endl;
 }

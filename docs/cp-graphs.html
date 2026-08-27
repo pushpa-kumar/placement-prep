@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,38 +281,38 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run Dijkstra from node 1 with a min-heap of (distance, node) pairs, but alongside dist[] also maintain cnt[] (number of shortest paths found so far). When popping a stale queue entry (its stored distance is worse than the current best for that node) skip it. When relaxing an edge (u -&gt; v, w): if dist[u]+w gives a strictly smaller distance than the current dist[v], overwrite dist[v] and reset cnt[v] = cnt[u] (the old count is now irrelevant, it belonged to a longer path). If dist[u]+w exactly equals the current dist[v], this is an equally-short alternative path, so add cnt[u] into cnt[v] (mod 1e9+7). Because all weights are positive, vertices are finalized in non-decreasing order of distance, so by the time a vertex v is finalized, every path of that exact length that could contribute to cnt[v] has already been accounted for.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long MOD = 1000000007;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;vector&lt;pair&lt;int,long long&gt;&gt;&gt; adj(n+1);
-    for(int i=0;i&lt;m;i++){
-        int u,v; long long w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt;&gt; adj(n+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
         adj[u].push_back({v,w});
     }
-    vector&lt;long long&gt; dist(n+1, LLONG_MAX);
-    vector&lt;long long&gt; cnt(n+1, 0);
-    dist[1]=0; cnt[1]=1;
-    priority_queue&lt;pair&lt;long long,int&gt;, vector&lt;pair&lt;long long,int&gt;&gt;, greater&lt;&gt;&gt; pq;
-    pq.push({0,1});
-    while(!pq.empty()){
-        auto [d,u] = pq.top(); pq.pop();
-        if(d &gt; dist[u]) continue; // stale entry
-        for(auto [v,w] : adj[u]){
-            long long nd = d + w;
-            if(nd &lt; dist[v]){
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dist(n+<span class="tok-number">1</span>, LLONG_MAX);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; cnt(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    dist[<span class="tok-number">1</span>]=<span class="tok-number">0</span>; cnt[<span class="tok-number">1</span>]=<span class="tok-number">1</span>;
+    <span class="tok-type">priority_queue</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-keyword">int</span>&gt;, <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-keyword">int</span>&gt;&gt;, greater&lt;&gt;&gt; pq;
+    pq.push({<span class="tok-number">0</span>,<span class="tok-number">1</span>});
+    <span class="tok-keyword">while</span>(!pq.empty()){
+        <span class="tok-keyword">auto</span> [d,u] = pq.top(); pq.pop();
+        <span class="tok-keyword">if</span>(d &gt; dist[u]) <span class="tok-keyword">continue</span>; <span class="tok-comment">// stale entry</span>
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> [v,w] : adj[u]){
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> nd = d + w;
+            <span class="tok-keyword">if</span>(nd &lt; dist[v]){
                 dist[v] = nd;
                 cnt[v] = cnt[u] % MOD;
                 pq.push({nd, v});
-            } else if(nd == dist[v]){
+            } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(nd == dist[v]){
                 cnt[v] = (cnt[v] + cnt[u]) % MOD;
             }
         }
     }
-    cout &lt;&lt; dist[n] &lt;&lt; &quot; &quot; &lt;&lt; cnt[n] &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; dist[n] &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; cnt[n] &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -324,41 +336,41 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is Bellman-Ford adapted to maximize instead of minimize: relax every edge with dist[v] = max(dist[v], dist[u]+w) for n-1 rounds, which correctly computes the best score of any simple path. Then run one more full pass over all edges: any edge that can still improve its endpoint signals that endpoint lies on (or after) a cycle whose net weight is positive and that is still reachable from node 1 (otherwise dist[u] would never have been a finite, non-sentinel value at all). Mark such endpoints &#x27;unbounded&#x27;. Since the runaway property must also propagate forward along further edges (a node reachable from an unbounded node inherits the unbounded property, because you can loop the cycle as many times as needed before continuing), repeat this propagation pass n times total, each time also treating &#x27;unbounded[u] implies unbounded[v]&#x27; for every edge u-&gt;v. Finally, node n is reachable with unbounded score iff unbounded[n] is set; otherwise dist[n] is the answer.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long NEG_INF = LLONG_MIN / 2;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> NEG_INF = LLONG_MIN / <span class="tok-number">2</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;array&lt;long long,3&gt;&gt; edges(m); // u, v, w
-    for(int i=0;i&lt;m;i++){
-        long long u,v,w; cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-number">3</span>&gt;&gt; edges(m); <span class="tok-comment">// u, v, w</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> u,v,w; cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
         edges[i] = {u,v,w};
     }
-    vector&lt;long long&gt; dist(n+1, NEG_INF);
-    dist[1] = 0;
-    // n-1 passes guarantee correct longest-path values in absence of positive cycles
-    for(int i=0;i&lt;n-1;i++){
-        for(auto &amp;e : edges){
-            int u=e[0], v=e[1]; long long w=e[2];
-            if(dist[u] &gt; NEG_INF/2 &amp;&amp; dist[u]+w &gt; dist[v]) dist[v] = dist[u]+w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dist(n+<span class="tok-number">1</span>, NEG_INF);
+    dist[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    <span class="tok-comment">// n-1 passes guarantee correct longest-path values in absence of positive cycles</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n-<span class="tok-number">1</span>;i++){
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;e : edges){
+            <span class="tok-keyword">int</span> u=e[<span class="tok-number">0</span>], v=e[<span class="tok-number">1</span>]; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w=e[<span class="tok-number">2</span>];
+            <span class="tok-keyword">if</span>(dist[u] &gt; NEG_INF/<span class="tok-number">2</span> &amp;&amp; dist[u]+w &gt; dist[v]) dist[v] = dist[u]+w;
         }
     }
-    vector&lt;char&gt; unbounded(n+1, 0);
-    // propagate: one more relaxation pass detects nodes still improvable (on/after a positive cycle);
-    // repeat n times so the &quot;unbounded&quot; property propagates along any chain of edges of length &lt; n
-    for(int i=0;i&lt;n;i++){
-        for(auto &amp;e : edges){
-            int u=e[0], v=e[1]; long long w=e[2];
-            if(dist[u] &lt;= NEG_INF/2) continue;
-            if(dist[u] + w &gt; dist[v] || unbounded[u]){
-                if(dist[u]+w &gt; dist[v]) dist[v] = dist[u]+w;
-                unbounded[v] = 1;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; unbounded(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-comment">// propagate: one more relaxation pass detects nodes still improvable (on/after a positive cycle);</span>
+    <span class="tok-comment">// repeat n times so the &quot;unbounded&quot; property propagates along any chain of edges of length &lt; n</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++){
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;e : edges){
+            <span class="tok-keyword">int</span> u=e[<span class="tok-number">0</span>], v=e[<span class="tok-number">1</span>]; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w=e[<span class="tok-number">2</span>];
+            <span class="tok-keyword">if</span>(dist[u] &lt;= NEG_INF/<span class="tok-number">2</span>) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">if</span>(dist[u] + w &gt; dist[v] || unbounded[u]){
+                <span class="tok-keyword">if</span>(dist[u]+w &gt; dist[v]) dist[v] = dist[u]+w;
+                unbounded[v] = <span class="tok-number">1</span>;
             }
         }
     }
-    if(unbounded[n]) cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
-    else cout &lt;&lt; dist[n] &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">if</span>(unbounded[n]) cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE\n&quot;</span>;
+    <span class="tok-keyword">else</span> cout &lt;&lt; dist[n] &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -380,34 +392,34 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>First run Floyd-Warshall once on the unmodified graph to get all-pairs shortest distances d[i][j]. It can be shown that an optimal solution uses the halved edge at most once along the chosen path, so for every edge (a,b,w) the best distance achievable *if that edge is the one halved* is min( d[s][a] + w/2 + d[b][t], d[s][b] + w/2 + d[a][t] ) — go from s to one endpoint using ordinary shortest paths, cross the halved edge, then continue from the other endpoint to t using ordinary shortest paths. The overall answer is the minimum of the unmodified d[s][t] and this quantity taken over every edge.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long INF = LLONG_MAX/4;
-int main(){
-    int n, m; long long s, t;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> INF = LLONG_MAX/<span class="tok-number">4</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s, t;
     cin &gt;&gt; n &gt;&gt; m &gt;&gt; s &gt;&gt; t;
-    vector&lt;vector&lt;long long&gt;&gt; d(n+1, vector&lt;long long&gt;(n+1, INF));
-    for(int i=1;i&lt;=n;i++) d[i][i]=0;
-    vector&lt;array&lt;long long,3&gt;&gt; edges(m);
-    for(int i=0;i&lt;m;i++){
-        long long a,b,w; cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; d(n+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n+<span class="tok-number">1</span>, INF));
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">1</span>;i&lt;=n;i++) d[i][i]=<span class="tok-number">0</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-number">3</span>&gt;&gt; edges(m);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a,b,w; cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
         edges[i]={a,b,w};
         d[a][b] = min(d[a][b], w);
         d[b][a] = min(d[b][a], w);
     }
-    for(int k=1;k&lt;=n;k++)
-        for(int i=1;i&lt;=n;i++)
-            for(int j=1;j&lt;=n;j++)
-                if(d[i][k]+d[k][j] &lt; d[i][j]) d[i][j] = d[i][k]+d[k][j];
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> k=<span class="tok-number">1</span>;k&lt;=n;k++)
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">1</span>;i&lt;=n;i++)
+            <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> j=<span class="tok-number">1</span>;j&lt;=n;j++)
+                <span class="tok-keyword">if</span>(d[i][k]+d[k][j] &lt; d[i][j]) d[i][j] = d[i][k]+d[k][j];
 
-    long long best = d[s][t];
-    for(auto &amp;e : edges){
-        long long a=e[0], b=e[1], w=e[2];
-        long long half = w/2; // weights are given even, so this is exact
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = d[s][t];
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;e : edges){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a=e[<span class="tok-number">0</span>], b=e[<span class="tok-number">1</span>], w=e[<span class="tok-number">2</span>];
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> half = w/<span class="tok-number">2</span>; <span class="tok-comment">// weights are given even, so this is exact</span>
         best = min(best, d[s][a] + half + d[b][t]);
         best = min(best, d[s][b] + half + d[a][t]);
     }
-    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; best &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -437,42 +449,42 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort all m edges by weight ascending. Initialize a DSU with each vertex in its own set. Walk the sorted edges in order; for each edge, if its two endpoints are in different DSU components, union them and add its weight to the running total. Stop early (or just keep going) until n-1 edges have been added. If fewer than n-1 edges were ever added, the graph was disconnected.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-struct DSU{
-    vector&lt;int&gt; p, r;
-    DSU(int n): p(n+1), r(n+1,0){ iota(p.begin(), p.end(), 0); }
-    int find(int x){ return p[x]==x ? x : p[x]=find(p[x]); }
-    bool unite(int a, int b){
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">struct</span> DSU{
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; p, r;
+    DSU(<span class="tok-keyword">int</span> n): p(n+<span class="tok-number">1</span>), r(n+<span class="tok-number">1</span>,<span class="tok-number">0</span>){ iota(p.begin(), p.end(), <span class="tok-number">0</span>); }
+    <span class="tok-keyword">int</span> find(<span class="tok-keyword">int</span> x){ <span class="tok-keyword">return</span> p[x]==x ? x : p[x]=find(p[x]); }
+    <span class="tok-keyword">bool</span> unite(<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){
         a=find(a); b=find(b);
-        if(a==b) return false;
-        if(r[a]&lt;r[b]) swap(a,b);
+        <span class="tok-keyword">if</span>(a==b) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">if</span>(r[a]&lt;r[b]) swap(a,b);
         p[b]=a;
-        if(r[a]==r[b]) r[a]++;
-        return true;
+        <span class="tok-keyword">if</span>(r[a]==r[b]) r[a]++;
+        <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
     }
 };
-int main(){
-    int n, m;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;array&lt;long long,3&gt;&gt; edges(m);
-    for(int i=0;i&lt;m;i++){
-        long long a,b,w; cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-number">3</span>&gt;&gt; edges(m);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a,b,w; cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
         edges[i] = {w,a,b};
     }
     sort(edges.begin(), edges.end());
     DSU dsu(n);
-    long long total = 0;
-    int used = 0;
-    for(auto &amp;e : edges){
-        long long w=e[0], a=e[1], b=e[2];
-        if(dsu.unite(a,b)){
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> used = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;e : edges){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w=e[<span class="tok-number">0</span>], a=e[<span class="tok-number">1</span>], b=e[<span class="tok-number">2</span>];
+        <span class="tok-keyword">if</span>(dsu.unite(a,b)){
             total += w;
             used++;
         }
     }
-    if(used == n-1) cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
-    else cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
+    <span class="tok-keyword">if</span>(used == n-<span class="tok-number">1</span>) cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">else</span> cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -496,39 +508,39 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build a dense adjacency matrix (INF where no direct edge exists, keeping the minimum weight on parallel edges). Maintain minEdge[v] = the cheapest edge weight connecting v to the tree built so far (initialized to infinity except the start vertex, which is 0), and a boolean inMST[] array. Repeat n times: scan all vertices with a plain linear loop to find the not-yet-included vertex with the smallest minEdge value, add it to the tree, add its minEdge value to the total, then relax minEdge[] for every other vertex using the newly added vertex&#x27;s row of the matrix. This avoids any heap entirely, which is faster than Kruskal&#x27;s sort when the graph is dense (E close to V^2).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long INF = LLONG_MAX/4;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> INF = LLONG_MAX/<span class="tok-number">4</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;vector&lt;long long&gt;&gt; g(n+1, vector&lt;long long&gt;(n+1, INF));
-    for(int i=0;i&lt;m;i++){
-        int a,b; long long w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; g(n+<span class="tok-number">1</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n+<span class="tok-number">1</span>, INF));
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> a,b; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w;
         cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
         g[a][b] = min(g[a][b], w);
         g[b][a] = min(g[b][a], w);
     }
-    vector&lt;long long&gt; minEdge(n+1, INF);
-    vector&lt;char&gt; inMST(n+1, 0);
-    minEdge[1] = 0;
-    long long total = 0;
-    int count = 0;
-    for(int iter=0; iter&lt;n; iter++){
-        int u = -1;
-        for(int v=1; v&lt;=n; v++){
-            if(!inMST[v] &amp;&amp; (u==-1 || minEdge[v] &lt; minEdge[u])) u = v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; minEdge(n+<span class="tok-number">1</span>, INF);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; inMST(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    minEdge[<span class="tok-number">1</span>] = <span class="tok-number">0</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> count = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> iter=<span class="tok-number">0</span>; iter&lt;n; iter++){
+        <span class="tok-keyword">int</span> u = -<span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>; v&lt;=n; v++){
+            <span class="tok-keyword">if</span>(!inMST[v] &amp;&amp; (u==-<span class="tok-number">1</span> || minEdge[v] &lt; minEdge[u])) u = v;
         }
-        if(minEdge[u] == INF){ count = -1; break; } // unreachable -&gt; not connected
-        inMST[u] = 1;
+        <span class="tok-keyword">if</span>(minEdge[u] == INF){ count = -<span class="tok-number">1</span>; <span class="tok-keyword">break</span>; } <span class="tok-comment">// unreachable -&gt; not connected</span>
+        inMST[u] = <span class="tok-number">1</span>;
         total += minEdge[u];
         count++;
-        for(int v=1; v&lt;=n; v++){
-            if(!inMST[v] &amp;&amp; g[u][v] &lt; minEdge[v]) minEdge[v] = g[u][v];
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>; v&lt;=n; v++){
+            <span class="tok-keyword">if</span>(!inMST[v] &amp;&amp; g[u][v] &lt; minEdge[v]) minEdge[v] = g[u][v];
         }
     }
-    if(count == n) cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
-    else cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
+    <span class="tok-keyword">if</span>(count == n) cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">else</span> cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -554,53 +566,53 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Pre-sort the edge indices by weight once. For each query edge e = (a,b,w): start a fresh DSU, immediately union(a,b) and add w to the running total (forcing e into the tree first) — this is safe by the same cut/cycle-property argument that justifies Kruskal&#x27;s greedy choice, just seeded with one mandatory edge instead of starting from nothing. Then continue Kruskal&#x27;s algorithm as normal over the remaining edges in the pre-sorted order (skipping edge e itself), adding any edge that connects two different components, until n-1 edges are used. Repeating this independently for every query edge is O(m) DSU-Kruskal passes, i.e. O(m * (n + m α(n))), which is fine for modest n, m; a competitive-programming-hard version of this problem instead reuses one base MST plus binary lifting over the tree to answer each query in O(log n).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-struct DSU{
-    vector&lt;int&gt; p, r;
-    DSU(int n): p(n+1), r(n+1,0){ iota(p.begin(), p.end(), 0); }
-    int find(int x){ return p[x]==x ? x : p[x]=find(p[x]); }
-    bool unite(int a, int b){
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">struct</span> DSU{
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; p, r;
+    DSU(<span class="tok-keyword">int</span> n): p(n+<span class="tok-number">1</span>), r(n+<span class="tok-number">1</span>,<span class="tok-number">0</span>){ iota(p.begin(), p.end(), <span class="tok-number">0</span>); }
+    <span class="tok-keyword">int</span> find(<span class="tok-keyword">int</span> x){ <span class="tok-keyword">return</span> p[x]==x ? x : p[x]=find(p[x]); }
+    <span class="tok-keyword">bool</span> unite(<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){
         a=find(a); b=find(b);
-        if(a==b) return false;
-        if(r[a]&lt;r[b]) swap(a,b);
+        <span class="tok-keyword">if</span>(a==b) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">if</span>(r[a]&lt;r[b]) swap(a,b);
         p[b]=a;
-        if(r[a]==r[b]) r[a]++;
-        return true;
+        <span class="tok-keyword">if</span>(r[a]==r[b]) r[a]++;
+        <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
     }
 };
-int main(){
-    int n, m;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    // store as (w, a, b) plus original index
-    vector&lt;array&lt;long long,3&gt;&gt; edges(m);
-    for(int i=0;i&lt;m;i++){
-        long long a,b,w; cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+    <span class="tok-comment">// store as (w, a, b) plus original index</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>,<span class="tok-number">3</span>&gt;&gt; edges(m);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> a,b,w; cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
         edges[i] = {w,a,b};
     }
-    // sorted order of edge indices by weight, used for every query
-    vector&lt;int&gt; order(m);
-    iota(order.begin(), order.end(), 0);
-    sort(order.begin(), order.end(), [&amp;](int i, int j){ return edges[i][0] &lt; edges[j][0]; });
+    <span class="tok-comment">// sorted order of edge indices by weight, used for every query</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order(m);
+    iota(order.begin(), order.end(), <span class="tok-number">0</span>);
+    sort(order.begin(), order.end(), [&amp;](<span class="tok-keyword">int</span> i, <span class="tok-keyword">int</span> j){ <span class="tok-keyword">return</span> edges[i][<span class="tok-number">0</span>] &lt; edges[j][<span class="tok-number">0</span>]; });
 
-    vector&lt;long long&gt; answers(m);
-    for(int q=0; q&lt;m; q++){
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; answers(m);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> q=<span class="tok-number">0</span>; q&lt;m; q++){
         DSU dsu(n);
-        long long total = edges[q][0];
-        dsu.unite((int)edges[q][1], (int)edges[q][2]);
-        int used = 1;
-        for(int idx : order){
-            if(idx == q) continue;
-            long long w=edges[idx][0], a=edges[idx][1], b=edges[idx][2];
-            if(dsu.unite((int)a,(int)b)){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = edges[q][<span class="tok-number">0</span>];
+        dsu.unite((<span class="tok-keyword">int</span>)edges[q][<span class="tok-number">1</span>], (<span class="tok-keyword">int</span>)edges[q][<span class="tok-number">2</span>]);
+        <span class="tok-keyword">int</span> used = <span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> idx : order){
+            <span class="tok-keyword">if</span>(idx == q) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w=edges[idx][<span class="tok-number">0</span>], a=edges[idx][<span class="tok-number">1</span>], b=edges[idx][<span class="tok-number">2</span>];
+            <span class="tok-keyword">if</span>(dsu.unite((<span class="tok-keyword">int</span>)a,(<span class="tok-keyword">int</span>)b)){
                 total += w;
                 used++;
             }
         }
-        answers[q] = (used == n-1) ? total : -1; // -1 would mean graph disconnected without this edge helping
+        answers[q] = (used == n-<span class="tok-number">1</span>) ? total : -<span class="tok-number">1</span>; <span class="tok-comment">// -1 would mean graph disconnected without this edge helping</span>
     }
-    for(int i=0;i&lt;m;i++){
-        cout &lt;&lt; answers[i] &lt;&lt; (i+1&lt;m ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        cout &lt;&lt; answers[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;m ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -631,32 +643,32 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Standard Kahn&#x27;s algorithm, but using a min-heap instead of a plain queue: always expand the smallest-numbered available (in-degree zero) vertex first. This greedy tie-break is exactly what produces the lexicographically smallest topological order, because at every step you are choosing the smallest label among all currently legal next choices. If fewer than n vertices are ever popped, some vertices&#x27; in-degrees never reach zero, meaning a cycle exists among them.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;vector&lt;int&gt;&gt; adj(n+1);
-    vector&lt;int&gt; indeg(n+1, 0);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj(n+<span class="tok-number">1</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; indeg(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         indeg[v]++;
     }
-    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; pq; // smallest label first -&gt; deterministic order
-    for(int v=1; v&lt;=n; v++) if(indeg[v]==0) pq.push(v);
-    vector&lt;int&gt; order;
-    while(!pq.empty()){
-        int u = pq.top(); pq.pop();
+    <span class="tok-type">priority_queue</span>&lt;<span class="tok-keyword">int</span>, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;, greater&lt;<span class="tok-keyword">int</span>&gt;&gt; pq; <span class="tok-comment">// smallest label first -&gt; deterministic order</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>; v&lt;=n; v++) <span class="tok-keyword">if</span>(indeg[v]==<span class="tok-number">0</span>) pq.push(v);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order;
+    <span class="tok-keyword">while</span>(!pq.empty()){
+        <span class="tok-keyword">int</span> u = pq.top(); pq.pop();
         order.push_back(u);
-        for(int v : adj[u]){
-            if(--indeg[v]==0) pq.push(v);
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v : adj[u]){
+            <span class="tok-keyword">if</span>(--indeg[v]==<span class="tok-number">0</span>) pq.push(v);
         }
     }
-    if((int)order.size() != n){
-        cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
-    } else {
-        for(int i=0;i&lt;n;i++) cout &lt;&lt; order[i] &lt;&lt; (i+1&lt;n?&#x27; &#x27;:&#x27;\n&#x27;);
+    <span class="tok-keyword">if</span>((<span class="tok-keyword">int</span>)order.size() != n){
+        cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE\n&quot;</span>;
+    } <span class="tok-keyword">else</span> {
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++) cout &lt;&lt; order[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;n?<span class="tok-char">&#x27; &#x27;</span>:<span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -680,44 +692,44 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run DFS from every unvisited vertex 1..n in order, 3-coloring each vertex white/gray/black. When exploring an edge to a vertex that is currently gray (still on the recursion stack, i.e. a live ancestor), a cycle has been found — this is the critical distinction from an edge to an already-black vertex, which is just a harmless cross edge to a finished subtree and must NOT be flagged as a cycle. On finishing a vertex (all its neighbors explored), push it onto a postorder list; reversing that list at the end gives a valid topological order whenever no cycle was found.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n, m;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;int&gt; color_; // 0 = white (unvisited), 1 = gray (on stack), 2 = black (done)
-vector&lt;int&gt; postorder;
-bool cyclic = false;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n, m;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; color_; <span class="tok-comment">// 0 = white (unvisited), 1 = gray (on stack), 2 = black (done)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; postorder;
+<span class="tok-keyword">bool</span> cyclic = <span class="tok-keyword">false</span>;
 
-void dfs(int u){
-    color_[u] = 1; // gray: currently in the recursion stack
-    for(int v : adj[u]){
-        if(cyclic) return;
-        if(color_[v] == 1){
-            cyclic = true; // back edge to an ancestor -&gt; cycle
-            return;
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u){
+    color_[u] = <span class="tok-number">1</span>; <span class="tok-comment">// gray: currently in the recursion stack</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v : adj[u]){
+        <span class="tok-keyword">if</span>(cyclic) <span class="tok-keyword">return</span>;
+        <span class="tok-keyword">if</span>(color_[v] == <span class="tok-number">1</span>){
+            cyclic = <span class="tok-keyword">true</span>; <span class="tok-comment">// back edge to an ancestor -&gt; cycle</span>
+            <span class="tok-keyword">return</span>;
         }
-        if(color_[v] == 0) dfs(v);
+        <span class="tok-keyword">if</span>(color_[v] == <span class="tok-number">0</span>) dfs(v);
     }
-    color_[u] = 2; // black: fully explored
+    color_[u] = <span class="tok-number">2</span>; <span class="tok-comment">// black: fully explored</span>
     postorder.push_back(u);
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m;
-    adj.assign(n+1, {});
-    color_.assign(n+1, 0);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    color_.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
     }
-    for(int s=1; s&lt;=n &amp;&amp; !cyclic; s++){
-        if(color_[s]==0) dfs(s);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>; s&lt;=n &amp;&amp; !cyclic; s++){
+        <span class="tok-keyword">if</span>(color_[s]==<span class="tok-number">0</span>) dfs(s);
     }
-    if(cyclic){
-        cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
-    } else {
+    <span class="tok-keyword">if</span>(cyclic){
+        cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE\n&quot;</span>;
+    } <span class="tok-keyword">else</span> {
         reverse(postorder.begin(), postorder.end());
-        for(int i=0;i&lt;n;i++) cout &lt;&lt; postorder[i] &lt;&lt; (i+1&lt;n?&#x27; &#x27;:&#x27;\n&#x27;);
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++) cout &lt;&lt; postorder[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;n?<span class="tok-char">&#x27; &#x27;</span>:<span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -738,43 +750,43 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Topologically sort the DAG with Kahn&#x27;s algorithm (the vertex numbering is deliberately not already in topological order, to make clear the sort is doing real work). Initialize dist[src]=0 and every other dist[v] to -infinity. Sweep vertices in topological order; for each vertex u with a finite dist[u], relax every outgoing edge (u,v,w) with dist[v] = max(dist[v], dist[u]+w). Because the sweep order guarantees every predecessor of a vertex is processed before it, dist[v] is guaranteed final by the time v itself is processed.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const long long NEG_INF = LLONG_MIN/2;
-int main(){
-    int n, m, src, dst;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> NEG_INF = LLONG_MIN/<span class="tok-number">2</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m, src, dst;
     cin &gt;&gt; n &gt;&gt; m &gt;&gt; src &gt;&gt; dst;
-    vector&lt;vector&lt;pair&lt;int,long long&gt;&gt;&gt; adj(n+1);
-    vector&lt;int&gt; indeg(n+1, 0);
-    for(int i=0;i&lt;m;i++){
-        int u,v; long long w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt;&gt; adj(n+<span class="tok-number">1</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; indeg(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w;
         cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
         adj[u].push_back({v,w});
         indeg[v]++;
     }
-    queue&lt;int&gt; q;
-    for(int v=1; v&lt;=n; v++) if(indeg[v]==0) q.push(v);
-    vector&lt;int&gt; topo;
-    vector&lt;int&gt; indeg2 = indeg;
-    while(!q.empty()){
-        int u = q.front(); q.pop();
+    <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>; v&lt;=n; v++) <span class="tok-keyword">if</span>(indeg[v]==<span class="tok-number">0</span>) q.push(v);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; topo;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; indeg2 = indeg;
+    <span class="tok-keyword">while</span>(!q.empty()){
+        <span class="tok-keyword">int</span> u = q.front(); q.pop();
         topo.push_back(u);
-        for(auto &amp;pr : adj[u]){
-            int v = pr.first;
-            if(--indeg2[v]==0) q.push(v);
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;pr : adj[u]){
+            <span class="tok-keyword">int</span> v = pr.first;
+            <span class="tok-keyword">if</span>(--indeg2[v]==<span class="tok-number">0</span>) q.push(v);
         }
     }
-    vector&lt;long long&gt; dist(n+1, NEG_INF);
-    dist[src] = 0;
-    for(int u : topo){
-        if(dist[u] == NEG_INF) continue;
-        for(auto &amp;pr : adj[u]){
-            int v = pr.first; long long w = pr.second;
-            if(dist[u] + w &gt; dist[v]) dist[v] = dist[u] + w;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; dist(n+<span class="tok-number">1</span>, NEG_INF);
+    dist[src] = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> u : topo){
+        <span class="tok-keyword">if</span>(dist[u] == NEG_INF) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;pr : adj[u]){
+            <span class="tok-keyword">int</span> v = pr.first; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> w = pr.second;
+            <span class="tok-keyword">if</span>(dist[u] + w &gt; dist[v]) dist[v] = dist[u] + w;
         }
     }
-    if(dist[dst] == NEG_INF) cout &lt;&lt; &quot;UNREACHABLE\n&quot;;
-    else cout &lt;&lt; dist[dst] &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">if</span>(dist[dst] == NEG_INF) cout &lt;&lt; <span class="tok-string">&quot;UNREACHABLE\n&quot;</span>;
+    <span class="tok-keyword">else</span> cout &lt;&lt; dist[dst] &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -807,55 +819,55 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run Tarjan&#x27;s algorithm exactly as described in the theory: DFS from every unvisited vertex 1..n, tracking disc[]/low[]/onStack[] and an explicit stack. Whenever a vertex u satisfies low[u]==disc[u] after exploring all its outgoing edges, pop the stack down to and including u; that popped set is one complete SCC (sort it for a clean, deterministic printout). Because DFS explores neighbors in the order edges were given, and starts from vertex 1, the resulting sequence of completed SCCs is fully deterministic.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n, m, timer_ = 0;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;int&gt; disc, low;
-vector&lt;char&gt; onStack;
-vector&lt;int&gt; st;
-vector&lt;vector&lt;int&gt;&gt; sccs;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n, m, timer_ = <span class="tok-number">0</span>;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; disc, low;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; onStack;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; st;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; sccs;
 
-void dfs(int u){
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u){
     disc[u] = low[u] = timer_++;
     st.push_back(u);
-    onStack[u] = 1;
-    for(int v : adj[u]){
-        if(disc[v] == -1){
+    onStack[u] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v : adj[u]){
+        <span class="tok-keyword">if</span>(disc[v] == -<span class="tok-number">1</span>){
             dfs(v);
             low[u] = min(low[u], low[v]);
-        } else if(onStack[v]){
+        } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(onStack[v]){
             low[u] = min(low[u], disc[v]);
         }
     }
-    if(low[u] == disc[u]){
-        vector&lt;int&gt; comp;
-        while(true){
-            int w = st.back(); st.pop_back();
-            onStack[w] = 0;
+    <span class="tok-keyword">if</span>(low[u] == disc[u]){
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; comp;
+        <span class="tok-keyword">while</span>(<span class="tok-keyword">true</span>){
+            <span class="tok-keyword">int</span> w = st.back(); st.pop_back();
+            onStack[w] = <span class="tok-number">0</span>;
             comp.push_back(w);
-            if(w == u) break;
+            <span class="tok-keyword">if</span>(w == u) <span class="tok-keyword">break</span>;
         }
         sort(comp.begin(), comp.end());
         sccs.push_back(comp);
     }
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m;
-    adj.assign(n+1, {});
-    disc.assign(n+1, -1);
-    low.assign(n+1, 0);
-    onStack.assign(n+1, 0);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    disc.assign(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    low.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    onStack.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
     }
-    for(int s=1;s&lt;=n;s++) if(disc[s]==-1) dfs(s);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>;s&lt;=n;s++) <span class="tok-keyword">if</span>(disc[s]==-<span class="tok-number">1</span>) dfs(s);
 
-    cout &lt;&lt; sccs.size() &lt;&lt; &quot;\n&quot;;
-    for(auto &amp;c : sccs){
-        for(size_t i=0;i&lt;c.size();i++) cout &lt;&lt; c[i] &lt;&lt; (i+1&lt;c.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    cout &lt;&lt; sccs.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;c : sccs){
+        <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> i=<span class="tok-number">0</span>;i&lt;c.size();i++) cout &lt;&lt; c[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;c.size() ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -887,67 +899,67 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Condense the graph into its SCCs using Tarjan&#x27;s algorithm, assigning each vertex a component id. Build the condensation DAG&#x27;s edges (deduplicated) and compute each component&#x27;s in-degree within that DAG. Any component other than the capital&#x27;s own component that has in-degree zero in the condensation DAG can only ever be reached by adding a brand-new direct road into it (nothing already reaches it), so the answer is exactly the count of such zero-in-degree components, excluding the capital&#x27;s own component (which needs no incoming road since we start there).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n, m, timer_ = 0, capital;
-vector&lt;vector&lt;int&gt;&gt; adj;
-vector&lt;int&gt; disc, low, comp;
-vector&lt;char&gt; onStack;
-vector&lt;int&gt; st;
-int numComp = 0;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n, m, timer_ = <span class="tok-number">0</span>, capital;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; disc, low, comp;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; onStack;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; st;
+<span class="tok-keyword">int</span> numComp = <span class="tok-number">0</span>;
 
-void dfs(int u){
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u){
     disc[u] = low[u] = timer_++;
     st.push_back(u);
-    onStack[u] = 1;
-    for(int v : adj[u]){
-        if(disc[v] == -1){
+    onStack[u] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v : adj[u]){
+        <span class="tok-keyword">if</span>(disc[v] == -<span class="tok-number">1</span>){
             dfs(v);
             low[u] = min(low[u], low[v]);
-        } else if(onStack[v]){
+        } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(onStack[v]){
             low[u] = min(low[u], disc[v]);
         }
     }
-    if(low[u] == disc[u]){
-        while(true){
-            int w = st.back(); st.pop_back();
-            onStack[w] = 0;
+    <span class="tok-keyword">if</span>(low[u] == disc[u]){
+        <span class="tok-keyword">while</span>(<span class="tok-keyword">true</span>){
+            <span class="tok-keyword">int</span> w = st.back(); st.pop_back();
+            onStack[w] = <span class="tok-number">0</span>;
             comp[w] = numComp;
-            if(w == u) break;
+            <span class="tok-keyword">if</span>(w == u) <span class="tok-keyword">break</span>;
         }
         numComp++;
     }
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m &gt;&gt; capital;
-    adj.assign(n+1, {});
-    disc.assign(n+1, -1);
-    low.assign(n+1, 0);
-    onStack.assign(n+1, 0);
-    comp.assign(n+1, -1);
-    vector&lt;pair&lt;int,int&gt;&gt; edges(m);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    disc.assign(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    low.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    onStack.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    comp.assign(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; edges(m);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         edges[i] = {u,v};
         adj[u].push_back(v);
     }
-    for(int s=1;s&lt;=n;s++) if(disc[s]==-1) dfs(s);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>;s&lt;=n;s++) <span class="tok-keyword">if</span>(disc[s]==-<span class="tok-number">1</span>) dfs(s);
 
-    vector&lt;int&gt; indeg(numComp, 0);
-    set&lt;pair&lt;int,int&gt;&gt; condEdges;
-    for(auto &amp;e : edges){
-        int cu = comp[e.first], cv = comp[e.second];
-        if(cu != cv) condEdges.insert({cu,cv});
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; indeg(numComp, <span class="tok-number">0</span>);
+    <span class="tok-type">set</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; condEdges;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;e : edges){
+        <span class="tok-keyword">int</span> cu = comp[e.first], cv = comp[e.second];
+        <span class="tok-keyword">if</span>(cu != cv) condEdges.insert({cu,cv});
     }
-    for(auto &amp;e : condEdges) indeg[e.second]++;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;e : condEdges) indeg[e.second]++;
 
-    int capComp = comp[capital];
-    int answer = 0;
-    for(int c=0;c&lt;numComp;c++){
-        if(c != capComp &amp;&amp; indeg[c]==0) answer++;
+    <span class="tok-keyword">int</span> capComp = comp[capital];
+    <span class="tok-keyword">int</span> answer = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> c=<span class="tok-number">0</span>;c&lt;numComp;c++){
+        <span class="tok-keyword">if</span>(c != capComp &amp;&amp; indeg[c]==<span class="tok-number">0</span>) answer++;
     }
-    cout &lt;&lt; answer &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; answer &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -977,44 +989,44 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>DFS from any vertex, tracking disc[]/low[] and, for each adjacency entry, the id of the edge used to reach it (so the traversal can skip exactly the edge it arrived on, not just any edge to the same parent vertex — important for correctness with multi-edges). For a tree edge (u,v), after the recursive call to v returns, check whether low[v] &gt; disc[u]; if so, (u,v) is a bridge. For a non-tree edge to an already-visited vertex, fold in disc[] (not low[]) of that vertex, since it&#x27;s a direct back edge.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n, m, timer_ = 0;
-vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj; // (neighbor, edge id)
-vector&lt;int&gt; disc, low;
-vector&lt;pair&lt;int,int&gt;&gt; bridges;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n, m, timer_ = <span class="tok-number">0</span>;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt;&gt; adj; <span class="tok-comment">// (neighbor, edge id)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; disc, low;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; bridges;
 
-void dfs(int u, int parentEdge){
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parentEdge){
     disc[u] = low[u] = timer_++;
-    for(auto &amp;[v, id] : adj[u]){
-        if(id == parentEdge) continue; // don&#x27;t walk back along the edge we arrived on
-        if(disc[v] == -1){
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;[v, id] : adj[u]){
+        <span class="tok-keyword">if</span>(id == parentEdge) <span class="tok-keyword">continue</span>; <span class="tok-comment">// don&#x27;t walk back along the edge we arrived on</span>
+        <span class="tok-keyword">if</span>(disc[v] == -<span class="tok-number">1</span>){
             dfs(v, id);
             low[u] = min(low[u], low[v]);
-            if(low[v] &gt; disc[u]){
+            <span class="tok-keyword">if</span>(low[v] &gt; disc[u]){
                 bridges.push_back({min(u,v), max(u,v)});
             }
-        } else {
-            low[u] = min(low[u], disc[v]); // back edge: use disc[v], not low[v]
+        } <span class="tok-keyword">else</span> {
+            low[u] = min(low[u], disc[v]); <span class="tok-comment">// back edge: use disc[v], not low[v]</span>
         }
     }
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m;
-    adj.assign(n+1, {});
-    disc.assign(n+1, -1);
-    low.assign(n+1, 0);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    disc.assign(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    low.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back({v,i});
         adj[v].push_back({u,i});
     }
-    for(int s=1;s&lt;=n;s++) if(disc[s]==-1) dfs(s, -1);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>;s&lt;=n;s++) <span class="tok-keyword">if</span>(disc[s]==-<span class="tok-number">1</span>) dfs(s, -<span class="tok-number">1</span>);
 
     sort(bridges.begin(), bridges.end());
-    cout &lt;&lt; bridges.size() &lt;&lt; &quot;\n&quot;;
-    for(auto &amp;[a,b] : bridges) cout &lt;&lt; a &lt;&lt; &quot; &quot; &lt;&lt; b &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; bridges.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;[a,b] : bridges) cout &lt;&lt; a &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; b &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1039,47 +1051,47 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Run the same disc[]/low[] DFS, additionally counting DFS-tree children of the root. For a non-root vertex u with a DFS-tree child v, mark u as an articulation point if low[v] &gt;= disc[u] (note the DFS may find this true for more than one child, but u should only be counted once). Separately, after finishing the root&#x27;s DFS call, mark it an articulation point only if it ended up with 2 or more DFS-tree children, regardless of any low[]/disc[] comparison for the root itself.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n, m, timer_ = 0;
-vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj; // (neighbor, edge id)
-vector&lt;int&gt; disc, low;
-vector&lt;char&gt; isAP;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n, m, timer_ = <span class="tok-number">0</span>;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt;&gt; adj; <span class="tok-comment">// (neighbor, edge id)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; disc, low;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; isAP;
 
-void dfs(int u, int parentEdge, bool isRoot){
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parentEdge, <span class="tok-keyword">bool</span> isRoot){
     disc[u] = low[u] = timer_++;
-    int children = 0;
-    for(auto &amp;[v, id] : adj[u]){
-        if(id == parentEdge) continue;
-        if(disc[v] == -1){
+    <span class="tok-keyword">int</span> children = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;[v, id] : adj[u]){
+        <span class="tok-keyword">if</span>(id == parentEdge) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">if</span>(disc[v] == -<span class="tok-number">1</span>){
             children++;
-            dfs(v, id, false);
+            dfs(v, id, <span class="tok-keyword">false</span>);
             low[u] = min(low[u], low[v]);
-            if(!isRoot &amp;&amp; low[v] &gt;= disc[u]) isAP[u] = 1;
-        } else {
+            <span class="tok-keyword">if</span>(!isRoot &amp;&amp; low[v] &gt;= disc[u]) isAP[u] = <span class="tok-number">1</span>;
+        } <span class="tok-keyword">else</span> {
             low[u] = min(low[u], disc[v]);
         }
     }
-    if(isRoot &amp;&amp; children &gt;= 2) isAP[u] = 1;
+    <span class="tok-keyword">if</span>(isRoot &amp;&amp; children &gt;= <span class="tok-number">2</span>) isAP[u] = <span class="tok-number">1</span>;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m;
-    adj.assign(n+1, {});
-    disc.assign(n+1, -1);
-    low.assign(n+1, 0);
-    isAP.assign(n+1, 0);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    disc.assign(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    low.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    isAP.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back({v,i});
         adj[v].push_back({u,i});
     }
-    for(int s=1;s&lt;=n;s++) if(disc[s]==-1) dfs(s, -1, true);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>;s&lt;=n;s++) <span class="tok-keyword">if</span>(disc[s]==-<span class="tok-number">1</span>) dfs(s, -<span class="tok-number">1</span>, <span class="tok-keyword">true</span>);
 
-    vector&lt;int&gt; result;
-    for(int v=1;v&lt;=n;v++) if(isAP[v]) result.push_back(v);
-    cout &lt;&lt; result.size() &lt;&lt; &quot;\n&quot;;
-    for(size_t i=0;i&lt;result.size();i++) cout &lt;&lt; result[i] &lt;&lt; (i+1&lt;result.size()?&#x27; &#x27;:&#x27;\n&#x27;);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; result;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>;v&lt;=n;v++) <span class="tok-keyword">if</span>(isAP[v]) result.push_back(v);
+    cout &lt;&lt; result.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> i=<span class="tok-number">0</span>;i&lt;result.size();i++) cout &lt;&lt; result[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;result.size()?<span class="tok-char">&#x27; &#x27;</span>:<span class="tok-char">&#x27;\n&#x27;</span>);
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1103,57 +1115,57 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>First find all bridges exactly as before (DFS with disc[]/low[], flagging bridge edges by their edge id rather than by endpoint pair, since a graph could in principle have a repeated (a,b) pair where only one copy is a bridge). Then build a fresh DSU over the n vertices and union the endpoints of every edge that is NOT a bridge. The number of distinct DSU roots among all n vertices is the answer: each 2-edge-connected component collapses to one root, and the only edges left uncontracted (the bridges) connect these roots in a tree structure.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n, m, timer_ = 0;
-vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj; // (neighbor, edge id)
-vector&lt;int&gt; disc, low;
-vector&lt;char&gt; isBridge;
-vector&lt;pair&lt;int,int&gt;&gt; edgeList;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n, m, timer_ = <span class="tok-number">0</span>;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt;&gt; adj; <span class="tok-comment">// (neighbor, edge id)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; disc, low;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">char</span>&gt; isBridge;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; edgeList;
 
-void dfs(int u, int parentEdge){
+<span class="tok-keyword">void</span> dfs(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> parentEdge){
     disc[u] = low[u] = timer_++;
-    for(auto &amp;[v, id] : adj[u]){
-        if(id == parentEdge) continue;
-        if(disc[v] == -1){
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;[v, id] : adj[u]){
+        <span class="tok-keyword">if</span>(id == parentEdge) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">if</span>(disc[v] == -<span class="tok-number">1</span>){
             dfs(v, id);
             low[u] = min(low[u], low[v]);
-            if(low[v] &gt; disc[u]) isBridge[id] = 1;
-        } else {
+            <span class="tok-keyword">if</span>(low[v] &gt; disc[u]) isBridge[id] = <span class="tok-number">1</span>;
+        } <span class="tok-keyword">else</span> {
             low[u] = min(low[u], disc[v]);
         }
     }
 }
 
-struct DSU{
-    vector&lt;int&gt; p;
-    DSU(int n): p(n+1){ iota(p.begin(), p.end(), 0); }
-    int find(int x){ return p[x]==x ? x : p[x]=find(p[x]); }
-    void unite(int a, int b){ a=find(a); b=find(b); if(a!=b) p[a]=b; }
+<span class="tok-keyword">struct</span> DSU{
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; p;
+    DSU(<span class="tok-keyword">int</span> n): p(n+<span class="tok-number">1</span>){ iota(p.begin(), p.end(), <span class="tok-number">0</span>); }
+    <span class="tok-keyword">int</span> find(<span class="tok-keyword">int</span> x){ <span class="tok-keyword">return</span> p[x]==x ? x : p[x]=find(p[x]); }
+    <span class="tok-keyword">void</span> unite(<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b){ a=find(a); b=find(b); <span class="tok-keyword">if</span>(a!=b) p[a]=b; }
 };
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n &gt;&gt; m;
-    adj.assign(n+1, {});
-    disc.assign(n+1, -1);
-    low.assign(n+1, 0);
-    isBridge.assign(m, 0);
+    adj.assign(n+<span class="tok-number">1</span>, {});
+    disc.assign(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    low.assign(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    isBridge.assign(m, <span class="tok-number">0</span>);
     edgeList.resize(m);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         edgeList[i] = {u,v};
         adj[u].push_back({v,i});
         adj[v].push_back({u,i});
     }
-    for(int s=1;s&lt;=n;s++) if(disc[s]==-1) dfs(s, -1);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>;s&lt;=n;s++) <span class="tok-keyword">if</span>(disc[s]==-<span class="tok-number">1</span>) dfs(s, -<span class="tok-number">1</span>);
 
     DSU dsu(n);
-    for(int i=0;i&lt;m;i++){
-        if(!isBridge[i]) dsu.unite(edgeList[i].first, edgeList[i].second);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">if</span>(!isBridge[i]) dsu.unite(edgeList[i].first, edgeList[i].second);
     }
-    set&lt;int&gt; roots;
-    for(int v=1; v&lt;=n; v++) roots.insert(dsu.find(v));
-    cout &lt;&lt; roots.size() &lt;&lt; &quot;\n&quot;;
+    <span class="tok-type">set</span>&lt;<span class="tok-keyword">int</span>&gt; roots;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>; v&lt;=n; v++) roots.insert(dsu.find(v));
+    cout &lt;&lt; roots.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1189,40 +1201,40 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>For every vertex from 1 to n that is not yet colored, start a fresh BFS, coloring the start vertex 0 and every newly discovered neighbor the opposite of its parent&#x27;s color. Whenever an already-colored neighbor is found with the same color as the current vertex, the graph is not bipartite; stop immediately. Because coloring restarts at every uncolored vertex, disconnected components are each independently and correctly 2-colored.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;vector&lt;int&gt;&gt; adj(n+1);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj(n+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    vector&lt;int&gt; color(n+1, -1);
-    bool ok = true;
-    for(int s=1; s&lt;=n &amp;&amp; ok; s++){
-        if(color[s] != -1) continue;
-        color[s] = 0;
-        queue&lt;int&gt; q; q.push(s);
-        while(!q.empty() &amp;&amp; ok){
-            int u = q.front(); q.pop();
-            for(int v : adj[u]){
-                if(color[v] == -1){
-                    color[v] = color[u]^1;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; color(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">bool</span> ok = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>; s&lt;=n &amp;&amp; ok; s++){
+        <span class="tok-keyword">if</span>(color[s] != -<span class="tok-number">1</span>) <span class="tok-keyword">continue</span>;
+        color[s] = <span class="tok-number">0</span>;
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q; q.push(s);
+        <span class="tok-keyword">while</span>(!q.empty() &amp;&amp; ok){
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v : adj[u]){
+                <span class="tok-keyword">if</span>(color[v] == -<span class="tok-number">1</span>){
+                    color[v] = color[u]^<span class="tok-number">1</span>;
                     q.push(v);
-                } else if(color[v] == color[u]){
-                    ok = false; break;
+                } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(color[v] == color[u]){
+                    ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>;
                 }
             }
         }
     }
-    if(!ok){
-        cout &lt;&lt; &quot;NO\n&quot;;
-    } else {
-        cout &lt;&lt; &quot;YES\n&quot;;
-        for(int v=1; v&lt;=n; v++) cout &lt;&lt; color[v] &lt;&lt; (v&lt;n?&#x27; &#x27;:&#x27;\n&#x27;);
+    <span class="tok-keyword">if</span>(!ok){
+        cout &lt;&lt; <span class="tok-string">&quot;NO\n&quot;</span>;
+    } <span class="tok-keyword">else</span> {
+        cout &lt;&lt; <span class="tok-string">&quot;YES\n&quot;</span>;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v=<span class="tok-number">1</span>; v&lt;=n; v++) cout &lt;&lt; color[v] &lt;&lt; (v&lt;n?<span class="tok-char">&#x27; &#x27;</span>:<span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -1246,47 +1258,47 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>The key insight is that such an orientation exists if and only if the graph is bipartite: 2-color it, and orient every edge from its color-0 endpoint to its color-1 endpoint. Every vertex colored 1 then has only incoming edges and every vertex colored 0 only outgoing edges (both endpoints of any edge always differ in color by construction), so no vertex can be the middle of a length-2 directed path. If the graph is not bipartite (an odd cycle exists), no valid orientation can exist, because walking any odd cycle and orienting consistently around it is provably impossible without creating a length-2 directed path somewhere.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, m;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;pair&lt;int,int&gt;&gt; edges(m);
-    vector&lt;vector&lt;int&gt;&gt; adj(n+1);
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin &gt;&gt; u &gt;&gt; v;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; edges(m);
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj(n+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin &gt;&gt; u &gt;&gt; v;
         edges[i] = {u,v};
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    vector&lt;int&gt; color(n+1, -1);
-    bool ok = true;
-    for(int s=1; s&lt;=n &amp;&amp; ok; s++){
-        if(color[s] != -1) continue;
-        color[s] = 0;
-        queue&lt;int&gt; q; q.push(s);
-        while(!q.empty() &amp;&amp; ok){
-            int u = q.front(); q.pop();
-            for(int v : adj[u]){
-                if(color[v] == -1){
-                    color[v] = color[u]^1;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; color(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">bool</span> ok = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> s=<span class="tok-number">1</span>; s&lt;=n &amp;&amp; ok; s++){
+        <span class="tok-keyword">if</span>(color[s] != -<span class="tok-number">1</span>) <span class="tok-keyword">continue</span>;
+        color[s] = <span class="tok-number">0</span>;
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q; q.push(s);
+        <span class="tok-keyword">while</span>(!q.empty() &amp;&amp; ok){
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> v : adj[u]){
+                <span class="tok-keyword">if</span>(color[v] == -<span class="tok-number">1</span>){
+                    color[v] = color[u]^<span class="tok-number">1</span>;
                     q.push(v);
-                } else if(color[v] == color[u]){
-                    ok = false; break;
+                } <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(color[v] == color[u]){
+                    ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>;
                 }
             }
         }
     }
-    if(!ok){
-        cout &lt;&lt; &quot;NO\n&quot;;
-        return 0;
+    <span class="tok-keyword">if</span>(!ok){
+        cout &lt;&lt; <span class="tok-string">&quot;NO\n&quot;</span>;
+        <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
     }
-    cout &lt;&lt; &quot;YES\n&quot;;
-    // orient every edge from its color-0 endpoint to its color-1 endpoint;
-    // since the graph is bipartite this guarantees no directed path of length &gt;= 2
-    for(auto &amp;[u,v] : edges){
-        if(color[u] == 0) cout &lt;&lt; u &lt;&lt; &quot; &quot; &lt;&lt; v &lt;&lt; &quot;\n&quot;;
-        else cout &lt;&lt; v &lt;&lt; &quot; &quot; &lt;&lt; u &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; <span class="tok-string">&quot;YES\n&quot;</span>;
+    <span class="tok-comment">// orient every edge from its color-0 endpoint to its color-1 endpoint;</span>
+    <span class="tok-comment">// since the graph is bipartite this guarantees no directed path of length &gt;= 2</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;[u,v] : edges){
+        <span class="tok-keyword">if</span>(color[u] == <span class="tok-number">0</span>) cout &lt;&lt; u &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; v &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+        <span class="tok-keyword">else</span> cout &lt;&lt; v &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; u &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -1320,67 +1332,67 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a direct 2-SAT instance: each topping k is a boolean variable (true = included), and each input line &#x27;+a -b&#x27; (or any combination of signs) is exactly a clause (lit_a OR lit_b) where lit_a is the literal &#x27;topping a included&#x27; if the token is &#x27;+a&#x27;, or &#x27;topping a excluded&#x27; (i.e. NOT topping a) if the token is &#x27;-a&#x27;.</p><p>Build the implication graph with 2*m nodes: node 2*i represents the literal &#x27;topping (i+1) is TRUE&#x27;, node 2*i+1 represents &#x27;topping (i+1) is FALSE&#x27; (0-indexed internally). For a clause (lit_a OR lit_b), add edges NOT(lit_a) -&gt; lit_b and NOT(lit_b) -&gt; lit_a (if lit_a is violated, lit_b is forced, and symmetrically) -- this is exactly the general clause-to-implication translation, so a single addClause(a, negated_a, b, negated_b) routine handles every sign combination uniformly, whether the two opinions in a line are from the same variable (a forced/unit constraint when a == b) or different ones.</p><p>Run a DFS-based SCC computation (Kosaraju&#x27;s algorithm: one DFS on the graph recording finish order, one DFS on the transposed graph processing nodes in reverse finish order to assign component ids). For every topping i, if comp[true-node] == comp[false-node], the instance is contradictory -&gt; IMPOSSIBLE. Otherwise assign topping i = TRUE if comp[true-node] &gt; comp[false-node] (the literal in the SCC that is &#x27;more downstream&#x27; in the condensation order), else FALSE. This runs in O(n + m) and is verified below on a 4-clause, 4-topping instance with two independent satisfying assignments, confirming the printed assignment actually satisfies all four clauses by hand.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n; // number of variables (toppings)
-vector&lt;vector&lt;int&gt;&gt; adj, radj;
-vector&lt;bool&gt; used;
-vector&lt;int&gt; order_, comp;
+<span class="tok-keyword">int</span> n; <span class="tok-comment">// number of variables (toppings)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj, radj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; used;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order_, comp;
 
-void addImp(int u, int v) {
+<span class="tok-keyword">void</span> addImp(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) {
     adj[u].push_back(v);
     radj[v].push_back(u);
 }
-// clause (lit_a OR lit_b): a,b are variable indices (0-indexed), na/nb true means negated
-void addClause(int a, bool na, int b, bool nb) {
-    int A = 2*a ^ (na?1:0);   // node for literal a (na=false-&gt; &quot;a true&quot; node)
-    int B = 2*b ^ (nb?1:0);
-    int notA = A ^ 1;
-    int notB = B ^ 1;
+<span class="tok-comment">// clause (lit_a OR lit_b): a,b are variable indices (0-indexed), na/nb true means negated</span>
+<span class="tok-keyword">void</span> addClause(<span class="tok-keyword">int</span> a, <span class="tok-keyword">bool</span> na, <span class="tok-keyword">int</span> b, <span class="tok-keyword">bool</span> nb) {
+    <span class="tok-keyword">int</span> A = <span class="tok-number">2</span>*a ^ (na?<span class="tok-number">1</span>:<span class="tok-number">0</span>);   <span class="tok-comment">// node for literal a (na=false-&gt; &quot;a true&quot; node)</span>
+    <span class="tok-keyword">int</span> B = <span class="tok-number">2</span>*b ^ (nb?<span class="tok-number">1</span>:<span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> notA = A ^ <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> notB = B ^ <span class="tok-number">1</span>;
     addImp(notA, B);
     addImp(notB, A);
 }
-void dfs1(int v) {
-    used[v] = true;
-    for (int u : adj[v]) if (!used[u]) dfs1(u);
+<span class="tok-keyword">void</span> dfs1(<span class="tok-keyword">int</span> v) {
+    used[v] = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u : adj[v]) <span class="tok-keyword">if</span> (!used[u]) dfs1(u);
     order_.push_back(v);
 }
-void dfs2(int v, int cl) {
+<span class="tok-keyword">void</span> dfs2(<span class="tok-keyword">int</span> v, <span class="tok-keyword">int</span> cl) {
     comp[v] = cl;
-    for (int u : radj[v]) if (comp[u] == -1) dfs2(u, cl);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u : radj[v]) <span class="tok-keyword">if</span> (comp[u] == -<span class="tok-number">1</span>) dfs2(u, cl);
 }
 
-int main(){
-    int m; // number of opinions/persons
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m; <span class="tok-comment">// number of opinions/persons</span>
     cin &gt;&gt; n &gt;&gt; m;
-    int N = 2*n;
+    <span class="tok-keyword">int</span> N = <span class="tok-number">2</span>*n;
     adj.assign(N, {}); radj.assign(N, {});
-    for (int i = 0; i &lt; m; i++) {
-        string t1, t2;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-type">string</span> t1, t2;
         cin &gt;&gt; t1 &gt;&gt; t2;
-        bool na = (t1[0]==&#x27;-&#x27;);
-        int a = stoi(t1.substr(1)) - 1;
-        bool nb = (t2[0]==&#x27;-&#x27;);
-        int b = stoi(t2.substr(1)) - 1;
+        <span class="tok-keyword">bool</span> na = (t1[<span class="tok-number">0</span>]==<span class="tok-char">&#x27;-&#x27;</span>);
+        <span class="tok-keyword">int</span> a = stoi(t1.substr(<span class="tok-number">1</span>)) - <span class="tok-number">1</span>;
+        <span class="tok-keyword">bool</span> nb = (t2[<span class="tok-number">0</span>]==<span class="tok-char">&#x27;-&#x27;</span>);
+        <span class="tok-keyword">int</span> b = stoi(t2.substr(<span class="tok-number">1</span>)) - <span class="tok-number">1</span>;
         addClause(a, na, b, nb);
     }
-    used.assign(N, false);
-    for (int i = 0; i &lt; N; i++) if (!used[i]) dfs1(i);
-    comp.assign(N, -1);
-    int j = 0;
-    for (int i = 0; i &lt; N; i++) {
-        int v = order_[N-i-1];
-        if (comp[v] == -1) dfs2(v, j++);
+    used.assign(N, <span class="tok-keyword">false</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; N; i++) <span class="tok-keyword">if</span> (!used[i]) dfs1(i);
+    comp.assign(N, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">int</span> j = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; N; i++) {
+        <span class="tok-keyword">int</span> v = order_[N-i-<span class="tok-number">1</span>];
+        <span class="tok-keyword">if</span> (comp[v] == -<span class="tok-number">1</span>) dfs2(v, j++);
     }
-    vector&lt;int&gt; val(n);
-    bool ok = true;
-    for (int i = 0; i &lt; n; i++) {
-        if (comp[2*i] == comp[2*i+1]) { ok = false; break; }
-        val[i] = (comp[2*i] &gt; comp[2*i+1]) ? 1 : 0; // node 2*i = &quot;true&quot; literal
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; val(n);
+    <span class="tok-keyword">bool</span> ok = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">if</span> (comp[<span class="tok-number">2</span>*i] == comp[<span class="tok-number">2</span>*i+<span class="tok-number">1</span>]) { ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
+        val[i] = (comp[<span class="tok-number">2</span>*i] &gt; comp[<span class="tok-number">2</span>*i+<span class="tok-number">1</span>]) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>; <span class="tok-comment">// node 2*i = &quot;true&quot; literal</span>
     }
-    if (!ok) { cout &lt;&lt; &quot;IMPOSSIBLE&quot; &lt;&lt; endl; return 0; }
-    for (int i = 0; i &lt; n; i++) cout &lt;&lt; (val[i] ? &#x27;+&#x27; : &#x27;-&#x27;) &lt;&lt; (i+1&lt;n? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">if</span> (!ok) { cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE&quot;</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cout &lt;&lt; (val[i] ? <span class="tok-char">&#x27;+&#x27;</span> : <span class="tok-char">&#x27;-&#x27;</span>) &lt;&lt; (i+<span class="tok-number">1</span>&lt;n? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1401,69 +1413,69 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>For a door wired to exactly one switch x, the final state is s XOR val(x); requiring this to equal 1 forces val(x) to the fixed value (1 XOR s), i.e. a unit constraint -- encoded as the degenerate clause (x OR x) if x must be true, or (NOT x OR NOT x) if x must be false.</p><p>For a door wired to two switches x, y, the final state is s XOR val(x) XOR val(y). If s == 0, we need val(x) XOR val(y) = 1 (the two switches must differ), which is exactly the pair of clauses (x OR y) AND (NOT x OR NOT y) -- ruling out both-false and both-true. If s == 1, we need val(x) XOR val(y) = 0 (the two switches must agree), which is (x OR NOT y) AND (NOT x OR y) -- ruling out the two disagreeing combinations. Every one of these is a standard 2-literal clause, so the same addClause(a, negA, b, negB) implication-graph routine used for general 2-SAT handles all cases uniformly.</p><p>After building all clauses from all m doors, run the same SCC-based satisfiability check as in a plain 2-SAT solver. If some switch&#x27;s true/false literals collapse into the same SCC, print NO. Otherwise reconstruct the assignment from the SCC ordering and print it. The worked example below is deliberately built so the constraints fully DETERMINE a unique switch assignment (door 1 forces switch 1 ON; door 2, wired to switches 1 and 2 with s=1, forces switch 2 to match switch 1, i.e. ON; door 3, wired to switches 2 and 3 with s=0, forces switch 3 to differ from switch 2, i.e. OFF) -- this was verified by hand before running the solver, and the program&#x27;s output matches the hand-derived assignment exactly, then independently re-verified by plugging the assignment back into every door&#x27;s XOR equation.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n; // number of switches
-vector&lt;vector&lt;int&gt;&gt; adj, radj;
-vector&lt;bool&gt; used;
-vector&lt;int&gt; order_, comp;
+<span class="tok-keyword">int</span> n; <span class="tok-comment">// number of switches</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj, radj;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; used;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; order_, comp;
 
-void addImp(int u, int v) { adj[u].push_back(v); radj[v].push_back(u); }
-// clause (lit_a OR lit_b), a,b 0-indexed switch ids, na/nb = negated?
-void addClause(int a, bool na, int b, bool nb) {
-    int A = 2*a ^ (na?1:0);
-    int B = 2*b ^ (nb?1:0);
-    int notA = A ^ 1, notB = B ^ 1;
+<span class="tok-keyword">void</span> addImp(<span class="tok-keyword">int</span> u, <span class="tok-keyword">int</span> v) { adj[u].push_back(v); radj[v].push_back(u); }
+<span class="tok-comment">// clause (lit_a OR lit_b), a,b 0-indexed switch ids, na/nb = negated?</span>
+<span class="tok-keyword">void</span> addClause(<span class="tok-keyword">int</span> a, <span class="tok-keyword">bool</span> na, <span class="tok-keyword">int</span> b, <span class="tok-keyword">bool</span> nb) {
+    <span class="tok-keyword">int</span> A = <span class="tok-number">2</span>*a ^ (na?<span class="tok-number">1</span>:<span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> B = <span class="tok-number">2</span>*b ^ (nb?<span class="tok-number">1</span>:<span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> notA = A ^ <span class="tok-number">1</span>, notB = B ^ <span class="tok-number">1</span>;
     addImp(notA, B);
     addImp(notB, A);
 }
-void dfs1(int v){ used[v]=true; for(int u:adj[v]) if(!used[u]) dfs1(u); order_.push_back(v); }
-void dfs2(int v,int cl){ comp[v]=cl; for(int u:radj[v]) if(comp[u]==-1) dfs2(u,cl); }
+<span class="tok-keyword">void</span> dfs1(<span class="tok-keyword">int</span> v){ used[v]=<span class="tok-keyword">true</span>; <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> u:adj[v]) <span class="tok-keyword">if</span>(!used[u]) dfs1(u); order_.push_back(v); }
+<span class="tok-keyword">void</span> dfs2(<span class="tok-keyword">int</span> v,<span class="tok-keyword">int</span> cl){ comp[v]=cl; <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> u:radj[v]) <span class="tok-keyword">if</span>(comp[u]==-<span class="tok-number">1</span>) dfs2(u,cl); }
 
-int main(){
-    int m; // number of doors
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m; <span class="tok-comment">// number of doors</span>
     cin &gt;&gt; n &gt;&gt; m;
-    int N = 2*n;
+    <span class="tok-keyword">int</span> N = <span class="tok-number">2</span>*n;
     adj.assign(N,{}); radj.assign(N,{});
-    for (int d = 0; d &lt; m; d++) {
-        int s, k;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = <span class="tok-number">0</span>; d &lt; m; d++) {
+        <span class="tok-keyword">int</span> s, k;
         cin &gt;&gt; s &gt;&gt; k;
-        vector&lt;int&gt; sw(k);
-        for (auto &amp;x : sw) { cin &gt;&gt; x; x--; }
-        if (k == 1) {
-            int x = sw[0];
-            // final = s XOR val(x) = 1  =&gt; val(x) = 1 XOR s
-            bool needTrue = (1 ^ s) == 1;
-            if (needTrue) addClause(x, false, x, false); // force x true
-            else addClause(x, true, x, true);            // force x false
-        } else {
-            int x = sw[0], y = sw[1];
-            if (s == 0) {
-                // need val(x) XOR val(y) = 1  =&gt; (x OR y) AND (not x OR not y)
-                addClause(x, false, y, false);
-                addClause(x, true, y, true);
-            } else {
-                // need val(x) == val(y) =&gt; (x OR not y) AND (not x OR y)
-                addClause(x, false, y, true);
-                addClause(x, true, y, false);
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; sw(k);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : sw) { cin &gt;&gt; x; x--; }
+        <span class="tok-keyword">if</span> (k == <span class="tok-number">1</span>) {
+            <span class="tok-keyword">int</span> x = sw[<span class="tok-number">0</span>];
+            <span class="tok-comment">// final = s XOR val(x) = 1  =&gt; val(x) = 1 XOR s</span>
+            <span class="tok-keyword">bool</span> needTrue = (<span class="tok-number">1</span> ^ s) == <span class="tok-number">1</span>;
+            <span class="tok-keyword">if</span> (needTrue) addClause(x, <span class="tok-keyword">false</span>, x, <span class="tok-keyword">false</span>); <span class="tok-comment">// force x true</span>
+            <span class="tok-keyword">else</span> addClause(x, <span class="tok-keyword">true</span>, x, <span class="tok-keyword">true</span>);            <span class="tok-comment">// force x false</span>
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">int</span> x = sw[<span class="tok-number">0</span>], y = sw[<span class="tok-number">1</span>];
+            <span class="tok-keyword">if</span> (s == <span class="tok-number">0</span>) {
+                <span class="tok-comment">// need val(x) XOR val(y) = 1  =&gt; (x OR y) AND (not x OR not y)</span>
+                addClause(x, <span class="tok-keyword">false</span>, y, <span class="tok-keyword">false</span>);
+                addClause(x, <span class="tok-keyword">true</span>, y, <span class="tok-keyword">true</span>);
+            } <span class="tok-keyword">else</span> {
+                <span class="tok-comment">// need val(x) == val(y) =&gt; (x OR not y) AND (not x OR y)</span>
+                addClause(x, <span class="tok-keyword">false</span>, y, <span class="tok-keyword">true</span>);
+                addClause(x, <span class="tok-keyword">true</span>, y, <span class="tok-keyword">false</span>);
             }
         }
     }
-    used.assign(N, false);
-    for (int i = 0; i &lt; N; i++) if (!used[i]) dfs1(i);
-    comp.assign(N, -1);
-    int j = 0;
-    for (int i = 0; i &lt; N; i++) { int v = order_[N-i-1]; if (comp[v]==-1) dfs2(v, j++); }
-    vector&lt;int&gt; val(n);
-    bool ok = true;
-    for (int i = 0; i &lt; n; i++) {
-        if (comp[2*i] == comp[2*i+1]) { ok = false; break; }
-        val[i] = (comp[2*i] &gt; comp[2*i+1]) ? 1 : 0;
+    used.assign(N, <span class="tok-keyword">false</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; N; i++) <span class="tok-keyword">if</span> (!used[i]) dfs1(i);
+    comp.assign(N, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">int</span> j = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; N; i++) { <span class="tok-keyword">int</span> v = order_[N-i-<span class="tok-number">1</span>]; <span class="tok-keyword">if</span> (comp[v]==-<span class="tok-number">1</span>) dfs2(v, j++); }
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; val(n);
+    <span class="tok-keyword">bool</span> ok = <span class="tok-keyword">true</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">if</span> (comp[<span class="tok-number">2</span>*i] == comp[<span class="tok-number">2</span>*i+<span class="tok-number">1</span>]) { ok = <span class="tok-keyword">false</span>; <span class="tok-keyword">break</span>; }
+        val[i] = (comp[<span class="tok-number">2</span>*i] &gt; comp[<span class="tok-number">2</span>*i+<span class="tok-number">1</span>]) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
     }
-    if (!ok) { cout &lt;&lt; &quot;NO&quot; &lt;&lt; endl; return 0; }
-    cout &lt;&lt; &quot;YES&quot; &lt;&lt; endl;
-    for (int i = 0; i &lt; n; i++) cout &lt;&lt; val[i];
+    <span class="tok-keyword">if</span> (!ok) { cout &lt;&lt; <span class="tok-string">&quot;NO&quot;</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    cout &lt;&lt; <span class="tok-string">&quot;YES&quot;</span> &lt;&lt; endl;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) cout &lt;&lt; val[i];
     cout &lt;&lt; endl;
 }
 </code></pre>
@@ -1493,62 +1505,62 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>First check feasibility: an undirected Euler circuit exists iff every vertex has even degree and every edge-bearing vertex is reachable from any other (single connected component among vertices with degree &gt; 0) -- verified here with one BFS.</p><p>Then run Hierholzer&#x27;s algorithm ITERATIVELY to avoid both the classic recursion-based edge-consumption bug and stack-overflow risk on long chains: maintain, for every vertex v, a pointer ptr[v] into its adjacency list that only ever advances forward (skipping edges already marked used, and NEVER resetting once advanced), plus a global usedEdge[] array indexed by a unique edge id (essential for multigraphs, since two edges between the same pair of vertices are NOT interchangeable -- each must be consumed exactly once). Push the start vertex onto an explicit stack; while the stack is non-empty, look at its top vertex v: advance ptr[v] past used edges, and if an unused edge to some &#x27;to&#x27; remains, mark it used and push &#x27;to&#x27;; if no unused edge remains at v, pop v and append it to the answer list. Reversing the final answer list yields the Euler circuit in the correct visiting order.</p><p>This was hand-traced on the sample below before running: with edges 1-2 (id0), 2-3 (id1), 3-1 (id2), the traversal pushes 1,2,3,1 (using each edge once), then pops back 1,3,2,1 as no vertex has remaining unused edges, and reversing gives the final route 1 2 3 1 -- confirmed to match the program&#x27;s actual output. Additional runs against multigraphs with a self-loop and repeated edges (not shown in the final example, but tested during development) also produced valid Euler circuits, confirming the pointer-based approach correctly handles multi-edges.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n, m;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, m;
     cin &gt;&gt; n &gt;&gt; m;
-    vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj(n+1); // (neighbor, edgeId)
-    vector&lt;int&gt; deg(n+1, 0);
-    for (int e = 0; e &lt; m; e++) {
-        int a, b; cin &gt;&gt; a &gt;&gt; b;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt;&gt; adj(n+<span class="tok-number">1</span>); <span class="tok-comment">// (neighbor, edgeId)</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; deg(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> e = <span class="tok-number">0</span>; e &lt; m; e++) {
+        <span class="tok-keyword">int</span> a, b; cin &gt;&gt; a &gt;&gt; b;
         adj[a].push_back({b, e});
         adj[b].push_back({a, e});
         deg[a]++; deg[b]++;
     }
-    // feasibility: all vertices with edges have even degree, and they are all
-    // in one connected component
-    for (int v = 1; v &lt;= n; v++) {
-        if (deg[v] % 2 != 0) { cout &lt;&lt; &quot;IMPOSSIBLE&quot; &lt;&lt; endl; return 0; }
+    <span class="tok-comment">// feasibility: all vertices with edges have even degree, and they are all</span>
+    <span class="tok-comment">// in one connected component</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt;= n; v++) {
+        <span class="tok-keyword">if</span> (deg[v] % <span class="tok-number">2</span> != <span class="tok-number">0</span>) { cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE&quot;</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
     }
-    if (m &gt; 0) {
-        vector&lt;bool&gt; vis(n+1, false);
-        queue&lt;int&gt; q;
-        int startV = -1;
-        for (int v = 1; v &lt;= n; v++) if (deg[v] &gt; 0) { startV = v; break; }
-        vis[startV] = true; q.push(startV);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            for (auto [to, id] : adj[u]) if (!vis[to]) { vis[to] = true; q.push(to); }
+    <span class="tok-keyword">if</span> (m &gt; <span class="tok-number">0</span>) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; vis(n+<span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+        <span class="tok-keyword">int</span> startV = -<span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt;= n; v++) <span class="tok-keyword">if</span> (deg[v] &gt; <span class="tok-number">0</span>) { startV = v; <span class="tok-keyword">break</span>; }
+        vis[startV] = <span class="tok-keyword">true</span>; q.push(startV);
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> [to, id] : adj[u]) <span class="tok-keyword">if</span> (!vis[to]) { vis[to] = <span class="tok-keyword">true</span>; q.push(to); }
         }
-        for (int v = 1; v &lt;= n; v++) {
-            if (deg[v] &gt; 0 &amp;&amp; !vis[v]) { cout &lt;&lt; &quot;IMPOSSIBLE&quot; &lt;&lt; endl; return 0; }
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt;= n; v++) {
+            <span class="tok-keyword">if</span> (deg[v] &gt; <span class="tok-number">0</span> &amp;&amp; !vis[v]) { cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE&quot;</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
         }
     }
-    // iterative Hierholzer&#x27;s algorithm starting/ending at node 1
-    vector&lt;int&gt; ptr(n+1, 0);
-    vector&lt;bool&gt; usedEdge(m, false);
-    vector&lt;int&gt; circuit;
-    vector&lt;int&gt; st;
-    st.push_back(1);
-    while (!st.empty()) {
-        int v = st.back();
-        // advance ptr past used edges
-        while (ptr[v] &lt; (int)adj[v].size() &amp;&amp; usedEdge[adj[v][ptr[v]].second]) ptr[v]++;
-        if (ptr[v] == (int)adj[v].size()) {
+    <span class="tok-comment">// iterative Hierholzer&#x27;s algorithm starting/ending at node 1</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; ptr(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; usedEdge(m, <span class="tok-keyword">false</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; circuit;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; st;
+    st.push_back(<span class="tok-number">1</span>);
+    <span class="tok-keyword">while</span> (!st.empty()) {
+        <span class="tok-keyword">int</span> v = st.back();
+        <span class="tok-comment">// advance ptr past used edges</span>
+        <span class="tok-keyword">while</span> (ptr[v] &lt; (<span class="tok-keyword">int</span>)adj[v].size() &amp;&amp; usedEdge[adj[v][ptr[v]].second]) ptr[v]++;
+        <span class="tok-keyword">if</span> (ptr[v] == (<span class="tok-keyword">int</span>)adj[v].size()) {
             circuit.push_back(v);
             st.pop_back();
-        } else {
-            auto [to, id] = adj[v][ptr[v]];
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-keyword">auto</span> [to, id] = adj[v][ptr[v]];
             ptr[v]++;
-            usedEdge[id] = true;
+            usedEdge[id] = <span class="tok-keyword">true</span>;
             st.push_back(to);
         }
     }
     reverse(circuit.begin(), circuit.end());
-    if ((int)circuit.size() != m + 1) { cout &lt;&lt; &quot;IMPOSSIBLE&quot; &lt;&lt; endl; return 0; }
-    for (int i = 0; i &lt; (int)circuit.size(); i++) cout &lt;&lt; circuit[i] &lt;&lt; (i+1&lt;(int)circuit.size()?&#x27; &#x27;:&#x27;\n&#x27;);
+    <span class="tok-keyword">if</span> ((<span class="tok-keyword">int</span>)circuit.size() != m + <span class="tok-number">1</span>) { cout &lt;&lt; <span class="tok-string">&quot;IMPOSSIBLE&quot;</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)circuit.size(); i++) cout &lt;&lt; circuit[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;(<span class="tok-keyword">int</span>)circuit.size()?<span class="tok-char">&#x27; &#x27;</span>:<span class="tok-char">&#x27;\n&#x27;</span>);
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1568,42 +1580,42 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is a directed Euler PATH problem (start fixed at JFK, use every edge/ticket exactly once) with an added lexicographic-smallest requirement, solved by a greedy variant of iterative Hierholzer&#x27;s algorithm: store each airport&#x27;s outgoing destinations in a sorted multiset (so the smallest unused destination is always at the front), then run the same &#x27;push while edges remain, pop-and-record when stuck&#x27; iterative loop as in the undirected case, but always advancing along the CURRENTLY smallest remaining outgoing edge from the top of the stack (erasing it from the multiset immediately, which is safe because a multiset erase-by-iterator does not need index bookkeeping).</p><p>The reason greedily taking the smallest edge still produces a globally valid (and lexicographically minimal) Euler path -- rather than getting stuck early and needing backtracking -- is a classical fact about Hierholzer-style construction: any maximal walk that gets stuck can only get stuck back at a vertex whose in/out-degree imbalance forces it to be the path&#x27;s endpoint (or, for interior vertices, all their edges have necessarily been exhausted in pairs), so the &#x27;stuck&#x27; vertex is appended to the answer and the algorithm backtracks naturally through the stack, splicing in the remaining unused edges from earlier vertices on the stack -- exactly like the undirected circuit case, but directed. Taking the lexicographically smallest available edge at every step, combined with this stack-based backtracking (not a naive greedy walk with no backtracking, which CAN get stuck with unused edges remaining), is what guarantees both correctness and lexicographic minimality.</p><p>Hand-traced and cross-checked against the two official examples for this exact problem (LeetCode 332): tickets forming a JFK-A-JFK-B-JFK-C fan produce &#x27;JFK A JFK B JFK C&#x27; (verified below), and the second official example&#x27;s 5-ticket set among JFK/SFO/ATL correctly reproduces &#x27;JFK ATL JFK SFO ATL SFO&#x27; -- both confirmed to match this program&#x27;s actual output exactly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int m;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m;
     cin &gt;&gt; m;
-    map&lt;string, multiset&lt;string&gt;&gt; adj;
-    map&lt;string, int&gt; outDeg, inDeg;
-    for (int i = 0; i &lt; m; i++) {
-        string a, b;
+    <span class="tok-type">map</span>&lt;<span class="tok-type">string</span>, <span class="tok-type">multiset</span>&lt;<span class="tok-type">string</span>&gt;&gt; adj;
+    <span class="tok-type">map</span>&lt;<span class="tok-type">string</span>, <span class="tok-keyword">int</span>&gt; outDeg, inDeg;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++) {
+        <span class="tok-type">string</span> a, b;
         cin &gt;&gt; a &gt;&gt; b;
         adj[a].insert(b);
         outDeg[a]++; inDeg[b]++;
     }
-    string start = &quot;JFK&quot;;
-    // iterative Hierholzer&#x27;s algorithm (directed), always taking the
-    // lexicographically smallest unused outgoing edge (multiset keeps sorted order)
-    vector&lt;string&gt; stack_;
-    vector&lt;string&gt; route;
+    <span class="tok-type">string</span> start = <span class="tok-string">&quot;JFK&quot;</span>;
+    <span class="tok-comment">// iterative Hierholzer&#x27;s algorithm (directed), always taking the</span>
+    <span class="tok-comment">// lexicographically smallest unused outgoing edge (multiset keeps sorted order)</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; stack_;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; route;
     stack_.push_back(start);
-    while (!stack_.empty()) {
-        string v = stack_.back();
-        auto it = adj.find(v);
-        if (it != adj.end() &amp;&amp; !it-&gt;second.empty()) {
-            auto first = it-&gt;second.begin();
-            string u = *first;
+    <span class="tok-keyword">while</span> (!stack_.empty()) {
+        <span class="tok-type">string</span> v = stack_.back();
+        <span class="tok-keyword">auto</span> it = adj.find(v);
+        <span class="tok-keyword">if</span> (it != adj.end() &amp;&amp; !it-&gt;second.empty()) {
+            <span class="tok-keyword">auto</span> first = it-&gt;second.begin();
+            <span class="tok-type">string</span> u = *first;
             it-&gt;second.erase(first);
             stack_.push_back(u);
-        } else {
+        } <span class="tok-keyword">else</span> {
             route.push_back(v);
             stack_.pop_back();
         }
     }
     reverse(route.begin(), route.end());
-    if ((int)route.size() != m + 1) { cout &lt;&lt; &quot;NO VALID ITINERARY&quot; &lt;&lt; endl; return 0; }
-    for (int i = 0; i &lt; (int)route.size(); i++) cout &lt;&lt; route[i] &lt;&lt; (i+1&lt;(int)route.size()?&#x27; &#x27;:&#x27;\n&#x27;);
+    <span class="tok-keyword">if</span> ((<span class="tok-keyword">int</span>)route.size() != m + <span class="tok-number">1</span>) { cout &lt;&lt; <span class="tok-string">&quot;NO VALID ITINERARY&quot;</span> &lt;&lt; endl; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)route.size(); i++) cout &lt;&lt; route[i] &lt;&lt; (i+<span class="tok-number">1</span>&lt;(<span class="tok-keyword">int</span>)route.size()?<span class="tok-char">&#x27; &#x27;</span>:<span class="tok-char">&#x27;\n&#x27;</span>);
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1633,33 +1645,33 @@ JFK C
   <div class="section-label">Approach</div>
   <div class="prose"><p>Model the grid as a graph where moving onto a 0-cell costs 0 and moving onto a 1-cell costs 1 -- exactly the 0/1 BFS setting. Initialize dist[0][0] to 1 if the start cell itself is an obstacle, else 0 (since &#x27;entering&#x27; the start cell would have cost that much), and push it onto a deque.</p><p>Repeatedly pop the front of the deque and relax its up-to-4 neighbors: if moving into a neighbor cell of value 0, the edge weight is 0, so if it improves the neighbor&#x27;s distance, push the neighbor to the FRONT of the deque (same tentative distance tier as the current cell); if the neighbor is a 1-cell, the edge weight is 1, so on improvement push it to the BACK of the deque (next tier). Because the deque always holds at most two contiguous distance tiers in order, popping from the front still processes cells in non-decreasing distance order, so the first time a cell is popped its distance is final -- allowing a stale/duplicate pop to simply be skip-relaxed again harmlessly (or checked against a visited flag). The answer is dist[R-1][C-1]. Verified against the official LeetCode example grid [[0,1,1],[1,1,0],[1,1,0]], which has known answer 2, and the program reproduces exactly 2.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int R, C;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> R, C;
     cin &gt;&gt; R &gt;&gt; C;
-    vector&lt;vector&lt;int&gt;&gt; g(R, vector&lt;int&gt;(C));
-    for (auto &amp;row : g) for (auto &amp;x : row) cin &gt;&gt; x;
-    vector&lt;vector&lt;int&gt;&gt; dist(R, vector&lt;int&gt;(C, INT_MAX));
-    deque&lt;pair&lt;int,int&gt;&gt; dq;
-    dist[0][0] = (g[0][0] == 1) ? 1 : 0;
-    dq.push_back({0,0});
-    int dr[4] = {-1,1,0,0}, dc[4] = {0,0,-1,1};
-    while (!dq.empty()) {
-        auto [r, c] = dq.front(); dq.pop_front();
-        for (int k = 0; k &lt; 4; k++) {
-            int nr = r+dr[k], nc = c+dc[k];
-            if (nr &lt; 0 || nr &gt;= R || nc &lt; 0 || nc &gt;= C) continue;
-            int w = (g[nr][nc] == 1) ? 1 : 0; // cost 1 to move into an obstacle cell, 0 otherwise
-            if (dist[r][c] + w &lt; dist[nr][nc]) {
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; g(R, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(C));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;row : g) <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : row) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; dist(R, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(C, INT_MAX));
+    <span class="tok-type">deque</span>&lt;<span class="tok-type">pair</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt;&gt; dq;
+    dist[<span class="tok-number">0</span>][<span class="tok-number">0</span>] = (g[<span class="tok-number">0</span>][<span class="tok-number">0</span>] == <span class="tok-number">1</span>) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
+    dq.push_back({<span class="tok-number">0</span>,<span class="tok-number">0</span>});
+    <span class="tok-keyword">int</span> dr[<span class="tok-number">4</span>] = {-<span class="tok-number">1</span>,<span class="tok-number">1</span>,<span class="tok-number">0</span>,<span class="tok-number">0</span>}, dc[<span class="tok-number">4</span>] = {<span class="tok-number">0</span>,<span class="tok-number">0</span>,-<span class="tok-number">1</span>,<span class="tok-number">1</span>};
+    <span class="tok-keyword">while</span> (!dq.empty()) {
+        <span class="tok-keyword">auto</span> [r, c] = dq.front(); dq.pop_front();
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = <span class="tok-number">0</span>; k &lt; <span class="tok-number">4</span>; k++) {
+            <span class="tok-keyword">int</span> nr = r+dr[k], nc = c+dc[k];
+            <span class="tok-keyword">if</span> (nr &lt; <span class="tok-number">0</span> || nr &gt;= R || nc &lt; <span class="tok-number">0</span> || nc &gt;= C) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">int</span> w = (g[nr][nc] == <span class="tok-number">1</span>) ? <span class="tok-number">1</span> : <span class="tok-number">0</span>; <span class="tok-comment">// cost 1 to move into an obstacle cell, 0 otherwise</span>
+            <span class="tok-keyword">if</span> (dist[r][c] + w &lt; dist[nr][nc]) {
                 dist[nr][nc] = dist[r][c] + w;
-                if (w == 0) dq.push_front({nr, nc});
-                else dq.push_back({nr, nc});
+                <span class="tok-keyword">if</span> (w == <span class="tok-number">0</span>) dq.push_front({nr, nc});
+                <span class="tok-keyword">else</span> dq.push_back({nr, nc});
             }
         }
     }
-    cout &lt;&lt; dist[R-1][C-1] &lt;&lt; endl;
+    cout &lt;&lt; dist[R-<span class="tok-number">1</span>][C-<span class="tok-number">1</span>] &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -1679,47 +1691,47 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>A naive solution runs a separate BFS from every index looking for the nearest opposite-parity node, costing O(n^2) in the worst case. The key trick is to flip the question around: instead of asking &#x27;from i, how far to the nearest odd-valued node&#x27; for every i separately, ask &#x27;what is the distance, in the REVERSED jump graph, from EVERY odd-valued node simultaneously to each vertex&#x27; -- and by the general fact that distance from u to v equals distance from v to u in the reverse graph, this reversed-graph multi-source BFS started from all odd-valued nodes at once directly gives, for every vertex i, its distance TO the nearest odd-valued node in the ORIGINAL graph -- computed in one O(n) pass instead of O(n) separate BFS runs.</p><p>Concretely: build the original directed graph with edges i -&gt; i-a[i] and i -&gt; i+a[i] (when in range), then build its reverse (swap each edge&#x27;s direction). Run one multi-source BFS on the reverse graph seeded with distance 0 at every index j where a[j] is odd; the resulting dist[] array gives, for each i, the shortest number of jumps from i to some odd-valued node in the original graph. Symmetrically run a second multi-source BFS seeded at every even-valued index to get distances to the nearest even-valued node. The final answer for index i is the &#x27;distance to nearest odd&#x27; array if a[i] is even, or the &#x27;distance to nearest even&#x27; array if a[i] is odd (each array&#x27;s own -1/unreached sentinel carries through unchanged).</p><p>Hand-verified on a=[1,2,3,4]: from index 1 (odd) you can jump to index 2 (even) in 1 step, so answer 1; index 2 (even) can only jump to index 4 (also even, a dead end beyond that), never reaching an odd value, so answer -1; index 3 (odd) has no valid jump at all (3±3 both out of range), so answer -1; index 4 (even) also has no valid jump (4±4 both out of range), so answer -1 -- giving &#x27;1 -1 -1 -1&#x27;, confirmed both by independent hand reasoning about each index&#x27;s reachable set and by the program&#x27;s actual output.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; a(n+1);
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; a[i];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; a[i];
 
-    // reversed jump graph: original edge i -&gt; i-a[i] and i -&gt; i+a[i]
-    // (when in [1,n]); store the reverse so we can multi-source BFS from a
-    // whole parity class and get, for every node, its distance TO that class
-    // in the ORIGINAL graph.
-    vector&lt;vector&lt;int&gt;&gt; radj(n+1);
-    for (int i = 1; i &lt;= n; i++) {
-        int lo = i - a[i], hi = i + a[i];
-        if (lo &gt;= 1 &amp;&amp; lo &lt;= n) radj[lo].push_back(i);
-        if (hi &gt;= 1 &amp;&amp; hi &lt;= n) radj[hi].push_back(i);
+    <span class="tok-comment">// reversed jump graph: original edge i -&gt; i-a[i] and i -&gt; i+a[i]</span>
+    <span class="tok-comment">// (when in [1,n]); store the reverse so we can multi-source BFS from a</span>
+    <span class="tok-comment">// whole parity class and get, for every node, its distance TO that class</span>
+    <span class="tok-comment">// in the ORIGINAL graph.</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; radj(n+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        <span class="tok-keyword">int</span> lo = i - a[i], hi = i + a[i];
+        <span class="tok-keyword">if</span> (lo &gt;= <span class="tok-number">1</span> &amp;&amp; lo &lt;= n) radj[lo].push_back(i);
+        <span class="tok-keyword">if</span> (hi &gt;= <span class="tok-number">1</span> &amp;&amp; hi &lt;= n) radj[hi].push_back(i);
     }
 
-    auto multiSourceDist = [&amp;](int wantParity) {
-        vector&lt;int&gt; dist(n+1, -1);
-        queue&lt;int&gt; q;
-        for (int i = 1; i &lt;= n; i++) {
-            if (a[i] % 2 == wantParity) { dist[i] = 0; q.push(i); }
+    <span class="tok-keyword">auto</span> multiSourceDist = [&amp;](<span class="tok-keyword">int</span> wantParity) {
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; dist(n+<span class="tok-number">1</span>, -<span class="tok-number">1</span>);
+        <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; q;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+            <span class="tok-keyword">if</span> (a[i] % <span class="tok-number">2</span> == wantParity) { dist[i] = <span class="tok-number">0</span>; q.push(i); }
         }
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            for (int v : radj[u]) {
-                if (dist[v] == -1) { dist[v] = dist[u] + 1; q.push(v); }
+        <span class="tok-keyword">while</span> (!q.empty()) {
+            <span class="tok-keyword">int</span> u = q.front(); q.pop();
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v : radj[u]) {
+                <span class="tok-keyword">if</span> (dist[v] == -<span class="tok-number">1</span>) { dist[v] = dist[u] + <span class="tok-number">1</span>; q.push(v); }
             }
         }
-        return dist;
+        <span class="tok-keyword">return</span> dist;
     };
 
-    vector&lt;int&gt; distToOdd = multiSourceDist(1);
-    vector&lt;int&gt; distToEven = multiSourceDist(0);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; distToOdd = multiSourceDist(<span class="tok-number">1</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; distToEven = multiSourceDist(<span class="tok-number">0</span>);
 
-    for (int i = 1; i &lt;= n; i++) {
-        int ans = (a[i] % 2 == 0) ? distToOdd[i] : distToEven[i];
-        cout &lt;&lt; ans &lt;&lt; (i &lt; n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) {
+        <span class="tok-keyword">int</span> ans = (a[i] % <span class="tok-number">2</span> == <span class="tok-number">0</span>) ? distToOdd[i] : distToEven[i];
+        cout &lt;&lt; ans &lt;&lt; (i &lt; n ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -1746,38 +1758,38 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Since every room has out-degree 1, this is a functional graph, and the key structural fact is that no matter which room the mouse starts in, it eventually enters a cycle (every &#x27;tail&#x27; inevitably flows into some cycle). So trapping is only ever NECESSARY on cycle nodes: a mouse starting on a pure tail will walk into whatever cycle its tail leads to and get caught there, so trapping tail nodes is never required, and trapping a cheapest node PER CYCLE is both necessary (some node on every cycle must be trapped, or a mouse starting there loops forever uncaught) and sufficient (once one node on a cycle is trapped, any mouse entering that cycle eventually reaches the trap). So the answer is exactly the sum, over every distinct cycle in the functional graph, of the minimum cost[] among that cycle&#x27;s nodes.</p><p>Find all cycles with one O(n) pass: for every unvisited start vertex, walk forward recording each visited vertex&#x27;s position in a local path list and marking it &#x27;in-progress&#x27;; if the walk reaches a vertex already &#x27;in-progress&#x27; in the SAME walk, the sub-list from that vertex&#x27;s recorded position to the end of the path is exactly one cycle -- take its minimum cost and add to the running answer; if the walk instead reaches an already-&#x27;done&#x27; vertex from an earlier walk, no new cycle is found (the tail simply merges into previously discovered structure). Mark every node in the finished path &#x27;done&#x27; so each node is processed O(1) times overall. Verified by hand on the sample: rooms 1-&gt;2-&gt;3-&gt;1 form a 3-cycle with costs 10,20,5 (minimum 5), rooms 4-&gt;3 and 5-&gt;4 are tails feeding into that same cycle and contribute nothing extra, giving total answer 5 -- matching the program&#x27;s actual output, and cross-checked again on a second input with two disjoint 2-cycles (minimums 3 and 1, summing to 4), which the program also reproduced exactly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;int&gt; nxt(n+1), cost(n+1);
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; nxt[i];
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; cost[i];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; nxt(n+<span class="tok-number">1</span>), cost(n+<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; nxt[i];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; cost[i];
 
-    vector&lt;int&gt; state(n+1, 0); // 0 = unvisited, 1 = in-progress, 2 = done
-    long long answer = 0;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; state(n+<span class="tok-number">1</span>, <span class="tok-number">0</span>); <span class="tok-comment">// 0 = unvisited, 1 = in-progress, 2 = done</span>
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> answer = <span class="tok-number">0</span>;
 
-    for (int start = 1; start &lt;= n; start++) {
-        if (state[start] != 0) continue;
-        vector&lt;int&gt; path;
-        unordered_map&lt;int,int&gt; posInPath;
-        int v = start;
-        while (state[v] == 0) {
-            state[v] = 1;
-            posInPath[v] = (int)path.size();
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> start = <span class="tok-number">1</span>; start &lt;= n; start++) {
+        <span class="tok-keyword">if</span> (state[start] != <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; path;
+        <span class="tok-type">unordered_map</span>&lt;<span class="tok-keyword">int</span>,<span class="tok-keyword">int</span>&gt; posInPath;
+        <span class="tok-keyword">int</span> v = start;
+        <span class="tok-keyword">while</span> (state[v] == <span class="tok-number">0</span>) {
+            state[v] = <span class="tok-number">1</span>;
+            posInPath[v] = (<span class="tok-keyword">int</span>)path.size();
             path.push_back(v);
             v = nxt[v];
         }
-        if (state[v] == 1) {
-            // v lies on the current path -&gt; path[posInPath[v] .. end] is a cycle
-            int idx = posInPath[v];
-            long long minCost = LLONG_MAX;
-            for (int k = idx; k &lt; (int)path.size(); k++) minCost = min(minCost, (long long)cost[path[k]]);
+        <span class="tok-keyword">if</span> (state[v] == <span class="tok-number">1</span>) {
+            <span class="tok-comment">// v lies on the current path -&gt; path[posInPath[v] .. end] is a cycle</span>
+            <span class="tok-keyword">int</span> idx = posInPath[v];
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> minCost = LLONG_MAX;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> k = idx; k &lt; (<span class="tok-keyword">int</span>)path.size(); k++) minCost = min(minCost, (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)cost[path[k]]);
             answer += minCost;
         }
-        for (int u : path) state[u] = 2;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> u : path) state[u] = <span class="tok-number">2</span>;
     }
     cout &lt;&lt; answer &lt;&lt; endl;
 }
@@ -1798,29 +1810,29 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the direct textbook application of binary lifting on a functional graph. Precompute a sparse table up[j][v] = the planet reached after exactly 2^j teleports starting from v, for j = 0..LOG-1 (LOG chosen so 2^LOG exceeds the maximum possible k): base case up[0][v] = nxt[v] (one teleport), and up[j][v] = up[j-1][ up[j-1][v] ] (take a 2^(j-1)-teleport jump, then take the same size jump again, composing to a 2^j-teleport jump).</p><p>For each query (x, k), decompose k in binary and apply exactly the jumps corresponding to k&#x27;s set bits, from the least significant bit upward, updating the current planet after each applied jump: for each bit position j where k has a 1, set x = up[j][x]. After processing all LOG bit positions, x holds the planet reached after exactly k teleports. Each query costs O(log k) instead of O(k), which is essential once k is too large to simulate step by step.</p><p>Verified by hand on a 4-planet cycle 1-&gt;2-&gt;3-&gt;4-&gt;1: query (1, 5) walks 1,2,3,4,1,2 (5 teleports) landing on 2; query (3, 2) walks 3,4,1 (2 teleports) landing on 1; query (2, 0) performs zero teleports and stays at 2 -- all three confirmed by direct step-by-step simulation and matching the program&#x27;s actual binary-lifting output exactly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-const int LOG = 32; // enough for k up to ~2^32-1
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> LOG = <span class="tok-number">32</span>; <span class="tok-comment">// enough for k up to ~2^32-1</span>
 
-int main(){
-    int n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
     cin &gt;&gt; n;
-    vector&lt;vector&lt;int&gt;&gt; up(LOG, vector&lt;int&gt;(n+1));
-    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; up[0][i];
-    for (int j = 1; j &lt; LOG; j++)
-        for (int i = 1; i &lt;= n; i++)
-            up[j][i] = up[j-1][up[j-1][i]];
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; up(LOG, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;(n+<span class="tok-number">1</span>));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++) cin &gt;&gt; up[<span class="tok-number">0</span>][i];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt; LOG; j++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt;= n; i++)
+            up[j][i] = up[j-<span class="tok-number">1</span>][up[j-<span class="tok-number">1</span>][i]];
 
-    int q;
+    <span class="tok-keyword">int</span> q;
     cin &gt;&gt; q;
-    while (q--) {
-        int x; long long k;
+    <span class="tok-keyword">while</span> (q--) {
+        <span class="tok-keyword">int</span> x; <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> k;
         cin &gt;&gt; x &gt;&gt; k;
-        for (int j = 0; j &lt; LOG; j++) {
-            if (k &amp; (1LL &lt;&lt; j)) x = up[j][x];
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; LOG; j++) {
+            <span class="tok-keyword">if</span> (k &amp; (<span class="tok-number">1LL</span> &lt;&lt; j)) x = up[j][x];
         }
-        cout &lt;&lt; x &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; x &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>

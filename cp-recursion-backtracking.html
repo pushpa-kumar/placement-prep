@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,38 +281,38 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>Instead of generating all 8! permutations and deduplicating with a set (wasteful and, for longer strings, infeasible), recurse directly over a count array cnt[26] of remaining letters. At each position, try every letter c with cnt[c] &gt; 0: decrement cnt[c], append c to the current string, recurse, then pop and restore cnt[c]. Because we always iterate letters in increasing alphabetical order (0..25) and never place two equal letters through two different &#x27;copies&#x27;, each distinct permutation is produced exactly once, and iterating letters in sorted order makes the output automatically lexicographically sorted with no extra sort step needed.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-string s;
-vector&lt;int&gt; cnt(26, 0);
-string cur;
-vector&lt;string&gt; results;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">string</span> s;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; cnt(<span class="tok-number">26</span>, <span class="tok-number">0</span>);
+<span class="tok-type">string</span> cur;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; results;
 
-void backtrack() {
-    if ((int)cur.size() == n) {
+<span class="tok-keyword">void</span> backtrack() {
+    <span class="tok-keyword">if</span> ((<span class="tok-keyword">int</span>)cur.size() == n) {
         results.push_back(cur);
-        return;
+        <span class="tok-keyword">return</span>;
     }
-    for (int c = 0; c &lt; 26; c++) {
-        if (cnt[c] == 0) continue;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; <span class="tok-number">26</span>; c++) {
+        <span class="tok-keyword">if</span> (cnt[c] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
         cnt[c]--;
-        cur.push_back(&#x27;a&#x27; + c);
+        cur.push_back(<span class="tok-char">&#x27;a&#x27;</span> + c);
         backtrack();
         cur.pop_back();
         cnt[c]++;
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; s;
     n = s.size();
-    for (char ch : s) cnt[ch - &#x27;a&#x27;]++;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">char</span> ch : s) cnt[ch - <span class="tok-char">&#x27;a&#x27;</span>]++;
     backtrack();
-    cout &lt;&lt; results.size() &lt;&lt; &quot;\n&quot;;
-    for (auto &amp;r : results) cout &lt;&lt; r &lt;&lt; &quot;\n&quot;;
-    return 0;
+    cout &lt;&lt; results.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;r : results) cout &lt;&lt; r &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -320,43 +332,43 @@ baa
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort the array ascending first. Recurse with (start index, running sum): at each call, iterate i from start to n-1. Skip i if a[i] equals a[i-1] and i &gt; start (this is the duplicate-skip rule: it only skips a repeat *at the same branching level*, so &#x27;2,2,3&#x27; can still legitimately use both 2&#x27;s - it just prevents choosing the second &#x27;2&#x27; as an *alternative* first choice when the first &#x27;2&#x27; at that level was already tried and undone). Also, since the array is sorted, the moment running sum + a[i] exceeds target we can &#x27;break&#x27; (not &#x27;continue&#x27;) because every subsequent a[i] at this level is &gt;= the current one and would only make the sum larger. When the running sum equals target exactly, record the current partial subset as a valid answer (and continue trying to extend further branches is unnecessary here since all values are positive, so we simply return without recursing deeper).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n, target;
-vector&lt;int&gt; a;
-vector&lt;int&gt; cur;
-vector&lt;vector&lt;int&gt;&gt; results;
+<span class="tok-keyword">int</span> n, target;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; cur;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; results;
 
-void backtrack(int start, int sum) {
-    if (sum == target) {
+<span class="tok-keyword">void</span> backtrack(<span class="tok-keyword">int</span> start, <span class="tok-keyword">int</span> sum) {
+    <span class="tok-keyword">if</span> (sum == target) {
         results.push_back(cur);
-        return;
+        <span class="tok-keyword">return</span>;
     }
-    for (int i = start; i &lt; n; i++) {
-        if (i &gt; start &amp;&amp; a[i] == a[i - 1]) continue; // skip duplicate branch at this depth
-        if (sum + a[i] &gt; target) break; // sorted ascending -&gt; all further are too big
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = start; i &lt; n; i++) {
+        <span class="tok-keyword">if</span> (i &gt; start &amp;&amp; a[i] == a[i - <span class="tok-number">1</span>]) <span class="tok-keyword">continue</span>; <span class="tok-comment">// skip duplicate branch at this depth</span>
+        <span class="tok-keyword">if</span> (sum + a[i] &gt; target) <span class="tok-keyword">break</span>; <span class="tok-comment">// sorted ascending -&gt; all further are too big</span>
         cur.push_back(a[i]);
-        backtrack(i + 1, sum + a[i]);
+        backtrack(i + <span class="tok-number">1</span>, sum + a[i]);
         cur.pop_back();
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; n &gt;&gt; target;
     a.resize(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
     sort(a.begin(), a.end());
-    backtrack(0, 0);
-    cout &lt;&lt; results.size() &lt;&lt; &quot;\n&quot;;
-    for (auto &amp;r : results) {
-        for (size_t i = 0; i &lt; r.size(); i++) {
-            if (i) cout &lt;&lt; &quot; &quot;;
+    backtrack(<span class="tok-number">0</span>, <span class="tok-number">0</span>);
+    cout &lt;&lt; results.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;r : results) {
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; r.size(); i++) {
+            <span class="tok-keyword">if</span> (i) cout &lt;&lt; <span class="tok-string">&quot; &quot;</span>;
             cout &lt;&lt; r[i];
         }
-        cout &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -376,43 +388,43 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>This demonstrates pruning a constraint *during* construction rather than generating all n! permutations and filtering afterward. Build the permutation left to right with a standard used[] array; the only addition is a single check before descending into a branch: if the permutation is non-empty and the candidate value differs from the last placed value by exactly 1, skip it immediately - never even recurse into that subtree. Because most violations happen early (adjacent to the most recently placed element), this prunes enormous swaths of the search tree compared to checking the full permutation only once it&#x27;s complete. Iterating candidate values 1..n in increasing order guarantees lexicographic output order for free.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;int&gt; perm;
-vector&lt;bool&gt; used;
-vector&lt;vector&lt;int&gt;&gt; results;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; perm;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; used;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; results;
 
-void backtrack() {
-    if ((int)perm.size() == n) {
+<span class="tok-keyword">void</span> backtrack() {
+    <span class="tok-keyword">if</span> ((<span class="tok-keyword">int</span>)perm.size() == n) {
         results.push_back(perm);
-        return;
+        <span class="tok-keyword">return</span>;
     }
-    for (int v = 1; v &lt;= n; v++) {
-        if (used[v]) continue;
-        if (!perm.empty() &amp;&amp; abs(perm.back() - v) == 1) continue; // pruning: skip consecutive-value neighbors
-        used[v] = true;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> v = <span class="tok-number">1</span>; v &lt;= n; v++) {
+        <span class="tok-keyword">if</span> (used[v]) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">if</span> (!perm.empty() &amp;&amp; abs(perm.back() - v) == <span class="tok-number">1</span>) <span class="tok-keyword">continue</span>; <span class="tok-comment">// pruning: skip consecutive-value neighbors</span>
+        used[v] = <span class="tok-keyword">true</span>;
         perm.push_back(v);
         backtrack();
         perm.pop_back();
-        used[v] = false;
+        used[v] = <span class="tok-keyword">false</span>;
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; n;
-    used.assign(n + 1, false);
+    used.assign(n + <span class="tok-number">1</span>, <span class="tok-keyword">false</span>);
     backtrack();
-    cout &lt;&lt; results.size() &lt;&lt; &quot;\n&quot;;
-    for (auto &amp;r : results) {
-        for (size_t i = 0; i &lt; r.size(); i++) {
-            if (i) cout &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; results.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;r : results) {
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; r.size(); i++) {
+            <span class="tok-keyword">if</span> (i) cout &lt;&lt; <span class="tok-string">&quot; &quot;</span>;
             cout &lt;&lt; r[i];
         }
-        cout &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -439,33 +451,33 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Recurse row by row, always placing exactly one queen per row. Maintain three bitmasks: <code>cols</code> (columns already used), <code>diag1</code> and <code>diag2</code> (the two diagonal families, represented so that moving to the next row is a single shift). At each row, the set of legal columns is <code>full &amp; ~(cols | diag1 | diag2)</code> where <code>full</code> has the low n bits set - this is an O(1)-per-candidate test instead of scanning previously placed queens. For the recursive call, <code>cols</code> simply gains the new queen&#x27;s bit; the two diagonal masks are updated by OR-ing in the new bit and then shifting left/right by one respectively, which is exactly how a diagonal attack &#x27;moves over&#x27; one column as you go down one row. Iterating over the available bits with <code>available &amp; -available</code> and clearing them one at a time enumerates all legal columns for the row without ever looping over 0..n-1 explicitly. When row reaches n, a complete valid placement has been found.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-long long solutions = 0;
+<span class="tok-keyword">int</span> n;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> solutions = <span class="tok-number">0</span>;
 
-// cols, diag1 (r-c+n-1), diag2 (r+c) occupancy as bitmasks
-void backtrack(int row, long long cols, long long diag1, long long diag2) {
-    if (row == n) {
+<span class="tok-comment">// cols, diag1 (r-c+n-1), diag2 (r+c) occupancy as bitmasks</span>
+<span class="tok-keyword">void</span> backtrack(<span class="tok-keyword">int</span> row, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> cols, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> diag1, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> diag2) {
+    <span class="tok-keyword">if</span> (row == n) {
         solutions++;
-        return;
+        <span class="tok-keyword">return</span>;
     }
-    long long full = (1LL &lt;&lt; n) - 1;
-    long long available = full &amp; ~(cols | diag1 | diag2);
-    while (available) {
-        long long bit = available &amp; (-available);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> full = (<span class="tok-number">1LL</span> &lt;&lt; n) - <span class="tok-number">1</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> available = full &amp; ~(cols | diag1 | diag2);
+    <span class="tok-keyword">while</span> (available) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> bit = available &amp; (-available);
         available -= bit;
-        int col = __builtin_ctzll(bit);
-        backtrack(row + 1, cols | bit, (diag1 | bit) &lt;&lt; 1 &amp; full, (diag2 | bit) &gt;&gt; 1);
+        <span class="tok-keyword">int</span> col = __builtin_ctzll(bit);
+        backtrack(row + <span class="tok-number">1</span>, cols | bit, (diag1 | bit) &lt;&lt; <span class="tok-number">1</span> &amp; full, (diag2 | bit) &gt;&gt; <span class="tok-number">1</span>);
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; n;
-    backtrack(0, 0, 0, 0);
-    cout &lt;&lt; solutions &lt;&lt; &quot;\n&quot;;
-    return 0;
+    backtrack(<span class="tok-number">0</span>, <span class="tok-number">0</span>, <span class="tok-number">0</span>, <span class="tok-number">0</span>);
+    cout &lt;&lt; solutions &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -482,41 +494,41 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>This is the same row-by-row backtracking as vanilla N-Queens, with one extra O(1) check folded into the same loop: before checking column/diagonal availability for candidate column c in the current row, first check <code>grid[row][c] != &#x27;*&#x27;</code>. If the square is reserved, skip it immediately without touching any state - it never even becomes a candidate branch. Column and diagonal state are tracked with boolean arrays here (rather than bitmasks) for clarity; <code>diag1</code> is indexed by <code>row - c + n - 1</code> and <code>diag2</code> by <code>row + c</code>, the two standard ways to give every diagonal a unique, collision-free index. Marking state on entry and precisely un-marking the same three flags on return from the recursive call is what makes sibling branches see a clean board.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-vector&lt;string&gt; grid;
-vector&lt;bool&gt; colUsed, diag1Used, diag2Used; // diag1: r-c+n-1, diag2: r+c
-long long count_ = 0;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; grid;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">bool</span>&gt; colUsed, diag1Used, diag2Used; <span class="tok-comment">// diag1: r-c+n-1, diag2: r+c</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> count_ = <span class="tok-number">0</span>;
 
-void backtrack(int row) {
-    if (row == n) {
+<span class="tok-keyword">void</span> backtrack(<span class="tok-keyword">int</span> row) {
+    <span class="tok-keyword">if</span> (row == n) {
         count_++;
-        return;
+        <span class="tok-keyword">return</span>;
     }
-    for (int c = 0; c &lt; n; c++) {
-        if (grid[row][c] == &#x27;*&#x27;) continue;          // reserved square pruning
-        if (colUsed[c]) continue;                     // column attack pruning
-        int d1 = row - c + n - 1;
-        int d2 = row + c;
-        if (diag1Used[d1] || diag2Used[d2]) continue;  // diagonal attack pruning
-        colUsed[c] = diag1Used[d1] = diag2Used[d2] = true;
-        backtrack(row + 1);
-        colUsed[c] = diag1Used[d1] = diag2Used[d2] = false; // undo state
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; n; c++) {
+        <span class="tok-keyword">if</span> (grid[row][c] == <span class="tok-char">&#x27;*&#x27;</span>) <span class="tok-keyword">continue</span>;          <span class="tok-comment">// reserved square pruning</span>
+        <span class="tok-keyword">if</span> (colUsed[c]) <span class="tok-keyword">continue</span>;                     <span class="tok-comment">// column attack pruning</span>
+        <span class="tok-keyword">int</span> d1 = row - c + n - <span class="tok-number">1</span>;
+        <span class="tok-keyword">int</span> d2 = row + c;
+        <span class="tok-keyword">if</span> (diag1Used[d1] || diag2Used[d2]) <span class="tok-keyword">continue</span>;  <span class="tok-comment">// diagonal attack pruning</span>
+        colUsed[c] = diag1Used[d1] = diag2Used[d2] = <span class="tok-keyword">true</span>;
+        backtrack(row + <span class="tok-number">1</span>);
+        colUsed[c] = diag1Used[d1] = diag2Used[d2] = <span class="tok-keyword">false</span>; <span class="tok-comment">// undo state</span>
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; n;
     grid.resize(n);
-    for (auto &amp;row : grid) cin &gt;&gt; row;
-    colUsed.assign(n, false);
-    diag1Used.assign(2 * n, false);
-    diag2Used.assign(2 * n, false);
-    backtrack(0);
-    cout &lt;&lt; count_ &lt;&lt; &quot;\n&quot;;
-    return 0;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;row : grid) cin &gt;&gt; row;
+    colUsed.assign(n, <span class="tok-keyword">false</span>);
+    diag1Used.assign(<span class="tok-number">2</span> * n, <span class="tok-keyword">false</span>);
+    diag2Used.assign(<span class="tok-number">2</span> * n, <span class="tok-keyword">false</span>);
+    backtrack(<span class="tok-number">0</span>);
+    cout &lt;&lt; count_ &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -537,60 +549,60 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Maintain three bitmasks per row, column, and 3x3 box recording which digits are already used (bit d set means digit d is taken). Naively picking the next blank cell in reading order and trying all 9 digits is *correct* but can be slow on harder boards because early wrong guesses aren&#x27;t detected until deep into the recursion. Instead, before each recursive step, scan all blank cells once to find the one with the *fewest* remaining legal candidates (<code>rowMask[r] | colMask[c] | boxMask[box]</code> complemented and popcounted) - the &#x27;most constrained variable&#x27; heuristic. If any blank cell has zero legal candidates, that whole branch is dead and we return false immediately (this is the pruning: we detect infeasibility without exploring further). Otherwise we branch only over that one cell&#x27;s few candidates, place a digit, update the three masks, recurse, and if the recursion fails, undo the exact same three masks before trying the next candidate digit.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int grid[9][9];
-int rowMask[9], colMask[9], boxMask[9]; // bit d (1..9) set =&gt; digit d already used
+<span class="tok-keyword">int</span> grid[<span class="tok-number">9</span>][<span class="tok-number">9</span>];
+<span class="tok-keyword">int</span> rowMask[<span class="tok-number">9</span>], colMask[<span class="tok-number">9</span>], boxMask[<span class="tok-number">9</span>]; <span class="tok-comment">// bit d (1..9) set =&gt; digit d already used</span>
 
-int boxOf(int r, int c) { return (r / 3) * 3 + (c / 3); }
+<span class="tok-keyword">int</span> boxOf(<span class="tok-keyword">int</span> r, <span class="tok-keyword">int</span> c) { <span class="tok-keyword">return</span> (r / <span class="tok-number">3</span>) * <span class="tok-number">3</span> + (c / <span class="tok-number">3</span>); }
 
-bool solve() {
-    int br = -1, bc = -1, bestCount = 10, bestCands = 0;
-    for (int r = 0; r &lt; 9; r++) {
-        for (int c = 0; c &lt; 9; c++) {
-            if (grid[r][c] != 0) continue;
-            int used = rowMask[r] | colMask[c] | boxMask[boxOf(r, c)];
-            int cands = (~used) &amp; 0x3FE; // bits 1..9
-            int cnt = __builtin_popcount(cands);
-            if (cnt == 0) return false;      // dead end: pruning
-            if (cnt &lt; bestCount) {           // most-constrained-cell heuristic
+<span class="tok-keyword">bool</span> solve() {
+    <span class="tok-keyword">int</span> br = -<span class="tok-number">1</span>, bc = -<span class="tok-number">1</span>, bestCount = <span class="tok-number">10</span>, bestCands = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> r = <span class="tok-number">0</span>; r &lt; <span class="tok-number">9</span>; r++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; <span class="tok-number">9</span>; c++) {
+            <span class="tok-keyword">if</span> (grid[r][c] != <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">int</span> used = rowMask[r] | colMask[c] | boxMask[boxOf(r, c)];
+            <span class="tok-keyword">int</span> cands = (~used) &amp; <span class="tok-number">0x3FE</span>; <span class="tok-comment">// bits 1..9</span>
+            <span class="tok-keyword">int</span> cnt = __builtin_popcount(cands);
+            <span class="tok-keyword">if</span> (cnt == <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;      <span class="tok-comment">// dead end: pruning</span>
+            <span class="tok-keyword">if</span> (cnt &lt; bestCount) {           <span class="tok-comment">// most-constrained-cell heuristic</span>
                 bestCount = cnt;
                 br = r; bc = c; bestCands = cands;
             }
         }
     }
-    if (br == -1) return true; // no empty cells left: solved
+    <span class="tok-keyword">if</span> (br == -<span class="tok-number">1</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>; <span class="tok-comment">// no empty cells left: solved</span>
 
-    int cands = bestCands;
-    while (cands) {
-        int bit = cands &amp; (-cands);
+    <span class="tok-keyword">int</span> cands = bestCands;
+    <span class="tok-keyword">while</span> (cands) {
+        <span class="tok-keyword">int</span> bit = cands &amp; (-cands);
         cands -= bit;
-        int d = __builtin_ctz(bit);
+        <span class="tok-keyword">int</span> d = __builtin_ctz(bit);
         grid[br][bc] = d;
         rowMask[br] |= bit;
         colMask[bc] |= bit;
         boxMask[boxOf(br, bc)] |= bit;
 
-        if (solve()) return true;
+        <span class="tok-keyword">if</span> (solve()) <span class="tok-keyword">return</span> <span class="tok-keyword">true</span>;
 
-        grid[br][bc] = 0; // undo
+        grid[br][bc] = <span class="tok-number">0</span>; <span class="tok-comment">// undo</span>
         rowMask[br] &amp;= ~bit;
         colMask[bc] &amp;= ~bit;
         boxMask[boxOf(br, bc)] &amp;= ~bit;
     }
-    return false;
+    <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
 }
 
-int main() {
-    for (int r = 0; r &lt; 9; r++) {
-        string line;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> r = <span class="tok-number">0</span>; r &lt; <span class="tok-number">9</span>; r++) {
+        <span class="tok-type">string</span> line;
         cin &gt;&gt; line;
-        for (int c = 0; c &lt; 9; c++) {
-            int d = (line[c] == &#x27;.&#x27;) ? 0 : (line[c] - &#x27;0&#x27;);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; <span class="tok-number">9</span>; c++) {
+            <span class="tok-keyword">int</span> d = (line[c] == <span class="tok-char">&#x27;.&#x27;</span>) ? <span class="tok-number">0</span> : (line[c] - <span class="tok-char">&#x27;0&#x27;</span>);
             grid[r][c] = d;
-            if (d != 0) {
-                int bit = 1 &lt;&lt; d;
+            <span class="tok-keyword">if</span> (d != <span class="tok-number">0</span>) {
+                <span class="tok-keyword">int</span> bit = <span class="tok-number">1</span> &lt;&lt; d;
                 rowMask[r] |= bit;
                 colMask[c] |= bit;
                 boxMask[boxOf(r, c)] |= bit;
@@ -600,12 +612,12 @@ int main() {
 
     solve();
 
-    for (int r = 0; r &lt; 9; r++) {
-        string line(9, &#x27;.&#x27;);
-        for (int c = 0; c &lt; 9; c++) line[c] = char(&#x27;0&#x27; + grid[r][c]);
-        cout &lt;&lt; line &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> r = <span class="tok-number">0</span>; r &lt; <span class="tok-number">9</span>; r++) {
+        <span class="tok-type">string</span> line(<span class="tok-number">9</span>, <span class="tok-char">&#x27;.&#x27;</span>);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; <span class="tok-number">9</span>; c++) line[c] = <span class="tok-keyword">char</span>(<span class="tok-char">&#x27;0&#x27;</span> + grid[r][c]);
+        cout &lt;&lt; line &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -646,44 +658,44 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Split the array into a left half (first n/2 elements) and a right half (remaining elements). Enumerate all 2^(|left|) subset sums of the left half by iterating every bitmask, and likewise all 2^(|right|) subset sums of the right half (including the empty subset, sum 0, in both). Sort the right half&#x27;s sums. Then, for every left-half sum L, the number of right-half subsets that complete it to exactly <code>target</code> is the count of right-half sums equal to <code>target - L</code>, found via <code>equal_range</code> (binary search) on the sorted right array in O(log(2^(|right|))) time - handling duplicate sums correctly by counting the whole matching range, not just checking membership. Summing this count over every left-half sum gives the total number of subsets.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-long long target;
-vector&lt;long long&gt; a;
+<span class="tok-keyword">int</span> n;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> target;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a;
 
-void genSums(int lo, int hi, vector&lt;long long&gt; &amp;out) {
-    int m = hi - lo;
-    for (int mask = 0; mask &lt; (1 &lt;&lt; m); mask++) {
-        long long s = 0;
-        for (int i = 0; i &lt; m; i++)
-            if (mask &amp; (1 &lt;&lt; i)) s += a[lo + i];
+<span class="tok-keyword">void</span> genSums(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int</span> hi, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; &amp;out) {
+    <span class="tok-keyword">int</span> m = hi - lo;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">0</span>; mask &lt; (<span class="tok-number">1</span> &lt;&lt; m); mask++) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; m; i++)
+            <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span> &lt;&lt; i)) s += a[lo + i];
         out.push_back(s);
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; n &gt;&gt; target;
     a.resize(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
 
-    int mid = n / 2;
-    vector&lt;long long&gt; left, right;
-    genSums(0, mid, left);
+    <span class="tok-keyword">int</span> mid = n / <span class="tok-number">2</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; left, right;
+    genSums(<span class="tok-number">0</span>, mid, left);
     genSums(mid, n, right);
 
     sort(right.begin(), right.end());
 
-    long long total = 0;
-    for (long long ls : left) {
-        long long need = target - ls;
-        auto range = equal_range(right.begin(), right.end(), need);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> total = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ls : left) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> need = target - ls;
+        <span class="tok-keyword">auto</span> range = equal_range(right.begin(), right.end(), need);
         total += (range.second - range.first);
     }
 
-    cout &lt;&lt; total &lt;&lt; &quot;\n&quot;;
-    return 0;
+    cout &lt;&lt; total &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -701,55 +713,55 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Split into two halves and enumerate every subset sum of each half (raw integer sums, not yet reduced mod m, via brute-force bitmask iteration over each half separately - each half is small enough for 2^(n/2) enumeration). Reduce the right half&#x27;s sums mod m and sort them. For every left-half raw sum, reduce it mod m to get <code>a</code>, then find the best complementary right-half value <code>b</code> in O(log) time via two candidate queries: (1) the largest right-half <code>b</code> with <code>a + b &lt;= m - 1</code> (found with <code>upper_bound</code> on <code>m - 1 - a</code>, then stepping back one), which avoids wraparound so the mod result is simply <code>a + b</code>; and (2) the single largest right-half value overall, in case <code>a</code> plus that maximum wraps around past <code>m</code> and still yields a large remainder. Because the empty subset (sum 0) is always among the enumerated sums, candidate (1) always has at least one valid match. Taking the best of both candidates across all left-half values gives the global maximum.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
 
-int n;
-long long m;
-vector&lt;long long&gt; a;
+<span class="tok-keyword">int</span> n;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> m;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a;
 
-void genSums(int lo, int hi, vector&lt;long long&gt; &amp;out) {
-    int len = hi - lo;
-    for (int mask = 0; mask &lt; (1 &lt;&lt; len); mask++) {
-        long long s = 0;
-        for (int i = 0; i &lt; len; i++)
-            if (mask &amp; (1 &lt;&lt; i)) s += a[lo + i];
+<span class="tok-keyword">void</span> genSums(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int</span> hi, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; &amp;out) {
+    <span class="tok-keyword">int</span> len = hi - lo;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">0</span>; mask &lt; (<span class="tok-number">1</span> &lt;&lt; len); mask++) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; len; i++)
+            <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span> &lt;&lt; i)) s += a[lo + i];
         out.push_back(s);
     }
 }
 
-int main() {
+<span class="tok-keyword">int</span> main() {
     cin &gt;&gt; n &gt;&gt; m;
     a.resize(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
 
-    int mid = n / 2;
-    vector&lt;long long&gt; leftRaw, rightRaw;
-    genSums(0, mid, leftRaw);
+    <span class="tok-keyword">int</span> mid = n / <span class="tok-number">2</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; leftRaw, rightRaw;
+    genSums(<span class="tok-number">0</span>, mid, leftRaw);
     genSums(mid, n, rightRaw);
 
-    vector&lt;long long&gt; rightMod;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; rightMod;
     rightMod.reserve(rightRaw.size());
-    for (long long s : rightRaw) rightMod.push_back(s % m);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s : rightRaw) rightMod.push_back(s % m);
     sort(rightMod.begin(), rightMod.end());
 
-    long long best = 0;
-    long long maxB = rightMod.back();
-    for (long long s : leftRaw) {
-        long long amod = s % m;
-        // candidate 1: largest b with amod + b &lt;= m - 1 (no wraparound)
-        long long limit = m - 1 - amod;
-        auto it = upper_bound(rightMod.begin(), rightMod.end(), limit);
-        if (it != rightMod.begin()) {
-            long long b1 = *prev(it);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = <span class="tok-number">0</span>;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> maxB = rightMod.back();
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> s : leftRaw) {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> amod = s % m;
+        <span class="tok-comment">// candidate 1: largest b with amod + b &lt;= m - 1 (no wraparound)</span>
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> limit = m - <span class="tok-number">1</span> - amod;
+        <span class="tok-keyword">auto</span> it = upper_bound(rightMod.begin(), rightMod.end(), limit);
+        <span class="tok-keyword">if</span> (it != rightMod.begin()) {
+            <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> b1 = *prev(it);
             best = max(best, amod + b1);
         }
-        // candidate 2: largest b overall (covers the wraparound case)
+        <span class="tok-comment">// candidate 2: largest b overall (covers the wraparound case)</span>
         best = max(best, (amod + maxB) % m);
     }
 
-    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
-    return 0;
+    cout &lt;&lt; best &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -775,49 +787,49 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Sort all points by x-coordinate once at the start. Then recursively solve(lo, hi) on the sorted range [lo, hi): if the range has 3 or fewer points, fall back to brute-force O(1) pairwise comparison (base case). Otherwise split at mid = lo + (hi-lo)/2, recursively solve the left half [lo, mid) and right half [mid, hi), and let d = the smaller of the two results.</p><p>The candidate closest pair might straddle the midpoint&#x27;s x-coordinate, so build a &#x27;strip&#x27; of all points in [lo, hi) whose x-distance from the midpoint&#x27;s x-coordinate is less than sqrt(d) (checked via dx*dx &lt; d to stay in integer arithmetic), sort just this strip by y-coordinate, and compare each strip point only against the next few points in y-sorted order (stopping as soon as the y-gap squared reaches d, by the packing argument that bounds how many strip points can be within d of each other). Update d with any closer pair found in the strip. Return the final d. Cross-checked against an O(n^2) brute-force all-pairs reference across 200 random point sets (sizes 2 to 30, coordinates in [-20, 20]) with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-struct Pt { ll x, y; };
-ll sqDist(const Pt&amp;a, const Pt&amp;b){
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">struct</span> Pt { ll x, y; };
+ll sqDist(<span class="tok-keyword">const</span> Pt&amp;a, <span class="tok-keyword">const</span> Pt&amp;b){
     ll dx=a.x-b.x, dy=a.y-b.y;
-    return dx*dx+dy*dy;
+    <span class="tok-keyword">return</span> dx*dx+dy*dy;
 }
-vector&lt;Pt&gt; pts;
-ll solve(int lo, int hi){ // pts sorted by x in [lo,hi), returns min sq dist
-    int n = hi-lo;
-    if(n&lt;=3){
+<span class="tok-type">vector</span>&lt;Pt&gt; pts;
+ll solve(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int</span> hi){ <span class="tok-comment">// pts sorted by x in [lo,hi), returns min sq dist</span>
+    <span class="tok-keyword">int</span> n = hi-lo;
+    <span class="tok-keyword">if</span>(n&lt;=<span class="tok-number">3</span>){
         ll best = LLONG_MAX;
-        for(int i=lo;i&lt;hi;i++) for(int j=i+1;j&lt;hi;j++) best=min(best, sqDist(pts[i],pts[j]));
-        return best;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=lo;i&lt;hi;i++) <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> j=i+<span class="tok-number">1</span>;j&lt;hi;j++) best=min(best, sqDist(pts[i],pts[j]));
+        <span class="tok-keyword">return</span> best;
     }
-    int mid = lo + n/2;
+    <span class="tok-keyword">int</span> mid = lo + n/<span class="tok-number">2</span>;
     ll midx = pts[mid].x;
     ll dl = solve(lo, mid);
     ll dr = solve(mid, hi);
     ll d = min(dl, dr);
-    // build strip
-    vector&lt;Pt&gt; strip;
-    for(int i=lo;i&lt;hi;i++){
+    <span class="tok-comment">// build strip</span>
+    <span class="tok-type">vector</span>&lt;Pt&gt; strip;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=lo;i&lt;hi;i++){
         ll dx = pts[i].x - midx;
-        if(dx*dx &lt; d) strip.push_back(pts[i]);
+        <span class="tok-keyword">if</span>(dx*dx &lt; d) strip.push_back(pts[i]);
     }
-    sort(strip.begin(), strip.end(), [](const Pt&amp;a, const Pt&amp;b){ return a.y&lt;b.y; });
-    for(size_t i=0;i&lt;strip.size();i++){
-        for(size_t j=i+1;j&lt;strip.size();j++){
+    sort(strip.begin(), strip.end(), [](<span class="tok-keyword">const</span> Pt&amp;a, <span class="tok-keyword">const</span> Pt&amp;b){ <span class="tok-keyword">return</span> a.y&lt;b.y; });
+    <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> i=<span class="tok-number">0</span>;i&lt;strip.size();i++){
+        <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> j=i+<span class="tok-number">1</span>;j&lt;strip.size();j++){
             ll dy = strip[j].y-strip[i].y;
-            if(dy*dy&gt;=d) break;
+            <span class="tok-keyword">if</span>(dy*dy&gt;=d) <span class="tok-keyword">break</span>;
             d = min(d, sqDist(strip[i],strip[j]));
         }
     }
-    return d;
+    <span class="tok-keyword">return</span> d;
 }
-int main(){
-    int n; cin&gt;&gt;n;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin&gt;&gt;n;
     pts.resize(n);
-    for(auto&amp;p:pts) cin&gt;&gt;p.x&gt;&gt;p.y;
-    sort(pts.begin(), pts.end(), [](const Pt&amp;a,const Pt&amp;b){ return a.x&lt;b.x; });
-    cout &lt;&lt; solve(0,n) &lt;&lt; endl;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span>&amp;p:pts) cin&gt;&gt;p.x&gt;&gt;p.y;
+    sort(pts.begin(), pts.end(), [](<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b){ <span class="tok-keyword">return</span> a.x&lt;b.x; });
+    cout &lt;&lt; solve(<span class="tok-number">0</span>,n) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -840,32 +852,32 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Define solve(l, r, base) = minimum strokes to finish painting planks l..r given that they are already painted up to height &#x27;base&#x27;. Find mn = the minimum height in h[l..r]. One option is to paint every plank in [l, r] individually with a vertical stroke: cost = r - l + 1. The other option is a single horizontal stroke raising the whole range&#x27;s baseline from &#x27;base&#x27; up to &#x27;mn&#x27; (cost mn - base), and then recursively finish each maximal contiguous sub-range whose height still exceeds mn, now with base = mn (these sub-ranges are exactly the runs between planks that were already at the minimum height). Take the minimum of the two options; this recursion is exactly divide-and-conquer split at the position(s) of the range minimum rather than at a fixed midpoint. The overall answer is solve(0, n-1, 0). This is the standard published algorithm for this problem (matches the well-known sample: heights [2,2,1,2,1] -&gt; 3 strokes) and was additionally hand-verified on a uniform range (all-equal heights collapse to a single horizontal stroke) and a strictly increasing range (which forces one stroke per plank, since no two planks can share a horizontal stroke without a lower plank blocking part of it).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n;
-vector&lt;long long&gt; h;
-long long solve(int l, int r, long long base){
-    if(l&gt;r) return 0;
-    int mn_i = l;
-    for(int i=l;i&lt;=r;i++) if(h[i]&lt;h[mn_i]) mn_i=i;
-    long long mn = h[mn_i];
-    long long horiz = (mn - base);
-    int i = l;
-    while(i&lt;=r){
-        if(h[i]==mn){ i++; continue; }
-        int j = i;
-        while(j&lt;=r &amp;&amp; h[j]&gt;mn) j++;
-        horiz += solve(i, j-1, mn);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; h;
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> solve(<span class="tok-keyword">int</span> l, <span class="tok-keyword">int</span> r, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> base){
+    <span class="tok-keyword">if</span>(l&gt;r) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> mn_i = l;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=l;i&lt;=r;i++) <span class="tok-keyword">if</span>(h[i]&lt;h[mn_i]) mn_i=i;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> mn = h[mn_i];
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> horiz = (mn - base);
+    <span class="tok-keyword">int</span> i = l;
+    <span class="tok-keyword">while</span>(i&lt;=r){
+        <span class="tok-keyword">if</span>(h[i]==mn){ i++; <span class="tok-keyword">continue</span>; }
+        <span class="tok-keyword">int</span> j = i;
+        <span class="tok-keyword">while</span>(j&lt;=r &amp;&amp; h[j]&gt;mn) j++;
+        horiz += solve(i, j-<span class="tok-number">1</span>, mn);
         i = j;
     }
-    long long vert = (long long)(r-l+1);
-    return min(horiz, vert);
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> vert = (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>)(r-l+<span class="tok-number">1</span>);
+    <span class="tok-keyword">return</span> min(horiz, vert);
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin&gt;&gt;n;
     h.resize(n);
-    for(auto&amp;x:h) cin&gt;&gt;x;
-    cout &lt;&lt; solve(0,n-1,0) &lt;&lt; endl;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span>&amp;x:h) cin&gt;&gt;x;
+    cout &lt;&lt; solve(<span class="tok-number">0</span>,n-<span class="tok-number">1</span>,<span class="tok-number">0</span>) &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -891,48 +903,48 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Represent the tree with standard heap-style indexing (root = 1, children of node id are 2*id and 2*id+1); depth = log2(n) levels below the root down to the leaves. Implement alphabeta(id, lvl, alpha, beta, maximizing) recursively: at a leaf level, count the visit and return the stored leaf value directly. At an internal MAX node, iterate its two children, updating alpha = max(alpha, childValue) after each, and break out of the loop early (skipping any remaining children) as soon as alpha &gt;= beta -- this is exactly a beta cutoff, since the MIN ancestor controlling beta would never allow play to reach this node&#x27;s better options anyway. The symmetric case (MIN node, updating beta, cutting off when alpha &gt;= beta) handles internal MIN nodes. Call alphabeta(1, 0, -infinity, +infinity, true) for the root.</p><p>Traced by hand on the sample: the tree evaluates to a minimax value of 12 (verified by computing every node&#x27;s value with no pruning at all), and with alpha-beta pruning enabled, one of the 8 leaves (the second child of the rightmost MAX node, value 23) is skipped because by the time its sibling leaf (also 23) has already been evaluated, the running alpha at that MAX node already exceeds the beta inherited from its MIN parent -- so 7 of the 8 leaves are visited.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int n; // number of leaves (power of 2)
-vector&lt;long long&gt; leaves;
-int depth; // log2(n)
-long long leafVisits = 0;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> n; <span class="tok-comment">// number of leaves (power of 2)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; leaves;
+<span class="tok-keyword">int</span> depth; <span class="tok-comment">// log2(n)</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> leafVisits = <span class="tok-number">0</span>;
 
-// node indexing: standard complete binary tree, root=1, children 2*id, 2*id+1
-// leaves are at level &#x27;depth&#x27;, leaf index = id - 2^depth, mapped to leaves[]
-long long alphabeta(int id, int lvl, long long alpha, long long beta, bool maximizing){
-    if(lvl==depth){
+<span class="tok-comment">// node indexing: standard complete binary tree, root=1, children 2*id, 2*id+1</span>
+<span class="tok-comment">// leaves are at level &#x27;depth&#x27;, leaf index = id - 2^depth, mapped to leaves[]</span>
+<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> alphabeta(<span class="tok-keyword">int</span> id, <span class="tok-keyword">int</span> lvl, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> alpha, <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> beta, <span class="tok-keyword">bool</span> maximizing){
+    <span class="tok-keyword">if</span>(lvl==depth){
         leafVisits++;
-        return leaves[id - (1&lt;&lt;depth)];
+        <span class="tok-keyword">return</span> leaves[id - (<span class="tok-number">1</span>&lt;&lt;depth)];
     }
-    if(maximizing){
-        long long value = LLONG_MIN;
-        for(int c=0;c&lt;2;c++){
-            int child = id*2+c;
-            value = max(value, alphabeta(child, lvl+1, alpha, beta, false));
+    <span class="tok-keyword">if</span>(maximizing){
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> value = LLONG_MIN;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> c=<span class="tok-number">0</span>;c&lt;<span class="tok-number">2</span>;c++){
+            <span class="tok-keyword">int</span> child = id*<span class="tok-number">2</span>+c;
+            value = max(value, alphabeta(child, lvl+<span class="tok-number">1</span>, alpha, beta, <span class="tok-keyword">false</span>));
             alpha = max(alpha, value);
-            if(alpha &gt;= beta) break; // beta cutoff
+            <span class="tok-keyword">if</span>(alpha &gt;= beta) <span class="tok-keyword">break</span>; <span class="tok-comment">// beta cutoff</span>
         }
-        return value;
-    } else {
-        long long value = LLONG_MAX;
-        for(int c=0;c&lt;2;c++){
-            int child = id*2+c;
-            value = min(value, alphabeta(child, lvl+1, alpha, beta, true));
+        <span class="tok-keyword">return</span> value;
+    } <span class="tok-keyword">else</span> {
+        <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> value = LLONG_MAX;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> c=<span class="tok-number">0</span>;c&lt;<span class="tok-number">2</span>;c++){
+            <span class="tok-keyword">int</span> child = id*<span class="tok-number">2</span>+c;
+            value = min(value, alphabeta(child, lvl+<span class="tok-number">1</span>, alpha, beta, <span class="tok-keyword">true</span>));
             beta = min(beta, value);
-            if(alpha &gt;= beta) break; // alpha cutoff
+            <span class="tok-keyword">if</span>(alpha &gt;= beta) <span class="tok-keyword">break</span>; <span class="tok-comment">// alpha cutoff</span>
         }
-        return value;
+        <span class="tok-keyword">return</span> value;
     }
 }
-int main(){
+<span class="tok-keyword">int</span> main(){
     cin &gt;&gt; n;
     leaves.resize(n);
-    for(auto &amp;x : leaves) cin &gt;&gt; x;
-    depth = 0;
-    while((1&lt;&lt;depth) &lt; n) depth++;
-    long long val = alphabeta(1, 0, LLONG_MIN, LLONG_MAX, true);
-    cout &lt;&lt; val &lt;&lt; &quot; &quot; &lt;&lt; leafVisits &lt;&lt; endl;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;x : leaves) cin &gt;&gt; x;
+    depth = <span class="tok-number">0</span>;
+    <span class="tok-keyword">while</span>((<span class="tok-number">1</span>&lt;&lt;depth) &lt; n) depth++;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> val = alphabeta(<span class="tok-number">1</span>, <span class="tok-number">0</span>, LLONG_MIN, LLONG_MAX, <span class="tok-keyword">true</span>);
+    cout &lt;&lt; val &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; leafVisits &lt;&lt; endl;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -950,96 +962,96 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Model every game position as a state (robberPos, copPos, turn) where turn = 0 means the Robber is about to move and turn = 1 means the Cop is about to move; there are O(n^2) such states. Forward memoized minimax is unsafe here because the state graph has cycles (both players can shuffle back and forth forever), so instead run retrograde (backward) analysis: seed a BFS queue with every state that is ALREADY decided -- every state with robberPos == copPos is an immediate Cop win, and every state with robberPos == goal is an immediate Robber win. Also precompute, for every state, its &#x27;out-degree&#x27; = the number of legal moves available to whichever player is about to move there (its neighbor count plus one for staying in place).</p><p>Process the queue by, for each newly-decided state, looking at its PREDECESSOR states (the states one move away that could have led into it) and updating them: if the predecessor&#x27;s mover benefits from moving into this decided state (the Robber moving into a Robber-win state, or the Cop moving into a Cop-win state), immediately mark the predecessor with that same result and enqueue it. Otherwise, decrement the predecessor&#x27;s remaining out-degree counter; if it ever hits zero, that means EVERY possible move from the predecessor leads to a bad outcome for its mover, so mark the predecessor with the OPPOSITE result (forced loss) and enqueue it. Any state the BFS never assigns a result to is, by the theorem underlying this algorithm, a genuine draw (infinite evasion/pursuit is possible). The answer is simply the determined result (or 0 for undetermined/draw) of the given starting state.</p><p>On the sample -- a straight path of 6 nodes (0-1-2-3-4-5), goal at node 5, Robber starting at node 0 and the Cop starting at node 3 -- the Cop sits strictly between the Robber and the goal on the only path available, so the Cop can always mirror the Robber&#x27;s approach and eventually catch it; the algorithm correctly outputs 2 (Cop wins). Cross-checked against an independently re-implemented (Python) version of the same retrograde algorithm across 500 randomly generated small graphs (2 to 6 nodes, random edge sets, random goal and start positions) with zero mismatches, and against a hand-traced 3-node path case.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-// Pursuit game on an undirected graph with n nodes (0-indexed).
-// Robber starts at r0, Cop starts at c0, target/safe node is &#x27;goal&#x27;.
-// Players alternate moves, Robber moves first (turn=0 means Robber to move, 1 means Cop to move).
-// A move = go to an adjacent node OR stay in place.
-// Robber wins if it is ever at &#x27;goal&#x27; (checked before either player moves further).
-// Cop wins if it ever occupies the same node as the Robber.
-// If neither happens forever, it&#x27;s a Draw.
-// Output: 0 = Draw, 1 = Robber wins, 2 = Cop wins.
-int n;
-vector&lt;vector&lt;int&gt;&gt; adj; // adjacency (includes ability to &quot;stay&quot; handled separately)
-int goalNode;
-// state encoding: (r, c, turn) -&gt; id = (r*n + c)*2 + turn
-int result_[/*r*/1][1]; // placeholder, will use vectors
-int main(){
-    int m; // number of edges
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-comment">// Pursuit game on an undirected graph with n nodes (0-indexed).</span>
+<span class="tok-comment">// Robber starts at r0, Cop starts at c0, target/safe node is &#x27;goal&#x27;.</span>
+<span class="tok-comment">// Players alternate moves, Robber moves first (turn=0 means Robber to move, 1 means Cop to move).</span>
+<span class="tok-comment">// A move = go to an adjacent node OR stay in place.</span>
+<span class="tok-comment">// Robber wins if it is ever at &#x27;goal&#x27; (checked before either player moves further).</span>
+<span class="tok-comment">// Cop wins if it ever occupies the same node as the Robber.</span>
+<span class="tok-comment">// If neither happens forever, it&#x27;s a Draw.</span>
+<span class="tok-comment">// Output: 0 = Draw, 1 = Robber wins, 2 = Cop wins.</span>
+<span class="tok-keyword">int</span> n;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt;&gt; adj; <span class="tok-comment">// adjacency (includes ability to &quot;stay&quot; handled separately)</span>
+<span class="tok-keyword">int</span> goalNode;
+<span class="tok-comment">// state encoding: (r, c, turn) -&gt; id = (r*n + c)*2 + turn</span>
+<span class="tok-keyword">int</span> result_[<span class="tok-comment">/*r*/</span><span class="tok-number">1</span>][<span class="tok-number">1</span>]; <span class="tok-comment">// placeholder, will use vectors</span>
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> m; <span class="tok-comment">// number of edges</span>
     cin &gt;&gt; n &gt;&gt; m;
     adj.assign(n, {});
-    for(int i=0;i&lt;m;i++){
-        int u,v; cin&gt;&gt;u&gt;&gt;v;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;m;i++){
+        <span class="tok-keyword">int</span> u,v; cin&gt;&gt;u&gt;&gt;v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
     cin &gt;&gt; goalNode;
-    int r0, c0; cin &gt;&gt; r0 &gt;&gt; c0;
+    <span class="tok-keyword">int</span> r0, c0; cin &gt;&gt; r0 &gt;&gt; c0;
 
-    int NS = n*n*2;
-    vector&lt;int&gt; result(NS, 0); // 0 unknown/draw, 1 robber win, 2 cop win
-    vector&lt;int&gt; degree(NS, 0);
-    auto id = [&amp;](int r,int c,int t){ return (r*n+c)*2+t; };
-    for(int r=0;r&lt;n;r++) for(int c=0;c&lt;n;c++) for(int t=0;t&lt;2;t++){
-        int mover = t==0? r : c;
-        degree[id(r,c,t)] = (int)adj[mover].size() + 1; // +1 for &quot;stay&quot;
+    <span class="tok-keyword">int</span> NS = n*n*<span class="tok-number">2</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; result(NS, <span class="tok-number">0</span>); <span class="tok-comment">// 0 unknown/draw, 1 robber win, 2 cop win</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; degree(NS, <span class="tok-number">0</span>);
+    <span class="tok-keyword">auto</span> id = [&amp;](<span class="tok-keyword">int</span> r,<span class="tok-keyword">int</span> c,<span class="tok-keyword">int</span> t){ <span class="tok-keyword">return</span> (r*n+c)*<span class="tok-number">2</span>+t; };
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> r=<span class="tok-number">0</span>;r&lt;n;r++) <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> c=<span class="tok-number">0</span>;c&lt;n;c++) <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> t=<span class="tok-number">0</span>;t&lt;<span class="tok-number">2</span>;t++){
+        <span class="tok-keyword">int</span> mover = t==<span class="tok-number">0</span>? r : c;
+        degree[id(r,c,t)] = (<span class="tok-keyword">int</span>)adj[mover].size() + <span class="tok-number">1</span>; <span class="tok-comment">// +1 for &quot;stay&quot;</span>
     }
-    queue&lt;int&gt; bfsq;
-    // terminal states
-    for(int r=0;r&lt;n;r++) for(int c=0;c&lt;n;c++) for(int t=0;t&lt;2;t++){
-        if(r==c){ result[id(r,c,t)] = 2; bfsq.push(id(r,c,t)); continue; }
-        if(r==goalNode){ result[id(r,c,t)] = 1; bfsq.push(id(r,c,t)); continue; }
+    <span class="tok-type">queue</span>&lt;<span class="tok-keyword">int</span>&gt; bfsq;
+    <span class="tok-comment">// terminal states</span>
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> r=<span class="tok-number">0</span>;r&lt;n;r++) <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> c=<span class="tok-number">0</span>;c&lt;n;c++) <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> t=<span class="tok-number">0</span>;t&lt;<span class="tok-number">2</span>;t++){
+        <span class="tok-keyword">if</span>(r==c){ result[id(r,c,t)] = <span class="tok-number">2</span>; bfsq.push(id(r,c,t)); <span class="tok-keyword">continue</span>; }
+        <span class="tok-keyword">if</span>(r==goalNode){ result[id(r,c,t)] = <span class="tok-number">1</span>; bfsq.push(id(r,c,t)); <span class="tok-keyword">continue</span>; }
     }
-    // predecessor generation: given state (r,c,t), predecessors are states (pr,pc,1-t)
-    // such that the mover at (pr,pc,1-t) [mover = pr if t was produced by robber moving, i.e prev turn 1-t]
-    // if prev turn is 0 (robber moved) then pr-&gt;r via edge or stay, pc==c
-    // if prev turn is 1 (cop moved) then pc-&gt;c via edge or stay, pr==r
-    while(!bfsq.empty()){
-        int cur = bfsq.front(); bfsq.pop();
-        int t = cur % 2;
-        int rc = cur / 2;
-        int c = rc % n;
-        int r = rc / n;
-        int curRes = result[cur];
-        int prevTurn = 1 - t;
-        if(prevTurn == 0){
-            // predecessor: robber was at some pr with edge to r (or pr==r), cop at c, turn=0
-            vector&lt;int&gt; cands = adj[r];
+    <span class="tok-comment">// predecessor generation: given state (r,c,t), predecessors are states (pr,pc,1-t)</span>
+    <span class="tok-comment">// such that the mover at (pr,pc,1-t) [mover = pr if t was produced by robber moving, i.e prev turn 1-t]</span>
+    <span class="tok-comment">// if prev turn is 0 (robber moved) then pr-&gt;r via edge or stay, pc==c</span>
+    <span class="tok-comment">// if prev turn is 1 (cop moved) then pc-&gt;c via edge or stay, pr==r</span>
+    <span class="tok-keyword">while</span>(!bfsq.empty()){
+        <span class="tok-keyword">int</span> cur = bfsq.front(); bfsq.pop();
+        <span class="tok-keyword">int</span> t = cur % <span class="tok-number">2</span>;
+        <span class="tok-keyword">int</span> rc = cur / <span class="tok-number">2</span>;
+        <span class="tok-keyword">int</span> c = rc % n;
+        <span class="tok-keyword">int</span> r = rc / n;
+        <span class="tok-keyword">int</span> curRes = result[cur];
+        <span class="tok-keyword">int</span> prevTurn = <span class="tok-number">1</span> - t;
+        <span class="tok-keyword">if</span>(prevTurn == <span class="tok-number">0</span>){
+            <span class="tok-comment">// predecessor: robber was at some pr with edge to r (or pr==r), cop at c, turn=0</span>
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; cands = adj[r];
             cands.push_back(r);
-            for(int pr : cands){
-                if(pr == c) continue; // can&#x27;t have started already caught (r==c) unless it&#x27;s genuinely a caught state, but that&#x27;s terminal already handled
-                int pid = id(pr, c, 0);
-                if(result[pid] != 0) continue;
-                if(pr == goalNode) continue; // shouldn&#x27;t happen, already terminal, but guard
-                // mover at pid is robber (turn 0). Robber wants result==1(robber win)
-                if(curRes == 1){
-                    result[pid] = 1; bfsq.push(pid);
-                } else {
+            <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> pr : cands){
+                <span class="tok-keyword">if</span>(pr == c) <span class="tok-keyword">continue</span>; <span class="tok-comment">// can&#x27;t have started already caught (r==c) unless it&#x27;s genuinely a caught state, but that&#x27;s terminal already handled</span>
+                <span class="tok-keyword">int</span> pid = id(pr, c, <span class="tok-number">0</span>);
+                <span class="tok-keyword">if</span>(result[pid] != <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+                <span class="tok-keyword">if</span>(pr == goalNode) <span class="tok-keyword">continue</span>; <span class="tok-comment">// shouldn&#x27;t happen, already terminal, but guard</span>
+                <span class="tok-comment">// mover at pid is robber (turn 0). Robber wants result==1(robber win)</span>
+                <span class="tok-keyword">if</span>(curRes == <span class="tok-number">1</span>){
+                    result[pid] = <span class="tok-number">1</span>; bfsq.push(pid);
+                } <span class="tok-keyword">else</span> {
                     degree[pid]--;
-                    if(degree[pid]==0){ result[pid] = 2; bfsq.push(pid); }
+                    <span class="tok-keyword">if</span>(degree[pid]==<span class="tok-number">0</span>){ result[pid] = <span class="tok-number">2</span>; bfsq.push(pid); }
                 }
             }
-        } else {
-            // predecessor: cop was at some pc with edge to c (or pc==c), robber at r, turn=1
-            vector&lt;int&gt; cands = adj[c];
+        } <span class="tok-keyword">else</span> {
+            <span class="tok-comment">// predecessor: cop was at some pc with edge to c (or pc==c), robber at r, turn=1</span>
+            <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; cands = adj[c];
             cands.push_back(c);
-            for(int pc : cands){
-                if(pc == r) continue; // would already be terminal (caught)
-                int pid = id(r, pc, 1);
-                if(result[pid] != 0) continue;
-                if(r == goalNode) continue;
-                // mover at pid is cop (turn 1). Cop wants result==2 (cop win)
-                if(curRes == 2){
-                    result[pid] = 2; bfsq.push(pid);
-                } else {
+            <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> pc : cands){
+                <span class="tok-keyword">if</span>(pc == r) <span class="tok-keyword">continue</span>; <span class="tok-comment">// would already be terminal (caught)</span>
+                <span class="tok-keyword">int</span> pid = id(r, pc, <span class="tok-number">1</span>);
+                <span class="tok-keyword">if</span>(result[pid] != <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+                <span class="tok-keyword">if</span>(r == goalNode) <span class="tok-keyword">continue</span>;
+                <span class="tok-comment">// mover at pid is cop (turn 1). Cop wants result==2 (cop win)</span>
+                <span class="tok-keyword">if</span>(curRes == <span class="tok-number">2</span>){
+                    result[pid] = <span class="tok-number">2</span>; bfsq.push(pid);
+                } <span class="tok-keyword">else</span> {
                     degree[pid]--;
-                    if(degree[pid]==0){ result[pid] = 1; bfsq.push(pid); }
+                    <span class="tok-keyword">if</span>(degree[pid]==<span class="tok-number">0</span>){ result[pid] = <span class="tok-number">1</span>; bfsq.push(pid); }
                 }
             }
         }
     }
-    int ans = result[id(r0,c0,0)];
+    <span class="tok-keyword">int</span> ans = result[id(r0,c0,<span class="tok-number">0</span>)];
     cout &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>

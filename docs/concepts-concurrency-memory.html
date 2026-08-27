@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -252,27 +264,27 @@
   <div class="intro"><p>Every type has an ALIGNMENT requirement: an object of that type may only be placed at a memory address that&#x27;s a multiple of its alignment (commonly, a type&#x27;s alignment equals its size for primitives, up to some platform maximum). To satisfy every member&#x27;s alignment requirement inside a struct, the compiler silently inserts PADDING bytes between members as needed — which means a struct&#x27;s total size, and even its layout, depends on the DECLARATION ORDER of its members, not just which members it has.</p></div>
   <div class="example-box">
   <div class="ex-title">Reordering members to eliminate padding</div>
-  <pre><code>struct Bad {
-    char a;    // 1 byte, needs 3 bytes padding so &#x27;b&#x27; below can start 4-byte-aligned
-    int b;     // 4 bytes
-    char c;    // 1 byte, needs 3 bytes padding at the end so the struct&#x27;s total size
-};             // is itself a multiple of its largest member&#x27;s alignment (4)
-// sizeof(Bad) == 12 on a typical platform (1 + 3 pad + 4 + 1 + 3 pad)
+  <pre><code><span class="tok-keyword">struct</span> Bad {
+    <span class="tok-keyword">char</span> a;    <span class="tok-comment">// 1 byte, needs 3 bytes padding so &#x27;b&#x27; below can start 4-byte-aligned</span>
+    <span class="tok-keyword">int</span> b;     <span class="tok-comment">// 4 bytes</span>
+    <span class="tok-keyword">char</span> c;    <span class="tok-comment">// 1 byte, needs 3 bytes padding at the end so the struct&#x27;s total size</span>
+};             <span class="tok-comment">// is itself a multiple of its largest member&#x27;s alignment (4)</span>
+<span class="tok-comment">// sizeof(Bad) == 12 on a typical platform (1 + 3 pad + 4 + 1 + 3 pad)</span>
 
-struct Good {
-    int b;     // 4 bytes, no padding needed before it
-    char a;    // 1 byte
-    char c;    // 1 byte -- a and c pack together into the same 4-byte block
-};             // only 2 bytes of trailing padding needed to reach a multiple of 4
-// sizeof(Good) == 8 on the same platform -- a third smaller, same data, just reordered</code></pre>
+<span class="tok-keyword">struct</span> Good {
+    <span class="tok-keyword">int</span> b;     <span class="tok-comment">// 4 bytes, no padding needed before it</span>
+    <span class="tok-keyword">char</span> a;    <span class="tok-comment">// 1 byte</span>
+    <span class="tok-keyword">char</span> c;    <span class="tok-comment">// 1 byte -- a and c pack together into the same 4-byte block</span>
+};             <span class="tok-comment">// only 2 bytes of trailing padding needed to reach a multiple of 4</span>
+<span class="tok-comment">// sizeof(Good) == 8 on the same platform -- a third smaller, same data, just reordered</span></code></pre>
   <div class="ex-explain"><p>Both structs hold exactly the same three fields — the only difference is declaration order, and that alone changes the total size by 33% here. The general heuristic: declare members from LARGEST alignment requirement to smallest to minimize padding.</p></div>
 </div><div class="example-box">
   <div class="ex-title">Checking layout directly</div>
-  <pre><code>#include &lt;iostream&gt;
-struct Bad  { char a; int b; char c; };
-struct Good { int b; char a; char c; };
-int main() {
-    std::cout &lt;&lt; sizeof(Bad) &lt;&lt; &quot; &quot; &lt;&lt; sizeof(Good);  // typically prints &quot;12 8&quot;
+  <pre><code><span class="tok-preproc">#include &lt;iostream&gt;</span>
+<span class="tok-keyword">struct</span> Bad  { <span class="tok-keyword">char</span> a; <span class="tok-keyword">int</span> b; <span class="tok-keyword">char</span> c; };
+<span class="tok-keyword">struct</span> Good { <span class="tok-keyword">int</span> b; <span class="tok-keyword">char</span> a; <span class="tok-keyword">char</span> c; };
+<span class="tok-keyword">int</span> main() {
+    std::cout &lt;&lt; <span class="tok-keyword">sizeof</span>(Bad) &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; <span class="tok-keyword">sizeof</span>(Good);  <span class="tok-comment">// typically prints &quot;12 8&quot;</span>
 }</code></pre>
   <div class="ex-explain"><p>This is directly checkable and is a common quick warm-up interview question: &quot;reorder this struct to make it smaller, without removing or changing any field.&quot;</p></div>
 </div>
@@ -284,24 +296,24 @@ int main() {
   <div class="intro"><p>False sharing is a PERFORMANCE problem, not a correctness one: two threads write to two DIFFERENT, logically-unrelated variables that happen to land on the same CPU cache line (commonly 64 bytes). Because cache-coherence protocols track ownership at the granularity of a whole cache line, every write by either thread invalidates the OTHER core&#x27;s cached copy of that entire line — even though the two threads never actually touch each other&#x27;s data. The threads end up fighting over cache-line ownership as if they were racing on the same variable, when logically they aren&#x27;t. The fix is to pad/align each independently-hot variable to its own cache line, commonly via <code>alignas(64)</code>.</p></div>
   <div class="example-box">
   <div class="ex-title">The problem: two &quot;independent&quot; atomics sharing a cache line</div>
-  <pre><code>struct Counters {
-    std::atomic&lt;long&gt; producerCount;  // written by thread A
-    std::atomic&lt;long&gt; consumerCount;  // written by thread B
+  <pre><code><span class="tok-keyword">struct</span> Counters {
+    std::atomic&lt;<span class="tok-keyword">long</span>&gt; producerCount;  <span class="tok-comment">// written by thread A</span>
+    std::atomic&lt;<span class="tok-keyword">long</span>&gt; consumerCount;  <span class="tok-comment">// written by thread B</span>
 };
-// producerCount and consumerCount are only 8 bytes apart -- almost certainly on
-// the SAME 64-byte cache line. Every increment by thread A invalidates thread B&#x27;s
-// cached copy of the line (and vice versa), even though the two counters are
-// logically completely independent -- this looks like contention in a profiler,
-// but there is NO actual data race or shared logical state here at all</code></pre>
+<span class="tok-comment">// producerCount and consumerCount are only 8 bytes apart -- almost certainly on</span>
+<span class="tok-comment">// the SAME 64-byte cache line. Every increment by thread A invalidates thread B&#x27;s</span>
+<span class="tok-comment">// cached copy of the line (and vice versa), even though the two counters are</span>
+<span class="tok-comment">// logically completely independent -- this looks like contention in a profiler,</span>
+<span class="tok-comment">// but there is NO actual data race or shared logical state here at all</span></code></pre>
   <div class="ex-explain"><p>Both threads are correct (each only touches its own atomic), but performance suffers as if they were contending on a single shared variable, purely because of physical cache-line proximity.</p></div>
 </div><div class="example-box">
   <div class="ex-title">The fix: force each hot variable onto its own cache line</div>
-  <pre><code>struct Counters {
-    alignas(64) std::atomic&lt;long&gt; producerCount;
-    alignas(64) std::atomic&lt;long&gt; consumerCount;  // now guaranteed a different cache line
+  <pre><code><span class="tok-keyword">struct</span> Counters {
+    <span class="tok-keyword">alignas</span>(<span class="tok-number">64</span>) std::atomic&lt;<span class="tok-keyword">long</span>&gt; producerCount;
+    <span class="tok-keyword">alignas</span>(<span class="tok-number">64</span>) std::atomic&lt;<span class="tok-keyword">long</span>&gt; consumerCount;  <span class="tok-comment">// now guaranteed a different cache line</span>
 };
-// sizeof(Counters) grows from 16 bytes to 128 bytes -- a real memory cost,
-// traded deliberately for eliminating the cross-core cache-coherence traffic</code></pre>
+<span class="tok-comment">// sizeof(Counters) grows from 16 bytes to 128 bytes -- a real memory cost,</span>
+<span class="tok-comment">// traded deliberately for eliminating the cross-core cache-coherence traffic</span></code></pre>
   <div class="ex-explain"><p><code>alignas(64)</code> forces each field to start at a 64-byte-aligned address, and the compiler pads the struct so the SECOND field can&#x27;t share a line with the first — the increased memory footprint is the explicit price for removing the false-sharing bottleneck entirely.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Diagnosing this as a &quot;race condition&quot; because a profiler shows contention-like symptoms — false sharing produces performance symptoms that superficially resemble lock contention, but there&#x27;s no actual shared logical state; the fix (cache-line separation) is completely different from the fix for a real race (synchronization).</p></li><li><p>Over-applying <code>alignas(64)</code> everywhere defensively — it&#x27;s a real memory-footprint cost, worth paying specifically for variables that are BOTH hot (frequently written) AND touched by different threads; padding cold or single-threaded data this way is pure waste.</p></li></ul></div>
@@ -312,34 +324,34 @@ int main() {
   <div class="intro"><p>The C++11 memory model formally defines, for multithreaded programs, WHEN a write by one thread is guaranteed to be visible to a read by another thread. Absent any synchronization at all, concurrently accessing the same memory location from multiple threads — with at least one of those accesses a write — is a **data race**, which the standard defines as undefined behavior, not merely &quot;you might read a stale value.&quot; Synchronization operations (atomics with appropriate ordering, mutexes) establish a **happens-before** relationship between specific operations in different threads, and it&#x27;s ONLY through such an established happens-before edge that one thread&#x27;s writes are guaranteed visible to another&#x27;s subsequent reads.</p></div>
   <div class="example-box">
   <div class="ex-title">A data race: undefined behavior, not just &quot;maybe stale&quot;</div>
-  <pre><code>int data = 0;         // a plain, non-atomic int
-bool ready = false;   // a plain, non-atomic bool
+  <pre><code><span class="tok-keyword">int</span> data = <span class="tok-number">0</span>;         <span class="tok-comment">// a plain, non-atomic int</span>
+<span class="tok-keyword">bool</span> ready = <span class="tok-keyword">false</span>;   <span class="tok-comment">// a plain, non-atomic bool</span>
 
-// Thread 1:
-data = 42;
-ready = true;          // no synchronization at all
+<span class="tok-comment">// Thread 1:</span>
+data = <span class="tok-number">42</span>;
+ready = <span class="tok-keyword">true</span>;          <span class="tok-comment">// no synchronization at all</span>
 
-// Thread 2:
-while (!ready) {}      // spinning on a plain bool with no synchronization
-use(data);              // UNDEFINED BEHAVIOR: this is a data race on BOTH `ready` and `data` --
-                        // the standard makes NO guarantee `data` is even visible as 42 here,
-                        // and the compiler is technically permitted to assume this loop
-                        // never observes `ready` changing at all (and optimize accordingly)</code></pre>
+<span class="tok-comment">// Thread 2:</span>
+<span class="tok-keyword">while</span> (!ready) {}      <span class="tok-comment">// spinning on a plain bool with no synchronization</span>
+use(data);              <span class="tok-comment">// UNDEFINED BEHAVIOR: this is a data race on BOTH `ready` and `data` --</span>
+                        <span class="tok-comment">// the standard makes NO guarantee `data` is even visible as 42 here,</span>
+                        <span class="tok-comment">// and the compiler is technically permitted to assume this loop</span>
+                        <span class="tok-comment">// never observes `ready` changing at all (and optimize accordingly)</span></code></pre>
   <div class="ex-explain"><p>This isn&#x27;t merely &quot;probably works but might occasionally see a stale value&quot; — it&#x27;s genuine undefined behavior per the standard, because there&#x27;s no happens-before relationship connecting Thread 1&#x27;s writes to Thread 2&#x27;s reads at all.</p></div>
 </div><div class="example-box">
   <div class="ex-title">The fix: establishing happens-before via release/acquire atomics</div>
-  <pre><code>int data = 0;
-std::atomic&lt;bool&gt; ready{false};
+  <pre><code><span class="tok-keyword">int</span> data = <span class="tok-number">0</span>;
+std::atomic&lt;<span class="tok-keyword">bool</span>&gt; ready{<span class="tok-keyword">false</span>};
 
-// Thread 1:
-data = 42;
-ready.store(true, std::memory_order_release);   // RELEASE: everything written before this
-                                                   // store becomes visible to any thread that
-                                                   // subsequently ACQUIRE-loads and sees `true`
-// Thread 2:
-while (!ready.load(std::memory_order_acquire)) {} // ACQUIRE
-use(data); // now WELL-DEFINED: the release/acquire pairing establishes happens-before,
-           // guaranteeing data==42 is visible here</code></pre>
+<span class="tok-comment">// Thread 1:</span>
+data = <span class="tok-number">42</span>;
+ready.store(<span class="tok-keyword">true</span>, std::memory_order_release);   <span class="tok-comment">// RELEASE: everything written before this</span>
+                                                   <span class="tok-comment">// store becomes visible to any thread that</span>
+                                                   <span class="tok-comment">// subsequently ACQUIRE-loads and sees `true`</span>
+<span class="tok-comment">// Thread 2:</span>
+<span class="tok-keyword">while</span> (!ready.load(std::memory_order_acquire)) {} <span class="tok-comment">// ACQUIRE</span>
+use(data); <span class="tok-comment">// now WELL-DEFINED: the release/acquire pairing establishes happens-before,</span>
+           <span class="tok-comment">// guaranteeing data==42 is visible here</span></code></pre>
   <div class="ex-explain"><p>The release store and the acquire load that observes it form a synchronization point: everything sequenced-before the release in Thread 1 is guaranteed visible after the acquire in Thread 2 — this release/acquire handoff pattern is the fundamental building block of essentially all lock-free code.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Assuming <code>volatile</code> provides thread-safety or ordering guarantees in the way atomics do — it does not; <code>volatile</code> in C++ only prevents certain compiler optimizations (relevant for memory-mapped hardware registers) and has NOTHING to do with the multithreaded memory model or cross-thread visibility.</p></li><li><p>Believing a data race just means you occasionally get a slightly wrong/stale value — the standard defines it as full undefined behavior, which in practice can also mean the compiler optimizes based on the (false) assumption that the race never happens, producing results far stranger than &quot;stale data.&quot;</p></li></ul></div>
@@ -350,26 +362,26 @@ use(data); // now WELL-DEFINED: the release/acquire pairing establishes happens-
   <div class="intro"><p><code>std::atomic&lt;T&gt;</code> operations are indivisible (no other thread can observe a &quot;half-finished&quot; read or write), and each operation can specify an ordering constraint controlling how it interacts with OTHER memory operations around it. <code>memory_order_relaxed</code> gives you ONLY atomicity — no ordering guarantee relative to anything else — useful when you genuinely just need a value to update atomically (an independent counter) with no cross-thread visibility requirement on anything else. <code>memory_order_acquire</code> (on a load) and <code>memory_order_release</code> (on a store) together form the classic handoff pattern described in the memory-model concept above. <code>memory_order_seq_cst</code> (the default if you don&#x27;t specify one) is the strongest and simplest to reason about: it additionally guarantees a single, globally-agreed total order across ALL seq_cst operations from every thread — at a real, measurable synchronization cost compared to relaxed/acquire-release.</p></div>
   <div class="example-box">
   <div class="ex-title">Relaxed: atomicity without ordering, for an independent counter</div>
-  <pre><code>std::atomic&lt;long&gt; requestsHandled{0};
+  <pre><code>std::atomic&lt;<span class="tok-keyword">long</span>&gt; requestsHandled{<span class="tok-number">0</span>};
 
-void onRequest() {
-    requestsHandled.fetch_add(1, std::memory_order_relaxed);
-    // we only need the INCREMENT itself to be atomic (no lost updates) --
-    // we don&#x27;t need this operation to be ordered relative to any other
-    // memory access in the program, so relaxed is the cheapest correct choice
+<span class="tok-keyword">void</span> onRequest() {
+    requestsHandled.fetch_add(<span class="tok-number">1</span>, std::memory_order_relaxed);
+    <span class="tok-comment">// we only need the INCREMENT itself to be atomic (no lost updates) --</span>
+    <span class="tok-comment">// we don&#x27;t need this operation to be ordered relative to any other</span>
+    <span class="tok-comment">// memory access in the program, so relaxed is the cheapest correct choice</span>
 }</code></pre>
   <div class="ex-explain"><p>Using <code>memory_order_seq_cst</code> here (the default) would still be CORRECT, just needlessly expensive — relaxed is exactly sufficient because nothing else in the program depends on this counter&#x27;s update being ordered relative to anything else.</p></div>
 </div><div class="example-box">
   <div class="ex-title">Why the ordering choice is a real, measurable engineering decision</div>
-  <pre><code>// On some architectures (notably ARM, but even on x86 for certain patterns),
-// seq_cst operations require additional memory fence instructions that
-// relaxed/acquire-release do not -- a hot-path counter incremented millions
-// of times per second genuinely benefits from being relaxed rather than
-// seq_cst, if (and only if) no other code depends on its ordering relative
-// to other memory operations. Getting this wrong in the other direction
-// (using relaxed where acquire/release was actually needed) is a correctness
-// bug, not just a missed optimization -- so this is a decision to make
-// deliberately, not default to the weakest option everywhere.</code></pre>
+  <pre><code><span class="tok-comment">// On some architectures (notably ARM, but even on x86 for certain patterns),</span>
+<span class="tok-comment">// seq_cst operations require additional memory fence instructions that</span>
+<span class="tok-comment">// relaxed/acquire-release do not -- a hot-path counter incremented millions</span>
+<span class="tok-comment">// of times per second genuinely benefits from being relaxed rather than</span>
+<span class="tok-comment">// seq_cst, if (and only if) no other code depends on its ordering relative</span>
+<span class="tok-comment">// to other memory operations. Getting this wrong in the other direction</span>
+<span class="tok-comment">// (using relaxed where acquire/release was actually needed) is a correctness</span>
+<span class="tok-comment">// bug, not just a missed optimization -- so this is a decision to make</span>
+<span class="tok-comment">// deliberately, not default to the weakest option everywhere.</span></code></pre>
   <div class="ex-explain"><p>This is exactly the kind of judgment call an HFT interviewer wants to see you reason through explicitly: relaxed is cheaper, but only correct when NOTHING else depends on ordering — defaulting to relaxed everywhere &quot;for speed&quot; without checking that is a real bug risk, not a free win.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Defaulting to <code>memory_order_relaxed</code> everywhere to &quot;go fast&quot; without verifying that no other code depends on ordering relative to that atomic — this converts a performance optimization into a correctness bug.</p></li><li><p>Confusing <code>is_lock_free()</code> with a promise about ordering — is_lock_free() only tells you whether the atomic avoids an internal mutex on this platform; it says nothing about which memory_order semantics you&#x27;ve chosen or need.</p></li></ul></div>
@@ -380,26 +392,26 @@ void onRequest() {
   <div class="intro"><p>Three distinct levels of &quot;the standard doesn&#x27;t fully pin this down,&quot; and confusing them is a common mistake. **Undefined behavior (UB)** means the standard imposes NO requirements whatsoever — literally anything is a conforming outcome, including something that looks like it &quot;worked&quot; on your machine today and breaks on a different compiler, optimization level, or even a later run of the same binary. **Unspecified behavior** means the standard allows multiple valid outcomes and does not require an implementation to document which one it picked (classic pre-C++17 example: the order function-call arguments are evaluated in). **Implementation-defined behavior** is unspecified behavior with one extra requirement: each implementation MUST document, consistently, which choice it makes (e.g. the exact size of <code>int</code>, or how right-shift behaves on negative signed integers pre-C++20).</p></div>
   <div class="example-box">
   <div class="ex-title">All three, side by side</div>
-  <pre><code>int x = INT_MAX;
-x = x + 1;                 // UNDEFINED BEHAVIOR: signed overflow. The standard gives
-                            // NO guarantee at all -- not even &quot;it wraps around&quot;
+  <pre><code><span class="tok-keyword">int</span> x = INT_MAX;
+x = x + <span class="tok-number">1</span>;                 <span class="tok-comment">// UNDEFINED BEHAVIOR: signed overflow. The standard gives</span>
+                            <span class="tok-comment">// NO guarantee at all -- not even &quot;it wraps around&quot;</span>
 
-void f(int a, int b);
-f(g(), h());                // UNSPECIFIED (pre-C++17): could evaluate g() then h(), or
-                            // h() then g() -- either is conforming, and the compiler
-                            // need not document or commit to either consistently
+<span class="tok-keyword">void</span> f(<span class="tok-keyword">int</span> a, <span class="tok-keyword">int</span> b);
+f(g(), h());                <span class="tok-comment">// UNSPECIFIED (pre-C++17): could evaluate g() then h(), or</span>
+                            <span class="tok-comment">// h() then g() -- either is conforming, and the compiler</span>
+                            <span class="tok-comment">// need not document or commit to either consistently</span>
 
-std::cout &lt;&lt; sizeof(int);   // IMPLEMENTATION-DEFINED: varies by platform (commonly 4),
-                            // but whatever it is, that compiler must document and honor it
-                            // consistently -- it&#x27;s not free to change behavior arbitrarily</code></pre>
+std::cout &lt;&lt; <span class="tok-keyword">sizeof</span>(<span class="tok-keyword">int</span>);   <span class="tok-comment">// IMPLEMENTATION-DEFINED: varies by platform (commonly 4),</span>
+                            <span class="tok-comment">// but whatever it is, that compiler must document and honor it</span>
+                            <span class="tok-comment">// consistently -- it&#x27;s not free to change behavior arbitrarily</span></code></pre>
   <div class="ex-explain"><p>The key distinguishing question for each: does the standard require ANY specific behavior at all (no -&gt; UB), and if there IS a required documented choice, is it required to be consistent per-implementation (yes -&gt; implementation-defined) or not (unspecified)?</p></div>
 </div><div class="example-box">
   <div class="ex-title">Why &quot;but it worked when I ran it&quot; is not evidence of correctness</div>
-  <pre><code>int arr[5];
-arr[10] = 1;   // UB: out-of-bounds write. This might silently &quot;work&quot; (corrupt some
-               // unrelated memory that happens not to matter yet), crash immediately,
-               // or be &quot;optimized away&quot; in a surprising way by a compiler that assumes
-               // (correctly, per the standard) that well-formed programs never do this</code></pre>
+  <pre><code><span class="tok-keyword">int</span> arr[<span class="tok-number">5</span>];
+arr[<span class="tok-number">10</span>] = <span class="tok-number">1</span>;   <span class="tok-comment">// UB: out-of-bounds write. This might silently &quot;work&quot; (corrupt some</span>
+               <span class="tok-comment">// unrelated memory that happens not to matter yet), crash immediately,</span>
+               <span class="tok-comment">// or be &quot;optimized away&quot; in a surprising way by a compiler that assumes</span>
+               <span class="tok-comment">// (correctly, per the standard) that well-formed programs never do this</span></code></pre>
   <div class="ex-explain"><p>This is exactly why recognizing UB matters practically, not just for interview trivia: a program exhibiting UB can pass every test you throw at it today and still be genuinely broken, because the compiler is entitled to assume UB never happens and optimize on that assumption — sometimes in ways that make the bug appear or worsen only under a different build configuration.</p></div>
 </div>
   <div class="pitfalls"><div class="p-label">Pitfalls</div><ul><li><p>Treating &quot;it produced the expected output when I ran it&quot; as proof that a piece of UB-containing code is fine — UB&#x27;s defining property is precisely that conforming behavior includes &quot;happens to look right today.&quot;</p></li><li><p>Assuming unspecified behavior is as dangerous as UB — it isn&#x27;t: unspecified behavior guarantees the program still does something well-defined-per-that-execution, it just doesn&#x27;t tell you in advance WHICH well-defined thing; UB provides no such floor at all.</p></li></ul></div>

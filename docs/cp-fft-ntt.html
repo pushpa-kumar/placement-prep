@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,67 +281,67 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Hand-multiply first to have a ground truth: (1 + 2x + 3x^2)(4 + 5x) = 1*4 + (1*5 + 2*4)x + (2*5 + 3*4)x^2 + (3*5)x^3 = 4 + 13x + 22x^2 + 15x^3, i.e. coefficients [4, 13, 22, 15].<br>2. In code: the true result has sizeA + sizeB - 1 = 3 + 2 - 1 = 4 coefficients, so pad both arrays with zeros up to n = 4 (already a power of two).<br>3. Compute the bit-reversal permutation of a length-4 array (indices 0,1,2,3 map to 0,2,1,3), then run the iterative FFT butterfly for len = 2 then len = 4 on both A&#x27;s and B&#x27;s padded coefficient arrays (now [1,2,3,0] and [4,5,0,0]) to get their values at the 4th roots of unity (1, i, -1, -i).<br>4. Multiply the two length-4 complex value arrays entrywise.<br>5. Run the inverse FFT (same butterfly structure, conjugated angle, then divide every entry by n = 4) to recover the coefficient representation of the product.<br>6. Round each of the 4 resulting real parts to the nearest integer: [4, 13, 22, 15], matching the hand-multiplied ground truth exactly.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef complex&lt;double&gt; cd;
-const double PI = acos(-1.0);
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-type">complex</span>&lt;<span class="tok-keyword">double</span>&gt; cd;
+<span class="tok-keyword">const</span> <span class="tok-keyword">double</span> PI = acos(-<span class="tok-number">1.0</span>);
 
-void fft(vector&lt;cd&gt;&amp; a, bool invert) {
-    int n = a.size();
-    if (n == 1) return;
-    for (int i = 1, j = 0; i &lt; n; i++) {
-        int bit = n &gt;&gt; 1;
-        for (; j &amp; bit; bit &gt;&gt;= 1) j ^= bit;
+<span class="tok-keyword">void</span> fft(<span class="tok-type">vector</span>&lt;cd&gt;&amp; a, <span class="tok-keyword">bool</span> invert) {
+    <span class="tok-keyword">int</span> n = a.size();
+    <span class="tok-keyword">if</span> (n == <span class="tok-number">1</span>) <span class="tok-keyword">return</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>, j = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> bit = n &gt;&gt; <span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span> (; j &amp; bit; bit &gt;&gt;= <span class="tok-number">1</span>) j ^= bit;
         j ^= bit;
-        if (i &lt; j) swap(a[i], a[j]);
+        <span class="tok-keyword">if</span> (i &lt; j) swap(a[i], a[j]);
     }
-    for (int len = 2; len &lt;= n; len &lt;&lt;= 1) {
-        double ang = 2 * PI / len * (invert ? -1 : 1);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = <span class="tok-number">2</span>; len &lt;= n; len &lt;&lt;= <span class="tok-number">1</span>) {
+        <span class="tok-keyword">double</span> ang = <span class="tok-number">2</span> * PI / len * (invert ? -<span class="tok-number">1</span> : <span class="tok-number">1</span>);
         cd wlen(cos(ang), sin(ang));
-        for (int i = 0; i &lt; n; i += len) {
-            cd w(1);
-            for (int j = 0; j &lt; len / 2; j++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i += len) {
+            cd w(<span class="tok-number">1</span>);
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; len / <span class="tok-number">2</span>; j++) {
                 cd u = a[i + j];
-                cd v = a[i + j + len / 2] * w;
+                cd v = a[i + j + len / <span class="tok-number">2</span>] * w;
                 a[i + j] = u + v;
-                a[i + j + len / 2] = u - v;
+                a[i + j + len / <span class="tok-number">2</span>] = u - v;
                 w *= wlen;
             }
         }
     }
-    if (invert) {
-        for (cd&amp; x : a) x /= n;
+    <span class="tok-keyword">if</span> (invert) {
+        <span class="tok-keyword">for</span> (cd&amp; x : a) x /= n;
     }
 }
 
-vector&lt;long long&gt; multiply(vector&lt;long long&gt; const&amp; a, vector&lt;long long&gt; const&amp; b) {
-    vector&lt;cd&gt; fa(a.begin(), a.end()), fb(b.begin(), b.end());
-    int resultSize = (int)a.size() + (int)b.size() - 1;
-    int n = 1;
-    while (n &lt; resultSize) n &lt;&lt;= 1;
+<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; multiply(<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; <span class="tok-keyword">const</span>&amp; a, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; <span class="tok-keyword">const</span>&amp; b) {
+    <span class="tok-type">vector</span>&lt;cd&gt; fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    <span class="tok-keyword">int</span> resultSize = (<span class="tok-keyword">int</span>)a.size() + (<span class="tok-keyword">int</span>)b.size() - <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> n = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (n &lt; resultSize) n &lt;&lt;= <span class="tok-number">1</span>;
     fa.resize(n);
     fb.resize(n);
-    fft(fa, false);
-    fft(fb, false);
-    for (int i = 0; i &lt; n; i++) fa[i] *= fb[i];
-    fft(fa, true);
-    vector&lt;long long&gt; result(resultSize);
-    for (int i = 0; i &lt; resultSize; i++) result[i] = llround(fa[i].real());
-    return result;
+    fft(fa, <span class="tok-keyword">false</span>);
+    fft(fb, <span class="tok-keyword">false</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) fa[i] *= fb[i];
+    fft(fa, <span class="tok-keyword">true</span>);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; result(resultSize);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; resultSize; i++) result[i] = llround(fa[i].real());
+    <span class="tok-keyword">return</span> result;
 }
 
-int main() {
-    int sizeA, sizeB;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">int</span> sizeA, sizeB;
     cin &gt;&gt; sizeA &gt;&gt; sizeB;
-    vector&lt;long long&gt; a(sizeA), b(sizeB);
-    for (auto&amp; x : a) cin &gt;&gt; x;
-    for (auto&amp; x : b) cin &gt;&gt; x;
-    vector&lt;long long&gt; c = multiply(a, b);
-    cout &lt;&lt; c.size() &lt;&lt; &quot;\n&quot;;
-    for (int i = 0; i &lt; (int)c.size(); i++) {
-        cout &lt;&lt; c[i] &lt;&lt; (i + 1 &lt; (int)c.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(sizeA), b(sizeB);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; x : b) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; c = multiply(a, b);
+    cout &lt;&lt; c.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; (<span class="tok-keyword">int</span>)c.size(); i++) {
+        cout &lt;&lt; c[i] &lt;&lt; (i + <span class="tok-number">1</span> &lt; (<span class="tok-keyword">int</span>)c.size() ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -357,78 +369,78 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>1. Hand-multiply first as ground truth: c_0 = a0*b0 = 1*4 = 4. c_1 = a0*b1 + a1*b0 = 1*5 + 2*4 = 13. c_2 = a0*b2 + a1*b1 + a2*b0 = 1*6 + 2*5 + 3*4 = 6 + 10 + 12 = 28. c_3 = a1*b2 + a2*b1 = 2*6 + 3*5 = 12 + 15 = 27. c_4 = a2*b2 = 3*6 = 18. So the exact product is [4, 13, 28, 27, 18], and every one of these is far smaller than the modulus 998244353, so no modular reduction ever actually triggers here -- this is intentional, to make the example hand-verifiable while still exercising a genuine, correct NTT implementation end to end.<br>2. In code: true result length is sizeA + sizeB - 1 = 3 + 3 - 1 = 5, so pad both coefficient arrays with zeros up to n = 8 (smallest power of two &gt;= 5).<br>3. Bit-reverse both padded arrays [1,2,3,0,0,0,0,0] and [4,5,6,0,0,0,0,0], then run the iterative modular butterfly for len = 2, 4, 8, using w = 3^((998244353-1)/len) mod 998244353 as the working root of unity at each stage, to get both arrays&#x27; NTT (their values at the 8 relevant 8th roots of unity in the field).<br>4. Multiply the two length-8 arrays entrywise mod 998244353.<br>5. Run the inverse NTT (same butterfly structure with the inverse root w^-1 = 3^(998244353-1-(998244353-1)/len) mod 998244353 at each stage), then multiply every entry by the modular inverse of 8 (8^(998244353-2) mod 998244353 by Fermat&#x27;s little theorem).<br>6. Truncate to the true result length 5: [4, 13, 28, 27, 18], matching the hand-computed ground truth exactly, with no rounding involved anywhere.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 998244353;
-const ll ROOT = 3; // a primitive root modulo 998244353
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">998244353</span>;
+<span class="tok-keyword">const</span> ll ROOT = <span class="tok-number">3</span>; <span class="tok-comment">// a primitive root modulo 998244353</span>
 
 ll power(ll a, ll b, ll mod) {
     a %= mod;
-    if (a &lt; 0) a += mod;
-    ll res = 1;
-    while (b &gt; 0) {
-        if (b &amp; 1) res = res * a % mod;
+    <span class="tok-keyword">if</span> (a &lt; <span class="tok-number">0</span>) a += mod;
+    ll res = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (b &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (b &amp; <span class="tok-number">1</span>) res = res * a % mod;
         a = a * a % mod;
-        b &gt;&gt;= 1;
+        b &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return res;
+    <span class="tok-keyword">return</span> res;
 }
 
-void ntt(vector&lt;ll&gt;&amp; a, bool invert) {
-    int n = (int)a.size();
-    for (int i = 1, j = 0; i &lt; n; i++) {
-        int bit = n &gt;&gt; 1;
-        for (; j &amp; bit; bit &gt;&gt;= 1) j ^= bit;
+<span class="tok-keyword">void</span> ntt(<span class="tok-type">vector</span>&lt;ll&gt;&amp; a, <span class="tok-keyword">bool</span> invert) {
+    <span class="tok-keyword">int</span> n = (<span class="tok-keyword">int</span>)a.size();
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>, j = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> bit = n &gt;&gt; <span class="tok-number">1</span>;
+        <span class="tok-keyword">for</span> (; j &amp; bit; bit &gt;&gt;= <span class="tok-number">1</span>) j ^= bit;
         j ^= bit;
-        if (i &lt; j) swap(a[i], a[j]);
+        <span class="tok-keyword">if</span> (i &lt; j) swap(a[i], a[j]);
     }
-    for (int len = 2; len &lt;= n; len &lt;&lt;= 1) {
-        ll w = invert ? power(ROOT, MOD - 1 - (MOD - 1) / len, MOD)
-                      : power(ROOT, (MOD - 1) / len, MOD);
-        for (int i = 0; i &lt; n; i += len) {
-            ll wn = 1;
-            for (int j = 0; j &lt; len / 2; j++) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> len = <span class="tok-number">2</span>; len &lt;= n; len &lt;&lt;= <span class="tok-number">1</span>) {
+        ll w = invert ? power(ROOT, MOD - <span class="tok-number">1</span> - (MOD - <span class="tok-number">1</span>) / len, MOD)
+                      : power(ROOT, (MOD - <span class="tok-number">1</span>) / len, MOD);
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i += len) {
+            ll wn = <span class="tok-number">1</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; len / <span class="tok-number">2</span>; j++) {
                 ll u = a[i + j];
-                ll v = a[i + j + len / 2] * wn % MOD;
+                ll v = a[i + j + len / <span class="tok-number">2</span>] * wn % MOD;
                 a[i + j] = (u + v) % MOD;
-                a[i + j + len / 2] = (u - v + MOD) % MOD;
+                a[i + j + len / <span class="tok-number">2</span>] = (u - v + MOD) % MOD;
                 wn = wn * w % MOD;
             }
         }
     }
-    if (invert) {
-        ll n_inv = power(n, MOD - 2, MOD);
-        for (ll&amp; x : a) x = x * n_inv % MOD;
+    <span class="tok-keyword">if</span> (invert) {
+        ll n_inv = power(n, MOD - <span class="tok-number">2</span>, MOD);
+        <span class="tok-keyword">for</span> (ll&amp; x : a) x = x * n_inv % MOD;
     }
 }
 
-vector&lt;ll&gt; multiply(vector&lt;ll&gt; a, vector&lt;ll&gt; b) {
-    int resultSize = (int)a.size() + (int)b.size() - 1;
-    int n = 1;
-    while (n &lt; resultSize) n &lt;&lt;= 1;
+<span class="tok-type">vector</span>&lt;ll&gt; multiply(<span class="tok-type">vector</span>&lt;ll&gt; a, <span class="tok-type">vector</span>&lt;ll&gt; b) {
+    <span class="tok-keyword">int</span> resultSize = (<span class="tok-keyword">int</span>)a.size() + (<span class="tok-keyword">int</span>)b.size() - <span class="tok-number">1</span>;
+    <span class="tok-keyword">int</span> n = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (n &lt; resultSize) n &lt;&lt;= <span class="tok-number">1</span>;
     a.resize(n);
     b.resize(n);
-    ntt(a, false);
-    ntt(b, false);
-    for (int i = 0; i &lt; n; i++) a[i] = a[i] * b[i] % MOD;
-    ntt(a, true);
+    ntt(a, <span class="tok-keyword">false</span>);
+    ntt(b, <span class="tok-keyword">false</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) a[i] = a[i] * b[i] % MOD;
+    ntt(a, <span class="tok-keyword">true</span>);
     a.resize(resultSize);
-    return a;
+    <span class="tok-keyword">return</span> a;
 }
 
-int main() {
-    int sizeA, sizeB;
+<span class="tok-keyword">int</span> main() {
+    <span class="tok-keyword">int</span> sizeA, sizeB;
     cin &gt;&gt; sizeA &gt;&gt; sizeB;
-    vector&lt;ll&gt; a(sizeA), b(sizeB);
-    for (auto&amp; x : a) cin &gt;&gt; x;
-    for (auto&amp; x : b) cin &gt;&gt; x;
-    vector&lt;ll&gt; c = multiply(a, b);
-    cout &lt;&lt; c.size() &lt;&lt; &quot;\n&quot;;
-    for (size_t i = 0; i &lt; c.size(); i++) {
-        cout &lt;&lt; c[i] &lt;&lt; (i + 1 &lt; c.size() ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-type">vector</span>&lt;ll&gt; a(sizeA), b(sizeB);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span>&amp; x : b) cin &gt;&gt; x;
+    <span class="tok-type">vector</span>&lt;ll&gt; c = multiply(a, b);
+    cout &lt;&lt; c.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; c.size(); i++) {
+        cout &lt;&lt; c[i] &lt;&lt; (i + <span class="tok-number">1</span> &lt; c.size() ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
-    return 0;
+    <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -456,64 +468,64 @@ int main() {
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the characteristic polynomial Q(x) = x^k - c_1 x^{k-1} - ... - c_k implicitly via the coefficient array c[1..k], then compute R(x) = x^n mod Q(x) by binary exponentiation: maintain a running &#x27;result&#x27; polynomial (initialized to the constant 1) and a running &#x27;base&#x27; polynomial (initialized to x, i.e. the length-k coefficient vector with a 1 in position 1), and at each bit of n&#x27;s binary representation, multiply result by base (if the bit is set) and square base, reducing modulo Q(x) after every multiplication by repeatedly replacing the highest-degree term x^d (for d &gt;= k) with c_1 x^{d-1} + ... + c_k x^{d-k} until every remaining term has degree &lt; k. After processing all bits of n, the final answer is a_n = sum_{i=0}^{k-1} result[i] * a_i.</p><p>Hand-verified: with c = [1,1,1,1] and initial terms [0,1,1,2], direct unrolling of the recurrence gives a_4=4, a_5=8, a_6=15, a_7=29, a_8=56, a_9=108, a_10=208 — and the program, run with n=10, correctly outputs 208, exercising the full binary-exponentiation-with-polynomial-reduction code path (n=10 requires several actual squaring/multiplication steps, not just the trivial n&lt;k early case).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007;
-int K;
-vector&lt;ll&gt; C; // C[1..K]: a_i = sum_{j=1}^{K} C[j]*a_{i-j}   (characteristic poly Q(x) = x^K - C[1]x^{K-1} - ... - C[K])
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007</span>;
+<span class="tok-keyword">int</span> K;
+<span class="tok-type">vector</span>&lt;ll&gt; C; <span class="tok-comment">// C[1..K]: a_i = sum_{j=1}^{K} C[j]*a_{i-j}   (characteristic poly Q(x) = x^K - C[1]x^{K-1} - ... - C[K])</span>
 
-vector&lt;ll&gt; polyMul(const vector&lt;ll&gt; &amp;A, const vector&lt;ll&gt; &amp;B) {
-    vector&lt;ll&gt; R(A.size() + B.size() - 1, 0);
-    for (size_t i = 0; i &lt; A.size(); i++) {
-        if (A[i] == 0) continue;
-        for (size_t j = 0; j &lt; B.size(); j++) {
+<span class="tok-type">vector</span>&lt;ll&gt; polyMul(<span class="tok-keyword">const</span> <span class="tok-type">vector</span>&lt;ll&gt; &amp;A, <span class="tok-keyword">const</span> <span class="tok-type">vector</span>&lt;ll&gt; &amp;B) {
+    <span class="tok-type">vector</span>&lt;ll&gt; R(A.size() + B.size() - <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; A.size(); i++) {
+        <span class="tok-keyword">if</span> (A[i] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> j = <span class="tok-number">0</span>; j &lt; B.size(); j++) {
             R[i+j] = (R[i+j] + A[i] * B[j]) % MOD;
         }
     }
-    return R;
+    <span class="tok-keyword">return</span> R;
 }
 
-// reduce a polynomial (coeff vector, degree possibly &gt;= K) modulo Q(x), result has exactly K coeffs (degree &lt; K)
-vector&lt;ll&gt; reduceMod(vector&lt;ll&gt; Pc) {
-    for (int d = (int)Pc.size() - 1; d &gt;= K; d--) {
-        if (Pc[d] == 0) continue;
+<span class="tok-comment">// reduce a polynomial (coeff vector, degree possibly &gt;= K) modulo Q(x), result has exactly K coeffs (degree &lt; K)</span>
+<span class="tok-type">vector</span>&lt;ll&gt; reduceMod(<span class="tok-type">vector</span>&lt;ll&gt; Pc) {
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> d = (<span class="tok-keyword">int</span>)Pc.size() - <span class="tok-number">1</span>; d &gt;= K; d--) {
+        <span class="tok-keyword">if</span> (Pc[d] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
         ll coef = Pc[d];
-        Pc[d] = 0;
-        for (int j = 1; j &lt;= K; j++) {
+        Pc[d] = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= K; j++) {
             Pc[d-j] = (Pc[d-j] + coef * C[j]) % MOD;
         }
     }
     Pc.resize(K);
-    return Pc;
+    <span class="tok-keyword">return</span> Pc;
 }
 
-// compute x^n mod Q(x), returned as a length-K coefficient vector
-vector&lt;ll&gt; polyPowX(ll n) {
-    vector&lt;ll&gt; result(K, 0);
-    result[0] = 1; // polynomial &quot;1&quot;
-    vector&lt;ll&gt; base(K, 0);
-    if (K == 1) base[0] = C[1] % MOD; // x === C[1] (mod Q) when Q(x) = x - C[1]
-    else base[1] = 1;                // polynomial &quot;x&quot;
-    while (n &gt; 0) {
-        if (n &amp; 1) result = reduceMod(polyMul(result, base));
+<span class="tok-comment">// compute x^n mod Q(x), returned as a length-K coefficient vector</span>
+<span class="tok-type">vector</span>&lt;ll&gt; polyPowX(ll n) {
+    <span class="tok-type">vector</span>&lt;ll&gt; result(K, <span class="tok-number">0</span>);
+    result[<span class="tok-number">0</span>] = <span class="tok-number">1</span>; <span class="tok-comment">// polynomial &quot;1&quot;</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; base(K, <span class="tok-number">0</span>);
+    <span class="tok-keyword">if</span> (K == <span class="tok-number">1</span>) base[<span class="tok-number">0</span>] = C[<span class="tok-number">1</span>] % MOD; <span class="tok-comment">// x === C[1] (mod Q) when Q(x) = x - C[1]</span>
+    <span class="tok-keyword">else</span> base[<span class="tok-number">1</span>] = <span class="tok-number">1</span>;                <span class="tok-comment">// polynomial &quot;x&quot;</span>
+    <span class="tok-keyword">while</span> (n &gt; <span class="tok-number">0</span>) {
+        <span class="tok-keyword">if</span> (n &amp; <span class="tok-number">1</span>) result = reduceMod(polyMul(result, base));
         base = reduceMod(polyMul(base, base));
-        n &gt;&gt;= 1;
+        n &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return result;
+    <span class="tok-keyword">return</span> result;
 }
 
-int main(){
+<span class="tok-keyword">int</span> main(){
     ll n;
     cin &gt;&gt; K &gt;&gt; n;
-    C.assign(K+1, 0);
-    for (int j = 1; j &lt;= K; j++) cin &gt;&gt; C[j];
-    vector&lt;ll&gt; a(K);
-    for (int i = 0; i &lt; K; i++) cin &gt;&gt; a[i];
+    C.assign(K+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= K; j++) cin &gt;&gt; C[j];
+    <span class="tok-type">vector</span>&lt;ll&gt; a(K);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; K; i++) cin &gt;&gt; a[i];
 
-    vector&lt;ll&gt; coef = polyPowX(n); // a_n = sum coef[i]*a_i
-    ll ans = 0;
-    for (int i = 0; i &lt; K; i++) ans = (ans + coef[i] * (a[i] % MOD)) % MOD;
+    <span class="tok-type">vector</span>&lt;ll&gt; coef = polyPowX(n); <span class="tok-comment">// a_n = sum coef[i]*a_i</span>
+    ll ans = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; K; i++) ans = (ans + coef[i] * (a[i] % MOD)) % MOD;
     cout &lt;&lt; ans &lt;&lt; endl;
 }
 </code></pre>
@@ -533,71 +545,71 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Construct Q(x) = 1 - c_1 x - c_2 x^2 - ... - c_k x^k (the &#x27;denominator&#x27; convention), and P(x) = the degree-less-than-k truncation of A(x)*Q(x), computed directly from the known initial terms as P_i = sum_{j=0}^{i} Q_j * a_{i-j} for i = 0..k-1 (this uses only a_0..a_{k-1}, which are given). Then A(x) = P(x)/Q(x) exactly reproduces the sequence&#x27;s generating function. Run the Bostan-Mori doubling loop: while n &gt; 0, form Q(-x) by negating Q&#x27;s odd-indexed coefficients, compute numer = P * Q(-x) and denom = Q * Q(-x) (both by ordinary polynomial multiplication), extract the odd-indexed (if n is odd) or even-indexed (if n is even) coefficients of numer as the new P, extract the even-indexed coefficients of denom as the new Q, and halve n (integer division by 2). When n reaches 0, the answer is P[0] * modular-inverse(Q[0]).</p><p>Hand-verified against direct recurrence unrolling for small n (a_0..a_9 = 0,0,1,1,2,4,7,13,24,44, so a_10 should be 81, and the program confirms a_10 = 81), and separately cross-checked for astronomically large n by an independent order-3 matrix-exponentiation implementation: both methods agree exactly at n = 1000, n = 123456789, and n = 10^18 (all producing the same value under mod 10^9+7), confirming Bostan-Mori&#x27;s doubling recursion is implemented correctly even though only the moderate n=10 case is used as this example&#x27;s official sample (chosen so the expected output is hand-verifiable without relying on a second program).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef long long ll;
-const ll MOD = 1000000007;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007</span>;
 
 ll power(ll a, ll e, ll mod) {
-    a %= mod; if (a &lt; 0) a += mod;
-    ll r = 1;
-    while (e &gt; 0) { if (e &amp; 1) r = r * a % mod; a = a * a % mod; e &gt;&gt;= 1; }
-    return r;
+    a %= mod; <span class="tok-keyword">if</span> (a &lt; <span class="tok-number">0</span>) a += mod;
+    ll r = <span class="tok-number">1</span>;
+    <span class="tok-keyword">while</span> (e &gt; <span class="tok-number">0</span>) { <span class="tok-keyword">if</span> (e &amp; <span class="tok-number">1</span>) r = r * a % mod; a = a * a % mod; e &gt;&gt;= <span class="tok-number">1</span>; }
+    <span class="tok-keyword">return</span> r;
 }
-ll modinv(ll a) { return power(a, MOD-2, MOD); }
+ll modinv(ll a) { <span class="tok-keyword">return</span> power(a, MOD-<span class="tok-number">2</span>, MOD); }
 
-vector&lt;ll&gt; polyMul(const vector&lt;ll&gt; &amp;A, const vector&lt;ll&gt; &amp;B) {
-    if (A.empty() || B.empty()) return {};
-    vector&lt;ll&gt; R(A.size() + B.size() - 1, 0);
-    for (size_t i = 0; i &lt; A.size(); i++) {
-        if (A[i] == 0) continue;
-        for (size_t j = 0; j &lt; B.size(); j++) {
+<span class="tok-type">vector</span>&lt;ll&gt; polyMul(<span class="tok-keyword">const</span> <span class="tok-type">vector</span>&lt;ll&gt; &amp;A, <span class="tok-keyword">const</span> <span class="tok-type">vector</span>&lt;ll&gt; &amp;B) {
+    <span class="tok-keyword">if</span> (A.empty() || B.empty()) <span class="tok-keyword">return</span> {};
+    <span class="tok-type">vector</span>&lt;ll&gt; R(A.size() + B.size() - <span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; A.size(); i++) {
+        <span class="tok-keyword">if</span> (A[i] == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> j = <span class="tok-number">0</span>; j &lt; B.size(); j++) {
             R[i+j] = (R[i+j] + A[i] * B[j]) % MOD;
         }
     }
-    return R;
+    <span class="tok-keyword">return</span> R;
 }
 
-// [x^n] P(x)/Q(x) via Bostan-Mori doubling. Q[0] must be 1 (and stays 1 throughout).
-ll bostanMori(vector&lt;ll&gt; P, vector&lt;ll&gt; Q, ll n) {
-    while (n &gt; 0) {
-        // Qneg(x) = Q(-x): negate odd-index coefficients
-        vector&lt;ll&gt; Qneg = Q;
-        for (size_t i = 1; i &lt; Qneg.size(); i += 2) {
+<span class="tok-comment">// [x^n] P(x)/Q(x) via Bostan-Mori doubling. Q[0] must be 1 (and stays 1 throughout).</span>
+ll bostanMori(<span class="tok-type">vector</span>&lt;ll&gt; P, <span class="tok-type">vector</span>&lt;ll&gt; Q, ll n) {
+    <span class="tok-keyword">while</span> (n &gt; <span class="tok-number">0</span>) {
+        <span class="tok-comment">// Qneg(x) = Q(-x): negate odd-index coefficients</span>
+        <span class="tok-type">vector</span>&lt;ll&gt; Qneg = Q;
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">1</span>; i &lt; Qneg.size(); i += <span class="tok-number">2</span>) {
             Qneg[i] = (MOD - Qneg[i]) % MOD;
         }
-        vector&lt;ll&gt; numer = polyMul(P, Qneg);
-        vector&lt;ll&gt; denom = polyMul(Q, Qneg);
-        int parity = n &amp; 1;
-        vector&lt;ll&gt; newP, newQ;
-        for (size_t i = parity; i &lt; numer.size(); i += 2) newP.push_back(numer[i]);
-        for (size_t i = 0; i &lt; denom.size(); i += 2) newQ.push_back(denom[i]);
-        if (newP.empty()) newP.push_back(0);
+        <span class="tok-type">vector</span>&lt;ll&gt; numer = polyMul(P, Qneg);
+        <span class="tok-type">vector</span>&lt;ll&gt; denom = polyMul(Q, Qneg);
+        <span class="tok-keyword">int</span> parity = n &amp; <span class="tok-number">1</span>;
+        <span class="tok-type">vector</span>&lt;ll&gt; newP, newQ;
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = parity; i &lt; numer.size(); i += <span class="tok-number">2</span>) newP.push_back(numer[i]);
+        <span class="tok-keyword">for</span> (<span class="tok-type">size_t</span> i = <span class="tok-number">0</span>; i &lt; denom.size(); i += <span class="tok-number">2</span>) newQ.push_back(denom[i]);
+        <span class="tok-keyword">if</span> (newP.empty()) newP.push_back(<span class="tok-number">0</span>);
         P = newP; Q = newQ;
-        n &gt;&gt;= 1;
+        n &gt;&gt;= <span class="tok-number">1</span>;
     }
-    return P[0] % MOD * modinv(Q[0] % MOD) % MOD;
+    <span class="tok-keyword">return</span> P[<span class="tok-number">0</span>] % MOD * modinv(Q[<span class="tok-number">0</span>] % MOD) % MOD;
 }
 
-int main(){
-    int K;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> K;
     ll n;
     cin &gt;&gt; K &gt;&gt; n;
-    vector&lt;ll&gt; c(K+1, 0); // c[1..K]: a_i = sum c_j * a_{i-j}
-    for (int j = 1; j &lt;= K; j++) cin &gt;&gt; c[j];
-    vector&lt;ll&gt; a(K);
-    for (int i = 0; i &lt; K; i++) cin &gt;&gt; a[i];
+    <span class="tok-type">vector</span>&lt;ll&gt; c(K+<span class="tok-number">1</span>, <span class="tok-number">0</span>); <span class="tok-comment">// c[1..K]: a_i = sum c_j * a_{i-j}</span>
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= K; j++) cin &gt;&gt; c[j];
+    <span class="tok-type">vector</span>&lt;ll&gt; a(K);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; K; i++) cin &gt;&gt; a[i];
 
-    // Q(x) = 1 - c_1 x - c_2 x^2 - ... - c_K x^K
-    vector&lt;ll&gt; Q(K+1, 0);
-    Q[0] = 1;
-    for (int j = 1; j &lt;= K; j++) Q[j] = (MOD - c[j] % MOD) % MOD;
+    <span class="tok-comment">// Q(x) = 1 - c_1 x - c_2 x^2 - ... - c_K x^K</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; Q(K+<span class="tok-number">1</span>, <span class="tok-number">0</span>);
+    Q[<span class="tok-number">0</span>] = <span class="tok-number">1</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">1</span>; j &lt;= K; j++) Q[j] = (MOD - c[j] % MOD) % MOD;
 
-    // P(x) = (A(x) * Q(x)) truncated to degree &lt; K, using only known terms a_0..a_{K-1}
-    vector&lt;ll&gt; P(K, 0);
-    for (int i = 0; i &lt; K; i++) {
-        ll s = 0;
-        for (int j = 0; j &lt;= i; j++) {
+    <span class="tok-comment">// P(x) = (A(x) * Q(x)) truncated to degree &lt; K, using only known terms a_0..a_{K-1}</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; P(K, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; K; i++) {
+        ll s = <span class="tok-number">0</span>;
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt;= i; j++) {
             s = (s + Q[j] * (a[i-j] % MOD)) % MOD;
         }
         P[i] = s;

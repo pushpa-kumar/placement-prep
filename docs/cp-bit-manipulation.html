@@ -11,6 +11,8 @@
     --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
     --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
     --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
     --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
     --radius: 10px;
     --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -23,6 +25,8 @@
       --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
       --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
       --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -32,6 +36,8 @@
     --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
     --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
     --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -154,6 +160,12 @@
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
   .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
   .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
@@ -269,25 +281,25 @@
   <div class="section-label">Approach</div>
   <div class="prose"><p>Initialize g as a copy of f. Then for each bit position b from 0 to n-1, sweep over all masks; whenever mask has bit b set, add g[mask with bit b cleared] into g[mask]. After processing bit b, g[mask] correctly equals the sum of f over all submasks of mask that only vary from mask in bits 0..b (an invariant provable by induction on b). After all n bits are processed, g[mask] is the full sum over all submasks of mask. This costs O(2^n * n) total work, versus O(3^n) if you enumerated every (mask, submask) pair directly (since a mask with k set bits has 2^k submasks, and summing 2^popcount(mask) over all masks gives exactly 3^n).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n;
-    if(!(cin&gt;&gt;n)) return 0;
-    int size=1&lt;&lt;n;
-    vector&lt;long long&gt; f(size);
-    for(auto &amp;x:f) cin&gt;&gt;x;
-    vector&lt;long long&gt; g=f;
-    for(int b=0;b&lt;n;b++){
-        for(int mask=0; mask&lt;size; mask++){
-            if(mask &amp; (1&lt;&lt;b)) g[mask]+=g[mask ^ (1&lt;&lt;b)];
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n;
+    <span class="tok-keyword">if</span>(!(cin&gt;&gt;n)) <span class="tok-keyword">return</span> <span class="tok-number">0</span>;
+    <span class="tok-keyword">int</span> size=<span class="tok-number">1</span>&lt;&lt;n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; f(size);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;x:f) cin&gt;&gt;x;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; g=f;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> b=<span class="tok-number">0</span>;b&lt;n;b++){
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> mask=<span class="tok-number">0</span>; mask&lt;size; mask++){
+            <span class="tok-keyword">if</span>(mask &amp; (<span class="tok-number">1</span>&lt;&lt;b)) g[mask]+=g[mask ^ (<span class="tok-number">1</span>&lt;&lt;b)];
         }
     }
-    for(int i=0;i&lt;size;i++){
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;size;i++){
         cout&lt;&lt;g[i];
-        if(i+1&lt;size) cout&lt;&lt;&#x27; &#x27;;
+        <span class="tok-keyword">if</span>(i+<span class="tok-number">1</span>&lt;size) cout&lt;&lt;<span class="tok-char">&#x27; &#x27;</span>;
     }
-    cout&lt;&lt;&quot;\n&quot;;
+    cout&lt;&lt;<span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -305,27 +317,27 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>a[i] AND a[j] = 0 exactly when a[j]&#x27;s set bits are a subset of the complement of a[i]&#x27;s bits, i.e. a[j] is a submask of comp = FULL_MASK XOR a[i] (FULL_MASK = 2^B - 1). So precompute, for every possible mask in [0, 2^B), a representative value rep[mask] that IS a submask of mask and DOES appear in the array (or -1 if none does). This is exactly SOS DP but with &#x27;OR of existence&#x27; instead of &#x27;sum&#x27;: initialize rep[v] = v for every value v present in the array, then for each bit b, whenever a mask has bit b set and rep[mask] is still unset, pull rep[mask with bit b cleared] up into rep[mask]. Finally, for each a[i], the answer is rep[FULL_MASK XOR a[i]]. This runs in O(2^B * B + n) instead of O(n^2).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n, B;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n, B;
     cin &gt;&gt; n &gt;&gt; B;
-    vector&lt;int&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    int SZ = 1 &lt;&lt; B, FULL = SZ - 1;
-    vector&lt;int&gt; rep(SZ, -1);
-    for (int i = 0; i &lt; n; i++) rep[a[i]] = a[i];
-    for (int b = 0; b &lt; B; b++) {
-        for (int mask = 0; mask &lt; SZ; mask++) {
-            if (mask &amp; (1 &lt;&lt; b)) {
-                if (rep[mask] == -1 &amp;&amp; rep[mask ^ (1 &lt;&lt; b)] != -1)
-                    rep[mask] = rep[mask ^ (1 &lt;&lt; b)];
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">int</span> SZ = <span class="tok-number">1</span> &lt;&lt; B, FULL = SZ - <span class="tok-number">1</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; rep(SZ, -<span class="tok-number">1</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) rep[a[i]] = a[i];
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> b = <span class="tok-number">0</span>; b &lt; B; b++) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">0</span>; mask &lt; SZ; mask++) {
+            <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span> &lt;&lt; b)) {
+                <span class="tok-keyword">if</span> (rep[mask] == -<span class="tok-number">1</span> &amp;&amp; rep[mask ^ (<span class="tok-number">1</span> &lt;&lt; b)] != -<span class="tok-number">1</span>)
+                    rep[mask] = rep[mask ^ (<span class="tok-number">1</span> &lt;&lt; b)];
             }
         }
     }
-    for (int i = 0; i &lt; n; i++) {
-        int comp = FULL ^ a[i];
-        cout &lt;&lt; rep[comp] &lt;&lt; (i + 1 &lt; n ? &#x27; &#x27; : &#x27;\n&#x27;);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+        <span class="tok-keyword">int</span> comp = FULL ^ a[i];
+        cout &lt;&lt; rep[comp] &lt;&lt; (i + <span class="tok-number">1</span> &lt; n ? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
@@ -344,36 +356,36 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Let dp[mask][i] be the minimum cost to have started at city 0, visited exactly the set of cities in mask (mask always includes bit 0), and currently be standing at city i (bit i set in mask). Base case dp[{0}][0] = 0. Transition: from dp[mask][i], for every city j not yet in mask, update dp[mask | (1&lt;&lt;j)][j] = min(dp[mask | (1&lt;&lt;j)][j], dp[mask][i] + cost[i][j]). After filling the table for all 2^n masks, the answer is min over i != 0 of dp[FULL][i] + cost[i][0], where FULL = (1&lt;&lt;n) - 1 (all cities visited). This is O(2^n * n^2) time and O(2^n * n) space, tractable for n up to ~15-18, versus the O(n!) brute force over permutations.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;vector&lt;long long&gt;&gt; cost(n, vector&lt;long long&gt;(n));
-    for (int i = 0; i &lt; n; i++)
-        for (int j = 0; j &lt; n; j++)
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; cost(n, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n));
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++)
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; n; j++)
             cin &gt;&gt; cost[i][j];
-    int FULL = 1 &lt;&lt; n;
-    const long long INF = LLONG_MAX / 2;
-    vector&lt;vector&lt;long long&gt;&gt; dp(FULL, vector&lt;long long&gt;(n, INF));
-    dp[1][0] = 0;
-    for (int mask = 1; mask &lt; FULL; mask++) {
-        if (!(mask &amp; 1)) continue; // city 0 always visited first
-        for (int i = 0; i &lt; n; i++) {
-            if (!(mask &amp; (1 &lt;&lt; i))) continue;
-            if (dp[mask][i] == INF) continue;
-            for (int j = 0; j &lt; n; j++) {
-                if (mask &amp; (1 &lt;&lt; j)) continue;
-                long long nc = dp[mask][i] + cost[i][j];
-                int nmask = mask | (1 &lt;&lt; j);
-                if (nc &lt; dp[nmask][j]) dp[nmask][j] = nc;
+    <span class="tok-keyword">int</span> FULL = <span class="tok-number">1</span> &lt;&lt; n;
+    <span class="tok-keyword">const</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> INF = LLONG_MAX / <span class="tok-number">2</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;&gt; dp(FULL, <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt;(n, INF));
+    dp[<span class="tok-number">1</span>][<span class="tok-number">0</span>] = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> mask = <span class="tok-number">1</span>; mask &lt; FULL; mask++) {
+        <span class="tok-keyword">if</span> (!(mask &amp; <span class="tok-number">1</span>)) <span class="tok-keyword">continue</span>; <span class="tok-comment">// city 0 always visited first</span>
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++) {
+            <span class="tok-keyword">if</span> (!(mask &amp; (<span class="tok-number">1</span> &lt;&lt; i))) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">if</span> (dp[mask][i] == INF) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; n; j++) {
+                <span class="tok-keyword">if</span> (mask &amp; (<span class="tok-number">1</span> &lt;&lt; j)) <span class="tok-keyword">continue</span>;
+                <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> nc = dp[mask][i] + cost[i][j];
+                <span class="tok-keyword">int</span> nmask = mask | (<span class="tok-number">1</span> &lt;&lt; j);
+                <span class="tok-keyword">if</span> (nc &lt; dp[nmask][j]) dp[nmask][j] = nc;
             }
         }
     }
-    long long best = INF;
-    for (int i = 1; i &lt; n; i++)
-        best = min(best, dp[FULL - 1][i] + cost[i][0]);
-    if (n == 1) best = 0;
-    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> best = INF;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++)
+        best = min(best, dp[FULL - <span class="tok-number">1</span>][i] + cost[i][<span class="tok-number">0</span>]);
+    <span class="tok-keyword">if</span> (n == <span class="tok-number">1</span>) best = <span class="tok-number">0</span>;
+    cout &lt;&lt; best &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -402,26 +414,26 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the XOR linear basis of the array as described above: for each a[i], reduce it against the current basis (XOR-ing away any bit that already has a basis vector) and, if the result is nonzero, insert it at its highest remaining bit. Once the basis is built, greedily construct the maximum achievable XOR: starting from res = 0, iterate basis vectors from the highest bit position down to the lowest, and whenever XOR-ing the basis vector into res would make res strictly larger, do it. This greedy is optimal because each basis vector&#x27;s leading bit is unique and not shared by any lower-indexed basis vector, so setting a higher bit whenever possible can never later be beaten by any combination of lower bits.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    const int BITS = 60;
-    vector&lt;long long&gt; basis(BITS, 0);
-    for (long long x : a) {
-        for (int b = BITS - 1; b &gt;= 0; b--) {
-            if (!((x &gt;&gt; b) &amp; 1)) continue;
-            if (!basis[b]) { basis[b] = x; break; }
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">const</span> <span class="tok-keyword">int</span> BITS = <span class="tok-number">60</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; basis(BITS, <span class="tok-number">0</span>);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x : a) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> b = BITS - <span class="tok-number">1</span>; b &gt;= <span class="tok-number">0</span>; b--) {
+            <span class="tok-keyword">if</span> (!((x &gt;&gt; b) &amp; <span class="tok-number">1</span>)) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">if</span> (!basis[b]) { basis[b] = x; <span class="tok-keyword">break</span>; }
             x ^= basis[b];
         }
     }
-    long long res = 0;
-    for (int b = BITS - 1; b &gt;= 0; b--) {
-        if ((res ^ basis[b]) &gt; res) res ^= basis[b];
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> res = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> b = BITS - <span class="tok-number">1</span>; b &gt;= <span class="tok-number">0</span>; b--) {
+        <span class="tok-keyword">if</span> ((res ^ basis[b]) &gt; res) res ^= basis[b];
     }
-    cout &lt;&lt; res &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; res &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -439,24 +451,24 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Build the XOR linear basis exactly as in the maximum-XOR problem, and let r be its rank (the number of nonzero basis vectors actually inserted). The set of all subset-XOR values is precisely the linear span of the basis, which — because the basis vectors are linearly independent over GF(2) — has exactly 2^r distinct elements (every one of the 2^r combinations of &#x27;include basis vector b or not&#x27; yields a different XOR value, since basis vectors have distinct leading bits so no two different combinations can collide). The answer is therefore simply 2^r; no explicit enumeration of subsets or basis combinations is needed.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;long long&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
-    const int BITS = 60;
-    vector&lt;long long&gt; basis(BITS, 0);
-    int rnk = 0;
-    for (long long x : a) {
-        for (int b = BITS - 1; b &gt;= 0; b--) {
-            if (!((x &gt;&gt; b) &amp; 1)) continue;
-            if (!basis[b]) { basis[b] = x; rnk++; break; }
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
+    <span class="tok-keyword">const</span> <span class="tok-keyword">int</span> BITS = <span class="tok-number">60</span>;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">long</span> <span class="tok-keyword">long</span>&gt; basis(BITS, <span class="tok-number">0</span>);
+    <span class="tok-keyword">int</span> rnk = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">long</span> <span class="tok-keyword">long</span> x : a) {
+        <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> b = BITS - <span class="tok-number">1</span>; b &gt;= <span class="tok-number">0</span>; b--) {
+            <span class="tok-keyword">if</span> (!((x &gt;&gt; b) &amp; <span class="tok-number">1</span>)) <span class="tok-keyword">continue</span>;
+            <span class="tok-keyword">if</span> (!basis[b]) { basis[b] = x; rnk++; <span class="tok-keyword">break</span>; }
             x ^= basis[b];
         }
     }
-    long long ans = 1LL &lt;&lt; rnk;
-    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ans = <span class="tok-number">1LL</span> &lt;&lt; rnk;
+    cout &lt;&lt; ans &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -474,43 +486,43 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Maintain a binary trie over the 20-bit representation of the numbers seen so far (most significant bit first). Process the array left to right; before inserting a[i], if the trie already contains at least one previously-inserted number, query it: walk down the trie from the root, and at each level try to go to the child representing the bit OPPOSITE to the current bit of a[i] (since that maximizes the XOR contribution at that bit position); if that child doesn&#x27;t exist, fall back to the child matching a[i]&#x27;s bit. The bits collected along this walk form the maximum XOR achievable between a[i] and any previously inserted element. Track the running maximum over all i, then insert a[i] into the trie and continue. Because each element is compared only against elements inserted strictly before it, every pair (i, j) with i &lt; j is considered exactly once, giving O(n * 20) total time.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const int BITS = 20;
-struct Node { int ch[2] = {-1, -1}; };
-vector&lt;Node&gt; trie;
-int newNode() { trie.push_back(Node()); return (int)trie.size() - 1; }
-void insertNum(int x) {
-    int cur = 0;
-    for (int b = BITS - 1; b &gt;= 0; b--) {
-        int bit = (x &gt;&gt; b) &amp; 1;
-        if (trie[cur].ch[bit] == -1) trie[cur].ch[bit] = newNode();
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> BITS = <span class="tok-number">20</span>;
+<span class="tok-keyword">struct</span> Node { <span class="tok-keyword">int</span> ch[<span class="tok-number">2</span>] = {-<span class="tok-number">1</span>, -<span class="tok-number">1</span>}; };
+<span class="tok-type">vector</span>&lt;Node&gt; trie;
+<span class="tok-keyword">int</span> newNode() { trie.push_back(Node()); <span class="tok-keyword">return</span> (<span class="tok-keyword">int</span>)trie.size() - <span class="tok-number">1</span>; }
+<span class="tok-keyword">void</span> insertNum(<span class="tok-keyword">int</span> x) {
+    <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> b = BITS - <span class="tok-number">1</span>; b &gt;= <span class="tok-number">0</span>; b--) {
+        <span class="tok-keyword">int</span> bit = (x &gt;&gt; b) &amp; <span class="tok-number">1</span>;
+        <span class="tok-keyword">if</span> (trie[cur].ch[bit] == -<span class="tok-number">1</span>) trie[cur].ch[bit] = newNode();
         cur = trie[cur].ch[bit];
     }
 }
-int queryMax(int x) {
-    int cur = 0, res = 0;
-    for (int b = BITS - 1; b &gt;= 0; b--) {
-        int bit = (x &gt;&gt; b) &amp; 1;
-        int want = bit ^ 1;
-        if (trie[cur].ch[want] != -1) { res |= (1 &lt;&lt; b); cur = trie[cur].ch[want]; }
-        else cur = trie[cur].ch[bit];
+<span class="tok-keyword">int</span> queryMax(<span class="tok-keyword">int</span> x) {
+    <span class="tok-keyword">int</span> cur = <span class="tok-number">0</span>, res = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> b = BITS - <span class="tok-number">1</span>; b &gt;= <span class="tok-number">0</span>; b--) {
+        <span class="tok-keyword">int</span> bit = (x &gt;&gt; b) &amp; <span class="tok-number">1</span>;
+        <span class="tok-keyword">int</span> want = bit ^ <span class="tok-number">1</span>;
+        <span class="tok-keyword">if</span> (trie[cur].ch[want] != -<span class="tok-number">1</span>) { res |= (<span class="tok-number">1</span> &lt;&lt; b); cur = trie[cur].ch[want]; }
+        <span class="tok-keyword">else</span> cur = trie[cur].ch[bit];
     }
-    return res;
+    <span class="tok-keyword">return</span> res;
 }
-int main(){
-    int n; cin &gt;&gt; n;
-    vector&lt;int&gt; a(n);
-    for (auto &amp;x : a) cin &gt;&gt; x;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; a(n);
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">auto</span> &amp;x : a) cin &gt;&gt; x;
     trie.clear();
-    newNode(); // root = index 0
-    insertNum(a[0]);
-    int best = 0;
-    for (int i = 1; i &lt; n; i++) {
+    newNode(); <span class="tok-comment">// root = index 0</span>
+    insertNum(a[<span class="tok-number">0</span>]);
+    <span class="tok-keyword">int</span> best = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span> (<span class="tok-keyword">int</span> i = <span class="tok-number">1</span>; i &lt; n; i++) {
         best = max(best, queryMax(a[i]));
         insertNum(a[i]);
     }
-    cout &lt;&lt; best &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; best &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -536,18 +548,18 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>For i from 0 to 2^n - 1, compute g = i XOR (i &gt;&gt; 1) and print g as an n-bit binary string (zero-padded on the left). This is the textbook reflected-binary-code construction: because consecutive integers i and i+1 always differ from each other by the classic &#x27;carry chain&#x27; pattern (some number of trailing 1-bits flip to 0 and the next 0-bit flips to 1), applying XOR with a right-shift-by-1 collapses that entire carry chain into a change in exactly one output bit between g(i) and g(i+1). Verified on n=2, reproducing exactly the four strings 00, 01, 11, 10 (the standard textbook example for n=2), and independently verified on n=3 by checking every consecutive pair in the 8-line output (000, 001, 011, 010, 110, 111, 101, 100) differs in exactly one bit, including the wraparound from the last string (100) back to the first (000).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-int main(){
-    int n; cin &gt;&gt; n;
-    int total = 1 &lt;&lt; n;
-    for(int i = 0; i &lt; total; i++){
-        int g = i ^ (i &gt;&gt; 1);
-        string s(n, &#x27;0&#x27;);
-        for(int b = 0; b &lt; n; b++){
-            if(g &amp; (1 &lt;&lt; (n-1-b))) s[b] = &#x27;1&#x27;;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-keyword">int</span> total = <span class="tok-number">1</span> &lt;&lt; n;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; total; i++){
+        <span class="tok-keyword">int</span> g = i ^ (i &gt;&gt; <span class="tok-number">1</span>);
+        <span class="tok-type">string</span> s(n, <span class="tok-char">&#x27;0&#x27;</span>);
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> b = <span class="tok-number">0</span>; b &lt; n; b++){
+            <span class="tok-keyword">if</span>(g &amp; (<span class="tok-number">1</span> &lt;&lt; (n-<span class="tok-number">1</span>-b))) s[b] = <span class="tok-char">&#x27;1&#x27;</span>;
         }
-        cout &lt;&lt; s &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; s &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -572,26 +584,26 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>For a single query, start with x = l. Then, scanning bit positions from the LOWEST (bit 0) upward, whenever bit b of x is currently 0, tentatively set it (cand = x | (1 &lt;&lt; b)); if cand &lt;= r, commit to it (x = cand), since this strictly increases the popcount while keeping x as small as possible among values with that popcount (setting a lower bit first always yields a smaller result than setting a higher one). If setting that bit would push x past r, stop scanning entirely -- once one bit-flip is unaffordable, no later (higher, more expensive) bit-flip can be affordable either while still yielding a smaller-or-equal result than simply stopping here. The final x is the answer for that query. Cross-checked against an O(range size) brute force (scanning every integer in [l, r] and comparing popcounts, tie-breaking by smallest value) across 300 random small-range queries with zero mismatches. On the sample: query (1,2) -&gt; 1 (both 1 and 2 have popcount 1, tie broken by smaller value); query (2,4) -&gt; 3 (0b11, popcount 2, the maximum in that range); query (1,10) -&gt; 7 (0b0111, popcount 3, the maximum achievable up to 10).</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-typedef unsigned long long ull;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">unsigned</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ull;
 ull solve(ull l, ull r){
     ull x = l;
-    for(int b = 0; b &lt; 63; b++){
-        ull bit = 1ULL &lt;&lt; b;
-        if(!(x &amp; bit)){
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> b = <span class="tok-number">0</span>; b &lt; <span class="tok-number">63</span>; b++){
+        ull bit = <span class="tok-number">1ULL</span> &lt;&lt; b;
+        <span class="tok-keyword">if</span>(!(x &amp; bit)){
             ull cand = x | bit;
-            if(cand &lt;= r) x = cand;
-            else break;
+            <span class="tok-keyword">if</span>(cand &lt;= r) x = cand;
+            <span class="tok-keyword">else</span> <span class="tok-keyword">break</span>;
         }
     }
-    return x;
+    <span class="tok-keyword">return</span> x;
 }
-int main(){
-    int q; cin &gt;&gt; q;
-    while(q--){
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> q; cin &gt;&gt; q;
+    <span class="tok-keyword">while</span>(q--){
         ull l, r; cin &gt;&gt; l &gt;&gt; r;
-        cout &lt;&lt; solve(l, r) &lt;&lt; &quot;\n&quot;;
+        cout &lt;&lt; solve(l, r) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
     }
 }
 </code></pre>
@@ -622,51 +634,51 @@ int main(){
   <div class="section-label">Approach</div>
   <div class="prose"><p>Any valid answer must itself be within Hamming distance 1 of the FIRST given string (since the first string is one of the m constraints), so it suffices to check only 1 + n*25 candidates: the first string unchanged, and every way of changing exactly one position of the first string to one of the other 25 letters. For each candidate, checking whether it is within distance 1 of all m strings naively costs O(n*m) per candidate (O(n^2 * m) total) -- instead, precompute, for every position k (0..n-1) and every letter c (&#x27;a&#x27;..&#x27;z&#x27;), a bitset of size m marking which of the m strings have a DIFFERENT character than c at position k. To check one candidate, maintain two running bitsets over the m strings, atLeastOne and atLeastTwo (both starting all-zero); for each position k of the candidate, let cur = the precomputed mismatch-bitset for (k, candidate[k]); update atLeastTwo |= (atLeastOne &amp; cur) BEFORE updating atLeastOne |= cur (so a string only ever enters atLeastTwo once it has accumulated a SECOND mismatch). After scanning all n positions, the candidate is valid for every string if and only if atLeastTwo is entirely zero. This checks one candidate against all m strings in O(n*m/64) instead of O(n*m).</p><p>On the sample (three strings &#x27;abc&#x27;, &#x27;xyc&#x27;, &#x27;xbz&#x27;), the first string itself fails (it is distance 2 from &#x27;xyc&#x27;: positions 0 and 1 both differ), but changing position 0 of &#x27;abc&#x27; to &#x27;x&#x27; produces the candidate &#x27;xbc&#x27;, which is distance 1 from all three input strings (&#x27;abc&#x27;: differs at position 0; &#x27;xyc&#x27;: differs at position 1; &#x27;xbz&#x27;: differs at position 2) -- so &#x27;xbc&#x27; is output. Cross-checked against an exhaustive brute-force search over all length-n strings (restricted to the small alphabet actually used in each test) across 300 randomly generated small instances, with zero mismatches in either the found answer&#x27;s validity or the possible/impossible determination.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const int MAXM = 2005;
-int n, m;
-vector&lt;string&gt; t;
-// notEqual[k][c] = bitset over the m strings: bit j set if t[j][k] != character (&#x27;a&#x27;+c)
-vector&lt;array&lt;bitset&lt;MAXM&gt;, 26&gt;&gt; notEqual;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXM = <span class="tok-number">2005</span>;
+<span class="tok-keyword">int</span> n, m;
+<span class="tok-type">vector</span>&lt;<span class="tok-type">string</span>&gt; t;
+<span class="tok-comment">// notEqual[k][c] = bitset over the m strings: bit j set if t[j][k] != character (&#x27;a&#x27;+c)</span>
+<span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;<span class="tok-type">bitset</span>&lt;MAXM&gt;, <span class="tok-number">26</span>&gt;&gt; notEqual;
 
-bool check(const string &amp;cand){
-    bitset&lt;MAXM&gt; atLeastOne, atLeastTwo;
-    for(int k = 0; k &lt; n; k++){
-        const bitset&lt;MAXM&gt; &amp;cur = notEqual[k][cand[k]-&#x27;a&#x27;];
+<span class="tok-keyword">bool</span> check(<span class="tok-keyword">const</span> <span class="tok-type">string</span> &amp;cand){
+    <span class="tok-type">bitset</span>&lt;MAXM&gt; atLeastOne, atLeastTwo;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> k = <span class="tok-number">0</span>; k &lt; n; k++){
+        <span class="tok-keyword">const</span> <span class="tok-type">bitset</span>&lt;MAXM&gt; &amp;cur = notEqual[k][cand[k]-<span class="tok-char">&#x27;a&#x27;</span>];
         atLeastTwo |= (atLeastOne &amp; cur);
         atLeastOne |= cur;
     }
-    return atLeastTwo.none();
+    <span class="tok-keyword">return</span> atLeastTwo.none();
 }
 
-int main(){
-    cin &gt;&gt; m &gt;&gt; n; // m strings, each of length n
+<span class="tok-keyword">int</span> main(){
+    cin &gt;&gt; m &gt;&gt; n; <span class="tok-comment">// m strings, each of length n</span>
     t.resize(m);
-    for(auto &amp;s : t) cin &gt;&gt; s;
-    notEqual.assign(n, array&lt;bitset&lt;MAXM&gt;,26&gt;());
-    for(int k = 0; k &lt; n; k++){
-        for(int j = 0; j &lt; m; j++){
-            int c = t[j][k]-&#x27;a&#x27;;
-            for(int ch = 0; ch &lt; 26; ch++){
-                if(ch != c) notEqual[k][ch][j] = 1;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;s : t) cin &gt;&gt; s;
+    notEqual.assign(n, <span class="tok-type">array</span>&lt;<span class="tok-type">bitset</span>&lt;MAXM&gt;,<span class="tok-number">26</span>&gt;());
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> k = <span class="tok-number">0</span>; k &lt; n; k++){
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; m; j++){
+            <span class="tok-keyword">int</span> c = t[j][k]-<span class="tok-char">&#x27;a&#x27;</span>;
+            <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> ch = <span class="tok-number">0</span>; ch &lt; <span class="tok-number">26</span>; ch++){
+                <span class="tok-keyword">if</span>(ch != c) notEqual[k][ch][j] = <span class="tok-number">1</span>;
             }
         }
     }
-    // candidate 1: t[0] unchanged
-    if(check(t[0])){ cout &lt;&lt; t[0] &lt;&lt; &quot;\n&quot;; return 0; }
-    // try every single-position substitution of t[0]
-    string cand = t[0];
-    for(int pos = 0; pos &lt; n; pos++){
-        char orig = cand[pos];
-        for(char ch = &#x27;a&#x27;; ch &lt;= &#x27;z&#x27;; ch++){
-            if(ch == orig) continue;
+    <span class="tok-comment">// candidate 1: t[0] unchanged</span>
+    <span class="tok-keyword">if</span>(check(t[<span class="tok-number">0</span>])){ cout &lt;&lt; t[<span class="tok-number">0</span>] &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
+    <span class="tok-comment">// try every single-position substitution of t[0]</span>
+    <span class="tok-type">string</span> cand = t[<span class="tok-number">0</span>];
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> pos = <span class="tok-number">0</span>; pos &lt; n; pos++){
+        <span class="tok-keyword">char</span> orig = cand[pos];
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">char</span> ch = <span class="tok-char">&#x27;a&#x27;</span>; ch &lt;= <span class="tok-char">&#x27;z&#x27;</span>; ch++){
+            <span class="tok-keyword">if</span>(ch == orig) <span class="tok-keyword">continue</span>;
             cand[pos] = ch;
-            if(check(cand)){ cout &lt;&lt; cand &lt;&lt; &quot;\n&quot;; return 0; }
+            <span class="tok-keyword">if</span>(check(cand)){ cout &lt;&lt; cand &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>; <span class="tok-keyword">return</span> <span class="tok-number">0</span>; }
         }
         cand[pos] = orig;
     }
-    cout &lt;&lt; -1 &lt;&lt; &quot;\n&quot;;
+    cout &lt;&lt; -<span class="tok-number">1</span> &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
 }
 </code></pre>
   <div class="section-label">Sample I/O</div>
@@ -686,29 +698,29 @@ xbz
   <div class="section-label">Approach</div>
   <div class="prose"><p>For each of the 26 letters c, precompute a bitset B[c] of length m where bit j is set exactly when pattern[j] == c. Maintain a state bitset D of length m, initially all zero. Scan the text left to right; for each text character ch at position i, update D = ((D &lt;&lt; 1) | 1) &amp; B[ch]: the left shift advances every previously-hypothesized partial match by one character (with the incoming 1-bit representing &#x27;a brand new match attempt could also be starting here&#x27;), and the AND with B[ch] discards every hypothesis that is no longer consistent with the character just read. Whenever bit (m-1) of D is set after processing position i, a full match of the pattern has just completed, ending at i, so record the starting position i - m + 1. This processes the whole text in O(n*m/64) instead of the naive O(n*m) character-by-character substring comparison.</p><p>On the sample (text &#x27;abaababaab&#x27;, pattern &#x27;aba&#x27;), matches start at positions 0, 3, and 5 (verified by direct substring inspection: text[0..2]=&#x27;aba&#x27;, text[3..5]=&#x27;aba&#x27;, text[5..7]=&#x27;aba&#x27;, and no other starting position yields &#x27;aba&#x27;). Cross-checked against a naive O(n*m) substring-comparison brute force across 300 random binary-alphabet text/pattern pairs (lengths up to 30) with zero mismatches.</p></div>
   <div class="section-label">Solution</div>
-  <pre><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
-const int MAXP = 2005;
-int main(){
-    string text, pattern;
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">const</span> <span class="tok-keyword">int</span> MAXP = <span class="tok-number">2005</span>;
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-type">string</span> text, pattern;
     cin &gt;&gt; text &gt;&gt; pattern;
-    int n = text.size(), m = pattern.size();
-    array&lt;bitset&lt;MAXP&gt;, 26&gt; B;
-    for(int c = 0; c &lt; 26; c++) B[c].reset();
-    for(int j = 0; j &lt; m; j++){
-        B[pattern[j]-&#x27;a&#x27;][j] = 1;
+    <span class="tok-keyword">int</span> n = text.size(), m = pattern.size();
+    <span class="tok-type">array</span>&lt;<span class="tok-type">bitset</span>&lt;MAXP&gt;, <span class="tok-number">26</span>&gt; B;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> c = <span class="tok-number">0</span>; c &lt; <span class="tok-number">26</span>; c++) B[c].reset();
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> j = <span class="tok-number">0</span>; j &lt; m; j++){
+        B[pattern[j]-<span class="tok-char">&#x27;a&#x27;</span>][j] = <span class="tok-number">1</span>;
     }
-    bitset&lt;MAXP&gt; D; // D.reset() by default
-    vector&lt;int&gt; starts;
-    for(int i = 0; i &lt; n; i++){
-        D = ((D &lt;&lt; 1) | bitset&lt;MAXP&gt;(1)) &amp; B[text[i]-&#x27;a&#x27;];
-        if(m &gt;= 1 &amp;&amp; D[m-1]){
-            starts.push_back(i - m + 1);
+    <span class="tok-type">bitset</span>&lt;MAXP&gt; D; <span class="tok-comment">// D.reset() by default</span>
+    <span class="tok-type">vector</span>&lt;<span class="tok-keyword">int</span>&gt; starts;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i = <span class="tok-number">0</span>; i &lt; n; i++){
+        D = ((D &lt;&lt; <span class="tok-number">1</span>) | <span class="tok-type">bitset</span>&lt;MAXP&gt;(<span class="tok-number">1</span>)) &amp; B[text[i]-<span class="tok-char">&#x27;a&#x27;</span>];
+        <span class="tok-keyword">if</span>(m &gt;= <span class="tok-number">1</span> &amp;&amp; D[m-<span class="tok-number">1</span>]){
+            starts.push_back(i - m + <span class="tok-number">1</span>);
         }
     }
-    cout &lt;&lt; starts.size() &lt;&lt; &quot;\n&quot;;
-    for(size_t k = 0; k &lt; starts.size(); k++){
-        cout &lt;&lt; starts[k] &lt;&lt; (k+1&lt;starts.size()? &#x27; &#x27; : &#x27;\n&#x27;);
+    cout &lt;&lt; starts.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> k = <span class="tok-number">0</span>; k &lt; starts.size(); k++){
+        cout &lt;&lt; starts[k] &lt;&lt; (k+<span class="tok-number">1</span>&lt;starts.size()? <span class="tok-char">&#x27; &#x27;</span> : <span class="tok-char">&#x27;\n&#x27;</span>);
     }
 }
 </code></pre>
