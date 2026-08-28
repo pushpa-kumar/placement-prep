@@ -205,5 +205,50 @@
   "subtopic": "Palindromic Tree (Eertree)",
   "description": "Count the number of pairs of palindromic substrings (of length >= 2) of a given string that intersect (share at least one common position).",
   "why_hard": "A famous, old (Codeforces Beta Round 7) hard palindrome-counting problem — you need to enumerate/count all palindromic substrings efficiently (Eertree or Manacher-derived), then combine per-position counts with a running-sum trick to count intersecting pairs without double counting, testing both palindrome enumeration and careful combinatorial counting."
+ },
+ {
+  "name": "Palindrome Pairs",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1045/I",
+  "difficulty": "1600",
+  "subtopic": "bitmask hashing",
+  "description": "Given up to 10^5 lowercase strings, count the pairs (i, j) such that some permutation of the concatenation of the two strings is a palindrome.",
+  "why_hard": "The rearrangeable-into-a-palindrome condition reduces to 'at most one letter has odd total count,' so each string collapses to a 26-bit parity mask; the hard part is spotting that reduction and then counting mask pairs that are equal or differ in exactly one bit with a hash map instead of comparing strings directly."
+ },
+ {
+  "name": "Password",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/126/B",
+  "difficulty": "1700",
+  "subtopic": "prefix function (KMP)",
+  "description": "Given a string s, find the longest substring that is simultaneously a proper prefix of s, a proper suffix of s, and occurs at some other position strictly inside s (or report none exists).",
+  "why_hard": "The prefix-function chain starting from the last index enumerates every prefix-that-is-also-a-suffix in decreasing length order, but that alone doesn't guarantee an internal occurrence; you need a second array tracking which prefix-function values are actually attained in the interior of the string, turning a routine border computation into a two-pass KMP trick."
+ },
+ {
+  "name": "MUH and Cube Walls",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/471/D",
+  "difficulty": "1800",
+  "subtopic": "Z-function / KMP on difference sequences",
+  "description": "Given a 'bears' skyline of n towers and an 'elephant' skyline of w towers, count how many length-w windows of the bears' skyline match the elephant's skyline after the elephant's wall is shifted up or down by any constant amount.",
+  "why_hard": "Matching two skylines up to a uniform vertical shift isn't literal string matching, so the trick is re-encoding both skylines as their sequence of consecutive height differences and then running ordinary KMP/Z-function pattern matching on those difference sequences — translating a geometric 'same shape' condition into an exact string-matching problem is the whole difficulty."
+ },
+ {
+  "name": "Tavas and Malekas",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/535/D",
+  "difficulty": "1900",
+  "subtopic": "string hashing",
+  "description": "Given a pattern p and m strictly increasing positions claimed to be exactly the occurrences of p inside an unknown string s of length n, count how many strings s over lowercase letters are consistent with p occurring at exactly those positions.",
+  "why_hard": "Two claimed occurrences of p that overlap are only consistent if the overlapping region is simultaneously a suffix and prefix of p, so you precompute a single polynomial hash of p and check that self-overlap in O(1) for every consecutive pair of positions; the answer then falls out as 26 raised to the number of still-undetermined characters, combining a hashing consistency check with a counting argument."
+ },
+ {
+  "name": "Compress Words",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1200/E",
+  "difficulty": "2000",
+  "subtopic": "KMP border function",
+  "description": "Given up to 10^5 words, merge them left to right where each new word has its longest overlapping prefix-with-the-current-suffix removed before being appended, and output the final compressed string.",
+  "why_hard": "The overlap to strip is exactly the terminal value of the KMP prefix function run on 'word + separator + last min(|word|, |result|) characters of the merged result so far,' applied once per word; keeping this bounded so the total work stays linear in the summed word lengths (rather than the naive quadratic re-scan) is the real challenge."
  }
 ]

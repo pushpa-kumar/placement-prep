@@ -313,5 +313,50 @@
   "subtopic": "Functional Graphs & Cycle Detection",
   "description": "Given a set of n \"candidate\" functional graphs (each node's chosen out-edge from a list of options), reconstruct one consistent global functional graph matching the maximum number of choices via bipartite-matching-flavored reasoning.",
   "why_hard": "A very hard (3400) problem literally named after functional graphs — included as a stretch/reach problem for readers who've mastered the basics and want to see functional-graph reasoning combined with matching/flow."
+ },
+ {
+  "name": "Fox And Names",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/510/C",
+  "difficulty": "1600",
+  "subtopic": "Topological Sort",
+  "description": "Given a dictionary of names, determine an ordering of the 26 letters of the alphabet under which the names are in lexicographic order, or report none exists.",
+  "why_hard": "Requires the non-obvious reduction of comparing consecutive name pairs into precedence edges between letters (including the subtle case where one name is a prefix of the next, which is immediately impossible), then a topological sort on the 26-node letter graph."
+ },
+ {
+  "name": "New Reform",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/659/E",
+  "difficulty": "1600",
+  "subtopic": "DSU / Connected Components",
+  "description": "Orient every edge of an undirected graph (each road becomes one-way) to minimize the number of vertices with no incoming edge.",
+  "why_hard": "The key insight is per-component: any component containing a cycle can be oriented so every vertex gets an incoming edge (cost 0), while a tree component always leaves exactly one vertex isolated — turning the problem into counting acyclic (tree) components via DSU, tracking edge count versus vertex count per component."
+ },
+ {
+  "name": "Greg and Graph",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/295/B",
+  "difficulty": "1700",
+  "subtopic": "Floyd-Warshall",
+  "description": "Vertices of a complete weighted directed graph are deleted one at a time in a given order; after each deletion, output the sum of all-pairs shortest distances among the vertices that remain.",
+  "why_hard": "The trick is to process the deletion order backwards, *adding* vertices to an initially-empty graph and running the Floyd-Warshall relaxation step only through the newly added vertex each time — turning an apparently O(n) full-Floyd-Warshall-per-step problem into one incremental O(n^3) pass total."
+ },
+ {
+  "name": "Shichikuji and Power Grid",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1245/D",
+  "difficulty": "1900",
+  "subtopic": "MST (virtual node)",
+  "description": "For each city, decide whether to build a power station there (fixed per-city cost) or connect it by wire to other cities (cost proportional to Manhattan distance times a per-city rate), minimizing total cost so every city is powered.",
+  "why_hard": "Requires reframing \"build a station\" as an edge to a single virtual super-source vertex with weight equal to the station cost, so the whole problem collapses into one Kruskal/Prim MST over city-pairs plus virtual-node edges — the station-vs-wire decision isn't obviously an MST until that reduction is made."
+ },
+ {
+  "name": "Kevin and Bipartite Graph",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/2048/E",
+  "difficulty": "2000",
+  "subtopic": "Bipartite Construction / 2-Coloring",
+  "description": "Given a complete bipartite graph with 2n vertices on the left and m vertices on the right, color every edge with one of n colors so that no cycle is monochromatic, or determine it's impossible.",
+  "why_hard": "The feasibility condition (m <= n, by a pigeonhole argument on when a same-colored 4-cycle is forced) must be discovered before construction; the actual coloring is a clean cyclic-rotation scheme per left vertex, so the hard part is proving the bound rather than implementing the coloring."
  }
 ]

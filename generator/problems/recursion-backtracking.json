@@ -151,5 +151,50 @@
   "subtopic": "Minimax with Alpha-Beta Pruning",
   "description": "On a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.",
   "why_hard": "A grid-based minimax with a much larger branching factor and an explicit move cap to bound infinite play, requiring careful memoized minimax over (mouse position, cat position, whose turn, moves remaining) — a practical-scale instance of the same search that alpha-beta pruning speeds up in real game engines."
+ },
+ {
+  "name": "Undoubtedly Lucky Numbers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/244/B",
+  "difficulty": "1600",
+  "subtopic": "recursive digit-set generation",
+  "description": "Given n (up to 10^9), count the positive integers not exceeding n whose decimal digits use at most two distinct digit values x and y.",
+  "why_hard": "n rules out testing every number directly, so for each of the ~55 candidate digit pairs you must recursively build every number formed from only those two digits (branching on digit choice at each position, pruning once a prefix exceeds n's length or starts with a leading zero), then dedupe across overlapping pairs so numbers that qualify for more than one pair aren't double-counted."
+ },
+ {
+  "name": "Required Length",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1681/D",
+  "difficulty": "1700",
+  "subtopic": "state-space BFS/DFS over digit-multiplication moves",
+  "description": "Given integers x and n (2 ≤ n ≤ 19), repeatedly multiply x by one of the digits currently appearing in it; find the minimum number of such multiplications needed to make x have exactly n decimal digits, or report it impossible.",
+  "why_hard": "Blindly trying multiplication sequences explodes combinatorially, but the set of distinct integers actually reachable while n stays ≤ 19 digits is small enough to fit in a visited set — recognizing that bound is what turns this into a tractable BFS/DFS over states (each x branching to x·y for every digit y it currently contains) that finds the shortest path to any n-digit value."
+ },
+ {
+  "name": "One-Based Arithmetic",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/440/C",
+  "difficulty": "1800",
+  "subtopic": "iterative deepening DFS with pruning",
+  "description": "Given n (n < 10^15), represent n as a signed sum of repunits (numbers made only of the digit 1, such as 1, 11, 111, ...) and find the minimum total count of 1-digits used across all addends.",
+  "why_hard": "The space of signed repunit combinations is unbounded in principle, so the standard fix is iterative-deepening DFS: try increasing total digit budgets, and at each depth recursively add or subtract multiples of the largest repunit not exceeding the remaining value, pruning any branch whose digit count already exceeds the current best — plain backtracking needs an explicit depth bound and aggressive pruning here to stay fast."
+ },
+ {
+  "name": "Nearest Beautiful Number (easy version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1560/F1",
+  "difficulty": "1900",
+  "subtopic": "backtracking digit construction with recursive fallback",
+  "description": "Given n (up to 10^9) and k ≤ 2, find the smallest integer x ≥ n whose decimal representation uses at most k distinct digits.",
+  "why_hard": "You can't just scan upward from n, so the fix is to try bumping each digit position from the right, then recursively fill the remaining suffix with the smallest digits that keep the ≤k-distinct-digit constraint; if no completion works at one anchor position you must backtrack further left and retry — the same 'next value under a constraint' backtracking pattern as constrained next-permutation problems."
+ },
+ {
+  "name": "K-beautiful Strings",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1493/C",
+  "difficulty": "2000",
+  "subtopic": "backtracking over increment position with greedy fill",
+  "description": "Given a string s of length n and integer k, find the lexicographically smallest string of length n that is ≥ s where every letter's occurrence count is divisible by k, or report that none exists.",
+  "why_hard": "The natural strategy — keep the longest prefix of s and raise some suffix position — requires scanning candidate increment positions from the right, and for each one running a feasibility check plus a greedy fill of the remaining suffix under the divisibility constraint; when a position can't be completed you must backtrack further left and try an earlier one, and proving the greedy fill is optimal once a position is feasible is the subtle part."
  }
 ]

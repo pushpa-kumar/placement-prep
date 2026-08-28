@@ -205,5 +205,50 @@
   "subtopic": "Möbius Inversion",
   "description": "Given n integers up to 10^6, count the number of pairs that are coprime.",
   "why_hard": "The standard entry-level-but-still-nontrivial Möbius sieve counting problem — a clean verification target before tackling 803F/1043F."
+ },
+ {
+  "name": "Kuroni and Impossible Calculation",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1305/C",
+  "difficulty": "1600",
+  "subtopic": "Modular Arithmetic (Pigeonhole)",
+  "description": "Given n integers and a modulus m, compute the product of |a_i − a_j| over every pair i < j, modulo m.",
+  "why_hard": "With n up to 2·10^5, only pigeonhole rescues the problem: since m ≤ 1000, once n > m two elements must share the same residue mod m, forcing some factor — and hence the whole product — to be 0 mod m; spotting that early-exit is the entire solution, since below it the array is small enough to brute-force the O(n^2) product directly."
+ },
+ {
+  "name": "Bear and Prime Numbers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/385/C",
+  "difficulty": "1700",
+  "subtopic": "Sieve-based Divisor Counting",
+  "description": "Given up to 10^6 integers (each ≤ 10^7) and up to 5·10^4 queries [l, r], answer for each query the sum over every prime p in [l, r] of how many array elements are divisible by p.",
+  "why_hard": "Query bounds run up to 2·10^9, but no array value can have a prime factor above 10^7, so the trick is to build a sieve-based prime-divisor-count array only up to 10^7, prefix-sum it once, and clamp every query's upper bound to 10^7 — missing that clamp is the classic trap that blows up a naive per-query sieve."
+ },
+ {
+  "name": "Count GCD",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1750/D",
+  "difficulty": "1800",
+  "subtopic": "GCD-constrained Combinatorial Counting",
+  "description": "Given an array a of length n (values ≤ m), count arrays b of the same length and bound such that gcd(b_1, ..., b_i) = a_i for every prefix i, modulo 998244353.",
+  "why_hard": "First requires the existence check that a_i must divide a_{i-1}; then, writing b_i = a_i·c_i, each step reduces to counting values of c_i up to a_{i-1}/a_i that are coprime to a_{i-1}/a_i — an Euler-totient-style count computed via a precomputed smallest-prime-factor sieve rather than one direct closed-form."
+ },
+ {
+  "name": "Almost Identity Permutations",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/888/D",
+  "difficulty": "1600",
+  "subtopic": "Combinatorial Counting (Choose + Derangement)",
+  "description": "Given n (≤1000) and k (≤4), count permutations of 1..n in which at least n−k indices satisfy p_i = i.",
+  "why_hard": "The count is a sum over j = 0..k of C(n, j) times D(j), the number of derangements of j elements — the real insight is that k ≤ 4 means only the derangement counts 0,1,2,9,44 are ever needed, turning what looks like a general inclusion-exclusion derivation into a five-case lookup."
+ },
+ {
+  "name": "Modular Stability",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1359/E",
+  "difficulty": "2000",
+  "subtopic": "GCD-based Combinatorics",
+  "description": "Given n and k, count strictly increasing arrays 1 ≤ a_1 < ... < a_k ≤ n such that x mod a_1 mod a_2 ... mod a_k gives the same value no matter what order the a_i are applied in, for every non-negative integer x, modulo 998244353.",
+  "why_hard": "The permutation-invariance condition on nested mod operations collapses, after careful case analysis, to a single surprising arithmetic fact: only the smallest chosen element a_1 must divide every other element — turning the count into 'for each candidate smallest divisor d, choose the rest freely from its multiples up to n,' summed efficiently over all d."
  }
 ]

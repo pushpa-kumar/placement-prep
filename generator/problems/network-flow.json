@@ -160,5 +160,41 @@
   "subtopic": "Hungarian Algorithm",
   "description": "Choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.",
   "why_hard": "Listed by USACO Guide as a direct application of the assignment-problem/Hungarian-algorithm machinery (offers × activation-month slots with a cost/profit matrix)."
+ },
+ {
+  "name": "T-shirts Distribution",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/727/D",
+  "difficulty": "1800",
+  "subtopic": "bipartite matching",
+  "description": "Given fixed stock counts for six t-shirt sizes and n participants who each want either one fixed size or either of two neighboring sizes, decide if everyone can be given a shirt and construct a valid assignment.",
+  "why_hard": "The six sizes form a tiny path graph where flexible requests are edges between neighbors; satisfying a flexible participant can starve a rigid neighbor, so the fix is an augmenting-path (max-flow) adjustment cascading along the size chain rather than one-pass greedy assignment."
+ },
+ {
+  "name": "Single-use Stones",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/965/D",
+  "difficulty": "1900",
+  "subtopic": "max flow",
+  "description": "Given a river of width w crossable by jumps of length up to l and a limited supply of stones at each intermediate distance (each stone usable by only one frog), find the maximum number of frogs that can cross.",
+  "why_hard": "Scarce, single-use stones are modeled as flow capacity via node-splitting (in/out per position) with edges to every position within jump range; the trick is realizing frog crossings are literally units of flow rather than a shortest-path or simulation problem."
+ },
+ {
+  "name": "Valuable Paper",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1423/B",
+  "difficulty": "1900",
+  "subtopic": "bipartite matching",
+  "description": "Given n factories and n airports connected by weighted roads, find a perfect one-to-one matching between them minimizing the maximum road weight used, or report it's impossible.",
+  "why_hard": "The min-max objective needs binary search over edge weights, and each check is a genuine perfect bipartite matching existence test on the threshold subgraph — practice recognizing when a direct Kuhn's/Hopcroft-Karp call is the right feasibility check, not Hall's-theorem counting."
+ },
+ {
+  "name": "Koxia and Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1770/D",
+  "difficulty": "2000",
+  "subtopic": "bipartite matching",
+  "description": "Count arrays c (mod a prime) such that, in the round game where Koxia removes one of {a_i, b_i, c_i} each round and adversarial Mahiru then picks the surviving value, Koxia can always force the final sequence to be a permutation of 1..n.",
+  "why_hard": "Turning \"Koxia can force a permutation regardless of Mahiru's pick\" into a checkable condition reduces to a Hall's-theorem-style deficiency/matching argument over the value graph formed by a and b, then the count of valid c must respect that structural condition rather than being a plain combinatorial count."
  }
 ]

@@ -223,5 +223,50 @@
   "subtopic": "Merge Intervals",
   "description": "Given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.",
   "why_hard": "Combines a coverage-counting sweep (via segment endpoint events) with merging the resulting \"covered ≥ k times\" points back into a minimal list of maximal merged segments."
+ },
+ {
+  "name": "Counting Kangaroos is Fun",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/372/A",
+  "difficulty": "1600",
+  "subtopic": "two-pointer greedy matching (sorted array)",
+  "description": "Given n kangaroo sizes, a kangaroo can hide inside another's pocket only if the holder is at least twice its size (each kangaroo can hold at most one, and a held kangaroo can't itself hold another); minimize the number of visible kangaroos.",
+  "why_hard": "After sorting, the optimal strategy greedily pairs the smallest unmatched kangaroo with the smallest kangaroo in the upper half able to hold it, advancing two pointers from the middle outward — the two-pointer greedy needs a matching-theory argument to prove optimality, not just intuition."
+ },
+ {
+  "name": "Eugene and an array",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1333/C",
+  "difficulty": "1700",
+  "subtopic": "prefix-sum two pointers (subarray counting)",
+  "description": "Count the number of nonempty subarrays of an array (values may be negative) in which every one of its own subarrays has a nonzero sum, i.e., subarrays with no internal zero-sum stretch.",
+  "why_hard": "A subarray is \"good\" exactly when its prefix sums are pairwise distinct, so for each right endpoint the left boundary must stay past the most recent repeated prefix sum; maintaining that boundary with a hashmap of last-seen prefix sums turns a seemingly combinatorial zero-sum-subarray condition into a monotonic two-pointer sweep."
+ },
+ {
+  "name": "Count Triangles",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1355/C",
+  "difficulty": "1800",
+  "subtopic": "two pointers over sorted ranges (counting)",
+  "description": "Given A ≤ B ≤ C ≤ D, count integer-sided non-degenerate triangles (x, y, z) with A ≤ x ≤ B ≤ y ≤ C ≤ z ≤ D.",
+  "why_hard": "The only binding triangle inequality is z < x + y, so the count of valid z for a pair (x, y) is a simple range length; summing that over all O((B−A)(C−B)) pairs directly is too slow, so the trick is a two-pointer sweep over x and y where the z-threshold moves monotonically, letting you accumulate the answer in linear time."
+ },
+ {
+  "name": "1D Sokoban",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1494/C",
+  "difficulty": "1900",
+  "subtopic": "two pointers + binary search (box-pushing compaction)",
+  "description": "Starting at position 0 on an infinite line with n boxes and m special positions, you can walk left/right and any boxes in your path get pushed along with you (never pulled); choose your movements to maximize the number of boxes ending on special positions.",
+  "why_hard": "Pushed boxes compact together, so walking to some farthest point R on one side always leaves the boxes there stacked at consecutive positions ending at R, collapsing the search to one free \"how far right\" and one free \"how far left\" parameter; matching the resulting compressed positions against the sorted special positions with two pointers, then combining a right-then-left pass with a left-then-right pass, is the non-obvious part."
+ },
+ {
+  "name": "Robin Hood",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/671/B",
+  "difficulty": "2000",
+  "subtopic": "binary search on answer + prefix sums (sorted array)",
+  "description": "Given n citizens' coin counts and k days, where each day one coin moves from a current richest citizen to a current poorest citizen, compute the gap between the richest and poorest amounts after k days.",
+  "why_hard": "Simulating up to 10^9 days directly is impossible, so the trick is binary searching independently on the final minimum and maximum values and using prefix sums over the sorted array to compute, in O(1), how many coin-moves are needed to lift everyone up to a candidate floor (or cap everyone at a candidate ceiling) within the day budget."
  }
 ]

@@ -79,5 +79,50 @@
   "subtopic": "Combinatorial Game Sums & Misère Play (non-XOR game sum)",
   "description": "With n heaps of coins where a move selects any subset of nonempty heaps and removes one coin from each, and the player who removes the last coin wins, determine the winner under optimal play.",
   "why_hard": "This move rule (remove from many heaps simultaneously) is not standard Nim and the naive Sprague-Grundy XOR-of-piles rule does not directly apply; the correct analysis works bit-by-bit across the binary representations of the heap sizes, testing whether the solver understands the limits of the basic Nim-sum shortcut and can derive the right combination rule from first principles."
+ },
+ {
+  "name": "Plate Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/197/A",
+  "difficulty": "1600",
+  "subtopic": "symmetry strategy",
+  "description": "Two players alternately place a circular plate of the same fixed radius on an a x b rectangular table, plates may not overlap and must lie entirely within the table; the player who cannot place another plate loses — determine the winner.",
+  "why_hard": "The board is continuous, not a discrete grid, so there's no finite state space to search; the winner is settled by a symmetry-stealing argument — if one plate fits at all, the first player places it exactly at the table's center and then mirrors every later move of the opponent through that center, which guarantees a legal reply forever."
+ },
+ {
+  "name": "1-2-K Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1194/D",
+  "difficulty": "1700",
+  "subtopic": "subtraction games",
+  "description": "A chip starts on cell n of a strip numbered 0 to n; each move shifts it left by exactly 1, 2, or k cells without going below 0, and the player who cannot move loses — answer many independent (n, k) queries for the winner.",
+  "why_hard": "The plain subtraction game with moves {1, 2} has clean period-3 losing positions, but throwing in the extra move k can either fold into that period or create its own; you must case-split on k mod 3 (with a special mod (k+1) correction when k mod 3 == 0) to get the right closed-form winner, since neither case reduces to a single simple formula."
+ },
+ {
+  "name": "Stoned Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1396/B",
+  "difficulty": "1800",
+  "subtopic": "parity argument",
+  "description": "n piles of stones; players alternately remove exactly one stone from a nonempty pile, but may not pick the pile the opponent just picked on the immediately preceding turn (the first move is unrestricted) — the player unable to choose a pile loses.",
+  "why_hard": "There's no XOR/Grundy structure to exploit here; the winner is decided by comparing the largest pile to the sum of the rest — if it strictly exceeds that sum the first player wins by relentlessly attacking it, and otherwise the whole game collapses to just the parity of the total stone count, a two-case result that has to be proven via an exchange argument rather than computed directly."
+ },
+ {
+  "name": "A Lot of Games",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/455/B",
+  "difficulty": "1900",
+  "subtopic": "game dp on a trie",
+  "description": "Two players play the standard build-a-common-prefix word game (on a trie of n given strings) k times in a row; the loser of game i moves first in game i+1, and the overall winner is whoever wins the k-th game — determine the outcome of the whole match under optimal play.",
+  "why_hard": "Winning each individual game is not the goal — a player may need to deliberately lose an early game just to seize the first move later, so the real task is a two-flag DP over the trie (can-force-a-win, can-force-a-loss from this node) that lets you determine, for any starting mover, whether they can force any outcome they like across the sequence of k games."
+ },
+ {
+  "name": "Fox and Card Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/388/C",
+  "difficulty": "2000",
+  "subtopic": "greedy exchange argument",
+  "description": "n piles of cards; on each turn a player takes one card from the top of any nonempty pile (Ciel) or the bottom of any nonempty pile (Jiro), each trying to maximize their own total — compute both players' optimal final scores.",
+  "why_hard": "Minimax over the real move tree is infeasible; the actual solution sorts each pile and gives Ciel the top half by value and Jiro the bottom half, but odd-sized piles each leave one 'middle' card behind — those middles get pooled into a single shared array that both players then draft greedily in turn — and proving this reduction is optimal (not just simulating it) is the real content of the problem."
  }
 ]

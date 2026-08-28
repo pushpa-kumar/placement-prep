@@ -583,5 +583,50 @@
   "subtopic": "DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)",
   "description": "Given cuboid dimensions (each freely rotatable), stack cuboids on top of each other (each dimension of the one on top must be ≤ the one below) to maximize total height.",
   "why_hard": "A 3D generalization of the LIS/patience-sorting family — requires normalizing each cuboid's dimensions, sorting, then running an O(n²) or O(n log n) longest-chain DP, testing whether the LIS-style reduction insight transfers to three dimensions."
+ },
+ {
+  "name": "Alyona and the Tree",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/682/C",
+  "difficulty": "1600",
+  "subtopic": "tree dp",
+  "description": "On a rooted tree with vertex values a_u and possibly-negative edge weights, a vertex v is \"sad\" if some vertex u in its subtree has dist(v, u) > a_u; find the minimum number of leaves to repeatedly remove so that no vertex is sad.",
+  "why_hard": "Since a_u belongs to the descendant u rather than the ancestor v, being sad reduces to comparing dist(root, u) - a_u against the minimum prefix distance along the root-to-u path, so a correct bottom-up solution has to merge each subtree's multiset of \"excess distance\" values (typically via small-to-large merging) rather than combine a single scalar DP value per child."
+ },
+ {
+  "name": "Party Lemonade",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/913/C",
+  "difficulty": "1600",
+  "subtopic": "knapsack variant dp",
+  "description": "Bottle type i holds 2^(i-1) liters and costs c_i roubles, with unlimited supply of each type; buy bottles to get at least L liters (L up to 1e9) at minimum total cost.",
+  "why_hard": "You first need a pass forcing c_i = min(c_i, 2*c_{i-1}) so two smaller bottles are never secretly cheaper than the next size up, then, because L is astronomically larger than the 30 bottle types, the remaining choice collapses to deciding at each size whether to round up with one extra bottle or keep matching bits of L exactly — a knapsack whose \"capacity\" dimension had to be eliminated before it became tractable."
+ },
+ {
+  "name": "Bicolorings",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1051/D",
+  "difficulty": "1700",
+  "subtopic": "bitmask dp",
+  "description": "Given a 2xn grid to color black/white, count colorings (mod 998244353) that produce exactly k same-color connected components, for n up to 1000 and k up to 2n.",
+  "why_hard": "Each of the 4 possible colorings of a new column can merge zero, one, or two existing components with the previous column depending on the exact color pattern, so the bitmask DP over (column coloring, components so far) needs a small hand-verified case table for how the component count changes rather than a uniform +0/+1 transition."
+ },
+ {
+  "name": "Classy Numbers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1036/C",
+  "difficulty": "1900",
+  "subtopic": "digit dp",
+  "description": "Given up to 1e4 queries, each with a range [L, R] where R can be up to 1e18, count integers in [L, R] whose decimal representation contains no more than 3 non-zero digits.",
+  "why_hard": "The \"at most 3 non-zero digits\" constraint must be tracked as extra DP state alongside the usual tight/free digit-position flag, and with 1e4 queries against R up to 1e18 the digit DP (or its combinatorial closed-form counting choices of positions and digit values) has to stay cheap per query rather than rebuilt from scratch each time."
+ },
+ {
+  "name": "Famil Door and Brackets",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/629/C",
+  "difficulty": "2000",
+  "subtopic": "balance/prefix dp on bracket sequences",
+  "description": "Given a bracket string s of length m and a target length n (with n - m <= 2000), count pairs of prefix/suffix bracket strings p, q such that p + s + q is a valid balanced sequence of length n, modulo 1e9+7.",
+  "why_hard": "p and q must each keep the running balance non-negative while jointly landing on a total balance of zero, so the count factors into a DP over balance change contributed by p combined with a Catalan-triangle-style reflection count for q, with the DP window kept to O((n-m)^2) instead of the much larger n so it stays efficient despite n up to 1e5."
  }
 ]

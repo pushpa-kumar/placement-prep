@@ -232,5 +232,50 @@
   "subtopic": "2D Fenwick Tree / 2D Range Queries",
   "description": "Given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.",
   "why_hard": "The classic \"3D dominance counting\" problem — sort by one dimension, sweep, and use a 2D Fenwick tree (or Fenwick tree over compressed second coordinate) to answer 2D dominance counts online, a staple pattern for offline dominance/partial-order problems."
+ },
+ {
+  "name": "Destroying Array",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/722/C",
+  "difficulty": "1600",
+  "subtopic": "DSU (offline, process deletions in reverse)",
+  "description": "Given an array and an order in which its elements are destroyed one at a time, after each destruction report the maximum sum of a contiguous segment consisting only of surviving elements.",
+  "why_hard": "The trick is to process the deletions in reverse — start from an empty array and add elements back in reverse order, using a DSU where each newly-added element merges with its already-present neighbors while every component tracks its subarray sum and a running global maximum — then print the collected answers in reverse order."
+ },
+ {
+  "name": "Petya and Array",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1042/D",
+  "difficulty": "1800",
+  "subtopic": "Fenwick Tree / BIT (coordinate compression on prefix sums)",
+  "description": "Given an array of up to 2*10^5 integers (positive, negative, or zero) and a threshold t, count the number of contiguous subarrays whose sum is strictly less than t.",
+  "why_hard": "Rewriting sum(l+1..r) < t as prefix[r] - prefix[l] < t (i.e. prefix[l] > prefix[r] - t) turns the task into, for each r, counting previously-seen prefix sums that exceed a threshold — answered with a Fenwick tree over coordinate-compressed prefix sums, since sums can reach 2*10^14 and negative elements rule out a sliding window."
+ },
+ {
+  "name": "Sereja and Brackets",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/380/C",
+  "difficulty": "2000",
+  "subtopic": "Segment Tree (merging bracket-matching state)",
+  "description": "Given a string of up to 10^6 parentheses and up to 10^5 range queries [l, r], report the length of the longest well-formed (regular) bracket subsequence contained within that substring.",
+  "why_hard": "Each segment-tree node stores the count of unmatched '(' and unmatched ')' in its range; merging two children cancels min(left.unmatched_open, right.unmatched_close) pairs, and the query answer is 2 times the number of matched pairs in the range — a canonical segment-tree-with-a-custom-merge-operator technique."
+ },
+ {
+  "name": "Maximum Xor Secondary",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/280/B",
+  "difficulty": "1800",
+  "subtopic": "Monotonic Stack",
+  "description": "Given n distinct integers, define the \"lucky number\" of any contiguous subarray as the XOR of its maximum and second-maximum elements, and find the largest lucky number over all subarrays.",
+  "why_hard": "Checking all O(n^2) subarrays is too slow; scanning left to right with a decreasing monotonic stack, every element popped off the stack is paired with the element now on top as a genuine (max, second-max) candidate for some subarray, cutting the search down to O(n) candidate pairs — the same stack used for previous/next-greater-element queries, repurposed to enumerate max/second-max pairs directly."
+ },
+ {
+  "name": "Yunli's Subarray Queries (easy version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/2009/G1",
+  "difficulty": "1900",
+  "subtopic": "Sparse Table (static range maximum)",
+  "description": "Given a permutation-like array of 1..n and a fixed window length k, for each query index l answer f(a[l..l+k-1]): the minimum number of single-element changes needed so the window contains a run of k consecutive integers increasing by exactly 1.",
+  "why_hard": "Precompute, for each position i, the length of the longest suffix ending at i that already forms a run of consecutive-by-one values; since this array is static across all queries, each answer reduces to k minus the maximum of that array (capped at k) over the query window — an O(1)-per-query static range-maximum lookup via a sparse table after O(n log n) preprocessing."
  }
 ]

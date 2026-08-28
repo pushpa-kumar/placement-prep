@@ -187,5 +187,50 @@
   "subtopic": "Order Statistics / Quickselect",
   "description": "Given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.",
   "why_hard": "Generalizes k-th-order-statistic reasoning to combining sums across many sorted lists, requiring a heap-based or binary-search-based order-statistics merge across more than two arrays. - Difference Arrays: blog/entry/86420, blog/entry/88474 - Two-Pointer Partitioning: blog/entry/94534 - Monotonic Deque: blog/entry/122003 - Merge Intervals: blog/entry/98629, blog/entry/20377 - Ternary Search on Unimodal Functions: blog/entry/60702, blog/entry/135892 - Custom Comparators & Multi-Key Sorting: blog/entry/63533 - Order Statistics / Quickselect: blog/entry/11080, blog/entry/95575"
+ },
+ {
+  "name": "Hamburgers",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/371/C",
+  "difficulty": "1600",
+  "subtopic": "binary search on the answer + greedy feasibility check",
+  "description": "Given a hamburger recipe string of B/S/C characters, current stock of each ingredient, a price per unit for buying more of each, and a budget, find the maximum number of hamburgers that can be made.",
+  "why_hard": "The number of hamburgers makeable is monotonic in cost, so binary search over the answer; checking whether k hamburgers are affordable is an O(1) computation from the recipe's ingredient counts, but the huge budget (up to 10^12) and correspondingly huge possible answer make the search range itself something you have to reason about carefully."
+ },
+ {
+  "name": "The Meeting Place Cannot Be Changed",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/780/B",
+  "difficulty": "1700",
+  "subtopic": "binary search on the answer + interval intersection",
+  "description": "Given n friends at positions on a line, each with their own maximum speed, find the minimum time needed for all of them to be able to gather at one common (possibly non-integer) meeting point.",
+  "why_hard": "At time t each friend can reach any point in the interval [x_i − v_i·t, x_i + v_i·t], so feasibility is just checking whether n intervals intersect; the real insight is that this reachable-interval feasibility is monotonic in t, letting a continuous, real-valued optimization be solved via binary search on time down to 1e-6 precision."
+ },
+ {
+  "name": "Friends and Presents",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/483/B",
+  "difficulty": "1800",
+  "subtopic": "binary search on the answer + inclusion-exclusion counting",
+  "description": "Given two distinct primes x and y and target counts cnt1, cnt2, find the smallest v such that cnt1 distinct numbers not divisible by x and cnt2 distinct numbers not divisible by y can be chosen from [1, v], using each number for at most one of the two people.",
+  "why_hard": "The feasibility check for a candidate v is not a simple count — numbers divisible by both x and y (i.e. by x·y) are unusable by either friend, so you need inclusion-exclusion to work out how many numbers are exclusively available to each friend versus shared, before the whole thing can be wrapped in a binary search on v."
+ },
+ {
+  "name": "Salary Changing",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1251/D",
+  "difficulty": "1900",
+  "subtopic": "binary search on the answer + greedy budget allocation",
+  "description": "Given n (odd) employees each with a salary range [l_i, r_i] and a total budget s (with the sum of all l_i guaranteed ≤ s), choose a salary for every employee within their range to maximize the median salary without exceeding the budget.",
+  "why_hard": "Binary search on the candidate median m: achieving median ≥ m requires picking (n+1)/2 employees to raise to at least m, and the feasibility check is a greedy cost-minimization — free for employees whose l_i already ≥ m, cheapest-r_i-first for the rest — while everyone else sits at their minimum, so the answer's monotonicity has to be paired with a nontrivial greedy costing subroutine."
+ },
+ {
+  "name": "Robin Hood",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/671/B",
+  "difficulty": "2000",
+  "subtopic": "binary search on the answer + sorted prefix sums",
+  "description": "Given n citizens' wealth values and k days, where each day one coin moves from the richest citizen to the poorest, find the difference between the maximum and minimum wealth after exactly k days.",
+  "why_hard": "With k up to 1e9, simulating day-by-day is impossible; instead you binary search separately on the final minimum and maximum wealth levels, using sorted wealth plus prefix sums to compute in O(log n) how many coin-moves are needed to bring everyone below a threshold up to it (or above a threshold down to it), then compare the required move counts against k."
  }
 ]

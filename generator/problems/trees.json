@@ -169,5 +169,50 @@
   "subtopic": "Tree Isomorphism / Canonical Form",
   "description": "Find a vertex whose removal splits a tree into two or more pairwise-isomorphic (\"identical\") subtrees, and report the maximum possible number of pieces.",
   "why_hard": "The problem statement explicitly defines tree isomorphism via a bijection preserving adjacency, then requires efficiently comparing many candidate subtrees for isomorphism using canonical hashing rather than brute-force bijection search."
+ },
+ {
+  "name": "The Fair Nut and the Best Path",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1083/A",
+  "difficulty": "1800",
+  "subtopic": "Tree DP (Best Path)",
+  "description": "Each vertex of a tree holds a fixed amount of gasoline and each edge costs gasoline equal to its length to cross; starting anywhere, walk a simple path (or stay put) and find the maximum gasoline left at the end, given the tank may never go negative along the way.",
+  "why_hard": "The \"never go negative\" constraint looks like it forces a much messier DP, but the key insight is that any prefix of an optimal path already keeps non-negative gas, so the standard tree-DP (best single downward chain per vertex, combined from the two best children) applies directly once you see why the constraint never actually binds."
+ },
+ {
+  "name": "Choosing Capital for Treeland",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/219/D",
+  "difficulty": "1700",
+  "subtopic": "Tree DP (Rerooting)",
+  "description": "Given a tree whose edges are fixed one-way roads, choose a capital city minimizing the number of roads that must be reversed so every city becomes reachable from it, and report that minimum along with every city achieving it.",
+  "why_hard": "A single DFS only computes the reversal cost for one fixed root; getting the cost for every possible root efficiently requires the classic re-rooting trick — derive each child's answer from its parent's in O(1) based on whether the connecting edge already points the right way, instead of re-running DFS from scratch for every candidate capital."
+ },
+ {
+  "name": "New Year Santa Network",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/500/D",
+  "difficulty": "1900",
+  "subtopic": "Distance Sum via Edge Contribution",
+  "description": "On a weighted tree, maintain the expected value of the sum of pairwise distances over a uniformly random triple of distinct cities, and after each update that shrinks a single edge's length, output the updated expectation.",
+  "why_hard": "The sum of pairwise distances over a random triple reduces, via a double-counting identity, to a multiple of the ordinary sum of pairwise distances over all vertex pairs, which in turn decomposes edge-by-edge as (subtree size) x (n - subtree size) x (edge weight) — so every edge-weight update only requires updating one precomputed term instead of touching any actual path."
+ },
+ {
+  "name": "Military Problem",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1006/E",
+  "difficulty": "1600",
+  "subtopic": "Euler Tour",
+  "description": "Given a rooted tree where each vertex's children are visited in increasing index order, answer queries of the form \"what is the k-th vertex visited in the DFS traversal starting at vertex u,\" or -1 if fewer than k vertices are visited.",
+  "why_hard": "Since a DFS subtree occupies a contiguous block in the Euler tour (entry-time order with children sorted by index), each query reduces to indexing k positions into the precomputed tour starting at u's entry time — the whole difficulty is recognizing that reformulation rather than simulating a DFS per query."
+ },
+ {
+  "name": "Kay and Snowflake",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/685/B",
+  "difficulty": "1900",
+  "subtopic": "Centroid of a Tree",
+  "description": "Given a rooted tree and multiple queries each naming a vertex v, report the centroid of the subtree rooted at v — the vertex whose removal leaves no remaining component larger than half the subtree's size.",
+  "why_hard": "Answering each query with an independent centroid search would be too slow; the fix is to observe that a subtree's centroid always lies on the chain of heaviest children starting from its root, so precomputing each vertex's heavy child lets you walk straight down from v to the answer in time proportional to that chain, not the whole subtree."
  }
 ]

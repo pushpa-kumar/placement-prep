@@ -115,5 +115,50 @@
   "subtopic": "Fractional vs. 0/1 Greedy Recognition (0/1 requires DP, not greedy)",
   "description": "Given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.",
   "why_hard": "Looks like it should admit a simple ratio-greedy (as in fractional knapsack), but the hard per-category cardinality caps and 0/1 (indivisible) selection mean the true solution needs a knapsack-style DP over category counts combined with a greedy sort within each category — a clean test of recognizing exactly which part of the problem greedy can solve and which needs DP."
+ },
+ {
+  "name": "Elections",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1978/D",
+  "difficulty": "1600",
+  "subtopic": "greedy exclusion order (max-heap of rivals)",
+  "description": "For each candidate i in turn, given n candidates' fan counts and c undecided voters (who back the lowest-numbered remaining candidate), find the minimum number of other candidates who must be excluded so that i wins.",
+  "why_hard": "You must always exclude every lower-numbered candidate first to keep i's tie-break edge, then greedily strip away the higher-numbered rivals with the most votes via a max-heap — proving that removing the biggest threat first, rather than any other order, is always at least as good is the crux exchange argument, and it has to be redone efficiently for every candidate."
+ },
+ {
+  "name": "Long Inversions",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1955/E",
+  "difficulty": "1700",
+  "subtopic": "greedy leftmost-flip simulation + binary search",
+  "description": "Given a binary string, repeatedly choose a contiguous substring of some fixed length k and flip every bit in it; find the largest k for which the whole string can be turned into all 1s.",
+  "why_hard": "The feasibility check for a fixed k is a clean greedy: scan left to right and flip a length-k window whenever you hit the first uncovered 0; proving this leftmost-first choice is never wrong — a forced early flip can't hurt any later decision — is the exchange argument that lets you wrap the whole check in a binary search on k instead of reasoning about every possible flip order."
+ },
+ {
+  "name": "Competitive Fishing",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/2042/C",
+  "difficulty": "1800",
+  "subtopic": "greedy prefix-sum + binary search on group count",
+  "description": "Alice and Bob's n caught fish (ordered smallest to largest) must be split into m consecutive groups worth 0, 1, 2, ... points each; find the minimum m so that Bob's total value exceeds Alice's by at least k, or report it's impossible.",
+  "why_hard": "The score gap isn't obviously well-behaved as m grows, and computing the best possible gap for a fixed m requires the insight that boundaries should be placed to greedily push the highest group values onto Bob's fish — turning a combinatorial partition question into a single prefix-sum pass you can binary search over."
+ },
+ {
+  "name": "Shop Game",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1969/D",
+  "difficulty": "1900",
+  "subtopic": "greedy under adversarial exchange (two-player pricing)",
+  "description": "Alice buys a subset of n items (cost a_i to her); if she buys fewer than k items Bob takes them all for free, otherwise Bob picks k of them to take free and pays b_i for the rest — find Alice's maximum profit assuming Bob always plays to minimize it.",
+  "why_hard": "Bob's optimal reply is itself greedy (always take the k highest-b items free), so Alice's choice has to be reasoned about one layer up: for each candidate purchase size you sort and prefix-sum both arrays to see which items are still worth buying once Bob's best response is priced in — a nested exchange argument rather than a single-pass greedy."
+ },
+ {
+  "name": "Money Buys Less Happiness Now",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1974/G",
+  "difficulty": "2000",
+  "subtopic": "greedy with max-heap swap (regret greedy)",
+  "description": "Over m months, earning a fixed salary x each month and never allowed to borrow, decide which months to buy one unit of happiness (cost c_i that month) so as to maximize the total number of units bought.",
+  "why_hard": "A simple \"buy whenever affordable\" pass fails, so the correct greedy tentatively buys every affordable item and pushes its cost onto a max-heap, then whenever a later purchase can't be afforded it swaps out the priciest item bought so far for the cheaper current one when that frees up enough balance — the same \"regret\" exchange-argument pattern as classic buy-low-sell-high stock problems, but applied to a cash-flow constraint instead of a profit one."
  }
 ]

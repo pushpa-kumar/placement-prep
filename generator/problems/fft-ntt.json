@@ -63,6 +63,24 @@
   "why_hard": "Translating the subarray condition into prefix-sum differences and counting them for every k simultaneously requires expressing the count as a self-convolution. --- Note: CSES's Advanced Techniques / Graph Algorithms sections were checked directly and contain no FFT/NTT/polynomial-multiplication problem (e.g. \"Polynomial Queries\" is a segment-tree range-update problem, not FFT-related), so this topic is sourced entirely from Codeforces."
  },
  {
+  "name": "Short Permutation Problem",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/1909/I",
+  "difficulty": "1900",
+  "subtopic": "polynomial multiplication (binomial convolution)",
+  "description": "For every pair (m, k) with 3 ≤ m ≤ n+1 and 0 ≤ k ≤ n-1, count permutations of 1..n whose number of adjacent pairs summing to at least m equals exactly k, then output a single weighted checksum combining all of these counts.",
+  "why_hard": "A single value of m is a routine O(n) DP, but the editorial's insight is that the shared 'insert the small elements first' portion of that DP is the same binomial-coefficient recurrence for every m, so batching all m simultaneously only reaches the required O(n^2 log n) once that shared part is written as a convolution and evaluated with NTT."
+ },
+ {
+  "name": "Maple and Tree Beauty (Hard Version)",
+  "judge": "Codeforces",
+  "link": "https://codeforces.com/problemset/problem/2138/C2",
+  "difficulty": "2000",
+  "subtopic": "polynomial multiplication (subset-sum knapsack)",
+  "description": "Given a rooted tree whose vertices will be labeled with exactly k zeros and n-k ones so that each vertex's name is the root-to-vertex label string, choose the labeling that maximizes the longest common subsequence shared by every vertex name, for n up to 2×10^5.",
+  "why_hard": "The optimum reduces to a 0/1 knapsack feasibility question over the per-depth node counts c_1..c_d (can some subset sum to exactly k); the intended fix is a bitset-accelerated subset-sum, but the clean O(n log n) route multiplies the polynomials (1+x^{c_i}) via formal-power-series log/exp (NTT-based Newton iteration) instead of the O(n^2/w) DP table."
+ },
+ {
   "name": "Painting a Grid With Three Different Colors",
   "judge": "LeetCode",
   "link": "https://leetcode.com/problems/painting-a-grid-with-three-different-colors/",
