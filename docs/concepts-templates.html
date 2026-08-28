@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="templates-instantiation">
-  <h3>Templates &amp; instantiation</h3>
+  <h3>Templates &amp; instantiation<button type="button" class="done-checkbox" data-item-id="templates-instantiation" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A template is a blueprint, not code that runs directly — the compiler generates (&quot;instantiates&quot;) a genuinely separate, concrete function or class for every DISTINCT combination of template arguments actually used in the program. This gives you fully generic source code that compiles down to specialized, non-generic machine code for each instantiation — no runtime type checks, no boxing, no dispatch overhead — at the cost of longer compile times and larger binaries (&quot;code bloat&quot;) if many distinct instantiations get generated.</p></div>
   <div class="example-box">
   <div class="ex-title">Two calls, two entirely separate instantiations</div>
@@ -292,7 +320,7 @@ b.value = <span class="tok-number">5</span>;
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#crtp-curiously-recurring-template-pattern" data-related-href="#crtp-curiously-recurring-template-pattern">CRTP (Curiously Recurring Template Pattern)</a><a class="related-tag" href="#sfinae-substitution-failure-is-not-an-error" data-related-href="#sfinae-substitution-failure-is-not-an-error">SFINAE (Substitution Failure Is Not An Error)</a><a class="related-tag" href="#concepts-c-20" data-related-href="#concepts-c-20">Concepts (C++20)</a></div>
 </article><article class="concept-card" id="sfinae-substitution-failure-is-not-an-error">
-  <h3>SFINAE (Substitution Failure Is Not An Error)</h3>
+  <h3>SFINAE (Substitution Failure Is Not An Error)<button type="button" class="done-checkbox" data-item-id="sfinae-substitution-failure-is-not-an-error" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>During overload resolution for a template function, the compiler substitutes candidate template arguments into each overload&#x27;s signature to see if it&#x27;s viable. SFINAE is the rule that if that substitution produces something ill-formed — but ONLY if the ill-formedness is in the &quot;immediate context&quot; (typically the return type or a parameter type, not deep inside the function body) — the compiler quietly REMOVES that candidate from the overload set instead of raising a hard compile error. This lets you write multiple template overloads that each only &quot;participate&quot; for certain types, effectively doing compile-time dispatch based on type properties.</p></div>
   <div class="example-box">
   <div class="ex-title">Two overloads, each SFINAE&#x27;d to opt in for exactly one category of type</div>
@@ -329,7 +357,7 @@ foo(<span class="tok-number">3.5</span>);  <span class="tok-comment">// std::ena
   <p class="why-box"><p>Interviewers who ask about SFINAE are usually checking whether you can explain WHY it&#x27;s needed (compile-time type-based dispatch) and whether you know it&#x27;s been largely superseded by Concepts — not whether you can write it from memory.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#templates-instantiation" data-related-href="#templates-instantiation">Templates &amp; instantiation</a><a class="related-tag" href="#concepts-c-20" data-related-href="#concepts-c-20">Concepts (C++20)</a></div>
 </article><article class="concept-card" id="concepts-c-20">
-  <h3>Concepts (C++20)</h3>
+  <h3>Concepts (C++20)<button type="button" class="done-checkbox" data-item-id="concepts-c-20" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Concepts let you name and directly enforce a compile-time constraint on a template parameter — &quot;T must support addition,&quot; &quot;T must be a forward iterator&quot; — replacing much of what SFINAE was historically used for, with dramatically more readable code and, crucially, far clearer compiler error messages when a constraint isn&#x27;t satisfied (compare to the wall of enable_if-substitution-failure noise SFINAE typically produces).</p></div>
   <div class="example-box">
   <div class="ex-title">A named, reusable concept</div>
@@ -359,7 +387,7 @@ T sum(T a, T b) { <span class="tok-keyword">return</span> a + b; }</code></pre>
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#sfinae-substitution-failure-is-not-an-error" data-related-href="#sfinae-substitution-failure-is-not-an-error">SFINAE (Substitution Failure Is Not An Error)</a><a class="related-tag" href="#templates-instantiation" data-related-href="#templates-instantiation">Templates &amp; instantiation</a></div>
 </article><article class="concept-card" id="crtp-curiously-recurring-template-pattern">
-  <h3>CRTP (Curiously Recurring Template Pattern)</h3>
+  <h3>CRTP (Curiously Recurring Template Pattern)<button type="button" class="done-checkbox" data-item-id="crtp-curiously-recurring-template-pattern" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A class <code>Derived</code> inherits from a template <code>Base&lt;Derived&gt;</code> — passing ITSELF as the template argument to its own base class. This lets <code>Base</code> call methods on the actual derived type via <code>static_cast&lt;Derived*&gt;(this)</code>, entirely at compile time — no vtable, no virtual dispatch, no indirect call. The result is &quot;static polymorphism&quot;: Base-defined code that behaves differently per Derived type, fully inlinable, at the direct cost of losing genuine RUNTIME polymorphism (you can no longer hold a <code>std::vector&lt;Base*&gt;</code> of mixed concrete types and call through it uniformly, because each <code>Base&lt;X&gt;</code> is actually a distinct type for each X).</p></div>
   <div class="example-box">
   <div class="ex-title">CRTP giving polymorphism-like reuse with zero virtual-call overhead</div>

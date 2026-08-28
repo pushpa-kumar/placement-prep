@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="const-correctness">
-  <h3>const correctness</h3>
+  <h3>const correctness<button type="button" class="done-checkbox" data-item-id="const-correctness" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Marking parameters, member functions, and variables <code>const</code> wherever they aren&#x27;t meant to change lets the compiler catch accidental mutation AT COMPILE TIME and documents intent for every reader of the code. A <code>const</code> member function promises not to modify the object&#x27;s observable state (mutable members are a deliberate, narrow escape hatch — see below) and, crucially, can be called on <code>const</code> objects and <code>const&amp;</code> references, which non-const member functions cannot.</p></div>
   <div class="example-box">
   <div class="ex-title">const-correctness enabling a function to accept read-only access</div>
@@ -292,7 +320,7 @@
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#constexpr-vs-const" data-related-href="#constexpr-vs-const">constexpr vs const</a><a class="related-tag" href="concepts-oop-mechanics.html#static-vs-dynamic-binding" data-related-href="concepts-oop-mechanics.html#static-vs-dynamic-binding">Static vs dynamic binding</a></div>
 </article><article class="concept-card" id="constexpr-vs-const">
-  <h3>constexpr vs const</h3>
+  <h3>constexpr vs const<button type="button" class="done-checkbox" data-item-id="constexpr-vs-const" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p><code>const</code> means &quot;this value will not change after it&#x27;s initialized&quot; — but that initial value might still only be knowable at RUNTIME. <code>constexpr</code> is a stronger, different promise: this value (or function result) MUST be computable at compile time, given constexpr-compatible inputs — which unlocks using it in contexts that genuinely require a compile-time constant, like array bounds and template arguments, and often means the value is baked directly into the compiled binary rather than computed at runtime at all.</p></div>
   <div class="example-box">
   <div class="ex-title">const doesn&#x27;t imply compile-time; constexpr does</div>
@@ -320,7 +348,7 @@
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#const-correctness" data-related-href="#const-correctness">const correctness</a><a class="related-tag" href="#inline-keyword" data-related-href="#inline-keyword">inline keyword</a></div>
 </article><article class="concept-card" id="inline-keyword">
-  <h3>inline keyword</h3>
+  <h3>inline keyword<button type="button" class="done-checkbox" data-item-id="inline-keyword" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>In modern C++, <code>inline</code> primarily changes LINKAGE, not compiler inlining behavior — a common misconception baked right into the keyword&#x27;s name. What <code>inline</code> actually does is permit a function (or, since C++17, a variable) to be DEFINED IDENTICALLY in multiple translation units without violating the One Definition Rule, letting the linker merge those duplicate definitions into one. That&#x27;s precisely why any non-template function DEFINED (not just declared) directly in a header file must be marked <code>inline</code> — every .cpp file that includes that header gets its own copy of the definition, and without <code>inline</code>, that&#x27;s an ODR violation caught (usually) as a duplicate-symbol linker error. Whether the compiler actually inlines a given CALL to that function (substituting the call site with the function body) is a completely separate decision the compiler makes on its own cost-based heuristics, regardless of the <code>inline</code> keyword.</p></div>
   <div class="example-box">
   <div class="ex-title">Why headers need inline on function definitions</div>
@@ -347,7 +375,7 @@
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#constexpr-vs-const" data-related-href="#constexpr-vs-const">constexpr vs const</a><a class="related-tag" href="#odr-one-definition-rule" data-related-href="#odr-one-definition-rule">ODR (One Definition Rule)</a></div>
 </article><article class="concept-card" id="odr-one-definition-rule">
-  <h3>ODR (One Definition Rule)</h3>
+  <h3>ODR (One Definition Rule)<button type="button" class="done-checkbox" data-item-id="odr-one-definition-rule" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Every non-inline function, non-inline variable, class, and template specialization must have EXACTLY ONE definition across the entire linked program (inline entities are the deliberate exception — they may be defined identically in multiple translation units, and the linker merges them). Violating the ODR — most commonly, defining the same non-inline function differently in two different .cpp files that both end up linked into the same binary — is undefined behavior. Sometimes this is caught cleanly at link time as a &quot;duplicate symbol&quot; error; other times (especially across shared libraries, or with subtly-different-but-same-named definitions) it silently compiles and links, producing inconsistent behavior depending on which definition happens to get used where.</p></div>
   <div class="example-box">
   <div class="ex-title">A caught ODR violation (link error)</div>
@@ -376,7 +404,7 @@
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#inline-keyword" data-related-href="#inline-keyword">inline keyword</a><a class="related-tag" href="concepts-raii-resources.html#pimpl-idiom-pointer-to-implementation" data-related-href="concepts-raii-resources.html#pimpl-idiom-pointer-to-implementation">PImpl idiom (Pointer to Implementation)</a></div>
 </article><article class="concept-card" id="adl-argument-dependent-lookup">
-  <h3>ADL (Argument-Dependent Lookup)</h3>
+  <h3>ADL (Argument-Dependent Lookup)<button type="button" class="done-checkbox" data-item-id="adl-argument-dependent-lookup" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>When you call an unqualified function, the compiler doesn&#x27;t only look in the local/enclosing/global scope for candidates — it ALSO looks in the namespaces associated with the types of the function call&#x27;s arguments. This is why <code>swap(a, b)</code>, called unqualified on some user-defined type from <code>mylib</code>, usually finds <code>mylib::swap</code> correctly even without a <code>using mylib::swap;</code> or fully qualifying the call — ADL adds <code>mylib</code>&#x27;s namespace to the lookup purely because one of the arguments&#x27; type lives there.</p></div>
   <div class="example-box">
   <div class="ex-title">ADL finding a namespace-scoped swap without any using-declaration</div>
@@ -405,7 +433,7 @@
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#odr-one-definition-rule" data-related-href="#odr-one-definition-rule">ODR (One Definition Rule)</a></div>
 </article><article class="concept-card" id="static-initialization-order-fiasco">
-  <h3>Static initialization order fiasco</h3>
+  <h3>Static initialization order fiasco<button type="button" class="done-checkbox" data-item-id="static-initialization-order-fiasco" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>The relative initialization order of non-local static/global objects defined in DIFFERENT translation units is left UNSPECIFIED by the standard (within a single translation unit, order is well-defined: top to bottom). If one such global&#x27;s constructor depends on another global — defined in a different .cpp file — already being initialized, whether the program works correctly ends up depending on arbitrary link order, which can silently change across compilers, compiler versions, or even just reordering source files in a build. This is the &quot;static initialization order fiasco,&quot; and it&#x27;s a real, if increasingly rare (thanks to modern idioms), source of hard-to-reproduce startup bugs.</p></div>
   <div class="example-box">
   <div class="ex-title">The fiasco: a fragile dependency across translation units</div>

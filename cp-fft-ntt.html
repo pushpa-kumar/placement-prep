@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -641,60 +669,70 @@ ll bostanMori(<span class="tok-type">vector</span>&lt;ll&gt; P, <span class="tok
   <td class="diff-badge">3100</td>
   <td class="subtopic-cell">polynomial multiplication (generating functions)</td>
   <td class="desc-cell">Count the number of distinct vertex-weighted rooted binary trees achieving each total weight from 1 to m, given an allowed set of vertex weights.</td>
+  
 </tr><tr data-search="thief in a shop codeforces polynomial multiplication (fast exponentiation) determine every total cost achievable by picking exactly k items (with repetition) from n item types with given costs.">
   <td><a href="https://codeforces.com/problemset/problem/632/E" target="_blank" rel="noopener noreferrer">Thief in a Shop</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">polynomial multiplication (fast exponentiation)</td>
   <td class="desc-cell">Determine every total cost achievable by picking exactly k items (with repetition) from n item types with given costs.</td>
+  
 </tr><tr data-search="lucky tickets codeforces polynomial multiplication (convolution counting) count n-digit tickets using only a given set of allowed digits where the digit sum of the first half equals the digit sum of the second half.">
   <td><a href="https://codeforces.com/problemset/problem/1096/G" target="_blank" rel="noopener noreferrer">Lucky Tickets</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">polynomial multiplication (convolution counting)</td>
   <td class="desc-cell">Count n-digit tickets using only a given set of allowed digits where the digit sum of the first half equals the digit sum of the second half.</td>
+  
 </tr><tr data-search="fuzzy search codeforces string matching via convolution count positions where a pattern matches a text, allowing each pattern character to match within a tolerance window of k positions.">
   <td><a href="https://codeforces.com/problemset/problem/528/D" target="_blank" rel="noopener noreferrer">Fuzzy Search</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">string matching via convolution</td>
   <td class="desc-cell">Count positions where a pattern matches a text, allowing each pattern character to match within a tolerance window of k positions.</td>
+  
 </tr><tr data-search="rusty string codeforces string matching via convolution given a string with wildcard characters that can be filled with one of two letters, determine which values are valid periods of the completed string.">
   <td><a href="https://codeforces.com/problemset/problem/827/E" target="_blank" rel="noopener noreferrer">Rusty String</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2700</td>
   <td class="subtopic-cell">string matching via convolution</td>
   <td class="desc-cell">Given a string with wildcard characters that can be filled with one of two letters, determine which values are valid periods of the completed string.</td>
+  
 </tr><tr data-search="yet another string matching problem codeforces string matching via convolution find, for every alignment of two strings, the minimum number of global character-relabeling operations needed to make the overlapping substrings equal.">
   <td><a href="https://codeforces.com/problemset/problem/954/I" target="_blank" rel="noopener noreferrer">Yet Another String Matching Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">string matching via convolution</td>
   <td class="desc-cell">Find, for every alignment of two strings, the minimum number of global character-relabeling operations needed to make the overlapping substrings equal.</td>
+  
 </tr><tr data-search="nikita and order statistics codeforces counting via convolution for every k from 0 to n, count the number of subarrays containing exactly k elements less than a given value x.">
   <td><a href="https://codeforces.com/problemset/problem/993/E" target="_blank" rel="noopener noreferrer">Nikita and Order Statistics</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">counting via convolution</td>
   <td class="desc-cell">For every k from 0 to n, count the number of subarrays containing exactly k elements less than a given value x.</td>
+  
 </tr><tr data-search="painting a grid with three different colors leetcode linear recurrences via polynomials count the number of ways to color an m×n grid with 3 colors so no two adjacent cells share a color, for n up to 1000.">
   <td><a href="https://leetcode.com/problems/painting-a-grid-with-three-different-colors/" target="_blank" rel="noopener noreferrer">Painting a Grid With Three Different Colors</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
   <td class="desc-cell">Count the number of ways to color an m×n grid with 3 colors so no two adjacent cells share a color, for n up to 1000.</td>
+  
 </tr><tr data-search="total characters in string after transformations ii leetcode linear recurrences via polynomials after t transformations (each letter replaced by a range of following letters per a per-letter rule), find the total resulting string length, for t up to 10^9.">
   <td><a href="https://leetcode.com/problems/total-characters-in-string-after-transformations-ii/" target="_blank" rel="noopener noreferrer">Total Characters in String After Transformations II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
   <td class="desc-cell">After t transformations (each letter replaced by a range of following letters per a per-letter rule), find the total resulting string length, for t up to 10^9.</td>
+  
 </tr><tr data-search="number of zigzag arrays ii leetcode linear recurrences via polynomials count length-n zigzag arrays with values in [l, r] modulo 1e9+7, for n up to 10^9 and (r-l) up to ~100.">
   <td><a href="https://leetcode.com/problems/number-of-zigzag-arrays-ii/" target="_blank" rel="noopener noreferrer">Number of ZigZag Arrays II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
   <td class="desc-cell">Count length-n zigzag arrays with values in [l, r] modulo 1e9+7, for n up to 10^9 and (r-l) up to ~100.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54" class="current">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>

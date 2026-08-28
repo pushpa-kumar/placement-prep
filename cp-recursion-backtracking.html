@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1083,102 +1111,119 @@ ll solve(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int<
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">meet in the middle (subset sums)</td>
   <td class="desc-cell">Given an array (n ≤ 35) and modulus m, choose a subsequence maximizing the sum of its elements modulo m.</td>
+  
 </tr><tr data-search="anya and cubes codeforces meet in the middle (subset sum with a twist operation) given n numbers (n ≤ 25) and a target sum s, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals s.">
   <td><a href="https://codeforces.com/problemset/problem/525/E" target="_blank" rel="noopener noreferrer">Anya and Cubes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">meet in the middle (subset sum with a twist operation)</td>
   <td class="desc-cell">Given n numbers (n ≤ 25) and a target sum S, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals S.</td>
+  
 </tr><tr data-search="lizard era: beginning codeforces meet in the middle (3-way partition) split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.">
   <td><a href="https://codeforces.com/problemset/problem/585/D" target="_blank" rel="noopener noreferrer">Lizard Era: Beginning</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">meet in the middle (3-way partition)</td>
   <td class="desc-cell">Split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.</td>
+  
 </tr><tr data-search="chessboard and queens cses n-queens style pruning count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.">
   <td><a href="https://cses.fi/problemset/task/1624" target="_blank" rel="noopener noreferrer">Chessboard and Queens</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Introductory Problems, high end)</td>
   <td class="subtopic-cell">N-Queens style pruning</td>
   <td class="desc-cell">Count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.</td>
+  
 </tr><tr data-search="creating strings cses permutation generation with duplicate pruning given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.">
   <td><a href="https://cses.fi/problemset/task/1622" target="_blank" rel="noopener noreferrer">Creating Strings</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Introductory Problems, high end)</td>
   <td class="subtopic-cell">permutation generation with duplicate pruning</td>
   <td class="desc-cell">Given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.</td>
+  
 </tr><tr data-search="apple division cses recursive subset enumeration / meet in the middle divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups&#x27; total weights.">
   <td><a href="https://cses.fi/problemset/task/1623" target="_blank" rel="noopener noreferrer">Apple Division</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Introductory Problems, high end)</td>
   <td class="subtopic-cell">recursive subset enumeration / meet in the middle</td>
   <td class="desc-cell">Divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups&#x27; total weights.</td>
+  
 </tr><tr data-search="n-queens leetcode n-queens style pruning return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.">
   <td><a href="https://leetcode.com/problems/n-queens/" target="_blank" rel="noopener noreferrer">N-Queens</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">N-Queens style pruning</td>
   <td class="desc-cell">Return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.</td>
+  
 </tr><tr data-search="sudoku solver leetcode constraint-propagation backtracking fill a partially completed 9×9 sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.">
   <td><a href="https://leetcode.com/problems/sudoku-solver/" target="_blank" rel="noopener noreferrer">Sudoku Solver</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">constraint-propagation backtracking</td>
   <td class="desc-cell">Fill a partially completed 9×9 Sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.</td>
+  
 </tr><tr data-search="minimum euclidean distance cses divide and conquer (closest pair of points) given up to 2*10^5 points in the plane, find the minimum squared euclidean distance between any two distinct points.">
   <td><a href="https://cses.fi/problemset/task/2194" target="_blank" rel="noopener noreferrer">Minimum Euclidean Distance</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Divide and Conquer (closest pair of points)</td>
   <td class="desc-cell">Given up to 2*10^5 points in the plane, find the minimum squared Euclidean distance between any two distinct points.</td>
+  
 </tr><tr data-search="merge sort codeforces divide and conquer (constructive, recursion-tree structure) construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.">
   <td><a href="https://codeforces.com/problemset/problem/873/D" target="_blank" rel="noopener noreferrer">Merge Sort</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Divide and Conquer (constructive, recursion-tree structure)</td>
   <td class="desc-cell">Construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.</td>
+  
 </tr><tr data-search="pashmak and parmida&#x27;s problem codeforces divide and conquer (counting with merge step) count pairs (i, j) with i &lt; j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.">
   <td><a href="https://codeforces.com/problemset/problem/459/D" target="_blank" rel="noopener noreferrer">Pashmak and Parmida&#x27;s problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Divide and Conquer (counting with merge step)</td>
   <td class="desc-cell">Count pairs (i, j) with i &lt; j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.</td>
+  
 </tr><tr data-search="painting fence codeforces divide and conquer (recursive range minimum splitting) given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.">
   <td><a href="https://codeforces.com/problemset/problem/448/C" target="_blank" rel="noopener noreferrer">Painting Fence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Divide and Conquer (recursive range minimum splitting)</td>
   <td class="desc-cell">Given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.</td>
+  
 </tr><tr data-search="letter picking codeforces minimax with alpha-beta pruning alice and bob alternately take the first or last letter of a string and prepend it to their own string (alice wants the lexicographically smaller result, bob the opposite, both settle for a draw if they can&#x27;t win); determine the outcome under optimal play.">
   <td><a href="https://codeforces.com/problemset/problem/1728/D" target="_blank" rel="noopener noreferrer">Letter Picking</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">Alice and Bob alternately take the first or last letter of a string and prepend it to their own string (Alice wants the lexicographically smaller result, Bob the opposite, both settle for a draw if they can&#x27;t win); determine the outcome under optimal play.</td>
+  
 </tr><tr data-search="game on sum (easy version) codeforces minimax with alpha-beta pruning over n turns, alice picks a real number in [0, k] each turn and bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); alice maximizes the final score, bob minimizes it — find the optimal value.">
   <td><a href="https://codeforces.com/problemset/problem/1628/D1" target="_blank" rel="noopener noreferrer">Game on Sum (Easy Version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">Over n turns, Alice picks a real number in [0, k] each turn and Bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); Alice maximizes the final score, Bob minimizes it — find the optimal value.</td>
+  
 </tr><tr data-search="world is mine codeforces minimax with alpha-beta pruning alice and bob alternately eat cakes (alice can only eat a cake tastier than any she&#x27;s eaten before; bob eats anything); alice maximizes how many cakes she eats and bob minimizes it — find the count under optimal play.">
   <td><a href="https://codeforces.com/problemset/problem/1987/D" target="_blank" rel="noopener noreferrer">World is Mine</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">Alice and Bob alternately eat cakes (Alice can only eat a cake tastier than any she&#x27;s eaten before; Bob eats anything); Alice maximizes how many cakes she eats and Bob minimizes it — find the count under optimal play.</td>
+  
 </tr><tr data-search="cat and mouse leetcode minimax with alpha-beta pruning on a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.">
   <td><a href="https://leetcode.com/problems/cat-and-mouse/" target="_blank" rel="noopener noreferrer">Cat and Mouse</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#913)</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">On a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.</td>
+  
 </tr><tr data-search="cat and mouse ii leetcode minimax with alpha-beta pruning on a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.">
   <td><a href="https://leetcode.com/problems/cat-and-mouse-ii/" target="_blank" rel="noopener noreferrer">Cat and Mouse II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1728)</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">On a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

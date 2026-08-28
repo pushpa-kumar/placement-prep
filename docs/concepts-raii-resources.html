@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="raii-resource-acquisition-is-initialization">
-  <h3>RAII (Resource Acquisition Is Initialization)</h3>
+  <h3>RAII (Resource Acquisition Is Initialization)<button type="button" class="done-checkbox" data-item-id="raii-resource-acquisition-is-initialization" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>RAII binds a resource&#x27;s lifetime to an object&#x27;s lifetime: acquire the resource in the constructor, release it in the destructor. Because C++ *guarantees* that destructors run when a scope exits — through normal control flow, an early return, or even an exception unwinding the stack — RAII gives you automatic, exception-safe cleanup without a single explicit <code>try/finally</code>-equivalent block. This one idea underlies <code>std::lock_guard</code>, every smart pointer, <code>std::fstream</code>, <code>std::vector</code>&#x27;s own memory management, and essentially all correctly-written resource-owning C++ types.</p></div>
   <div class="example-box">
   <div class="ex-title">A minimal RAII wrapper around a raw resource</div>
@@ -304,7 +332,7 @@
   <p class="why-box"><p>RAII isn&#x27;t usually asked about directly by name as often as it&#x27;s ASSUMED — interviewers expect you to reach for it (smart pointers, lock_guard) automatically when discussing resource management, and will probe if you reach for manual malloc/free or lock/unlock instead.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#rule-of-zero-three-five" data-related-href="#rule-of-zero-three-five">Rule of Zero / Three / Five</a><a class="related-tag" href="#smart-pointer-ownership-models" data-related-href="#smart-pointer-ownership-models">Smart pointer ownership models</a><a class="related-tag" href="#exception-safety-guarantees" data-related-href="#exception-safety-guarantees">Exception safety guarantees</a></div>
 </article><article class="concept-card" id="rule-of-zero-three-five">
-  <h3>Rule of Zero / Three / Five</h3>
+  <h3>Rule of Zero / Three / Five<button type="button" class="done-checkbox" data-item-id="rule-of-zero-three-five" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>**Rule of Three** (the pre-C++11 guideline): if a class needs a custom destructor, it&#x27;s almost certainly managing a resource directly — and if so, it needs a custom copy constructor and copy-assignment operator too, because the compiler-generated memberwise versions would copy the raw resource handle, not the resource itself (see RAII pitfalls above). **Rule of Five** extends this for C++11+: add a move constructor and move-assignment operator too, so the resource can be transferred cheaply instead of always being deep-copied. **Rule of Zero** is the modern preferred design: don&#x27;t write ANY of the five special members by hand at all — instead, compose your class out of members that ALREADY manage their own resources correctly (std::vector, std::string, std::unique_ptr, etc.), so the compiler-generated defaults for all five special members are automatically correct, because they just recursively do the right thing member-by-member.</p></div>
   <div class="example-box">
   <div class="ex-title">Rule of Five: a class that legitimately needs all five</div>
@@ -346,7 +374,7 @@
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="concepts-value-categories.html#move-semantics" data-related-href="concepts-value-categories.html#move-semantics">Move semantics</a><a class="related-tag" href="#smart-pointer-ownership-models" data-related-href="#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
 </article><article class="concept-card" id="smart-pointer-ownership-models">
-  <h3>Smart pointer ownership models</h3>
+  <h3>Smart pointer ownership models<button type="button" class="done-checkbox" data-item-id="smart-pointer-ownership-models" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>The three standard smart pointers encode three DIFFERENT ownership philosophies, and picking the wrong one for the situation is a common design-review flag. <code>std::unique_ptr&lt;T&gt;</code> is sole ownership: exactly one owner at a time, move-only (copying is disabled), and — crucially — zero runtime overhead over a raw pointer; the object is destroyed the instant the owning unique_ptr goes out of scope. <code>std::shared_ptr&lt;T&gt;</code> is shared ownership via ATOMIC reference counting: any number of shared_ptrs can co-own the same object, which is destroyed when the last one goes away — but that shared refcount means copying a shared_ptr is not free (an atomic increment/decrement every time). <code>std::weak_ptr&lt;T&gt;</code> observes an object owned by a shared_ptr WITHOUT extending its lifetime or touching the strong refcount — used to break reference cycles and to safely ask &quot;is this thing still alive?&quot; before trying to use it.</p></div>
   <div class="example-box">
   <div class="ex-title">All three, and when each is the right call</div>
@@ -378,7 +406,7 @@ b-&gt;prev = a;   <span class="tok-comment">// if this were ALSO a shared_ptr, a
   <p class="why-box"><p>Extremely commonly asked, often phrased as &quot;implement a basic shared_ptr&quot; or &quot;what happens if two objects hold shared_ptrs to each other&quot; — both of which test whether you understand the reference-counting mechanism, not just the API.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="#rule-of-zero-three-five" data-related-href="#rule-of-zero-three-five">Rule of Zero / Three / Five</a><a class="related-tag" href="concepts-oop-mechanics.html#object-slicing" data-related-href="concepts-oop-mechanics.html#object-slicing">Object slicing</a></div>
 </article><article class="concept-card" id="allocators-custom-allocation">
-  <h3>Allocators &amp; custom allocation</h3>
+  <h3>Allocators &amp; custom allocation<button type="button" class="done-checkbox" data-item-id="allocators-custom-allocation" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Every STL container is actually a template over an <code>Allocator</code> type (defaulting to one that calls <code>operator new</code>/<code>operator delete</code>), which is the hook that lets you plug in a custom memory strategy — most commonly, a pre-sized arena or pool allocator — instead of the general-purpose heap for every single allocation. This matters a great deal in latency-sensitive code: the default heap allocator is a general-purpose tool that has to handle arbitrary sizes and frees in arbitrary order, which usually means internal locking and bookkeeping with latency that isn&#x27;t tightly bounded. A pre-allocated arena, sized for a known maximum number of objects up front, can hand out and reclaim fixed-size chunks in O(1) with no lock contention and no unpredictable tail latency.</p></div>
   <div class="example-box">
   <div class="ex-title">The shape of a minimal fixed-size pool allocator</div>
@@ -414,7 +442,7 @@ std::<span class="tok-type">vector</span>&lt;std::unique_ptr&lt;Order&gt;&gt; bo
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="concepts-modern-cpp.html#small-string-optimization-sso" data-related-href="concepts-modern-cpp.html#small-string-optimization-sso">Small String Optimization (SSO)</a></div>
 </article><article class="concept-card" id="pimpl-idiom-pointer-to-implementation">
-  <h3>PImpl idiom (Pointer to Implementation)</h3>
+  <h3>PImpl idiom (Pointer to Implementation)<button type="button" class="done-checkbox" data-item-id="pimpl-idiom-pointer-to-implementation" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A class hides its private implementation details behind a single pointer to a forward-declared struct/class whose full definition lives only in the .cpp file, never the header. The immediate payoff: changing a private member no longer changes the public class&#x27;s size or forces every translation unit that includes its header to recompile — you&#x27;re trading one extra heap allocation and one extra pointer indirection per access for dramatically better compile-time isolation (and, as a bonus, a more stable binary interface/ABI, since the public class&#x27;s memory layout doesn&#x27;t change when private internals do).</p></div>
   <div class="example-box">
   <div class="ex-title">The header — completely decoupled from Widget&#x27;s real internals</div>
@@ -451,7 +479,7 @@ Widget&amp; Widget::<span class="tok-keyword">operator</span>=(Widget&amp;&amp;)
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#raii-resource-acquisition-is-initialization" data-related-href="#raii-resource-acquisition-is-initialization">RAII (Resource Acquisition Is Initialization)</a><a class="related-tag" href="concepts-compile-time.html#odr-one-definition-rule" data-related-href="concepts-compile-time.html#odr-one-definition-rule">ODR (One Definition Rule)</a></div>
 </article><article class="concept-card" id="exception-safety-guarantees">
-  <h3>Exception safety guarantees</h3>
+  <h3>Exception safety guarantees<button type="button" class="done-checkbox" data-item-id="exception-safety-guarantees" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Three standard levels describe what a piece of code promises will still be true if an exception is thrown partway through it. The **basic guarantee**: no resources leak and the object&#x27;s invariants still hold, but its exact observable state afterward is unspecified. The **strong guarantee**: the operation either fully succeeds, or has NO visible effect at all — as if it never started (commit-or-rollback semantics) — commonly implemented via the copy-and-swap idiom. The **nothrow (no-throw) guarantee**: the operation is guaranteed to never throw at all, which the standard library actually RELIES on in specific places — most importantly, containers only use a type&#x27;s move constructor during reallocation if that move constructor is <code>noexcept</code>; otherwise they fall back to copying to preserve their own strong guarantee (see Move semantics).</p></div>
   <div class="example-box">
   <div class="ex-title">The strong guarantee via copy-and-swap</div>

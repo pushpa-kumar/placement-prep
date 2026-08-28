@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="value-categories-lvalue-prvalue-xvalue">
-  <h3>Value categories: lvalue, prvalue, xvalue</h3>
+  <h3>Value categories: lvalue, prvalue, xvalue<button type="button" class="done-checkbox" data-item-id="value-categories-lvalue-prvalue-xvalue" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Every C++ expression — not just every variable, every *expression* — has a value category, and that category is what overload resolution actually keys off of when deciding whether a copy or a move constructor runs. This trips people up because it feels like it should be about types, but it&#x27;s about expressions.</p><p>An **lvalue** names an object with identity: something you can take the address of, that persists beyond the expression evaluating it. A named variable is the classic example. A **prvalue** (&quot;pure rvalue&quot;) is a temporary that *initializes* an object and has no identity of its own — a literal like <code>42</code>, or the result of a function returning by value before it&#x27;s bound to anything. An **xvalue** (&quot;eXpiring value&quot;) is the interesting middle case: it denotes an object that *does* have identity, but whose resources are about to go away, so it&#x27;s safe to plunder them — the result of <code>std::move(x)</code>, or a function returning <code>T&amp;&amp;</code>.</p><p>Two umbrella terms tie these together: a **glvalue** (lvalue or xvalue) is anything with identity; an **rvalue** (prvalue or xvalue) is anything that can be moved from. The whole lattice exists for exactly one reason: to give the compiler a principled way to decide, at every single expression, whether it&#x27;s looking at something with a name and a future, or something that&#x27;s either brand new or on its way out.</p></div>
   <div class="example-box">
   <div class="ex-title">Identifying the category of each subexpression</div>
@@ -286,7 +314,7 @@ f(std::move(name));    <span class="tok-comment">// an xvalue -&gt; calls f(stri
   <p class="why-box"><p>This is the single most commonly probed C++ fundamentals question at trading firms — usually as &quot;what&#x27;s the difference between lvalue and rvalue&quot; followed immediately by &quot;so why does calling std::move(x) inside a function and then using x again still compile, and what state is x in?&quot;</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#move-semantics" data-related-href="#move-semantics">Move semantics</a><a class="related-tag" href="#std-move-vs-std-forward" data-related-href="#std-move-vs-std-forward">std::move vs std::forward</a><a class="related-tag" href="#universal-forwarding-references" data-related-href="#universal-forwarding-references">Universal / forwarding references</a></div>
 </article><article class="concept-card" id="move-semantics">
-  <h3>Move semantics</h3>
+  <h3>Move semantics<button type="button" class="done-checkbox" data-item-id="move-semantics" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Move construction and move assignment let an object TRANSFER ownership of a resource — a heap buffer, a file descriptor, a socket — from a source object to a destination, instead of deep-copying it. The source is left in a valid-but-unspecified state (usually empty/null), and the destination now owns what the source used to own.</p><p>What makes this possible is purely a matter of overload resolution: if a class declares an rvalue-reference overload of its constructor/assignment operator (<code>T(T&amp;&amp; other)</code>), and the argument expression is an rvalue (a prvalue temporary or an xvalue from <code>std::move</code>), that overload is selected instead of the copy constructor. The move constructor&#x27;s body is then free to &quot;steal&quot; the other object&#x27;s internals — pointer-swap instead of memcpy — because the standard guarantees nobody else cares about the moved-from object&#x27;s exact value afterward.</p><p>The payoff is enormous for anything holding a heap allocation: returning a <code>std::vector</code> or <code>std::string</code> by value, or reallocating a growing vector, becomes a pointer-swap instead of an O(n) copy.</p></div>
   <div class="example-box">
   <div class="ex-title">A move constructor and move-assignment operator that actually steal, not copy</div>
@@ -329,7 +357,7 @@ v.emplace_back(<span class="tok-number">1000000</span>); <span class="tok-commen
   <p class="why-box"><p>Move semantics is arguably THE defining feature that separates &quot;modern C++&quot; performance characteristics from C++03 — expect at least one question about it in any serious C++ interview, often phrased as &quot;walk me through what happens when a std::vector reallocates.&quot;</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a><a class="related-tag" href="concepts-raii-resources.html#rule-of-zero-three-five" data-related-href="concepts-raii-resources.html#rule-of-zero-three-five">Rule of Zero / Three / Five</a><a class="related-tag" href="#copy-elision-rvo-nrvo" data-related-href="#copy-elision-rvo-nrvo">Copy elision / RVO &amp; NRVO</a><a class="related-tag" href="#std-move-vs-std-forward" data-related-href="#std-move-vs-std-forward">std::move vs std::forward</a></div>
 </article><article class="concept-card" id="std-move-vs-std-forward">
-  <h3>std::move vs std::forward</h3>
+  <h3>std::move vs std::forward<button type="button" class="done-checkbox" data-item-id="std-move-vs-std-forward" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>These two are constantly confused because they look similar (&quot;cast something to an rvalue reference-ish thing&quot;) but they solve opposite problems. <code>std::move</code> UNCONDITIONALLY casts its argument to an rvalue reference — it doesn&#x27;t move anything itself, it just makes the argument eligible to be moved from by whatever receives it. <code>std::forward</code> CONDITIONALLY casts: inside a template function taking a forwarding reference, it preserves whatever value category the caller originally used, forwarding an lvalue as an lvalue and an rvalue as an rvalue. This is &quot;perfect forwarding&quot; — passing an argument through a layer of indirection without losing information about how it was passed in.</p></div>
   <div class="example-box">
   <div class="ex-title">std::move: turning a named lvalue back into something move-able</div>
@@ -353,7 +381,7 @@ wrapper(std::<span class="tok-type">string</span>(<span class="tok-string">&quot
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#universal-forwarding-references" data-related-href="#universal-forwarding-references">Universal / forwarding references</a><a class="related-tag" href="#move-semantics" data-related-href="#move-semantics">Move semantics</a><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
 </article><article class="concept-card" id="universal-forwarding-references">
-  <h3>Universal / forwarding references</h3>
+  <h3>Universal / forwarding references<button type="button" class="done-checkbox" data-item-id="universal-forwarding-references" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A parameter written as <code>T&amp;&amp;</code> is NOT always an rvalue reference — it depends entirely on whether <code>T</code> is a template parameter being deduced right there. When <code>T</code> is deduced (e.g. <code>template&lt;class T&gt; void f(T&amp;&amp; x)</code>), <code>x</code> is a **forwarding reference**: it will bind to both lvalues and rvalues, with <code>T</code> deduced as <code>U&amp;</code> for an lvalue argument (collapsing <code>T&amp;&amp; = U&amp; &amp;&amp; = U&amp;</code> via C++&#x27;s reference-collapsing rules) and as plain <code>U</code> for an rvalue argument. When <code>T</code> is a fixed, concrete type — <code>void f(Widget&amp;&amp; x)</code> — there is no deduction happening, and <code>x</code> is simply an ordinary rvalue reference that will only bind to rvalues.</p></div>
   <div class="example-box">
   <div class="ex-title">Forwarding reference vs. plain rvalue reference, side by side</div>
@@ -380,7 +408,7 @@ plainRvalueRef(Widget()); <span class="tok-comment">// OK: a plain rvalue refere
   <p class="why-box"><p>A classic interview trap question: &quot;is <code>T&amp;&amp;</code> always an rvalue reference?&quot; — the expected answer distinguishes forwarding references from plain rvalue references, which is exactly the nuance above.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#std-move-vs-std-forward" data-related-href="#std-move-vs-std-forward">std::move vs std::forward</a><a class="related-tag" href="#value-categories-lvalue-prvalue-xvalue" data-related-href="#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
 </article><article class="concept-card" id="copy-elision-rvo-nrvo">
-  <h3>Copy elision / RVO &amp; NRVO</h3>
+  <h3>Copy elision / RVO &amp; NRVO<button type="button" class="done-checkbox" data-item-id="copy-elision-rvo-nrvo" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Return Value Optimization is the compiler constructing a returned object directly in the CALLER&#x27;s storage, skipping an intermediate copy or move entirely. Since C++17, elision of a prvalue returned directly (<code>return T(args);</code> or <code>return makeT();</code>) is not just an optimization the compiler is ALLOWED to do — it&#x27;s mandated by the standard; there is no copy/move constructor call at all in that case, and the type doesn&#x27;t even need to be copyable or movable. Named RVO — returning a named local variable (<code>T t; ... return t;</code>) — is a different, older case: it&#x27;s still only an optional-but-near-universally-implemented optimization, not guaranteed by the standard, because the compiler has to prove no other code path returns a different named variable.</p></div>
   <div class="example-box">
   <div class="ex-title">Guaranteed elision (C++17+) vs. optional NRVO</div>

@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -2105,390 +2133,455 @@ rabbit
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Count the total number of simple cycles (no repeated vertices/edges) in an undirected graph with n &lt;= 19 vertices.</td>
+  
 </tr><tr data-search="elongated matrix codeforces linear/1d dp reorder the n &lt;= 16 rows of an n x m matrix (traversed column-by-column) to maximize the minimum absolute difference between consecutive visited values.">
   <td><a href="https://codeforces.com/problemset/problem/1102/F" target="_blank" rel="noopener noreferrer">Elongated Matrix</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Reorder the n &lt;= 16 rows of an n x m matrix (traversed column-by-column) to maximize the minimum absolute difference between consecutive visited values.</td>
+  
 </tr><tr data-search="increasing subsequence ii cses linear/1d dp count the number of strictly increasing subsequences of an array, counting subsequences with equal values at different positions separately.">
   <td><a href="https://cses.fi/problemset/task/1748" target="_blank" rel="noopener noreferrer">Increasing Subsequence II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Count the number of strictly increasing subsequences of an array, counting subsequences with equal values at different positions separately.</td>
+  
 </tr><tr data-search="russian doll envelopes leetcode linear/1d dp given (width, height) envelope pairs, find the maximum number that can be nested inside each other (both dimensions must strictly increase).">
   <td><a href="https://leetcode.com/problems/russian-doll-envelopes/" target="_blank" rel="noopener noreferrer">Russian Doll Envelopes</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Given (width, height) envelope pairs, find the maximum number that can be nested inside each other (both dimensions must strictly increase).</td>
+  
 </tr><tr data-search="maximum profit in job scheduling leetcode linear/1d dp given jobs with start time, end time, and profit, schedule a non-overlapping subset that maximizes total profit.">
   <td><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" target="_blank" rel="noopener noreferrer">Maximum Profit in Job Scheduling</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Given jobs with start time, end time, and profit, schedule a non-overlapping subset that maximizes total profit.</td>
+  
 </tr><tr data-search="super egg drop leetcode linear/1d dp with k eggs and n floors, find the minimum number of egg-drop trials in the worst case to determine the critical floor.">
   <td><a href="https://leetcode.com/problems/super-egg-drop/" target="_blank" rel="noopener noreferrer">Super Egg Drop</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">With k eggs and n floors, find the minimum number of egg-drop trials in the worst case to determine the critical floor.</td>
+  
 </tr><tr data-search="the least round way codeforces 2d grid dp find a top-left to bottom-right path (moving only right/down) through an n x n matrix that minimizes the number of trailing zeros in the product of visited cells, and output the path.">
   <td><a href="https://codeforces.com/problemset/problem/2/B" target="_blank" rel="noopener noreferrer">The least round way</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Find a top-left to bottom-right path (moving only right/down) through an n x n matrix that minimizes the number of trailing zeros in the product of visited cells, and output the path.</td>
+  
 </tr><tr data-search="grid paths i cses 2d grid dp count the number of paths (moving only right/down) from the top-left to bottom-right of an n x n grid (n up to 1000) that avoid trap cells, modulo 1e9+7.">
   <td><a href="https://cses.fi/problemset/task/1638" target="_blank" rel="noopener noreferrer">Grid Paths I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Count the number of paths (moving only right/down) from the top-left to bottom-right of an n x n grid (n up to 1000) that avoid trap cells, modulo 1e9+7.</td>
+  
 </tr><tr data-search="dungeon game leetcode 2d grid dp a knight must traverse a grid of damage/heal values from top-left to bottom-right; find the minimum starting health needed so health never drops to zero.">
   <td><a href="https://leetcode.com/problems/dungeon-game/" target="_blank" rel="noopener noreferrer">Dungeon Game</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">A knight must traverse a grid of damage/heal values from top-left to bottom-right; find the minimum starting health needed so health never drops to zero.</td>
+  
 </tr><tr data-search="unique paths iii leetcode 2d grid dp count the number of paths from a start to an end square in a grid with obstacles that visit every non-obstacle square exactly once.">
   <td><a href="https://leetcode.com/problems/unique-paths-iii/" target="_blank" rel="noopener noreferrer">Unique Paths III</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Count the number of paths from a start to an end square in a grid with obstacles that visit every non-obstacle square exactly once.</td>
+  
 </tr><tr data-search="cherry pickup leetcode 2d grid dp starting from the top-left of a grid with cherries and obstacles, go to the bottom-right and back to the top-left, collecting the maximum cherries (each cell&#x27;s cherry collected only once).">
   <td><a href="https://leetcode.com/problems/cherry-pickup/" target="_blank" rel="noopener noreferrer">Cherry Pickup</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Starting from the top-left of a grid with cherries and obstacles, go to the bottom-right and back to the top-left, collecting the maximum cherries (each cell&#x27;s cherry collected only once).</td>
+  
 </tr><tr data-search="cherry pickup ii leetcode 2d grid dp two robots start at the top corners of a grid and move downward simultaneously, collecting the maximum total cherries, sharing cells but each counted once.">
   <td><a href="https://leetcode.com/problems/cherry-pickup-ii/" target="_blank" rel="noopener noreferrer">Cherry Pickup II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Two robots start at the top corners of a grid and move downward simultaneously, collecting the maximum total cherries, sharing cells but each counted once.</td>
+  
 </tr><tr data-search="round subset codeforces knapsack family choose exactly k numbers from a list of n (n &lt;= 200) to maximize the number of trailing zeros in their product.">
   <td><a href="https://codeforces.com/problemset/problem/837/D" target="_blank" rel="noopener noreferrer">Round Subset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Choose exactly k numbers from a list of n (n &lt;= 200) to maximize the number of trailing zeros in their product.</td>
+  
 </tr><tr data-search="knapsack codeforces knapsack family with 8 item weight-classes (1..8), each available in a huge bounded quantity, and a knapsack capacity up to 1e18, find the maximum total weight that fits.">
   <td><a href="https://codeforces.com/problemset/problem/1132/E" target="_blank" rel="noopener noreferrer">Knapsack</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">With 8 item weight-classes (1..8), each available in a huge bounded quantity, and a knapsack capacity up to 1e18, find the maximum total weight that fits.</td>
+  
 </tr><tr data-search="two sets ii cses knapsack family count the number of ways to partition {1, ..., n} into two sets with equal sum.">
   <td><a href="https://cses.fi/problemset/task/1093" target="_blank" rel="noopener noreferrer">Two Sets II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Count the number of ways to partition {1, ..., n} into two sets with equal sum.</td>
+  
 </tr><tr data-search="elevator rides cses knapsack family given n people (n &lt;= 20) with weights and an elevator weight limit, find the minimum number of elevator rides needed to move everyone up.">
   <td><a href="https://cses.fi/problemset/task/1653" target="_blank" rel="noopener noreferrer">Elevator Rides</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Given n people (n &lt;= 20) with weights and an elevator weight limit, find the minimum number of elevator rides needed to move everyone up.</td>
+  
 </tr><tr data-search="profitable schemes leetcode knapsack family choose a subset of crimes (each with a member cost and a profit) using at most n members total that yields profit at least minprofit; count the number of such schemes.">
   <td><a href="https://leetcode.com/problems/profitable-schemes/" target="_blank" rel="noopener noreferrer">Profitable Schemes</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Choose a subset of crimes (each with a member cost and a profit) using at most n members total that yields profit at least minProfit; count the number of such schemes.</td>
+  
 </tr><tr data-search="tallest billboard leetcode knapsack family given steel rod lengths, split them into two groups (welded end-to-end) whose totals are equal, maximizing that common total.">
   <td><a href="https://leetcode.com/problems/tallest-billboard/" target="_blank" rel="noopener noreferrer">Tallest Billboard</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Given steel rod lengths, split them into two groups (welded end-to-end) whose totals are equal, maximizing that common total.</td>
+  
 </tr><tr data-search="coloring brackets codeforces interval dp given a valid bracket sequence, count the ways to color each character red/blue/uncolored so that exactly one bracket of each matched pair is colored and no two adjacent characters share a color.">
   <td><a href="https://codeforces.com/problemset/problem/149/D" target="_blank" rel="noopener noreferrer">Coloring Brackets</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given a valid bracket sequence, count the ways to color each character red/blue/uncolored so that exactly one bracket of each matched pair is colored and no two adjacent characters share a color.</td>
+  
 </tr><tr data-search="zuma codeforces interval dp given a sequence of colored gems (n &lt;= 500), remove contiguous palindromic substrings one at a time to clear the whole sequence in as few operations as possible.">
   <td><a href="https://codeforces.com/problemset/problem/607/B" target="_blank" rel="noopener noreferrer">Zuma</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given a sequence of colored gems (n &lt;= 500), remove contiguous palindromic substrings one at a time to clear the whole sequence in as few operations as possible.</td>
+  
 </tr><tr data-search="removal game cses interval dp two players alternately remove the first or last number of a list, each maximizing their own score; compute the first player&#x27;s optimal score.">
   <td><a href="https://cses.fi/problemset/task/1097" target="_blank" rel="noopener noreferrer">Removal Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Two players alternately remove the first or last number of a list, each maximizing their own score; compute the first player&#x27;s optimal score.</td>
+  
 </tr><tr data-search="rectangle cutting cses interval dp given an a x b rectangle, repeatedly cut a rectangle into two integer-sided rectangles until only squares remain; find the minimum number of cuts.">
   <td><a href="https://cses.fi/problemset/task/1744" target="_blank" rel="noopener noreferrer">Rectangle Cutting</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given an a x b rectangle, repeatedly cut a rectangle into two integer-sided rectangles until only squares remain; find the minimum number of cuts.</td>
+  
 </tr><tr data-search="burst balloons leetcode interval dp given n balloons with values, burst them one at a time (gaining left*balloon*right coins) to maximize total coins collected.">
   <td><a href="https://leetcode.com/problems/burst-balloons/" target="_blank" rel="noopener noreferrer">Burst Balloons</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given n balloons with values, burst them one at a time (gaining left*balloon*right coins) to maximize total coins collected.</td>
+  
 </tr><tr data-search="minimum cost to merge stones leetcode interval dp given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum merged) until one pile remains; find the minimum total cost, or -1 if impossible.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-stones/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Stones</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum merged) until one pile remains; find the minimum total cost, or -1 if impossible.</td>
+  
 </tr><tr data-search="regular expression matching leetcode string dp implement regex matching with support for &#x27;.&#x27; (any character) and &#x27;*&#x27; (zero or more of the preceding element) to determine if a pattern matches an entire string.">
   <td><a href="https://leetcode.com/problems/regular-expression-matching/" target="_blank" rel="noopener noreferrer">Regular Expression Matching</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Implement regex matching with support for &#x27;.&#x27; (any character) and &#x27;*&#x27; (zero or more of the preceding element) to determine if a pattern matches an entire string.</td>
+  
 </tr><tr data-search="wildcard matching leetcode string dp implement wildcard pattern matching with support for &#x27;?&#x27; (any single character) and &#x27;*&#x27; (any sequence, including empty) against an entire input string.">
   <td><a href="https://leetcode.com/problems/wildcard-matching/" target="_blank" rel="noopener noreferrer">Wildcard Matching</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Implement wildcard pattern matching with support for &#x27;?&#x27; (any single character) and &#x27;*&#x27; (any sequence, including empty) against an entire input string.</td>
+  
 </tr><tr data-search="distinct subsequences leetcode string dp count the number of distinct ways string t appears as a subsequence of string s.">
   <td><a href="https://leetcode.com/problems/distinct-subsequences/" target="_blank" rel="noopener noreferrer">Distinct Subsequences</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Count the number of distinct ways string t appears as a subsequence of string s.</td>
+  
 </tr><tr data-search="minimum insertion steps to make a string palindrome leetcode string dp find the minimum number of character insertions needed to turn a given string into a palindrome.">
   <td><a href="https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/" target="_blank" rel="noopener noreferrer">Minimum Insertion Steps to Make a String Palindrome</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Find the minimum number of character insertions needed to turn a given string into a palindrome.</td>
+  
 </tr><tr data-search="edit distance cses string dp compute the minimum number of single-character insertions, deletions, and replacements to transform one string into another.">
   <td><a href="https://cses.fi/problemset/task/1639" target="_blank" rel="noopener noreferrer">Edit Distance</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Compute the minimum number of single-character insertions, deletions, and replacements to transform one string into another.</td>
+  
 </tr><tr data-search="subsequences (hard version) codeforces string dp given a string of length up to 100 and a target count k (up to 1e12), repeatedly add distinct subsequences to a set at cost (n - length); find the minimum total cost to reach k distinct subsequences.">
   <td><a href="https://codeforces.com/problemset/problem/1183/H" target="_blank" rel="noopener noreferrer">Subsequences (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Given a string of length up to 100 and a target count k (up to 1e12), repeatedly add distinct subsequences to a set at cost (n - length); find the minimum total cost to reach k distinct subsequences.</td>
+  
 </tr><tr data-search="kefa and dishes codeforces bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) choose an ordered sequence of at most m dishes (no repeats) maximizing total satisfaction plus bonuses for specific adjacent-dish pairs.">
   <td><a href="https://codeforces.com/problemset/problem/580/D" target="_blank" rel="noopener noreferrer">Kefa and Dishes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Choose an ordered sequence of at most m dishes (no repeats) maximizing total satisfaction plus bonuses for specific adjacent-dish pairs.</td>
+  
 </tr><tr data-search="vladik and cards codeforces bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) given up to 1000 cards each with a value 1-8, choose the longest subsequence that can be split into 8 non-decreasing subsequences (one per value).">
   <td><a href="https://codeforces.com/problemset/problem/743/E" target="_blank" rel="noopener noreferrer">Vladik and cards</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Given up to 1000 cards each with a value 1-8, choose the longest subsequence that can be split into 8 non-decreasing subsequences (one per value).</td>
+  
 </tr><tr data-search="counting tilings cses bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) count the number of ways to tile an n×m grid completely using 1×2 tiles (horizontal or vertical).">
   <td><a href="https://cses.fi/problemset/task/2181" target="_blank" rel="noopener noreferrer">Counting Tilings</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Count the number of ways to tile an n×m grid completely using 1×2 tiles (horizontal or vertical).</td>
+  
 </tr><tr data-search="elevator rides cses bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) partition n people (each with a weight) into the minimum number of elevator rides, each ride capacity-limited.">
   <td><a href="https://cses.fi/problemset/task/1653" target="_blank" rel="noopener noreferrer">Elevator Rides</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Partition n people (each with a weight) into the minimum number of elevator rides, each ride capacity-limited.</td>
+  
 </tr><tr data-search="maximum students taking exam leetcode bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) seat the maximum number of students in a classroom grid with broken seats so no student can see an adjacent-row/diagonal neighbor&#x27;s answers.">
   <td><a href="https://leetcode.com/problems/maximum-students-taking-exam/" target="_blank" rel="noopener noreferrer">Maximum Students Taking Exam</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Seat the maximum number of students in a classroom grid with broken seats so no student can see an adjacent-row/diagonal neighbor&#x27;s answers.</td>
+  
 </tr><tr data-search="the fair nut and the best path codeforces tree dp (max independent set on tree, tree diameter via dp, rerooting technique) given a tree with vertex weights, find the maximum weight of a simple path (sum of vertex weights along it).">
   <td><a href="https://codeforces.com/problemset/problem/1083/A" target="_blank" rel="noopener noreferrer">The Fair Nut and the Best Path</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">Given a tree with vertex weights, find the maximum weight of a simple path (sum of vertex weights along it).</td>
+  
 </tr><tr data-search="work group codeforces tree dp (max independent set on tree, tree diameter via dp, rerooting technique) on a tree where each employee has a rating, pick a subset of nodes with no supervisor-subordinate pair included, maximizing total rating minus a fixed penalty per chosen member.">
   <td><a href="https://codeforces.com/problemset/problem/533/B" target="_blank" rel="noopener noreferrer">Work Group</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">On a tree where each employee has a rating, pick a subset of nodes with no supervisor-subordinate pair included, maximizing total rating minus a fixed penalty per chosen member.</td>
+  
 </tr><tr data-search="tree with maximum cost codeforces tree dp (max independent set on tree, tree diameter via dp, rerooting technique) for every possible choice of root, compute sum over all vertices of (vertex value × distance to root), and output the maximum over all roots.">
   <td><a href="https://codeforces.com/problemset/problem/1092/F" target="_blank" rel="noopener noreferrer">Tree with Maximum Cost</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">For every possible choice of root, compute sum over all vertices of (vertex value × distance to root), and output the maximum over all roots.</td>
+  
 </tr><tr data-search="binary tree cameras leetcode tree dp (max independent set on tree, tree diameter via dp, rerooting technique) place the minimum number of cameras on tree nodes (each covers itself, its parent, and its children) so every node is monitored.">
   <td><a href="https://leetcode.com/problems/binary-tree-cameras/" target="_blank" rel="noopener noreferrer">Binary Tree Cameras</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">Place the minimum number of cameras on tree nodes (each covers itself, its parent, and its children) so every node is monitored.</td>
+  
 </tr><tr data-search="beautiful numbers codeforces digit dp (counting numbers with a digit property up to n) count integers in [l, r] that are divisible by the sum of their own digits.">
   <td><a href="https://codeforces.com/problemset/problem/55/D" target="_blank" rel="noopener noreferrer">Beautiful numbers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Count integers in [l, r] that are divisible by the sum of their own digits.</td>
+  
 </tr><tr data-search="magic numbers codeforces digit dp (counting numbers with a digit property up to n) count numbers in [l, r] built by concatenating the substrings &quot;1&quot;, &quot;14&quot;, and &quot;144&quot; in some order.">
   <td><a href="https://codeforces.com/problemset/problem/628/D" target="_blank" rel="noopener noreferrer">Magic Numbers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Count numbers in [l, r] built by concatenating the substrings &quot;1&quot;, &quot;14&quot;, and &quot;144&quot; in some order.</td>
+  
 </tr><tr data-search="segment sum codeforces digit dp (counting numbers with a digit property up to n) compute the sum of all integers in [l, r] that contain at most k distinct decimal digits.">
   <td><a href="https://codeforces.com/problemset/problem/1073/E" target="_blank" rel="noopener noreferrer">Segment Sum</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Compute the sum of all integers in [l, r] that contain at most k distinct decimal digits.</td>
+  
 </tr><tr data-search="numbers at most n given digit set leetcode digit dp (counting numbers with a digit property up to n) given a set of allowed digits, count how many positive integers ≤ n can be formed using only those digits (repetition allowed).">
   <td><a href="https://leetcode.com/problems/numbers-at-most-n-given-digit-set/" target="_blank" rel="noopener noreferrer">Numbers At Most N Given Digit Set</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Given a set of allowed digits, count how many positive integers ≤ N can be formed using only those digits (repetition allowed).</td>
+  
 </tr><tr data-search="gargari and permutations codeforces dp on dags (longest/shortest path in a dag, counting paths) given k permutations of 1..n, find the longest common subsequence that appears (as a subsequence) in all k permutations simultaneously.">
   <td><a href="https://codeforces.com/problemset/problem/463/D" target="_blank" rel="noopener noreferrer">Gargari and Permutations</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">Given k permutations of 1..n, find the longest common subsequence that appears (as a subsequence) in all k permutations simultaneously.</td>
+  
 </tr><tr data-search="toss a coin to your graph... codeforces dp on dags (longest/shortest path in a dag, counting paths) binary search on a value x, keep only edges whose weight is ≥ x, and find the longest path (in number of edges) achievable in the resulting graph, restricted to a length budget k.">
   <td><a href="https://codeforces.com/problemset/problem/1679/D" target="_blank" rel="noopener noreferrer">Toss a Coin to Your Graph...</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">Binary search on a value x, keep only edges whose weight is ≥ x, and find the longest path (in number of edges) achievable in the resulting graph, restricted to a length budget k.</td>
+  
 </tr><tr data-search="longest increasing path in a matrix leetcode dp on dags (longest/shortest path in a dag, counting paths) find the length of the longest strictly increasing path of adjacent cells in a matrix.">
   <td><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix/" target="_blank" rel="noopener noreferrer">Longest Increasing Path in a Matrix</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">Find the length of the longest strictly increasing path of adjacent cells in a matrix.</td>
+  
 </tr><tr data-search="largest color value in a directed graph leetcode dp on dags (longest/shortest path in a dag, counting paths) in a directed graph where each node has a color, find the largest possible count of any single color along a path, or report that a cycle makes the answer undefined.">
   <td><a href="https://leetcode.com/problems/largest-color-value-in-a-directed-graph/" target="_blank" rel="noopener noreferrer">Largest Color Value in a Directed Graph</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">In a directed graph where each node has a color, find the largest possible count of any single color along a path, or report that a cycle makes the answer undefined.</td>
+  
 </tr><tr data-search="removal game cses game-theory dp (minimax dp, stone/coin games) two players alternately remove a number from either end of an array trying to maximize their own total; both play optimally — find the first player&#x27;s best possible score.">
   <td><a href="https://cses.fi/problemset/task/1097" target="_blank" rel="noopener noreferrer">Removal Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately remove a number from either end of an array trying to maximize their own total; both play optimally — find the first player&#x27;s best possible score.</td>
+  
 </tr><tr data-search="stick game cses game-theory dp (minimax dp, stone/coin games) two players alternately remove sticks from a pile using only a given set of allowed move sizes; determine who wins with optimal play for every pile size up to n.">
   <td><a href="https://cses.fi/problemset/task/1729" target="_blank" rel="noopener noreferrer">Stick Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately remove sticks from a pile using only a given set of allowed move sizes; determine who wins with optimal play for every pile size up to n.</td>
+  
 </tr><tr data-search="letter picking codeforces game-theory dp (minimax dp, stone/coin games) two players alternately remove a letter from either end of a string, each trying to end up with the lexicographically better multiset of removed letters after optimal play from both sides.">
   <td><a href="https://codeforces.com/problemset/problem/1728/D" target="_blank" rel="noopener noreferrer">Letter Picking</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately remove a letter from either end of a string, each trying to end up with the lexicographically better multiset of removed letters after optimal play from both sides.</td>
+  
 </tr><tr data-search="stone game iii leetcode game-theory dp (minimax dp, stone/coin games) two players alternately take 1, 2, or 3 stones from the front of a pile, each trying to maximize their own score; determine who wins (or if it&#x27;s a tie) with optimal play.">
   <td><a href="https://leetcode.com/problems/stone-game-iii/" target="_blank" rel="noopener noreferrer">Stone Game III</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately take 1, 2, or 3 stones from the front of a pile, each trying to maximize their own score; determine who wins (or if it&#x27;s a tie) with optimal play.</td>
+  
 </tr><tr data-search="fish codeforces probability &amp; expected-value dp n fish (n ≤ 18) swim in a pond; on each step two random fish meet and one eats the other with a given probability — compute, for every fish, the probability it survives to be the last one.">
   <td><a href="https://codeforces.com/problemset/problem/16/E" target="_blank" rel="noopener noreferrer">Fish</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">n fish (n ≤ 18) swim in a pond; on each step two random fish meet and one eats the other with a given probability — compute, for every fish, the probability it survives to be the last one.</td>
+  
 </tr><tr data-search="bad luck island codeforces probability &amp; expected-value dp on an island with rocks, scissors, and paper creatures that randomly meet and eliminate each other rock-paper-scissors style, compute the probability each species survives.">
   <td><a href="https://codeforces.com/problemset/problem/540/D" target="_blank" rel="noopener noreferrer">Bad Luck Island</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">On an island with rocks, scissors, and paper creatures that randomly meet and eliminate each other Rock-Paper-Scissors style, compute the probability each species survives.</td>
+  
 </tr><tr data-search="new year and arbitrary arrangement codeforces probability &amp; expected-value dp given probabilities of typing characters &#x27;a&#x27; or &#x27;b&#x27; at random (and a target k), compute the expected number of occurrences of the substring &quot;ab&quot; in a string built until k copies of &quot;ab&quot; appear (with a length cap).">
   <td><a href="https://codeforces.com/problemset/problem/908/D" target="_blank" rel="noopener noreferrer">New Year and Arbitrary Arrangement</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">Given probabilities of typing characters &#x27;a&#x27; or &#x27;b&#x27; at random (and a target k), compute the expected number of occurrences of the substring &quot;ab&quot; in a string built until k copies of &quot;ab&quot; appear (with a length cap).</td>
+  
 </tr><tr data-search="dice probability cses probability &amp; expected-value dp compute the probability that the sum of n dice rolls (each showing 1..6) lands in a given range [a, b].">
   <td><a href="https://cses.fi/problemset/task/1725" target="_blank" rel="noopener noreferrer">Dice Probability</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">Compute the probability that the sum of n dice rolls (each showing 1..6) lands in a given range [a, b].</td>
+  
 </tr><tr data-search="inversion probability cses probability &amp; expected-value dp given n elements each independently and uniformly assigned one of two possible values (with per-position choices), compute the expected number of inversions.">
   <td><a href="https://cses.fi/problemset/task/1728" target="_blank" rel="noopener noreferrer">Inversion Probability</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">Given n elements each independently and uniformly assigned one of two possible values (with per-position choices), compute the expected number of inversions.</td>
+  
 </tr><tr data-search="ciel and gondolas codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) partition n people standing in a line into exactly k contiguous, non-empty groups to minimize total &quot;unhappiness&quot; (sum over each group of a pairwise-cost function).">
   <td><a href="https://codeforces.com/problemset/problem/321/E" target="_blank" rel="noopener noreferrer">Ciel and Gondolas</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2600</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Partition n people standing in a line into exactly k contiguous, non-empty groups to minimize total &quot;unhappiness&quot; (sum over each group of a pairwise-cost function).</td>
+  
 </tr><tr data-search="yet another minimization problem codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) split an array into exactly k contiguous segments minimizing the sum, over segments, of c(count of each value in the segment, 2).">
   <td><a href="https://codeforces.com/problemset/problem/868/F" target="_blank" rel="noopener noreferrer">Yet Another Minimization Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Split an array into exactly k contiguous segments minimizing the sum, over segments, of C(count of each value in the segment, 2).</td>
+  
 </tr><tr data-search="the bakery codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) split an array of shop types into exactly k contiguous &quot;zones&quot; to maximize the total number of distinct shop types across all zones.">
   <td><a href="https://codeforces.com/problemset/problem/833/B" target="_blank" rel="noopener noreferrer">The Bakery</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Split an array of shop types into exactly k contiguous &quot;zones&quot; to maximize the total number of distinct shop types across all zones.</td>
+  
 </tr><tr data-search="watching fireworks is fun codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) you move along a line of positions over time to maximize happiness gained from fireworks launched at given times/positions/values, with a per-second movement speed limit.">
   <td><a href="https://codeforces.com/problemset/problem/372/C" target="_blank" rel="noopener noreferrer">Watching Fireworks is Fun</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">You move along a line of positions over time to maximize happiness gained from fireworks launched at given times/positions/values, with a per-second movement speed limit.</td>
+  
 </tr><tr data-search="kalila and dimna in the logging industry codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) cut down n trees (each requiring a specific axe strength and giving specific value if the previous tree cut used a weaker or equal axe) to maximize total value, minimizing total axe cost.">
   <td><a href="https://codeforces.com/problemset/problem/319/C" target="_blank" rel="noopener noreferrer">Kalila and Dimna in the Logging Industry</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Cut down n trees (each requiring a specific axe strength and giving specific value if the previous tree cut used a weaker or equal axe) to maximize total value, minimizing total axe cost.</td>
+  
 </tr><tr data-search="subsequences codeforces dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) given n points (x, y), find the maximum length of a sequence of points chosen in increasing order of x and non-decreasing order of y (a 2d &quot;staircase&quot; subsequence).">
   <td><a href="https://codeforces.com/problemset/problem/597/C" target="_blank" rel="noopener noreferrer">Subsequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Given n points (x, y), find the maximum length of a sequence of points chosen in increasing order of x and non-decreasing order of y (a 2D &quot;staircase&quot; subsequence).</td>
+  
 </tr><tr data-search="increasing subsequence ii cses dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) count the number of strictly increasing subsequences ending at each position of an array (not just the longest one).">
   <td><a href="https://cses.fi/problemset/task/1748" target="_blank" rel="noopener noreferrer">Increasing Subsequence II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Count the number of strictly increasing subsequences ending at each position of an array (not just the longest one).</td>
+  
 </tr><tr data-search="russian doll envelopes leetcode dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) given (width, height) pairs of envelopes, find the maximum number that can be nested inside each other (each dimension must strictly increase).">
   <td><a href="https://leetcode.com/problems/russian-doll-envelopes/" target="_blank" rel="noopener noreferrer">Russian Doll Envelopes</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Given (width, height) pairs of envelopes, find the maximum number that can be nested inside each other (each dimension must strictly increase).</td>
+  
 </tr><tr data-search="maximum height by stacking cuboids leetcode dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) given cuboid dimensions (each freely rotatable), stack cuboids on top of each other (each dimension of the one on top must be ≤ the one below) to maximize total height.">
   <td><a href="https://leetcode.com/problems/maximum-height-by-stacking-cuboids/" target="_blank" rel="noopener noreferrer">Maximum Height by Stacking Cuboids</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Given cuboid dimensions (each freely rotatable), stack cuboids on top of each other (each dimension of the one on top must be ≤ the one below) to maximize total height.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

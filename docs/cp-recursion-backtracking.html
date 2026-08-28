@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Permutations: O(n * n!) time to generate and output all n! sequences (the extra factor of n is the cost of copying/printing each one); with k groups of duplicate elements of sizes d_1..d_k, the duplicate-skip pruning generates exactly n! / (d_1! * ... * d_k!) sequences with zero wasted work, versus generating all n! and filtering with a hash set which costs extra memory and hashing time for no benefit. Subset generation is O(2^n) in the worst case, but sum-bound pruning (breaking early once a sorted running sum exceeds the target) typically prunes whole subtrees long before the recursion reaches depth n, so real-world running time on constrained instances is usually far below the 2^n worst case even though the worst-case bound itself does not change. Space is O(n) for the recursion stack and the current partial solution, plus O(number of outputs * n) if you must store every result.</p></div>
   </div>
   <article class="example-card" id="recursion-backtracking-permutation-subset-generation-with-constraints-ex0">
-  <h4>Distinct Permutations of a Multiset</h4>
+  <h4>Distinct Permutations of a Multiset<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-permutation-subset-generation-with-constraints-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a string s of at most 8 lowercase letters, which may contain repeated letters. Print the number of *distinct* permutations of its characters, followed by every distinct permutation, one per line, in lexicographically sorted order (this mirrors CSES 1622 &#x27;Creating Strings&#x27;).<br>Input: a single line containing s.<br>Output: first line = count of distinct permutations; each following line one permutation, in sorted order.</p></div>
   <div class="section-label">Approach</div>
@@ -326,7 +354,7 @@ baa
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-permutation-subset-generation-with-constraints-ex1">
-  <h4>Subsets Summing to a Target (with Duplicate &amp; Bound Pruning)</h4>
+  <h4>Subsets Summing to a Target (with Duplicate &amp; Bound Pruning)<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-permutation-subset-generation-with-constraints-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n (1 &lt;= n &lt;= 15) positive integers (possibly with repeated values) and a target T, find every subset (as a set of positions, but two subsets with identical multisets of values should be printed only once) whose elements sum exactly to T. Print the number of such subsets, then each subset&#x27;s values in non-decreasing order, one subset per line, with subsets themselves printed in lexicographically increasing order of their value sequences.<br>Input: first line &#x27;n target&#x27;; second line n integers.<br>Output: first line = number of qualifying subsets; each following line lists that subset&#x27;s values separated by single spaces.</p></div>
   <div class="section-label">Approach</div>
@@ -382,7 +410,7 @@ baa
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-permutation-subset-generation-with-constraints-ex2">
-  <h4>Permutations With No Adjacent Consecutive Values</h4>
+  <h4>Permutations With No Adjacent Consecutive Values<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-permutation-subset-generation-with-constraints-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n (1 &lt;= n &lt;= 9), count and list, in lexicographic order, every permutation of 1..n such that no two *adjacent positions* in the permutation hold values that differ by exactly 1 (i.e. for every i, |p[i] - p[i+1]| != 1). This sequence of counts is OEIS A002464.<br>Input: a single integer n.<br>Output: first line = number of valid permutations; each following line lists one valid permutation&#x27;s values separated by spaces, in lexicographic order.</p></div>
   <div class="section-label">Approach</div>
@@ -445,7 +473,7 @@ baa
     <div class="callout"><span class="c-label">Complexity</span><p>Worst-case complexity is still exponential (placing n queens one per row naively considers up to n choices per row, i.e. O(n^n) before any pruning, or O(n!) once you fix &#x27;one per row&#x27;), and this bound is unavoidable in the worst case - but pruning changes the *constant factor* by orders of magnitude in practice. For n=8 queens there are 8^8 ~ 16.7 million naive row/column assignments, but column+diagonal pruning visits only a few thousand search-tree nodes to enumerate all 92 solutions, because an attacked column/diagonal kills an entire remaining subtree the instant it&#x27;s detected rather than after fully constructing an invalid board. Sudoku backtracking is exponential in the number of blank cells in the absolute worst case, but the MRV heuristic (always branching on the cell with fewest candidates) keeps typical - even &#x27;hard&#x27; - puzzles solving in well under a second because most cells end up with only 1-2 candidates once enough digits are fixed, so the effective branching factor collapses far below 9. Space is O(n) (or O(81) for Sudoku) for the incremental attack-set/candidate-mask state plus O(depth) recursion stack.</p></div>
   </div>
   <article class="example-card" id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex0">
-  <h4>Counting N-Queens Solutions with Bitmask Pruning</h4>
+  <h4>Counting N-Queens Solutions with Bitmask Pruning<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n (1 &lt;= n &lt;= 12), count the number of ways to place n non-attacking queens on an n x n chessboard (no two queens share a row, column, or diagonal).<br>Input: a single integer n.<br>Output: a single integer, the number of distinct solutions.</p></div>
   <div class="section-label">Approach</div>
@@ -488,7 +516,7 @@ baa
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex1">
-  <h4>N-Queens with Reserved Squares</h4>
+  <h4>N-Queens with Reserved Squares<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an n x n board (1 &lt;= n &lt;= 10) where each cell is either &#x27;.&#x27; (usable) or &#x27;*&#x27; (reserved and unusable), count the number of ways to place n mutually non-attacking queens using only usable squares (this mirrors CSES 1624 &#x27;Chessboard and Queens&#x27;, generalized to arbitrary n). Because some usable configurations are now forbidden there is no closed-form queens-count shortcut - you must run real backtracking.<br>Input: first line n; next n lines each a string of n characters (&#x27;.&#x27; or &#x27;*&#x27;).<br>Output: a single integer, the number of valid placements.</p></div>
   <div class="section-label">Approach</div>
@@ -543,7 +571,7 @@ baa
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex2">
-  <h4>Sudoku Solver with Most-Constrained-Cell Pruning</h4>
+  <h4>Sudoku Solver with Most-Constrained-Cell Pruning<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-backtracking-with-pruning-n-queens-style-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a 9x9 Sudoku board with some cells filled (digits &#x27;1&#x27;-&#x27;9&#x27;) and the rest blank (&#x27;.&#x27;), fill in the blanks so every row, column, and 3x3 box contains each digit 1-9 exactly once. The input is guaranteed to have a unique solution.<br>Input: 9 lines, each a string of 9 characters (&#x27;.&#x27; or a digit).<br>Output: 9 lines, the solved board in the same format (digits only, no dots).</p></div>
   <div class="section-label">Approach</div>
@@ -652,7 +680,7 @@ baa
     <div class="callout"><span class="c-label">Complexity</span><p>Generating all subset results for each half costs O(2^(n/2)) time and space per half. Sorting one half&#x27;s results costs O(2^(n/2) * (n/2)). The combine step is typically O(2^(n/2) log(2^(n/2))) (one binary search per element of the other half), so overall time is roughly O(n * 2^(n/2)) and space is O(2^(n/2)). This is a massive practical improvement over O(2^n): for n=40, 2^(n/2) = 2^20 ~ 1.05 million versus 2^40 ~ 1.1 trillion - the difference between finishing instantly and never finishing, even though both are technically exponential in n. The trade-off is O(2^(n/2)) memory to hold one half&#x27;s enumerated results, which is the usual limiting factor rather than time.</p></div>
   </div>
   <article class="example-card" id="recursion-backtracking-meet-in-the-middle-ex0">
-  <h4>Counting Subsets That Sum to a Target</h4>
+  <h4>Counting Subsets That Sum to a Target<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-meet-in-the-middle-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n integers (1 &lt;= n &lt;= 36, values up to 10^9, so no sum-indexed DP is feasible) and a target sum S, count how many subsets (distinguished by which indices are chosen, so two subsets with the same values at different positions both count) sum exactly to S.<br>Input: first line &#x27;n target&#x27;; second line the n integers.<br>Output: a single integer, the number of subsets summing to target.</p></div>
   <div class="section-label">Approach</div>
@@ -707,7 +735,7 @@ baa
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-meet-in-the-middle-ex1">
-  <h4>Maximum Subsequence Sum Modulo m</h4>
+  <h4>Maximum Subsequence Sum Modulo m<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-meet-in-the-middle-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n integers (1 &lt;= n &lt;= 35, values up to 10^9) and a modulus m, choose any subsequence (possibly empty) to maximize (sum of chosen elements) mod m (this mirrors Codeforces 888E &#x27;Maximum Subsequence&#x27;). n rules out both 2^n brute force and a sum-indexed DP.<br>Input: first line &#x27;n m&#x27;; second line the n integers.<br>Output: a single integer, the maximum achievable value of (subset sum) mod m.</p></div>
   <div class="section-label">Approach</div>
@@ -781,7 +809,7 @@ baa
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for midpoint-split divide and conquer with an O(n) or O(n log n) merge step (T(n) = 2T(n/2) + O(n)); pivot-split (minimum-based) divide and conquer is typically analyzed case-by-case but commonly achieves O(n log n) on well-behaved inputs, degrading toward O(n^2) in adversarial worst cases without additional balancing tricks.</p></div>
   </div>
   <article class="example-card" id="recursion-backtracking-divide-and-conquer-ex0">
-  <h4>Closest Pair of Points (classic midpoint-split divide and conquer)</h4>
+  <h4>Closest Pair of Points (classic midpoint-split divide and conquer)<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-divide-and-conquer-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n points in the 2D plane (2 &lt;= n &lt;= 2*10^5, coordinates are integers with |x|, |y| &lt;= 10^9). Find the minimum SQUARED Euclidean distance between any two distinct points (returning the squared distance avoids floating point entirely, since all coordinates are integers).</p><p>Input: n, then n lines each with two integers x and y.<br>Output: the minimum squared distance between any two distinct points.</p></div>
   <div class="section-label">Approach</div>
@@ -846,7 +874,7 @@ ll solve(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int<
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-divide-and-conquer-ex1">
-  <h4>Painting a Fence with Minimum Strokes (pivot-split divide and conquer)</h4>
+  <h4>Painting a Fence with Minimum Strokes (pivot-split divide and conquer)<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-divide-and-conquer-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A fence has n planks (1 &lt;= n &lt;= 5000) in a row; plank i has height h[i] (1 &lt;= h[i] &lt;= 10^9). You must paint every unit-height cell of every plank using strokes of two kinds: a HORIZONTAL stroke covers a contiguous range of planks at one specific height, costs 1 regardless of how many planks it spans, but only paints cells that are exactly at that height AND not yet painted at any lower height in that range (in practice: think of it as raising the &#x27;already painted up to&#x27; baseline of that whole sub-range by one unit); a VERTICAL stroke paints one entire single plank from height 0 to h[i], costing 1. Find the minimum total number of strokes needed to paint every plank completely.</p><p>Input: n, then n integers h[1..n].<br>Output: the minimum number of strokes.</p></div>
   <div class="section-label">Approach</div>
@@ -897,7 +925,7 @@ ll solve(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int<
     <div class="callout"><span class="c-label">Complexity</span><p>O(b^d) naive minimax, O(b^(d/2)) with well-ordered alpha-beta pruning on an explicit game tree of branching factor b and depth d; O(V + E) for memoized minimax or retrograde BFS over an explicit state graph with V states and E transitions.</p></div>
   </div>
   <article class="example-card" id="recursion-backtracking-minimax-with-alpha-beta-pruning-ex0">
-  <h4>Minimax Value of a Game Tree with Alpha-Beta Pruning</h4>
+  <h4>Minimax Value of a Game Tree with Alpha-Beta Pruning<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-minimax-with-alpha-beta-pruning-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a complete binary game tree with n leaves (n is a power of 2, 1 &lt;= n &lt;= 2^16). The root is a MAX node; levels alternate MIN, MAX, MIN, ... going down; the leaves hold given integer values. Compute the minimax value of the tree using alpha-beta pruning, and also report how many leaves were actually visited (i.e., how many leaf evaluations alpha-beta pruning was able to skip).</p><p>Input: n, then n integers (the leaf values, left to right).<br>Output: two integers separated by a space: the minimax value of the root, and the number of leaves visited during the alpha-beta search.</p></div>
   <div class="section-label">Approach</div>
@@ -956,7 +984,7 @@ ll solve(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int<
 </code></pre>
   </div>
 </article><article class="example-card" id="recursion-backtracking-minimax-with-alpha-beta-pruning-ex1">
-  <h4>Pursuit Game on a Graph With Possible Draws (retrograde analysis)</h4>
+  <h4>Pursuit Game on a Graph With Possible Draws (retrograde analysis)<button type="button" class="done-checkbox" data-item-id="recursion-backtracking-minimax-with-alpha-beta-pruning-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A Robber and a Cop play on an undirected graph with n nodes (2 &lt;= n &lt;= 60) and m edges. The Robber moves first; players alternate turns. On a turn, the mover either moves to an adjacent node or stays in place. The Robber WINS the moment it is ever at a designated &#x27;goal&#x27; node (checked whenever the Robber occupies it, regardless of whose turn is next). The Cop WINS the moment it occupies the same node as the Robber. If the game continues forever without either event happening, the result is a DRAW. Given the graph, the goal node, and both players&#x27; starting positions (never the same node initially), determine the outcome under optimal play by both: the Robber tries to reach the goal, the Cop tries to catch the Robber, and each will settle for a draw only if a win is not achievable.</p><p>Input: n and m, then m lines each with an edge &#x27;u v&#x27; (0-indexed), then the goal node, then the Robber&#x27;s and Cop&#x27;s starting positions.<br>Output: 1 if the Robber wins, 2 if the Cop wins, 0 if it is a draw.</p></div>
   <div class="section-label">Approach</div>
@@ -1076,109 +1104,126 @@ ll solve(<span class="tok-keyword">int</span> lo, <span class="tok-keyword">int<
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="maximum subsequence codeforces meet in the middle (subset sums) given an array (n ≤ 35) and modulus m, choose a subsequence maximizing the sum of its elements modulo m.">
   <td><a href="https://codeforces.com/problemset/problem/888/E" target="_blank" rel="noopener noreferrer">Maximum Subsequence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">meet in the middle (subset sums)</td>
   <td class="desc-cell">Given an array (n ≤ 35) and modulus m, choose a subsequence maximizing the sum of its elements modulo m.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/888/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="anya and cubes codeforces meet in the middle (subset sum with a twist operation) given n numbers (n ≤ 25) and a target sum s, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals s.">
   <td><a href="https://codeforces.com/problemset/problem/525/E" target="_blank" rel="noopener noreferrer">Anya and Cubes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">meet in the middle (subset sum with a twist operation)</td>
   <td class="desc-cell">Given n numbers (n ≤ 25) and a target sum S, count subsets where you may additionally replace up to k of the chosen numbers with their factorial, such that the resulting sum equals S.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/525/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="lizard era: beginning codeforces meet in the middle (3-way partition) split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.">
   <td><a href="https://codeforces.com/problemset/problem/585/D" target="_blank" rel="noopener noreferrer">Lizard Era: Beginning</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">meet in the middle (3-way partition)</td>
   <td class="desc-cell">Split n scientists (n ≤ 24) among 3 research groups to minimize a pairwise dissatisfaction cost that depends on which groups two scientists end up in.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/585/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="chessboard and queens cses n-queens style pruning count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.">
   <td><a href="https://cses.fi/problemset/task/1624" target="_blank" rel="noopener noreferrer">Chessboard and Queens</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Introductory Problems, high end)</td>
   <td class="subtopic-cell">N-Queens style pruning</td>
   <td class="desc-cell">Count the ways to place 8 non-attacking queens on an 8×8 board where some squares are reserved and unusable.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1624" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="creating strings cses permutation generation with duplicate pruning given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.">
   <td><a href="https://cses.fi/problemset/task/1622" target="_blank" rel="noopener noreferrer">Creating Strings</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Introductory Problems, high end)</td>
   <td class="subtopic-cell">permutation generation with duplicate pruning</td>
   <td class="desc-cell">Given a string of up to 8 letters (possibly with repeats), generate every distinct permutation of its characters exactly once, in sorted order.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1622" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="apple division cses recursive subset enumeration / meet in the middle divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups&#x27; total weights.">
   <td><a href="https://cses.fi/problemset/task/1623" target="_blank" rel="noopener noreferrer">Apple Division</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Introductory Problems, high end)</td>
   <td class="subtopic-cell">recursive subset enumeration / meet in the middle</td>
   <td class="desc-cell">Divide n ≤ 20 apples (with large integer weights) into two groups minimizing the absolute difference of the groups&#x27; total weights.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1623" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="n-queens leetcode n-queens style pruning return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.">
   <td><a href="https://leetcode.com/problems/n-queens/" target="_blank" rel="noopener noreferrer">N-Queens</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">N-Queens style pruning</td>
   <td class="desc-cell">Return all distinct board configurations for placing n non-attacking queens on an n×n chessboard.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/n-queens/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="sudoku solver leetcode constraint-propagation backtracking fill a partially completed 9×9 sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.">
   <td><a href="https://leetcode.com/problems/sudoku-solver/" target="_blank" rel="noopener noreferrer">Sudoku Solver</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">constraint-propagation backtracking</td>
   <td class="desc-cell">Fill a partially completed 9×9 Sudoku board so every row, column, and 3×3 box contains 1-9 exactly once.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/sudoku-solver/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum euclidean distance cses divide and conquer (closest pair of points) given up to 2*10^5 points in the plane, find the minimum squared euclidean distance between any two distinct points.">
   <td><a href="https://cses.fi/problemset/task/2194" target="_blank" rel="noopener noreferrer">Minimum Euclidean Distance</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Divide and Conquer (closest pair of points)</td>
   <td class="desc-cell">Given up to 2*10^5 points in the plane, find the minimum squared Euclidean distance between any two distinct points.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2194" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="merge sort codeforces divide and conquer (constructive, recursion-tree structure) construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.">
   <td><a href="https://codeforces.com/problemset/problem/873/D" target="_blank" rel="noopener noreferrer">Merge Sort</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Divide and Conquer (constructive, recursion-tree structure)</td>
   <td class="desc-cell">Construct a permutation of size n such that running the classic recursive mergesort (which early-exits on already-sorted subranges) makes exactly k recursive calls.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/873/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="pashmak and parmida&#x27;s problem codeforces divide and conquer (counting with merge step) count pairs (i, j) with i &lt; j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.">
   <td><a href="https://codeforces.com/problemset/problem/459/D" target="_blank" rel="noopener noreferrer">Pashmak and Parmida&#x27;s problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Divide and Conquer (counting with merge step)</td>
   <td class="desc-cell">Count pairs (i, j) with i &lt; j such that the count of a[i] in the prefix ending at i exceeds the count of a[j] in the suffix starting at j.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/459/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="painting fence codeforces divide and conquer (recursive range minimum splitting) given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.">
   <td><a href="https://codeforces.com/problemset/problem/448/C" target="_blank" rel="noopener noreferrer">Painting Fence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Divide and Conquer (recursive range minimum splitting)</td>
   <td class="desc-cell">Given fence-plank heights, find the minimum number of horizontal/vertical brush strokes needed to paint every plank, where a horizontal stroke of length k costs 1 and covers a contiguous range at one height.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/448/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="letter picking codeforces minimax with alpha-beta pruning alice and bob alternately take the first or last letter of a string and prepend it to their own string (alice wants the lexicographically smaller result, bob the opposite, both settle for a draw if they can&#x27;t win); determine the outcome under optimal play.">
   <td><a href="https://codeforces.com/problemset/problem/1728/D" target="_blank" rel="noopener noreferrer">Letter Picking</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">Alice and Bob alternately take the first or last letter of a string and prepend it to their own string (Alice wants the lexicographically smaller result, Bob the opposite, both settle for a draw if they can&#x27;t win); determine the outcome under optimal play.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1728/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="game on sum (easy version) codeforces minimax with alpha-beta pruning over n turns, alice picks a real number in [0, k] each turn and bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); alice maximizes the final score, bob minimizes it — find the optimal value.">
   <td><a href="https://codeforces.com/problemset/problem/1628/D1" target="_blank" rel="noopener noreferrer">Game on Sum (Easy Version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">Over n turns, Alice picks a real number in [0, k] each turn and Bob decides whether to add or subtract it from a running score (constrained to add on at least m turns); Alice maximizes the final score, Bob minimizes it — find the optimal value.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1628/D1" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="world is mine codeforces minimax with alpha-beta pruning alice and bob alternately eat cakes (alice can only eat a cake tastier than any she&#x27;s eaten before; bob eats anything); alice maximizes how many cakes she eats and bob minimizes it — find the count under optimal play.">
   <td><a href="https://codeforces.com/problemset/problem/1987/D" target="_blank" rel="noopener noreferrer">World is Mine</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">Alice and Bob alternately eat cakes (Alice can only eat a cake tastier than any she&#x27;s eaten before; Bob eats anything); Alice maximizes how many cakes she eats and Bob minimizes it — find the count under optimal play.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1987/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="cat and mouse leetcode minimax with alpha-beta pruning on a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.">
   <td><a href="https://leetcode.com/problems/cat-and-mouse/" target="_blank" rel="noopener noreferrer">Cat and Mouse</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#913)</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">On a graph, a mouse and cat alternately move along edges (mouse wants to reach hole 0, cat wants to catch the mouse at the same node, draws are possible if the game repeats forever); determine which side wins with optimal play.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/cat-and-mouse/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="cat and mouse ii leetcode minimax with alpha-beta pruning on a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.">
   <td><a href="https://leetcode.com/problems/cat-and-mouse-ii/" target="_blank" rel="noopener noreferrer">Cat and Mouse II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1728)</td>
   <td class="subtopic-cell">Minimax with Alpha-Beta Pruning</td>
   <td class="desc-cell">On a grid maze with walls, food, and jump-distance limits per player, a cat and mouse alternately move (cat wins by catching the mouse or reaching the food first, mouse wins by reaching the food first); determine the winner with optimal play and a move-limit draw rule.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/cat-and-mouse-ii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

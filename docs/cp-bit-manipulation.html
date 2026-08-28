@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Bitmask DP over states: typically O(2^n * n) to O(2^n * n^2) time, O(2^n) to O(2^n * n) space. SOS DP: O(2^n * n) time and O(2^n) space, versus the naive O(3^n) direct-enumeration alternative.</p></div>
   </div>
   <article class="example-card" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex0">
-  <h4>Sum over Subsets (SOS) DP — core template</h4>
+  <h4>Sum over Subsets (SOS) DP — core template<button type="button" class="done-checkbox" data-item-id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an integer n (1 &lt;= n &lt;= 20) and an array f of size 2^n, indexed by bitmask, where f[mask] is given for every mask from 0 to 2^n - 1. For every mask, compute g[mask] = sum of f[s] over all submasks s of mask (a submask s of mask satisfies (s AND mask) == s, i.e. every set bit of s is also set in mask; mask itself and 0 both count as submasks). Print g[0], g[1], ..., g[2^n - 1] separated by spaces.</p></div>
   <div class="section-label">Approach</div>
@@ -311,7 +339,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex1">
-  <h4>Compatible Pair Search via SOS &#x27;exists&#x27; DP</h4>
+  <h4>Compatible Pair Search via SOS &#x27;exists&#x27; DP<button type="button" class="done-checkbox" data-item-id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n integers a[1..n] (0 &lt;= a[i] &lt; 2^B, here B = 4 so values are 0..15) and an integer B. For each index i (1-indexed), find any value a[j] (1 &lt;= j &lt;= n, j may equal i) such that a[i] AND a[j] = 0 (their binary representations share no common set bit), and print that value; if no such value exists among the array elements, print -1 instead. Print n answers separated by spaces.</p></div>
   <div class="section-label">Approach</div>
@@ -350,7 +378,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex2">
-  <h4>Traveling Salesman via Bitmask DP over Visited-City Subsets</h4>
+  <h4>Traveling Salesman via Bitmask DP over Visited-City Subsets<button type="button" class="done-checkbox" data-item-id="bit-manipulation-subset-enumeration-via-bitmasks-incl-sum-over-subsets-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n cities (2 &lt;= n &lt;= 15) and an n x n matrix cost[i][j] giving the cost of traveling directly from city i to city j (cost[i][i] = 0), find the minimum total cost of a tour that starts at city 0, visits every other city exactly once, and returns to city 0.</p></div>
   <div class="section-label">Approach</div>
@@ -408,7 +436,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Building an XOR linear basis: O(n * B) time where B is the bit-width (e.g. 60 for 64-bit values), O(B) space for the basis. Binary trie: O(B) per insertion/query, O(n * B) total space in the worst case.</p></div>
   </div>
   <article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex0">
-  <h4>Maximum XOR Subset via Linear Basis</h4>
+  <h4>Maximum XOR Subset via Linear Basis<button type="button" class="done-checkbox" data-item-id="bit-manipulation-xor-properties-linear-basis-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (1 &lt;= n &lt;= 2*10^5, 1 &lt;= a[i] &lt; 2^60), find the maximum possible value of the XOR of the elements of some non-empty subset (a single element counts as a valid subset).</p></div>
   <div class="section-label">Approach</div>
@@ -445,7 +473,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex1">
-  <h4>Counting Distinct Subset XOR Values</h4>
+  <h4>Counting Distinct Subset XOR Values<button type="button" class="done-checkbox" data-item-id="bit-manipulation-xor-properties-linear-basis-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (1 &lt;= n &lt;= 2*10^5, 0 &lt;= a[i] &lt; 2^60), count how many distinct values can be formed by taking the XOR of the elements of some subset (including the empty subset, whose XOR is defined as 0).</p></div>
   <div class="section-label">Approach</div>
@@ -480,7 +508,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex2">
-  <h4>Maximum XOR Pair via Binary Trie</h4>
+  <h4>Maximum XOR Pair via Binary Trie<button type="button" class="done-checkbox" data-item-id="bit-manipulation-xor-properties-linear-basis-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (2 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt; 2^20), find the maximum value of a[i] XOR a[j] over all pairs of indices i &lt; j.</p></div>
   <div class="section-label">Approach</div>
@@ -542,7 +570,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(2^n) to generate a full n-bit Gray code sequence (unavoidable, since there are exactly 2^n codewords to output); O(log(max value)) per query for numeric bit-trick problems like popcount maximization within a bound, since at most one pass over the bits of the value is needed.</p></div>
   </div>
   <article class="example-card" id="bit-manipulation-bit-tricks-gray-code-ex0">
-  <h4>Generate an n-bit Gray Code Sequence</h4>
+  <h4>Generate an n-bit Gray Code Sequence<button type="button" class="done-checkbox" data-item-id="bit-manipulation-bit-tricks-gray-code-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer n (1 &lt;= n &lt;= 16), output all 2^n binary strings of length n, one per line, in an order such that every two CONSECUTIVE strings in the output differ in exactly one bit position (and, implicitly, the sequence also wraps around: the last and first strings differ in exactly one bit too, though this example only requires the printed consecutive-pairs property).</p><p>Input: a single integer n.<br>Output: 2^n lines, each an n-character binary string, forming a valid Gray code sequence.</p></div>
   <div class="section-label">Approach</div>
@@ -578,7 +606,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="bit-manipulation-bit-tricks-gray-code-ex1">
-  <h4>Smallest Value With Maximum Popcount in a Range</h4>
+  <h4>Smallest Value With Maximum Popcount in a Range<button type="button" class="done-checkbox" data-item-id="bit-manipulation-bit-tricks-gray-code-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given q queries (1 &lt;= q &lt;= 10^4). Each query gives two integers l and r (1 &lt;= l &lt;= r &lt;= 10^18). For each query, find the SMALLEST integer x with l &lt;= x &lt;= r that has the maximum possible number of set bits (1-bits in binary) among all integers in [l, r].</p><p>Input: q, then q lines each with l and r.<br>Output: q lines, each the answer x for the corresponding query.</p></div>
   <div class="section-label">Approach</div>
@@ -628,7 +656,7 @@ ull solve(ull l, ull r){
     <div class="callout"><span class="c-label">Complexity</span><p>O(n * m / 64) (or O(n^2 / 64)) time instead of O(n * m) (or O(n^2)), where the division by 64 (or whatever the machine word / bitset block size is) comes directly from packing that many boolean comparisons into one word-level operation; O(n * m / 64) space when a full table of per-position or per-character bitsets must be precomputed.</p></div>
   </div>
   <article class="example-card" id="bit-manipulation-bitset-optimization-for-brute-force-speedup-ex0">
-  <h4>Find a String Within Hamming Distance 1 of Every Given String</h4>
+  <h4>Find a String Within Hamming Distance 1 of Every Given String<button type="button" class="done-checkbox" data-item-id="bit-manipulation-bitset-optimization-for-brute-force-speedup-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given m strings (2 &lt;= m &lt;= 50), each of the same length n (1 &lt;= n &lt;= 50), consisting of lowercase English letters. Find any string of length n that is within Hamming distance 1 (i.e., differs in AT MOST one character position) of EVERY one of the m given strings, or report -1 if no such string exists.</p><p>Input: m and n, then m strings each of length n.<br>Output: a valid string of length n satisfying the condition, or -1 if impossible.</p></div>
   <div class="section-label">Approach</div>
@@ -692,7 +720,7 @@ xbz
 </code></pre>
   </div>
 </article><article class="example-card" id="bit-manipulation-bitset-optimization-for-brute-force-speedup-ex1">
-  <h4>Exact Pattern Matching via the Bitset Shift-And Algorithm</h4>
+  <h4>Exact Pattern Matching via the Bitset Shift-And Algorithm<button type="button" class="done-checkbox" data-item-id="bit-manipulation-bitset-optimization-for-brute-force-speedup-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a text string of length n and a pattern string of length m (1 &lt;= m &lt;= n &lt;= 2000), both consisting of lowercase English letters. Find every starting position (0-indexed) in the text where the pattern occurs as an exact contiguous substring.</p><p>Input: the text on one line, then the pattern on the next line.<br>Output: the number of matches, then (on the next line) all matching starting positions in increasing order, separated by spaces (omit the second line if there are zero matches).</p></div>
   <div class="section-label">Approach</div>
@@ -740,91 +768,105 @@ aba
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="maximum xor subset cses subset enumeration / xor linear basis given an array of n integers, find the maximum xor sum achievable by any subset of it.">
   <td><a href="https://cses.fi/problemset/task/3191" target="_blank" rel="noopener noreferrer">Maximum Xor Subset</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">subset enumeration / XOR linear basis</td>
   <td class="desc-cell">Given an array of n integers, find the maximum XOR sum achievable by any subset of it.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/3191" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="number of subset xors cses subset enumeration / xor linear basis given an array of n integers, count how many distinct xor values can be formed by some subset.">
   <td><a href="https://cses.fi/problemset/task/3211" target="_blank" rel="noopener noreferrer">Number of Subset Xors</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">subset enumeration / XOR linear basis</td>
   <td class="desc-cell">Given an array of n integers, count how many distinct XOR values can be formed by some subset.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/3211" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="compatible numbers codeforces subset enumeration (sum over subsets / sos dp) given n numbers each less than 2^22, for every number find another number in the array whose bitwise and with it is zero, or report none exists.">
   <td><a href="https://codeforces.com/problemset/problem/165/E" target="_blank" rel="noopener noreferrer">Compatible Numbers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">subset enumeration (Sum over Subsets / SOS DP)</td>
   <td class="desc-cell">Given n numbers each less than 2^22, for every number find another number in the array whose bitwise AND with it is zero, or report none exists.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/165/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum students taking exam leetcode subset enumeration (bitmask dp) given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.">
   <td><a href="https://leetcode.com/problems/maximum-students-taking-exam/" target="_blank" rel="noopener noreferrer">Maximum Students Taking Exam</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1349)</td>
   <td class="subtopic-cell">subset enumeration (bitmask DP)</td>
   <td class="desc-cell">Given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/maximum-students-taking-exam/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="vasiliy&#x27;s multiset codeforces xor properties (binary trie) maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum xor of a given value x with any element currently in the multiset.&quot;">
   <td><a href="https://codeforces.com/problemset/problem/706/D" target="_blank" rel="noopener noreferrer">Vasiliy&#x27;s Multiset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">XOR properties (binary trie)</td>
   <td class="desc-cell">Maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum XOR of a given value x with any element currently in the multiset.&quot;</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/706/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum xor with an element from array leetcode xor properties (binary trie, offline queries) given an array and queries of the form (x, m), find the maximum xor of x with any array element that is &lt;= m, or -1 if none qualifies.">
   <td><a href="https://leetcode.com/problems/maximum-xor-with-an-element-from-array/" target="_blank" rel="noopener noreferrer">Maximum XOR With an Element From Array</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1707)</td>
   <td class="subtopic-cell">XOR properties (binary trie, offline queries)</td>
   <td class="desc-cell">Given an array and queries of the form (x, m), find the maximum XOR of x with any array element that is &lt;= m, or -1 if none qualifies.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/maximum-xor-with-an-element-from-array/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="sum of xor functions codeforces xor properties given an array, compute the sum over all subarrays [l, r] of (xor of the subarray) times (r - l + 1).">
   <td><a href="https://codeforces.com/problemset/problem/1879/D" target="_blank" rel="noopener noreferrer">Sum of XOR Functions</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">XOR properties</td>
   <td class="desc-cell">Given an array, compute the sum over all subarrays [l, r] of (XOR of the subarray) times (r - l + 1).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1879/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="gray code cses bit tricks &amp; gray code (construction) for a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a gray code).">
   <td><a href="https://cses.fi/problemset/task/2205" target="_blank" rel="noopener noreferrer">Gray Code</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Bit Tricks &amp; Gray Code (construction)</td>
   <td class="desc-cell">For a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a Gray code).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2205" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="bits codeforces bit tricks &amp; gray code (popcount maximization) for up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.">
   <td><a href="https://codeforces.com/problemset/problem/484/A" target="_blank" rel="noopener noreferrer">Bits</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Bit Tricks &amp; Gray Code (popcount maximization)</td>
   <td class="desc-cell">For up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/484/A" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="bitwise operation wizard codeforces bit tricks &amp; gray code (bit-by-bit interactive determination) in an interactive problem, find two indices whose values (a hidden permutation) xor to the maximum possible value, using only queries that compare the bitwise or of two chosen pairs.">
   <td><a href="https://codeforces.com/problemset/problem/1936/A" target="_blank" rel="noopener noreferrer">Bitwise Operation Wizard</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Bit Tricks &amp; Gray Code (bit-by-bit interactive determination)</td>
   <td class="desc-cell">In an interactive problem, find two indices whose values (a hidden permutation) XOR to the maximum possible value, using only queries that compare the bitwise OR of two chosen pairs.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1936/A" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="spy-string codeforces bitset optimization for brute-force speedup given m strings of length n, find any string of length n that is within hamming distance 1 of every given string, or report impossible.">
   <td><a href="https://codeforces.com/problemset/problem/1360/F" target="_blank" rel="noopener noreferrer">Spy-string</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">Given m strings of length n, find any string of length n that is within Hamming distance 1 of every given string, or report impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1360/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="gcd counting codeforces bitset optimization for brute-force speedup in a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a gcd greater than 1.">
   <td><a href="https://codeforces.com/problemset/problem/1101/D" target="_blank" rel="noopener noreferrer">GCD Counting</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">In a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a GCD greater than 1.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1101/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="dasha and cyclic table codeforces bitset optimization for brute-force speedup given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).">
   <td><a href="https://codeforces.com/problemset/problem/754/E" target="_blank" rel="noopener noreferrer">Dasha and cyclic table</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2600</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">Given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/754/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="substrings in a string codeforces bitset optimization for brute-force speedup given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.">
   <td><a href="https://codeforces.com/problemset/problem/914/F" target="_blank" rel="noopener noreferrer">Substrings in a String</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 3000</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">Given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/914/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

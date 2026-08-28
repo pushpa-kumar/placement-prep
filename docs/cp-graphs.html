@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Dijkstra: O((V+E) log V) with a binary heap, O(V^2 + E) with a plain array (better when the graph is dense). Bellman-Ford: O(V*E) time, O(V) space. Floyd-Warshall: O(V^3) time, O(V^2) space.</p></div>
   </div>
   <article class="example-card" id="graphs-shortest-paths-dijkstra-bellman-ford-floyd-warshall-ex0">
-  <h4>Shortest Distance and Path Count</h4>
+  <h4>Shortest Distance and Path Count<button type="button" class="done-checkbox" data-item-id="graphs-shortest-paths-dijkstra-bellman-ford-floyd-warshall-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a directed graph with n nodes (1..n) and m weighted edges (all weights are positive integers), representing one-way roads between cities. Find the length of the shortest route from city 1 to city n, and also the number of distinct shortest routes, modulo 1,000,000,007. It is guaranteed city n is reachable from city 1.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;u v w&#x27; meaning a directed edge u-&gt;v of weight w.<br>Output: two integers on one line: the shortest distance, and the count of shortest paths mod 1e9+7.</p></div>
   <div class="section-label">Approach</div>
@@ -330,7 +358,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-shortest-paths-dijkstra-bellman-ford-floyd-warshall-ex1">
-  <h4>Maximum Score Path with Runaway-Cycle Detection</h4>
+  <h4>Maximum Score Path with Runaway-Cycle Detection<button type="button" class="done-checkbox" data-item-id="graphs-shortest-paths-dijkstra-bellman-ford-floyd-warshall-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A directed graph on n nodes has m directed edges, each with an integer weight that may be negative (think of it as a score gained by traversing that road). Find the maximum possible total score of a path from node 1 to node n. If there exists a positive-weight cycle that is both reachable from node 1 and can itself reach node n, the score can be made arbitrarily large; in that case print &#x27;IMPOSSIBLE&#x27;.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;u v w&#x27; (edge u-&gt;v with weight w, possibly negative).<br>Output: the maximum score, or &#x27;IMPOSSIBLE&#x27;.</p></div>
   <div class="section-label">Approach</div>
@@ -386,7 +414,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-shortest-paths-dijkstra-bellman-ford-floyd-warshall-ex2">
-  <h4>Best Distance After Halving One Edge</h4>
+  <h4>Best Distance After Halving One Edge<button type="button" class="done-checkbox" data-item-id="graphs-shortest-paths-dijkstra-bellman-ford-floyd-warshall-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>An undirected weighted graph has n vertices and m edges (all weights guaranteed even, so halved weights are integers), and two fixed vertices s and t. You may choose at most one edge and halve its weight (or choose none). Find the minimum possible distance from s to t after this single optional change.</p><p>Input: first line &#x27;n m s t&#x27;. Next m lines: &#x27;a b w&#x27; (undirected edge between a and b, weight w).<br>Output: a single integer, the minimum achievable distance from s to t.</p></div>
   <div class="section-label">Approach</div>
@@ -443,7 +471,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Kruskal&#x27;s: O(E log E) for the sort plus near-O(E) for E α(V) DSU operations. Prim&#x27;s: O(V^2) with a plain array (good for dense graphs), O((V+E) log V) with a binary heap (good for sparse graphs).</p></div>
   </div>
   <article class="example-card" id="graphs-minimum-spanning-tree-kruskal-prim-ex0">
-  <h4>Minimum Spanning Tree Weight (Kruskal)</h4>
+  <h4>Minimum Spanning Tree Weight (Kruskal)<button type="button" class="done-checkbox" data-item-id="graphs-minimum-spanning-tree-kruskal-prim-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an undirected, connected, weighted graph with n vertices and m edges, find the total weight of a minimum spanning tree.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b w&#x27; (undirected edge between a and b with weight w).<br>Output: a single integer, the total MST weight (or &#x27;IMPOSSIBLE&#x27; if the graph is not connected).</p></div>
   <div class="section-label">Approach</div>
@@ -502,7 +530,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-minimum-spanning-tree-kruskal-prim-ex1">
-  <h4>MST on a Dense Graph (Prim&#x27;s, O(V^2))</h4>
+  <h4>MST on a Dense Graph (Prim&#x27;s, O(V^2))<button type="button" class="done-checkbox" data-item-id="graphs-minimum-spanning-tree-kruskal-prim-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an undirected, connected, weighted graph with n vertices and m edges (n is small enough that the graph may be dense), find the total weight of a minimum spanning tree.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b w&#x27;.<br>Output: a single integer, the total MST weight (or &#x27;IMPOSSIBLE&#x27; if disconnected).</p></div>
   <div class="section-label">Approach</div>
@@ -560,7 +588,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-minimum-spanning-tree-kruskal-prim-ex2">
-  <h4>Minimum Spanning Tree Forced Through Each Edge</h4>
+  <h4>Minimum Spanning Tree Forced Through Each Edge<button type="button" class="done-checkbox" data-item-id="graphs-minimum-spanning-tree-kruskal-prim-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a connected, weighted, undirected graph with n vertices and m edges, for every edge in the input (in the order given), compute the minimum possible total weight of a spanning tree that is required to include that specific edge.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b w&#x27;.<br>Output: m integers on one line, the answer for each edge in input order.</p></div>
   <div class="section-label">Approach</div>
@@ -637,7 +665,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(V+E) time and O(V) extra space for both Kahn&#x27;s and the DFS-based algorithm.</p></div>
   </div>
   <article class="example-card" id="graphs-topological-sort-ex0">
-  <h4>Deterministic Course Ordering (Kahn&#x27;s Algorithm)</h4>
+  <h4>Deterministic Course Ordering (Kahn&#x27;s Algorithm)<button type="button" class="done-checkbox" data-item-id="graphs-topological-sort-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n courses (1..n) and m prerequisite pairs &#x27;u v&#x27; meaning course u must be taken before course v. Output a valid course order. If multiple valid orders exist, output the lexicographically smallest one. If no valid order exists (a cyclic prerequisite chain), print &#x27;IMPOSSIBLE&#x27;.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;u v&#x27;.<br>Output: n space-separated course numbers forming a valid order (lexicographically smallest among all valid orders), or &#x27;IMPOSSIBLE&#x27;.</p></div>
   <div class="section-label">Approach</div>
@@ -686,7 +714,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-topological-sort-ex1">
-  <h4>Feasibility of a Build Order (DFS-based, Cycle Detection)</h4>
+  <h4>Feasibility of a Build Order (DFS-based, Cycle Detection)<button type="button" class="done-checkbox" data-item-id="graphs-topological-sort-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A build system has n targets (1..n) and m directed dependency edges &#x27;u v&#x27; meaning target u must be built before target v. Determine whether a valid build order exists at all; if the dependencies are cyclic, print &#x27;IMPOSSIBLE&#x27;.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;u v&#x27;.<br>Output: &#x27;IMPOSSIBLE&#x27; if the dependency graph has a cycle; otherwise a valid build order (any one is accepted, here produced by DFS-based topological sort).</p></div>
   <div class="section-label">Approach</div>
@@ -744,7 +772,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-topological-sort-ex2">
-  <h4>Longest Weighted Path in a DAG</h4>
+  <h4>Longest Weighted Path in a DAG<button type="button" class="done-checkbox" data-item-id="graphs-topological-sort-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a directed acyclic graph with n vertices and m weighted edges, and two vertices src and dst, find the length (maximum total edge weight) of the longest path from src to dst. If dst is unreachable from src, print &#x27;UNREACHABLE&#x27;.</p><p>Input: first line &#x27;n m src dst&#x27;. Next m lines: &#x27;u v w&#x27; (edge u-&gt;v with weight w).<br>Output: the maximum total weight of a src -&gt; dst path, or &#x27;UNREACHABLE&#x27;.</p></div>
   <div class="section-label">Approach</div>
@@ -813,7 +841,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Tarjan&#x27;s: O(V+E) time and space, single DFS pass. Kosaraju&#x27;s: O(V+E) time and space, but requires two DFS passes (one on G, one on the transpose graph).</p></div>
   </div>
   <article class="example-card" id="graphs-strongly-connected-components-tarjan-s-algorithm-ex0">
-  <h4>Finding All Strongly Connected Components</h4>
+  <h4>Finding All Strongly Connected Components<button type="button" class="done-checkbox" data-item-id="graphs-strongly-connected-components-tarjan-s-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a directed graph with n vertices and m edges, find all of its strongly connected components.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;u v&#x27; (directed edge u -&gt; v).<br>Output: first line the number of SCCs. Then one line per SCC, listing its member vertices in increasing order, with SCCs printed in the order Tarjan&#x27;s algorithm completes them (reverse topological order of the condensation graph).</p></div>
   <div class="section-label">Approach</div>
@@ -893,7 +921,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-strongly-connected-components-tarjan-s-algorithm-ex1">
-  <h4>Minimum Roads to Reach Every City from the Capital</h4>
+  <h4>Minimum Roads to Reach Every City from the Capital<button type="button" class="done-checkbox" data-item-id="graphs-strongly-connected-components-tarjan-s-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A country has n cities and m one-way roads, with city &#x27;capital&#x27; as the capital. Find the minimum number of new one-way roads that must be added so that every city becomes reachable from the capital.</p><p>Input: first line &#x27;n m capital&#x27;. Next m lines: &#x27;u v&#x27; (one-way road u -&gt; v).<br>Output: a single integer, the minimum number of roads to add.</p></div>
   <div class="section-label">Approach</div>
@@ -983,7 +1011,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(V+E) time, one DFS pass; O(V) extra space for disc[]/low[] and the recursion stack.</p></div>
   </div>
   <article class="example-card" id="graphs-bridges-and-articulation-points-ex0">
-  <h4>Critical Connections in a Network</h4>
+  <h4>Critical Connections in a Network<button type="button" class="done-checkbox" data-item-id="graphs-bridges-and-articulation-points-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A network of n servers (1..n) is connected by m bidirectional links, forming a connected undirected graph. Find every &#x27;critical connection&#x27;: a link whose removal would disconnect the network (i.e. every bridge).</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b&#x27; (an undirected link between a and b).<br>Output: first line the number of bridges. Then one line per bridge &#x27;a b&#x27; (with a&lt;b), sorted.</p></div>
   <div class="section-label">Approach</div>
@@ -1045,7 +1073,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-bridges-and-articulation-points-ex1">
-  <h4>Finding Articulation Points</h4>
+  <h4>Finding Articulation Points<button type="button" class="done-checkbox" data-item-id="graphs-bridges-and-articulation-points-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a connected undirected graph with n vertices and m edges, find every articulation point (a vertex whose removal disconnects the graph).</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b&#x27;.<br>Output: first line the number of articulation points. Then their labels in increasing order on the second line.</p></div>
   <div class="section-label">Approach</div>
@@ -1109,7 +1137,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-bridges-and-articulation-points-ex2">
-  <h4>Counting 2-Edge-Connected Components</h4>
+  <h4>Counting 2-Edge-Connected Components<button type="button" class="done-checkbox" data-item-id="graphs-bridges-and-articulation-points-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a connected undirected graph with n vertices and m edges, find the number of 2-edge-connected components: the maximal groups of vertices you get by repeatedly contracting every non-bridge edge (equivalently, the pieces left over once every bridge is &#x27;cut&#x27;).</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b&#x27;.<br>Output: a single integer, the number of 2-edge-connected components.</p></div>
   <div class="section-label">Approach</div>
@@ -1195,7 +1223,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(V+E) time and space — one BFS/DFS traversal with an added color array.</p></div>
   </div>
   <article class="example-card" id="graphs-bipartite-check-ex0">
-  <h4>Bipartite Check on a Graph with Multiple Components</h4>
+  <h4>Bipartite Check on a Graph with Multiple Components<button type="button" class="done-checkbox" data-item-id="graphs-bipartite-check-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an undirected graph with n vertices and m edges (possibly disconnected), determine whether it is bipartite. If it is, output a valid 2-coloring.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b&#x27;.<br>Output: &#x27;YES&#x27; followed by n space-separated 0/1 colors (one per vertex 1..n) if bipartite; otherwise just &#x27;NO&#x27;.</p></div>
   <div class="section-label">Approach</div>
@@ -1252,7 +1280,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-bipartite-check-ex1">
-  <h4>Orienting Edges to Forbid Long Directed Paths</h4>
+  <h4>Orienting Edges to Forbid Long Directed Paths<button type="button" class="done-checkbox" data-item-id="graphs-bipartite-check-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a connected undirected graph with n vertices and m edges, orient every edge (choose a direction for it) so that the resulting directed graph contains no directed path of two or more edges. Determine if this is possible, and if so, output one valid orientation.</p><p>Input: first line &#x27;n m&#x27;. Next m lines: &#x27;a b&#x27;.<br>Output: &#x27;NO&#x27; if impossible. Otherwise &#x27;YES&#x27; followed by m lines, each the oriented form of the corresponding input edge (in the same order).</p></div>
   <div class="section-label">Approach</div>
@@ -1326,7 +1354,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n + m) time and space, where n is the number of variables and m is the number of clauses (each clause contributes O(1) implication edges), since it reduces to one or two linear-time DFS passes for SCC computation.</p></div>
   </div>
   <article class="example-card" id="graphs-2-sat-ex0">
-  <h4>Giant Pizza (canonical 2-SAT satisfiability + reconstruction)</h4>
+  <h4>Giant Pizza (canonical 2-SAT satisfiability + reconstruction)<button type="button" class="done-checkbox" data-item-id="graphs-2-sat-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A group of n friends is ordering a pizza with m possible toppings. Each friend gives exactly one opinion of the form &#x27;+x&#x27; (wants topping x on the pizza) or &#x27;-x&#x27; (does not want topping x), and each of n input lines actually lists TWO such opinions (from two different friends&#x27; requests) that must be treated as a single requirement: at least one of the two stated opinions must be satisfied by the final topping choice. For each of the m toppings you must decide whether it is included (+) or excluded (-) so that every one of the n given two-opinion requirements has at least one opinion satisfied, or determine this is impossible.</p><p>Input: two integers n and m (number of requirements and number of toppings) on the first line. Then n lines, each with two tokens of the form &#x27;+k&#x27; or &#x27;-k&#x27; (1 &lt;= k &lt;= m), meaning that requirement is satisfied if topping k is included (&#x27;+k&#x27;) or excluded (&#x27;-k&#x27;).<br>Output: if no valid choice of toppings exists, print IMPOSSIBLE. Otherwise print m tokens (&#x27;+&#x27; or &#x27;-&#x27;) separated by spaces, one per topping in order 1..m, describing a valid choice.</p></div>
   <div class="section-label">Approach</div>
@@ -1407,7 +1435,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-2-sat-ex1">
-  <h4>The Door Problem (modeling XOR/equality constraints as 2-SAT clauses)</h4>
+  <h4>The Door Problem (modeling XOR/equality constraints as 2-SAT clauses)<button type="button" class="done-checkbox" data-item-id="graphs-2-sat-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n switches (numbered 1..n) and m doors. Every switch starts OFF; you choose independently, for each switch, whether to turn it ON or leave it OFF. Each door i has a given initial state s_i (0 = closed, 1 = open) and is wired to either one or two switches: if wired to a single switch x, turning x ON toggles the door&#x27;s state once; if wired to two switches x and y, the door&#x27;s final state is toggled once for every one of x, y that ends up ON. You must find an ON/OFF assignment for all switches so that EVERY door ends up open (final state 1), or report it is impossible.</p><p>Input: n and m on the first line. Then m lines, each describing a door: s (0 or 1), k (1 or 2, the number of switches wired to it), followed by k switch indices (1-indexed).<br>Output: if no assignment makes every door open, print NO. Otherwise print YES on one line, then a single line of n characters (1 = switch on, 0 = switch off).</p></div>
   <div class="section-label">Approach</div>
@@ -1499,7 +1527,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(V + E) time and space for feasibility checking (degree count + connectivity via BFS/DFS) and for constructing the circuit/path via iterative Hierholzer&#x27;s algorithm.</p></div>
   </div>
   <article class="example-card" id="graphs-euler-path-euler-circuit-hierholzer-s-algorithm-ex0">
-  <h4>Mail Delivery (undirected Euler circuit via iterative Hierholzer&#x27;s)</h4>
+  <h4>Mail Delivery (undirected Euler circuit via iterative Hierholzer&#x27;s)<button type="button" class="done-checkbox" data-item-id="graphs-euler-path-euler-circuit-hierholzer-s-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A city has n buildings and m streets (the street graph may contain multiple streets between the same pair of buildings, and a street from a building to itself). Starting and ending at building 1, find a route that uses every street exactly once, or report that no such route exists.</p><p>Input: n and m on the first line, then m lines each with two integers a b (a street between buildings a and b; a == b is allowed for a self-loop street, and the same pair may repeat).<br>Output: if no Euler circuit exists, print IMPOSSIBLE. Otherwise print the m+1 buildings visited in order (starting and ending at building 1), space-separated.</p></div>
   <div class="section-label">Approach</div>
@@ -1574,7 +1602,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-euler-path-euler-circuit-hierholzer-s-algorithm-ex1">
-  <h4>Reconstruct Itinerary (directed Euler path, lexicographically smallest)</h4>
+  <h4>Reconstruct Itinerary (directed Euler path, lexicographically smallest)<button type="button" class="done-checkbox" data-item-id="graphs-euler-path-euler-circuit-hierholzer-s-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a list of m airline tickets, each a pair [from, to] of three-letter airport codes, representing a directed edge from &#x27;from&#x27; to &#x27;to&#x27;. All tickets must be used exactly once, the itinerary must begin at &#x27;JFK&#x27;, and it is guaranteed at least one valid itinerary using every ticket exists. If multiple valid itineraries exist, return the lexicographically smallest one (comparing the sequence of airport codes as an ordered list of strings).</p><p>Input: m, then m lines each with two space-separated airport codes (from, to).<br>Output: the m+1 airports of the lexicographically smallest valid itinerary, space-separated.</p></div>
   <div class="section-label">Approach</div>
@@ -1639,7 +1667,7 @@ JFK C
     <div class="callout"><span class="c-label">Complexity</span><p>O(V + E) time and space for both 0/1 BFS (using a deque) and multi-source BFS (using a plain queue seeded with all sources at distance 0), versus O((V+E) log V) for a general Dijkstra or O(k * (V+E)) for k naive single-source BFS runs.</p></div>
   </div>
   <article class="example-card" id="graphs-0-1-bfs-multi-source-bfs-ex0">
-  <h4>Minimum Obstacle Removal to Reach Corner (0/1 BFS on a grid)</h4>
+  <h4>Minimum Obstacle Removal to Reach Corner (0/1 BFS on a grid)<button type="button" class="done-checkbox" data-item-id="graphs-0-1-bfs-multi-source-bfs-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an R x C grid where each cell is either 0 (empty) or 1 (an obstacle). Starting at the top-left cell (0,0) and moving to an orthogonally adjacent cell each step, find the minimum number of obstacles you must remove to reach the bottom-right cell (R-1, C-1). You may move into a 0-cell for free; moving into a 1-cell costs 1 (removing that obstacle), and the starting cell&#x27;s own obstacle status also counts if it is a 1.</p><p>Input: R and C, then the R x C grid of 0s and 1s.<br>Output: the minimum number of obstacles removed.</p></div>
   <div class="section-label">Approach</div>
@@ -1685,7 +1713,7 @@ JFK C
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-0-1-bfs-multi-source-bfs-ex1">
-  <h4>Nearest Opposite Parity (multi-source BFS on a reversed jump graph)</h4>
+  <h4>Nearest Opposite Parity (multi-source BFS on a reversed jump graph)<button type="button" class="done-checkbox" data-item-id="graphs-0-1-bfs-multi-source-bfs-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array a[1..n] of positive integers. From index i you may jump to index i-a[i] or i+a[i], provided the resulting index stays within [1, n]. For every starting index i, find the minimum number of jumps required to reach SOME index j (not necessarily distinct from i) such that a[j] has the OPPOSITE PARITY of a[i] (one is even, the other odd). If no such index is reachable from i, report -1.</p><p>Input: n, then a[1..n].<br>Output: n integers, the answer for each starting index 1..n, space-separated.</p></div>
   <div class="section-label">Approach</div>
@@ -1752,7 +1780,7 @@ JFK C
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) for one-pass cycle/tail decomposition; O(n log K) preprocessing and O(log K) per query for binary lifting, where K is the maximum number of steps that must be supported.</p></div>
   </div>
   <article class="example-card" id="graphs-functional-graphs-cycle-detection-ex0">
-  <h4>Mouse Hunt (pure cycle detection: minimum-cost cycle traps)</h4>
+  <h4>Mouse Hunt (pure cycle detection: minimum-cost cycle traps)<button type="button" class="done-checkbox" data-item-id="graphs-functional-graphs-cycle-detection-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n rooms; room i has exactly one exit leading deterministically to room nxt[i] (so the room-transition structure is a functional graph), and placing a trap in room i costs cost[i]. A mouse starts in some UNKNOWN room and moves to nxt[current room] every second forever. Choose a set of rooms to trap, of minimum total cost, such that no matter which room the mouse starts in, it is guaranteed to eventually enter a trapped room.</p><p>Input: n, then n integers nxt[1..n] (1-indexed room the mouse moves to from room i), then n integers cost[1..n].<br>Output: the minimum total cost of a guaranteed-catch trap set.</p></div>
   <div class="section-label">Approach</div>
@@ -1804,7 +1832,7 @@ JFK C
 </code></pre>
   </div>
 </article><article class="example-card" id="graphs-functional-graphs-cycle-detection-ex1">
-  <h4>Planets Queries I (binary lifting: k-th successor in a functional graph)</h4>
+  <h4>Planets Queries I (binary lifting: k-th successor in a functional graph)<button type="button" class="done-checkbox" data-item-id="graphs-functional-graphs-cycle-detection-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n planets; planet i has exactly one teleporter leading to planet nxt[i]. Answer q independent queries, each giving a starting planet x and a (potentially huge) number of teleporter uses k: determine which planet you end up on after using the teleporter exactly k times starting from planet x.</p><p>Input: n, then n integers nxt[1..n] (1-indexed destination planet of planet i&#x27;s teleporter). Then q, followed by q lines each with x and k (k can be as large as about 2^31 - 1 in this worked example, and the technique scales to much larger k by widening the table).<br>Output: q lines, each the resulting planet for that query.</p></div>
   <div class="section-label">Approach</div>
@@ -1857,217 +1885,252 @@ JFK C
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="complete the graph codeforces dijkstra given required shortest-path distances from a source to two special vertices, and a graph with some fixed edge weights and some edges of unknown weight, assign positive integer weights to the unknown edges so dijkstra&#x27;s shortest distances match the targets exactly (or report impossible).">
   <td><a href="https://codeforces.com/problemset/problem/715/B" target="_blank" rel="noopener noreferrer">Complete The Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Dijkstra</td>
   <td class="desc-cell">Given required shortest-path distances from a source to two special vertices, and a graph with some fixed edge weights and some edges of unknown weight, assign positive integer weights to the unknown edges so Dijkstra&#x27;s shortest distances match the targets exactly (or report impossible).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/715/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="high score cses bellman-ford find the maximum possible total score of a path from node 1 to node n in a weighted directed graph, or report that the score is unbounded because of a reachable-and-escapable positive cycle.">
   <td><a href="https://cses.fi/problemset/task/1673" target="_blank" rel="noopener noreferrer">High Score</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Graph Algorithms section)</td>
   <td class="subtopic-cell">Bellman-Ford</td>
   <td class="desc-cell">Find the maximum possible total score of a path from node 1 to node n in a weighted directed graph, or report that the score is unbounded because of a reachable-and-escapable positive cycle.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1673" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum path codeforces floyd-warshall given a weighted graph, you may halve the weight of at most one edge; find the minimum possible distance between two fixed vertices s and t after the change.">
   <td><a href="https://codeforces.com/problemset/problem/1473/E" target="_blank" rel="noopener noreferrer">Minimum Path</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">Floyd-Warshall</td>
   <td class="desc-cell">Given a weighted graph, you may halve the weight of at most one edge; find the minimum possible distance between two fixed vertices s and t after the change.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1473/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum spanning tree for each edge codeforces mst (kruskal, hard variant) for every edge of a weighted graph, compute the minimum total weight of a spanning tree that is forced to include that specific edge.">
   <td><a href="https://codeforces.com/problemset/problem/609/E" target="_blank" rel="noopener noreferrer">Minimum spanning tree for each edge</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">MST (Kruskal, hard variant)</td>
   <td class="desc-cell">For every edge of a weighted graph, compute the minimum total weight of a spanning tree that is forced to include that specific edge.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/609/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="coloring edges codeforces topological sort color the edges of a directed graph with as few colors as possible so that no cycle is monochromatic.">
   <td><a href="https://codeforces.com/problemset/problem/1217/D" target="_blank" rel="noopener noreferrer">Coloring Edges</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Topological Sort</td>
   <td class="desc-cell">Color the edges of a directed graph with as few colors as possible so that no cycle is monochromatic.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1217/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="reachability from the capital codeforces scc (tarjan/kosaraju) given a directed graph and a capital city, find the minimum number of new roads to add so every city is reachable from the capital.">
   <td><a href="https://codeforces.com/problemset/problem/999/E" target="_blank" rel="noopener noreferrer">Reachability from the Capital</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">SCC (Tarjan/Kosaraju)</td>
   <td class="desc-cell">Given a directed graph and a capital city, find the minimum number of new roads to add so every city is reachable from the capital.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/999/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="critical connections in a network leetcode bridges/articulation points given an undirected connected network of servers, find every connection (edge) whose removal would disconnect the network.">
   <td><a href="https://leetcode.com/problems/critical-connections-in-a-network/" target="_blank" rel="noopener noreferrer">Critical Connections in a Network</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Bridges/Articulation Points</td>
   <td class="desc-cell">Given an undirected connected network of servers, find every connection (edge) whose removal would disconnect the network.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/critical-connections-in-a-network/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="graph without long directed paths codeforces bipartite check orient every edge of an undirected graph so that the resulting directed graph contains no directed path of two or more edges, or determine this is impossible.">
   <td><a href="https://codeforces.com/problemset/problem/1144/F" target="_blank" rel="noopener noreferrer">Graph Without Long Directed Paths</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Bipartite Check</td>
   <td class="desc-cell">Orient every edge of an undirected graph so that the resulting directed graph contains no directed path of two or more edges, or determine this is impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1144/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="two sets codeforces 2-sat split n integers into two groups such that the sum of no group contains a perfect square (each pair with a square sum must go into different groups) — reduce pairwise constraints to 2-sat clauses.">
   <td><a href="https://codeforces.com/problemset/problem/468/B" target="_blank" rel="noopener noreferrer">Two Sets</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Split n integers into two groups such that the sum of no group contains a perfect square (each pair with a square sum must go into different groups) — reduce pairwise constraints to 2-SAT clauses.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/468/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="the door problem codeforces 2-sat each door is controlled by exactly two switches (or one, toggling on its own); determine an assignment of switch states so all doors end up in the desired open/closed state.">
   <td><a href="https://codeforces.com/problemset/problem/776/D" target="_blank" rel="noopener noreferrer">The Door Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Each door is controlled by exactly two switches (or one, toggling on its own); determine an assignment of switch states so all doors end up in the desired open/closed state.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/776/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="±1 codeforces 2-sat assign +1 or -1 to each of n numbers so that a set of prefix/segment-sum constraints are all satisfied.">
   <td><a href="https://codeforces.com/problemset/problem/1971/H" target="_blank" rel="noopener noreferrer">±1</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Assign +1 or -1 to each of n numbers so that a set of prefix/segment-sum constraints are all satisfied.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1971/H" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="radio stations codeforces 2-sat given n radio stations with frequency and power, and m pairs that must not interfere, decide the maximum interference threshold and find a valid subset — solved with 2-sat + binary search + clever edge construction (segment tree / sorted-pointer optimization) to keep the implication graph near-linear.">
   <td><a href="https://codeforces.com/problemset/problem/1215/F" target="_blank" rel="noopener noreferrer">Radio Stations</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2700</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Given n radio stations with frequency and power, and m pairs that must not interfere, decide the maximum interference threshold and find a valid subset — solved with 2-SAT + binary search + clever edge construction (segment tree / sorted-pointer optimization) to keep the implication graph near-linear.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1215/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="giant pizza cses 2-sat n people each give a preference (+ or -) for m pizza toppings; find an assignment of each topping (yes/no) satisfying at least one preference per person, or report impossible.">
   <td><a href="https://cses.fi/problemset/task/1684" target="_blank" rel="noopener noreferrer">Giant Pizza</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (2-SAT category)</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">n people each give a preference (+ or -) for m pizza toppings; find an assignment of each topping (yes/no) satisfying at least one preference per person, or report impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1684" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="mail delivery cses euler path / euler circuit given a connected graph (with possible multi-edges/self-loops), find a route that starts and ends at node 1 and uses every edge exactly once, or report it&#x27;s impossible.">
   <td><a href="https://cses.fi/problemset/task/1691" target="_blank" rel="noopener noreferrer">Mail Delivery</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Euler circuit category)</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Given a connected graph (with possible multi-edges/self-loops), find a route that starts and ends at node 1 and uses every edge exactly once, or report it&#x27;s impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1691" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="bertown roads codeforces euler path / euler circuit given a connected undirected road network, orient every road (make it one-way) so the resulting directed graph is still strongly connected, or report it&#x27;s impossible.">
   <td><a href="https://codeforces.com/problemset/problem/118/E" target="_blank" rel="noopener noreferrer">Bertown roads</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Given a connected undirected road network, orient every road (make it one-way) so the resulting directed graph is still strongly connected, or report it&#x27;s impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/118/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tanya and password codeforces euler path / euler circuit given n three-letter strings, arrange (a subset covering all of them, each exactly once) into one long string so consecutive substrings overlap by two characters — equivalent to finding an euler path in a de bruijn-style graph over bigrams.">
   <td><a href="https://codeforces.com/problemset/problem/508/D" target="_blank" rel="noopener noreferrer">Tanya and Password</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2500</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Given n three-letter strings, arrange (a subset covering all of them, each exactly once) into one long string so consecutive substrings overlap by two characters — equivalent to finding an Euler path in a de Bruijn-style graph over bigrams.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/508/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="trails and glades codeforces euler path / euler circuit find the minimum number of new trails (edges) to add to a multigraph so that an euler circuit starting and ending at node 1 exists.">
   <td><a href="https://codeforces.com/problemset/problem/209/C" target="_blank" rel="noopener noreferrer">Trails and Glades</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Find the minimum number of new trails (edges) to add to a multigraph so that an Euler circuit starting and ending at node 1 exists.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/209/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="wizard&#x27;s tour codeforces euler path / euler circuit maximize the number of length-2 &quot;episodes&quot; (x→y→z walks) that together use every edge of an undirected graph at most once.">
   <td><a href="https://codeforces.com/problemset/problem/858/F" target="_blank" rel="noopener noreferrer">Wizard&#x27;s Tour</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Maximize the number of length-2 &quot;episodes&quot; (x→y→z walks) that together use every edge of an undirected graph at most once.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/858/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="okabe and city codeforces 0/1 bfs on a grid where only k cells are lit, find the minimum number of times you must &quot;light up&quot; a whole row or column (cost 1) to walk from the top-left to the bottom-right cell, versus free moves between already-lit adjacent cells (cost 0).">
   <td><a href="https://codeforces.com/problemset/problem/821/D" target="_blank" rel="noopener noreferrer">Okabe and City</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">On a grid where only k cells are lit, find the minimum number of times you must &quot;light up&quot; a whole row or column (cost 1) to walk from the top-left to the bottom-right cell, versus free moves between already-lit adjacent cells (cost 0).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/821/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="cactus wall codeforces 0/1 bfs on an n×m grid with some cactus cells already placed (no two adjacent), plant the minimum number of new non-adjacent cacti so no side-adjacent empty-cell path connects the top row to the bottom row.">
   <td><a href="https://codeforces.com/problemset/problem/1749/E" target="_blank" rel="noopener noreferrer">Cactus Wall</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">On an n×m grid with some cactus cells already placed (no two adjacent), plant the minimum number of new non-adjacent cacti so no side-adjacent empty-cell path connects the top row to the bottom row.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1749/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="flights codeforces 0/1 bfs in a dag from city 1 to city n, assign each edge a duration of 1 or 2 hours so every root-to-sink path has the exact same total duration.">
   <td><a href="https://codeforces.com/problemset/problem/241/E" target="_blank" rel="noopener noreferrer">Flights</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2600</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">In a DAG from city 1 to city n, assign each edge a duration of 1 or 2 hours so every root-to-sink path has the exact same total duration.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/241/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum cost to make at least one valid path in a grid leetcode 0/1 bfs each grid cell has a mandatory direction arrow; moving along the arrow costs 0, changing the direction of a cell (to move any other way) costs 1 — find the minimum cost path from top-left to bottom-right.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/" target="_blank" rel="noopener noreferrer">Minimum Cost to Make at Least One Valid Path in a Grid</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">Each grid cell has a mandatory direction arrow; moving along the arrow costs 0, changing the direction of a cell (to move any other way) costs 1 — find the minimum cost path from top-left to bottom-right.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum obstacle removal to reach corner leetcode 0/1 bfs on a grid with 0 (free) and 1 (obstacle) cells, find the minimum number of obstacles to remove to travel from top-left to bottom-right.">
   <td><a href="https://leetcode.com/problems/minimum-obstacle-removal-to-reach-corner/" target="_blank" rel="noopener noreferrer">Minimum Obstacle Removal to Reach Corner</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">On a grid with 0 (free) and 1 (obstacle) cells, find the minimum number of obstacles to remove to travel from top-left to bottom-right.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-obstacle-removal-to-reach-corner/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="monsters cses multi-source bfs in a labyrinth, monsters and the player move simultaneously one step per turn; determine if the player can reach any boundary cell without ever being caught, and output a path.">
   <td><a href="https://cses.fi/problemset/task/1194" target="_blank" rel="noopener noreferrer">Monsters</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (multi-source BFS category)</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">In a labyrinth, monsters and the player move simultaneously one step per turn; determine if the player can reach any boundary cell without ever being caught, and output a path.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1194" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="nearest opposite parity codeforces multi-source bfs from each index i in an array, you may jump to i±a[i]; for every index, find the minimum number of jumps to reach some index whose value has opposite parity.">
   <td><a href="https://codeforces.com/problemset/problem/1272/E" target="_blank" rel="noopener noreferrer">Nearest Opposite Parity</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">From each index i in an array, you may jump to i±a[i]; for every index, find the minimum number of jumps to reach some index whose value has opposite parity.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1272/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="three states codeforces multi-source bfs given a grid map with three separate &quot;state&quot; regions, find the minimum number of road cells to build so that all three regions become mutually connected.">
   <td><a href="https://codeforces.com/problemset/problem/590/C" target="_blank" rel="noopener noreferrer">Three States</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">Given a grid map with three separate &quot;state&quot; regions, find the minimum number of road cells to build so that all three regions become mutually connected.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/590/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="destroying roads codeforces multi-source bfs destroy as many roads as possible from a connected graph while keeping two given (s,t) pairs reachable within given time limits l1 and l2.">
   <td><a href="https://codeforces.com/problemset/problem/543/B" target="_blank" rel="noopener noreferrer">Destroying Roads</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">Destroy as many roads as possible from a connected graph while keeping two given (s,t) pairs reachable within given time limits l1 and l2.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/543/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="escape the spreading fire leetcode multi-source bfs fire starts at multiple grid cells and spreads to adjacent cells every minute; find the maximum time you can wait before starting your escape from the top-left and still reach the bottom-right before or exactly when fire does.">
   <td><a href="https://leetcode.com/problems/escape-the-spreading-fire/" target="_blank" rel="noopener noreferrer">Escape the Spreading Fire</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">Fire starts at multiple grid cells and spreads to adjacent cells every minute; find the maximum time you can wait before starting your escape from the top-left and still reach the bottom-right before or exactly when fire does.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/escape-the-spreading-fire/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="planets queries i cses functional graphs &amp; cycle detection each of n planets has exactly one teleporter to another planet; answer q queries asking &quot;where do you end up after taking exactly k teleporters starting from planet x?&quot;">
   <td><a href="https://cses.fi/problemset/task/1750" target="_blank" rel="noopener noreferrer">Planets Queries I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (functional graph / binary lifting category)</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Each of n planets has exactly one teleporter to another planet; answer q queries asking &quot;where do you end up after taking exactly k teleporters starting from planet x?&quot;</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1750" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="planets queries ii cses functional graphs &amp; cycle detection for each functional-graph query (a, b), find the smallest number of teleporter jumps needed to reach b from a, or determine it&#x27;s impossible — including detecting when a and b lie on/lead into the same eventual cycle.">
   <td><a href="https://cses.fi/problemset/task/1160" target="_blank" rel="noopener noreferrer">Planets Queries II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (functional graph / binary lifting category)</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">For each functional-graph query (a, b), find the smallest number of teleporter jumps needed to reach b from a, or determine it&#x27;s impossible — including detecting when a and b lie on/lead into the same eventual cycle.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1160" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="planets cycles cses functional graphs &amp; cycle detection in the same one-out-edge-per-node functional graph, compute for every node the total number of distinct planets reachable before returning to a previously visited planet (i.e., tail length + cycle length).">
   <td><a href="https://cses.fi/problemset/task/1751" target="_blank" rel="noopener noreferrer">Planets Cycles</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (functional graph / cycle detection category)</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">In the same one-out-edge-per-node functional graph, compute for every node the total number of distinct planets reachable before returning to a previously visited planet (i.e., tail length + cycle length).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1751" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="mouse hunt codeforces functional graphs &amp; cycle detection a mouse starts in an unknown room and each second deterministically moves room i → a[i] (a functional graph); choose a minimum-cost set of rooms to trap so the mouse is guaranteed to be caught regardless of its start.">
   <td><a href="https://codeforces.com/problemset/problem/1027/D" target="_blank" rel="noopener noreferrer">Mouse Hunt</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">A mouse starts in an unknown room and each second deterministically moves room i → a[i] (a functional graph); choose a minimum-cost set of rooms to trap so the mouse is guaranteed to be caught regardless of its start.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1027/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="analysis of pathes in functional graph codeforces functional graphs &amp; cycle detection given a functional graph with weighted edges and a huge k (up to 10^10), compute for every starting vertex the sum and the minimum edge weight along the length-k walk starting there.">
   <td><a href="https://codeforces.com/problemset/problem/702/E" target="_blank" rel="noopener noreferrer">Analysis of Pathes in Functional Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Given a functional graph with weighted edges and a huge k (up to 10^10), compute for every starting vertex the sum and the minimum edge weight along the length-k walk starting there.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/702/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="kth ancestor of a tree node leetcode functional graphs &amp; cycle detection preprocess a rooted tree (a special case of a functional graph where every node points to its parent) to answer many &quot;kth ancestor of node x&quot; queries efficiently.">
   <td><a href="https://leetcode.com/problems/kth-ancestor-of-a-tree-node/" target="_blank" rel="noopener noreferrer">Kth Ancestor of a Tree Node</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Preprocess a rooted tree (a special case of a functional graph where every node points to its parent) to answer many &quot;kth ancestor of node x&quot; queries efficiently.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/kth-ancestor-of-a-tree-node/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="recover a functional graph codeforces functional graphs &amp; cycle detection given a set of n &quot;candidate&quot; functional graphs (each node&#x27;s chosen out-edge from a list of options), reconstruct one consistent global functional graph matching the maximum number of choices via bipartite-matching-flavored reasoning.">
   <td><a href="https://codeforces.com/problemset/problem/739/D" target="_blank" rel="noopener noreferrer">Recover a functional graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 3400</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Given a set of n &quot;candidate&quot; functional graphs (each node&#x27;s chosen out-edge from a list of options), reconstruct one consistent global functional graph matching the maximum number of choices via bipartite-matching-flavored reasoning.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/739/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

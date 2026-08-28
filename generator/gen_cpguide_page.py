@@ -1,6 +1,6 @@
 import json, sys, os, re
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import esc, inline_code, highlight_cpp, HEAD_CSS, site_nav, FOOTER, problems_table_html
+from gen_lib import esc, inline_code, highlight_cpp, done_checkbox_html, progress_script_tag, HEAD_CSS, site_nav, FOOTER, problems_table_html
 
 SCRATCH = os.path.dirname(__file__)
 PROBLEMS_DIR = f"{SCRATCH}/problems"
@@ -29,7 +29,7 @@ def slugify(t):
 def example_card_html(ex, idx, sub_anchor):
     anchor = f"{sub_anchor}-ex{idx}"
     return f'''<article class="example-card" id="{anchor}">
-  <h4>{esc(ex["title"])}</h4>
+  <h4>{esc(ex["title"])}{done_checkbox_html(anchor, "example")}</h4>
   <div class="section-label">Problem</div>
   <div class="prose">{inline_code(ex["problem"])}</div>
   <div class="section-label">Approach</div>
@@ -87,6 +87,7 @@ def build_page(json_files, slug, title, nav_urls):
 
     html = f'''<title>{esc(title)} — CP / DSA Guide</title>
 {HEAD_CSS}
+{progress_script_tag()}
 <div>
 {site_nav(nav_urls, "cpguide")}
 <div class="app">

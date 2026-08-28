@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Quicksort (introsort/std::sort): O(n log n) average and (with introsort fallback) worst case, O(log n) extra space for recursion, NOT stable. Mergesort/std::stable_sort: O(n log n) worst case guaranteed, O(n) extra space, stable. Heapsort: O(n log n) worst case guaranteed, O(1) extra space, NOT stable. Counting/radix sort: O(n + k) / O(n * w/log n), O(n + k) extra space, stable if implemented via prefix sums.</p></div>
   </div>
   <article class="example-card" id="sorting-searching-sorting-algorithm-tradeoffs-ex0">
-  <h4>Largest Number (custom comparator)</h4>
+  <h4>Largest Number (custom comparator)<button type="button" class="done-checkbox" data-item-id="sorting-searching-sorting-algorithm-tradeoffs-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n non-negative integers, arrange them (each used exactly once) so that their decimal concatenation forms the largest possible number, and print that number as a string (with no leading zeros, unless the result is exactly &quot;0&quot;). Constraints: 1 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -314,7 +342,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-sorting-algorithm-tradeoffs-ex1">
-  <h4>Ranking Students (stability matters)</h4>
+  <h4>Ranking Students (stability matters)<button type="button" class="done-checkbox" data-item-id="sorting-searching-sorting-algorithm-tradeoffs-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n students in input order, each with a name and an integer score. Print the students sorted by score in descending order; students with equal scores must keep their original relative (input) order. Constraints: 1 &lt;= n &lt;= 1000, 0 &lt;= score &lt;= 100.</p></div>
   <div class="section-label">Approach</div>
@@ -365,7 +393,7 @@ Dave 85
     <div class="callout"><span class="c-label">Complexity</span><p>O(log n) time per search, O(1) extra space (iterative) or O(log n) stack space (recursive).</p></div>
   </div>
   <article class="example-card" id="sorting-searching-binary-search-ex0">
-  <h4>Search in a Rotated Sorted Array</h4>
+  <h4>Search in a Rotated Sorted Array<button type="button" class="done-checkbox" data-item-id="sorting-searching-binary-search-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>An array of n distinct integers, originally sorted in ascending order, has been rotated at some unknown pivot (e.g., [0,1,2,4,5,6,7] rotated at index 3 becomes [4,5,6,7,0,1,2]). Given the rotated array and a target value, return the index of the target, or -1 if it is not present. Must run in O(log n) time. Constraints: 1 &lt;= n &lt;= 5000, all elements distinct.</p></div>
   <div class="section-label">Approach</div>
@@ -410,7 +438,7 @@ Dave 85
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-binary-search-ex1">
-  <h4>Median of Two Sorted Arrays</h4>
+  <h4>Median of Two Sorted Arrays<button type="button" class="done-checkbox" data-item-id="sorting-searching-binary-search-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given two sorted arrays nums1 (size m) and nums2 (size n), find the median of the combined sorted array in O(log(min(m, n))) time (merging, which is O(m+n), is too slow for the intended constraints m, n up to 10^6). Print the median with 5 digits after the decimal point.</p></div>
   <div class="section-label">Approach</div>
@@ -476,7 +504,7 @@ Dave 85
     <div class="callout"><span class="c-label">Complexity</span><p>O(log(range) * feasibility-check-cost). Feasibility checks are typically O(n) (greedy scan) or O(n log n) (two-pointer over a sorted array, or a scan needing a sort up front), giving overall O(n log(range)) or O(n log n log(range)).</p></div>
   </div>
   <article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex0">
-  <h4>Factory Machines</h4>
+  <h4>Factory Machines<button type="button" class="done-checkbox" data-item-id="sorting-searching-binary-search-on-the-answer-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are k machines producing identical products; machine i needs t_i seconds to make one product, and all machines work in parallel and continuously (machine i can produce floor(T / t_i) products in T seconds). Find the minimum number of seconds T needed so that the machines together have produced at least n products in total. Constraints: 1 &lt;= k &lt;= 2*10^5, 1 &lt;= n &lt;= 10^9, 1 &lt;= t_i &lt;= 10^9. (CSES 1620, Factory Machines.)</p></div>
   <div class="section-label">Approach</div>
@@ -515,7 +543,7 @@ Dave 85
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex1">
-  <h4>Array Division (minimize the maximum subarray sum)</h4>
+  <h4>Array Division (minimize the maximum subarray sum)<button type="button" class="done-checkbox" data-item-id="sorting-searching-binary-search-on-the-answer-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n positive integers, divide it into k contiguous, non-empty subarrays so as to minimize the largest sum among the k subarrays. Print that minimized maximum sum. Constraints: 1 &lt;= k &lt;= n &lt;= 2*10^5, 1 &lt;= a_i &lt;= 10^9. (CSES 1085, Array Division; equivalent to LeetCode&#x27;s Split Array Largest Sum.)</p></div>
   <div class="section-label">Approach</div>
@@ -554,7 +582,7 @@ Dave 85
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex2">
-  <h4>K-th Smallest Pair Distance</h4>
+  <h4>K-th Smallest Pair Distance<button type="button" class="done-checkbox" data-item-id="sorting-searching-binary-search-on-the-answer-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, define the distance of a pair (i, j) with i &lt; j as |nums[i] - nums[j]|. Find the k-th smallest such distance among all C(n,2) pairs. Constraints: 2 &lt;= n &lt;= 10^4, 1 &lt;= k &lt;= n*(n-1)/2, 0 &lt;= nums[i] &lt;= 10^6. (LeetCode 719.)</p></div>
   <div class="section-label">Approach</div>
@@ -606,7 +634,7 @@ Dave 85
     <div class="callout"><span class="c-label">Complexity</span><p>O(log(range)) evaluations of f for the search itself (each evaluation costing whatever it costs, e.g. O(n) for a Kadane-based check), so O(n log(range)) total for a typical &#x27;search over a parameter, evaluate with a linear scan&#x27; problem.</p></div>
   </div>
   <article class="example-card" id="sorting-searching-ternary-search-on-unimodal-functions-ex0">
-  <h4>Minimizing the Weakness of a Sequence (real-valued ternary search)</h4>
+  <h4>Minimizing the Weakness of a Sequence (real-valued ternary search)<button type="button" class="done-checkbox" data-item-id="sorting-searching-ternary-search-on-unimodal-functions-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n real numbers a[1..n]. For a chosen real number x, define the &#x27;poorness&#x27; of a segment [l, r] as the absolute value of the sum (a[l]-x) + ... + (a[r]-x), and the &#x27;weakness&#x27; of x as the maximum poorness over all non-empty contiguous segments. Find the value of x that minimizes the weakness, and print that minimum weakness.</p><p>Input: n, then n numbers a[1..n] (given as integers or decimals).<br>Output: the minimum possible weakness, printed with 6 digits after the decimal point.</p></div>
   <div class="section-label">Approach</div>
@@ -654,7 +682,7 @@ Dave 85
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-ternary-search-on-unimodal-functions-ex1">
-  <h4>Equalize Pillar Heights at Minimum Total Cost (integer ternary search)</h4>
+  <h4>Equalize Pillar Heights at Minimum Total Cost (integer ternary search)<button type="button" class="done-checkbox" data-item-id="sorting-searching-ternary-search-on-unimodal-functions-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n pillars, where pillar i currently has height h[i]. You want to choose a single target height T (an integer) and adjust every pillar to have height T, where the cost of adjusting pillar i to height T is |h[i] - T| (moving each unit of height costs 1). Find the target height T that minimizes the total cost, and print T together with the minimum total cost. (If multiple T achieve the same minimum cost, print the smallest such T.)</p><p>Input: n, then n integers h[1..n].<br>Output: two integers: the optimal T, and the minimum total cost.</p></div>
   <div class="section-label">Approach</div>
@@ -707,7 +735,7 @@ Dave 85
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the sort, plus O(n) or O(n log n) for the subsequent greedy/heap scan, so O(n log n) total.</p></div>
   </div>
   <article class="example-card" id="sorting-searching-custom-comparators-multi-key-sorting-ex0">
-  <h4>Feasibility of Ordering Rating-Changing Projects (two-key exchange-argument sort)</h4>
+  <h4>Feasibility of Ordering Rating-Changing Projects (two-key exchange-argument sort)<button type="button" class="done-checkbox" data-item-id="sorting-searching-custom-comparators-multi-key-sorting-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You start with rating R. You are given n projects; project i requires your CURRENT rating to be at least a[i] to start it, and completing it changes your rating by b[i] (which may be positive or negative). Your rating must never become negative at any point (including immediately after completing a project). Determine whether there exists an order to complete ALL n projects without ever violating these constraints.</p><p>Input: n and R, then n pairs a[i] b[i].<br>Output: &quot;YES&quot; if some valid order exists, otherwise &quot;NO&quot;.</p></div>
   <div class="section-label">Approach</div>
@@ -754,7 +782,7 @@ Dave 85
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-custom-comparators-multi-key-sorting-ex1">
-  <h4>Course Schedule III (deadline sort + retroactive max-heap swap)</h4>
+  <h4>Course Schedule III (deadline sort + retroactive max-heap swap)<button type="button" class="done-checkbox" data-item-id="sorting-searching-custom-comparators-multi-key-sorting-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n courses, course i taking duration[i] days and having a deadline lastDay[i] (you must FINISH it on or before lastDay[i]). You may take the courses in any order, one at a time with no gaps, starting at day 0. Find the maximum number of courses you can take without missing any deadline of a course you commit to finishing.</p><p>Input: n, then n pairs duration[i] lastDay[i].<br>Output: the maximum number of courses that can be taken.</p></div>
   <div class="section-label">Approach</div>
@@ -803,7 +831,7 @@ Dave 85
     <div class="callout"><span class="c-label">Complexity</span><p>Expected O(n) time, O(1) extra space for randomized quickselect on an explicit array of n elements; O(n log n) time (sort) plus O(log(range) * (cost of one count)) for binary-search-on-the-answer over an implicit combinatorial set.</p></div>
   </div>
   <article class="example-card" id="sorting-searching-order-statistics-quickselect-ex0">
-  <h4>K-th Smallest Element via Randomized Quickselect</h4>
+  <h4>K-th Smallest Element via Randomized Quickselect<button type="button" class="done-checkbox" data-item-id="sorting-searching-order-statistics-quickselect-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an unsorted array of n distinct integers, find the k-th smallest element (1-indexed: k=1 means the minimum) without fully sorting the array.</p><p>Input: n, then n integers, then k.<br>Output: the k-th smallest element.</p></div>
   <div class="section-label">Approach</div>
@@ -849,7 +877,7 @@ mt19937 rng(<span class="tok-number">12345</span>); <span class="tok-comment">//
 </code></pre>
   </div>
 </article><article class="example-card" id="sorting-searching-order-statistics-quickselect-ex1">
-  <h4>K-th Smallest Pairwise Distance (binary search on the answer + two pointers)</h4>
+  <h4>K-th Smallest Pairwise Distance (binary search on the answer + two pointers)<button type="button" class="done-checkbox" data-item-id="sorting-searching-order-statistics-quickselect-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, consider the multiset of all C(n,2) pairwise absolute differences |nums[i] - nums[j]| for i &lt; j. Find the k-th smallest value in this multiset (1-indexed).</p><p>Input: n, then n integers, then k.<br>Output: the k-th smallest pairwise distance.</p></div>
   <div class="section-label">Approach</div>
@@ -894,133 +922,154 @@ mt19937 rng(<span class="tok-number">12345</span>); <span class="tok-comment">//
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="present codeforces binary search on the answer + difference array given n flowers with initial heights, w days, and the ability to water m consecutive flowers (raising each by 1) once per day, maximize the minimum flower height after w days.">
   <td><a href="https://codeforces.com/problemset/problem/460/C" target="_blank" rel="noopener noreferrer">Present</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1700</td>
   <td class="subtopic-cell">binary search on the answer + difference array</td>
   <td class="desc-cell">Given n flowers with initial heights, w days, and the ability to water m consecutive flowers (raising each by 1) once per day, maximize the minimum flower height after w days.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/460/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="boxes packing codeforces binary search on the answer + greedy feasibility check given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.">
   <td><a href="https://codeforces.com/problemset/problem/1066/D" target="_blank" rel="noopener noreferrer">Boxes Packing</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">binary search on the answer + greedy feasibility check</td>
   <td class="desc-cell">Given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1066/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="renting bikes codeforces binary search on the answer + greedy budget allocation given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.">
   <td><a href="https://codeforces.com/problemset/problem/363/D" target="_blank" rel="noopener noreferrer">Renting Bikes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">binary search on the answer + greedy budget allocation</td>
   <td class="desc-cell">Given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/363/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="factory machines cses binary search on the answer given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.">
   <td><a href="https://cses.fi/problemset/task/1620" target="_blank" rel="noopener noreferrer">Factory Machines</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">binary search on the answer</td>
   <td class="desc-cell">Given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1620" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="array division cses binary search on the answer (minimize the maximum) split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.">
   <td><a href="https://cses.fi/problemset/task/1085" target="_blank" rel="noopener noreferrer">Array Division</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">binary search on the answer (minimize the maximum)</td>
   <td class="desc-cell">Split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1085" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="split array largest sum leetcode binary search on the answer (minimize the maximum) split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.">
   <td><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank" rel="noopener noreferrer">Split Array Largest Sum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">binary search on the answer (minimize the maximum)</td>
   <td class="desc-cell">Split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/split-array-largest-sum/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="median of two sorted arrays leetcode binary search on a partition point given two sorted arrays of sizes m and n, find the median of the combined sorted array in o(log(min(m,n))) time.">
   <td><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener noreferrer">Median of Two Sorted Arrays</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">binary search on a partition point</td>
   <td class="desc-cell">Given two sorted arrays of sizes m and n, find the median of the combined sorted array in O(log(min(m,n))) time.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/median-of-two-sorted-arrays/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="find k-th smallest pair distance leetcode binary search on the answer + two-pointer counting given an integer array, find the k-th smallest absolute difference among all pairs of elements.">
   <td><a href="https://leetcode.com/problems/find-k-th-smallest-pair-distance/" target="_blank" rel="noopener noreferrer">Find K-th Smallest Pair Distance</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">binary search on the answer + two-pointer counting</td>
   <td class="desc-cell">Given an integer array, find the k-th smallest absolute difference among all pairs of elements.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/find-k-th-smallest-pair-distance/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="weakness and poorness codeforces ternary search on unimodal functions find a real number x minimizing the &quot;weakness&quot; of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.">
   <td><a href="https://codeforces.com/problemset/problem/578/C" target="_blank" rel="noopener noreferrer">Weakness and Poorness</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Find a real number x minimizing the &quot;weakness&quot; of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/578/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="restorer distance codeforces ternary search on unimodal functions given n pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.">
   <td><a href="https://codeforces.com/problemset/problem/1355/E" target="_blank" rel="noopener noreferrer">Restorer Distance</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Given N pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1355/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximize! codeforces ternary search on unimodal functions maintain a growing multiset (with a &quot;add&quot; query keeping it sorted) and, for &quot;query&quot; operations, find the subset maximizing max(s) minus the average of s.">
   <td><a href="https://codeforces.com/problemset/problem/939/E" target="_blank" rel="noopener noreferrer">Maximize!</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Maintain a growing multiset (with a &quot;add&quot; query keeping it sorted) and, for &quot;query&quot; operations, find the subset maximizing max(s) minus the average of s.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/939/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="searching local minimum codeforces ternary search on unimodal functions interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.">
   <td><a href="https://codeforces.com/problemset/problem/1479/A" target="_blank" rel="noopener noreferrer">Searching Local Minimum</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1700</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1479/A" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="gift set codeforces ternary search on unimodal functions given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.">
   <td><a href="https://codeforces.com/problemset/problem/1538/G" target="_blank" rel="noopener noreferrer">Gift Set</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1538/G" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="complete the projects (easy version) codeforces custom comparators &amp; multi-key sorting given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there&#x27;s an order to complete all projects without the rating ever going negative.">
   <td><a href="https://codeforces.com/problemset/problem/1203/F1" target="_blank" rel="noopener noreferrer">Complete the Projects (easy version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there&#x27;s an order to complete all projects without the rating ever going negative.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1203/F1" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="complete the projects (hard version) codeforces custom comparators &amp; multi-key sorting same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.">
   <td><a href="https://codeforces.com/problemset/problem/1203/F2" target="_blank" rel="noopener noreferrer">Complete the Projects (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1203/F2" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum performance of a team leetcode custom comparators &amp; multi-key sorting given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).">
   <td><a href="https://leetcode.com/problems/maximum-performance-of-a-team/" target="_blank" rel="noopener noreferrer">Maximum Performance of a Team</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/maximum-performance-of-a-team/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum cost to hire k workers leetcode custom comparators &amp; multi-key sorting given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-hire-k-workers/" target="_blank" rel="noopener noreferrer">Minimum Cost to Hire K Workers</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-cost-to-hire-k-workers/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="course schedule iii leetcode custom comparators &amp; multi-key sorting given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.">
   <td><a href="https://leetcode.com/problems/course-schedule-iii/" target="_blank" rel="noopener noreferrer">Course Schedule III</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/course-schedule-iii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="sum of medians codeforces order statistics / quickselect maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.">
   <td><a href="https://codeforces.com/problemset/problem/85/D" target="_blank" rel="noopener noreferrer">Sum of Medians</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Order Statistics / Quickselect</td>
   <td class="desc-cell">Maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/85/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="kth smallest product of two sorted arrays leetcode order statistics / quickselect given two sorted arrays, find the k-th smallest product formed by picking one element from each array.">
   <td><a href="https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/" target="_blank" rel="noopener noreferrer">Kth Smallest Product of Two Sorted Arrays</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Order Statistics / Quickselect</td>
   <td class="desc-cell">Given two sorted arrays, find the k-th smallest product formed by picking one element from each array.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="find the kth smallest sum of a matrix with sorted rows leetcode order statistics / quickselect given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.">
   <td><a href="https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/" target="_blank" rel="noopener noreferrer">Find the Kth Smallest Sum of a Matrix With Sorted Rows</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Order Statistics / Quickselect</td>
   <td class="desc-cell">Given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

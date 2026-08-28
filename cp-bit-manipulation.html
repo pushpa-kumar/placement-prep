@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -747,84 +775,98 @@ aba
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">subset enumeration / XOR linear basis</td>
   <td class="desc-cell">Given an array of n integers, find the maximum XOR sum achievable by any subset of it.</td>
+  
 </tr><tr data-search="number of subset xors cses subset enumeration / xor linear basis given an array of n integers, count how many distinct xor values can be formed by some subset.">
   <td><a href="https://cses.fi/problemset/task/3211" target="_blank" rel="noopener noreferrer">Number of Subset Xors</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">subset enumeration / XOR linear basis</td>
   <td class="desc-cell">Given an array of n integers, count how many distinct XOR values can be formed by some subset.</td>
+  
 </tr><tr data-search="compatible numbers codeforces subset enumeration (sum over subsets / sos dp) given n numbers each less than 2^22, for every number find another number in the array whose bitwise and with it is zero, or report none exists.">
   <td><a href="https://codeforces.com/problemset/problem/165/E" target="_blank" rel="noopener noreferrer">Compatible Numbers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">subset enumeration (Sum over Subsets / SOS DP)</td>
   <td class="desc-cell">Given n numbers each less than 2^22, for every number find another number in the array whose bitwise AND with it is zero, or report none exists.</td>
+  
 </tr><tr data-search="maximum students taking exam leetcode subset enumeration (bitmask dp) given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.">
   <td><a href="https://leetcode.com/problems/maximum-students-taking-exam/" target="_blank" rel="noopener noreferrer">Maximum Students Taking Exam</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1349)</td>
   <td class="subtopic-cell">subset enumeration (bitmask DP)</td>
   <td class="desc-cell">Given a classroom grid with some broken seats, seat the maximum number of students such that no student can see an adjacent-left, adjacent-right, or diagonally-adjacent-front-row student cheating.</td>
+  
 </tr><tr data-search="vasiliy&#x27;s multiset codeforces xor properties (binary trie) maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum xor of a given value x with any element currently in the multiset.&quot;">
   <td><a href="https://codeforces.com/problemset/problem/706/D" target="_blank" rel="noopener noreferrer">Vasiliy&#x27;s Multiset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">XOR properties (binary trie)</td>
   <td class="desc-cell">Maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum XOR of a given value x with any element currently in the multiset.&quot;</td>
+  
 </tr><tr data-search="maximum xor with an element from array leetcode xor properties (binary trie, offline queries) given an array and queries of the form (x, m), find the maximum xor of x with any array element that is &lt;= m, or -1 if none qualifies.">
   <td><a href="https://leetcode.com/problems/maximum-xor-with-an-element-from-array/" target="_blank" rel="noopener noreferrer">Maximum XOR With an Element From Array</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1707)</td>
   <td class="subtopic-cell">XOR properties (binary trie, offline queries)</td>
   <td class="desc-cell">Given an array and queries of the form (x, m), find the maximum XOR of x with any array element that is &lt;= m, or -1 if none qualifies.</td>
+  
 </tr><tr data-search="sum of xor functions codeforces xor properties given an array, compute the sum over all subarrays [l, r] of (xor of the subarray) times (r - l + 1).">
   <td><a href="https://codeforces.com/problemset/problem/1879/D" target="_blank" rel="noopener noreferrer">Sum of XOR Functions</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">XOR properties</td>
   <td class="desc-cell">Given an array, compute the sum over all subarrays [l, r] of (XOR of the subarray) times (r - l + 1).</td>
+  
 </tr><tr data-search="gray code cses bit tricks &amp; gray code (construction) for a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a gray code).">
   <td><a href="https://cses.fi/problemset/task/2205" target="_blank" rel="noopener noreferrer">Gray Code</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Bit Tricks &amp; Gray Code (construction)</td>
   <td class="desc-cell">For a given length n, output all 2^n bit strings of length n such that consecutive strings in the list differ in exactly one bit (a Gray code).</td>
+  
 </tr><tr data-search="bits codeforces bit tricks &amp; gray code (popcount maximization) for up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.">
   <td><a href="https://codeforces.com/problemset/problem/484/A" target="_blank" rel="noopener noreferrer">Bits</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Bit Tricks &amp; Gray Code (popcount maximization)</td>
   <td class="desc-cell">For up to 10^4 queries (l, r), find the smallest x in [l, r] with the maximum possible number of set bits, where l, r can be as large as 10^18.</td>
+  
 </tr><tr data-search="bitwise operation wizard codeforces bit tricks &amp; gray code (bit-by-bit interactive determination) in an interactive problem, find two indices whose values (a hidden permutation) xor to the maximum possible value, using only queries that compare the bitwise or of two chosen pairs.">
   <td><a href="https://codeforces.com/problemset/problem/1936/A" target="_blank" rel="noopener noreferrer">Bitwise Operation Wizard</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Bit Tricks &amp; Gray Code (bit-by-bit interactive determination)</td>
   <td class="desc-cell">In an interactive problem, find two indices whose values (a hidden permutation) XOR to the maximum possible value, using only queries that compare the bitwise OR of two chosen pairs.</td>
+  
 </tr><tr data-search="spy-string codeforces bitset optimization for brute-force speedup given m strings of length n, find any string of length n that is within hamming distance 1 of every given string, or report impossible.">
   <td><a href="https://codeforces.com/problemset/problem/1360/F" target="_blank" rel="noopener noreferrer">Spy-string</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">Given m strings of length n, find any string of length n that is within Hamming distance 1 of every given string, or report impossible.</td>
+  
 </tr><tr data-search="gcd counting codeforces bitset optimization for brute-force speedup in a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a gcd greater than 1.">
   <td><a href="https://codeforces.com/problemset/problem/1101/D" target="_blank" rel="noopener noreferrer">GCD Counting</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">In a tree with a value on each node, find the longest path where every two adjacent nodes on the path have a GCD greater than 1.</td>
+  
 </tr><tr data-search="dasha and cyclic table codeforces bitset optimization for brute-force speedup given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).">
   <td><a href="https://codeforces.com/problemset/problem/754/E" target="_blank" rel="noopener noreferrer">Dasha and cyclic table</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2600</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">Given a large cyclic character table and a smaller pattern table (with wildcard cells), count the number of cyclic shifts at which the pattern matches the table (ignoring wildcard cells).</td>
+  
 </tr><tr data-search="substrings in a string codeforces bitset optimization for brute-force speedup given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.">
   <td><a href="https://codeforces.com/problemset/problem/914/F" target="_blank" rel="noopener noreferrer">Substrings in a String</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 3000</td>
   <td class="subtopic-cell">Bitset Optimization for Brute-Force Speedup</td>
   <td class="desc-cell">Given a string with point updates to characters, answer queries asking whether a given pattern occurs as a substring within a given range of the string.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

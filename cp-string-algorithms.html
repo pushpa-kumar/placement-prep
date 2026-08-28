@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1762,138 +1790,161 @@ xyz
   <td class="diff-badge">LeetCode Hard (#214)</td>
   <td class="subtopic-cell">KMP</td>
   <td class="desc-cell">Given a string s, add characters in front of it to make it a palindrome and return the shortest such palindrome.</td>
+  
 </tr><tr data-search="sum of scores of built strings leetcode z-function for a string s, define score(i) as the length of the longest common prefix between s and the suffix of s ending at i; return the sum of scores over all suffixes.">
   <td><a href="https://leetcode.com/problems/sum-of-scores-of-built-strings/" target="_blank" rel="noopener noreferrer">Sum of Scores of Built Strings</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#2223)</td>
   <td class="subtopic-cell">Z-function</td>
   <td class="desc-cell">For a string s, define score(i) as the length of the longest common prefix between s and the suffix of s ending at i; return the sum of scores over all suffixes.</td>
+  
 </tr><tr data-search="prefix-suffix palindrome (hard version) codeforces string hashing given a string, find the longest string formed by concatenating a prefix and a suffix of it (each possibly empty, non-overlapping) that is a palindrome.">
   <td><a href="https://codeforces.com/problemset/problem/1326/D2" target="_blank" rel="noopener noreferrer">Prefix-Suffix Palindrome (Hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1800</td>
   <td class="subtopic-cell">string hashing</td>
   <td class="desc-cell">Given a string, find the longest string formed by concatenating a prefix and a suffix of it (each possibly empty, non-overlapping) that is a palindrome.</td>
+  
 </tr><tr data-search="palindrome queries cses string hashing given a string, process point updates (change a character) and range queries (is the substring from a to b a palindrome) online.">
   <td><a href="https://cses.fi/problemset/task/2420" target="_blank" rel="noopener noreferrer">Palindrome Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">string hashing</td>
   <td class="desc-cell">Given a string, process point updates (change a character) and range queries (is the substring from a to b a palindrome) online.</td>
+  
 </tr><tr data-search="all palindromes cses manacher&#x27;s for every position in a string, compute the length of the longest palindrome that ends exactly at that position.">
   <td><a href="https://cses.fi/problemset/task/3138" target="_blank" rel="noopener noreferrer">All Palindromes</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Manacher&#x27;s</td>
   <td class="desc-cell">For every position in a string, compute the length of the longest palindrome that ends exactly at that position.</td>
+  
 </tr><tr data-search="counting patterns cses trie / aho-corasick given a text string and k patterns, count for each pattern how many times it occurs in the text.">
   <td><a href="https://cses.fi/problemset/task/2103" target="_blank" rel="noopener noreferrer">Counting Patterns</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">trie / Aho-Corasick</td>
   <td class="desc-cell">Given a text string and k patterns, count for each pattern how many times it occurs in the text.</td>
+  
 </tr><tr data-search="martian strings codeforces suffix array / suffix automaton given two strings s and t, find the longest substring of s that can be split into two parts, the first being a substring of t and the second also being a substring of t.">
   <td><a href="https://codeforces.com/problemset/problem/149/E" target="_blank" rel="noopener noreferrer">Martian Strings</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">suffix array / suffix automaton</td>
   <td class="desc-cell">Given two strings s and t, find the longest substring of s that can be split into two parts, the first being a substring of t and the second also being a substring of t.</td>
+  
 </tr><tr data-search="substring order i cses suffix automaton given a string of length up to 1e5, find the k-th smallest string among all of its *distinct* substrings in lexicographic order.">
   <td><a href="https://cses.fi/problemset/task/2108" target="_blank" rel="noopener noreferrer">Substring Order I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (String Algorithms, hard section)</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">Given a string of length up to 1e5, find the k-th smallest string among all of its *distinct* substrings in lexicographic order.</td>
+  
 </tr><tr data-search="substring distribution cses suffix automaton for every length 1..n, print the number of distinct substrings of that exact length.">
   <td><a href="https://cses.fi/problemset/task/2110" target="_blank" rel="noopener noreferrer">Substring Distribution</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (String Algorithms, hard section)</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">For every length 1..n, print the number of distinct substrings of that exact length.</td>
+  
 </tr><tr data-search="longest duplicate substring leetcode suffix automaton find the longest substring of a given string (up to 3*10^4 chars) that occurs at least twice (occurrences may overlap).">
   <td><a href="https://leetcode.com/problems/longest-duplicate-substring/" target="_blank" rel="noopener noreferrer">Longest Duplicate Substring</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (topicTags include &quot;Suffix Automaton&quot;, &quot;Suffix Array&quot;, &quot;Rolling Hash&quot;)</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">Find the longest substring of a given string (up to 3*10^4 chars) that occurs at least twice (occurrences may overlap).</td>
+  
 </tr><tr data-search="good substrings codeforces suffix automaton each of the 26 letters has a cost and a bad/good flag; count distinct substrings whose total letter cost falls in [mincost, maxcost] and that contain no &quot;bad&quot; letters.">
   <td><a href="https://codeforces.com/problemset/problem/316/G2" target="_blank" rel="noopener noreferrer">Good Substrings</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200 (easy subtask of a 3-part problem; G3 harder version is rated 2400)</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">Each of the 26 letters has a cost and a bad/good flag; count distinct substrings whose total letter cost falls in [minCost, maxCost] and that contain no &quot;bad&quot; letters.</td>
+  
 </tr><tr data-search="cyclical quest codeforces suffix automaton given a big string and many query strings, for each query count how many times the query and all of its cyclic rotations occur as substrings of the big string, weighted by rotation count.">
   <td><a href="https://codeforces.com/problemset/problem/235/C" target="_blank" rel="noopener noreferrer">Cyclical Quest</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2700</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">Given a big string and many query strings, for each query count how many times the query and all of its cyclic rotations occur as substrings of the big string, weighted by rotation count.</td>
+  
 </tr><tr data-search="little elephant and strings codeforces suffix automaton given n strings, for each string find the length of its longest substring that also occurs (as a substring) in at least k of the n strings.">
   <td><a href="https://codeforces.com/problemset/problem/204/E" target="_blank" rel="noopener noreferrer">Little Elephant and Strings</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2800</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">Given n strings, for each string find the length of its longest substring that also occurs (as a substring) in at least k of the n strings.</td>
+  
 </tr><tr data-search="cool slogans codeforces suffix automaton find the longest chain of substrings s1, s2, ..., sk of a given string such that each si+1 is a substring of si occurring at least twice inside it (overlaps allowed).">
   <td><a href="https://codeforces.com/problemset/problem/700/E" target="_blank" rel="noopener noreferrer">Cool Slogans</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 3300</td>
   <td class="subtopic-cell">Suffix Automaton</td>
   <td class="desc-cell">Find the longest chain of substrings s1, s2, ..., sk of a given string such that each si+1 is a substring of si occurring at least twice inside it (overlaps allowed).</td>
+  
 </tr><tr data-search="pattern positions cses aho-corasick multi-pattern matching same setup as counting patterns, but report the first (1-indexed) position at which each pattern occurs in the text, or -1 if it never occurs.">
   <td><a href="https://cses.fi/problemset/task/2104" target="_blank" rel="noopener noreferrer">Pattern Positions</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (String Algorithms, hard section)</td>
   <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
   <td class="desc-cell">Same setup as Counting Patterns, but report the first (1-indexed) position at which each pattern occurs in the text, or -1 if it never occurs.</td>
+  
 </tr><tr data-search="stream of characters leetcode aho-corasick multi-pattern matching design a data structure that, given up to 2*10^4 words, supports streaming individual characters and reports whether any suffix of the stream so far matches one of the words.">
   <td><a href="https://leetcode.com/problems/stream-of-characters/" target="_blank" rel="noopener noreferrer">Stream of Characters</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (topicTag: &quot;Aho–Corasick Algorithm&quot;, confirmed via LeetCode&#x27;s own tag data)</td>
   <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
   <td class="desc-cell">Design a data structure that, given up to 2*10^4 words, supports streaming individual characters and reports whether any suffix of the stream so far matches one of the words.</td>
+  
 </tr><tr data-search="string set queries codeforces aho-corasick multi-pattern matching online queries that add a string to a set, remove a string from the set, or ask for the total number of occurrences (over all strings currently in the set) inside a given text — must be answered before reading the next query.">
   <td><a href="https://codeforces.com/problemset/problem/710/F" target="_blank" rel="noopener noreferrer">String Set Queries</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
   <td class="desc-cell">Online queries that add a string to a set, remove a string from the set, or ask for the total number of occurrences (over all strings currently in the set) inside a given text — must be answered before reading the next query.</td>
+  
 </tr><tr data-search="genetic engineering codeforces aho-corasick multi-pattern matching count dna sequences of length n (over a 4-letter alphabet) such that every position is covered by at least one occurrence of a given collection of up to 10 short patterns.">
   <td><a href="https://codeforces.com/problemset/problem/86/C" target="_blank" rel="noopener noreferrer">Genetic engineering</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2500</td>
   <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
   <td class="desc-cell">Count DNA sequences of length n (over a 4-letter alphabet) such that every position is covered by at least one occurrence of a given collection of up to 10 short patterns.</td>
+  
 </tr><tr data-search="death dbms codeforces aho-corasick multi-pattern matching maintain a database of names (patterns) each with a suspicion value that can be updated; given a query string, find the maximum suspicion value among all database names occurring as a substring of it.">
   <td><a href="https://codeforces.com/problemset/problem/1437/G" target="_blank" rel="noopener noreferrer">Death DBMS</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2600</td>
   <td class="subtopic-cell">Aho-Corasick Multi-Pattern Matching</td>
   <td class="desc-cell">Maintain a database of names (patterns) each with a suspicion value that can be updated; given a query string, find the maximum suspicion value among all database names occurring as a substring of it.</td>
+  
 </tr><tr data-search="hossam and (sub-)palindromic tree codeforces palindromic tree (eertree) on a tree with a letter at every vertex, for every path between two vertices find the length of the longest palindromic *subsequence* of the letters along that path.">
   <td><a href="https://codeforces.com/problemset/problem/1771/D" target="_blank" rel="noopener noreferrer">Hossam and (sub-)palindromic tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2100</td>
   <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
   <td class="desc-cell">On a tree with a letter at every vertex, for every path between two vertices find the length of the longest palindromic *subsequence* of the letters along that path.</td>
+  
 </tr><tr data-search="palindrome degree codeforces palindromic tree (eertree) for every prefix of a string, define its &quot;degree&quot; recursively (a prefix has degree k if its first half is itself a palindrome of degree k-1); output the sum of all prefix degrees.">
   <td><a href="https://codeforces.com/problemset/problem/7/D" target="_blank" rel="noopener noreferrer">Palindrome Degree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
   <td class="desc-cell">For every prefix of a string, define its &quot;degree&quot; recursively (a prefix has degree k if its first half is itself a palindrome of degree k-1); output the sum of all prefix degrees.</td>
+  
 </tr><tr data-search="palindrome partition codeforces palindromic tree (eertree) count the number of ways to split a string into an even number of non-empty parts p1..pk such that each pi is &quot;special-equal&quot; (equal, or equal after reversal) to its mirror part pk+1-i.">
   <td><a href="https://codeforces.com/problemset/problem/932/G" target="_blank" rel="noopener noreferrer">Palindrome Partition</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2900</td>
   <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
   <td class="desc-cell">Count the number of ways to split a string into an even number of non-empty parts p1..pk such that each pi is &quot;special-equal&quot; (equal, or equal after reversal) to its mirror part pk+1-i.</td>
+  
 </tr><tr data-search="palisection codeforces palindromic tree (eertree) count the number of pairs of palindromic substrings (of length &gt;= 2) of a given string that intersect (share at least one common position).">
   <td><a href="https://codeforces.com/problemset/problem/17/E" target="_blank" rel="noopener noreferrer">Palisection</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2900</td>
   <td class="subtopic-cell">Palindromic Tree (Eertree)</td>
   <td class="desc-cell">Count the number of pairs of palindromic substrings (of length &gt;= 2) of a given string that intersect (share at least one common position).</td>
+  
 </tr></tbody>
 </table></div>
 <script>

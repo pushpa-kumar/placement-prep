@@ -185,6 +185,23 @@
   .site-nav a:hover{ color:var(--accent-strong); }
   .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
 
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .q-done-row{ margin-top:8px; }
+
   /* ---------- Concepts reference ---------- */
   .concepts-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:12px; }
   .concept-card{
@@ -242,6 +259,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a></nav>
@@ -336,6 +354,13 @@ function highlightCpp(code){
   }
   out += escapeHtml(code.slice(pos));
   return out;
+}
+
+const PROGRESS_ENABLED = false;
+
+function doneCheckboxHtml(id, type){
+  if(!PROGRESS_ENABLED) return "";
+  return `<button type="button" class="done-checkbox" data-item-id="${escapeHtml(id)}" data-item-type="${escapeHtml(type)}" aria-pressed="false">Mark done</button>`;
 }
 
 function inlineCode(s){
@@ -446,6 +471,7 @@ function cardHtml(e){
     <div class="meta-row"><span class="src">Source: ${src}</span></div>
     ${extra}
     ${ans}
+    ${PROGRESS_ENABLED ? `<div class="q-done-row">${doneCheckboxHtml(e.id, "qa")}</div>` : ""}
   </article>`;
 }
 
@@ -478,6 +504,7 @@ function mcqCardHtml(m){
     <div class="mcq-options ${answered?"answered":""}">${options}</div>
     <div class="meta-row" style="margin-top:6px;"><span class="src">Source: ${src}</span></div>
     ${explain}
+    ${PROGRESS_ENABLED ? `<div class="q-done-row">${doneCheckboxHtml(m.id, "mcq")}</div>` : ""}
   </article>`;
 }
 
@@ -526,6 +553,7 @@ function render(){
     main.innerHTML = `<div class="empty-state">No entries match the current filters.</div>`;
   }
   buildCompanyList();
+  window.PlacementProgress?.refresh?.();
 }
 
 document.getElementById("main").addEventListener("click", (ev)=>{
@@ -536,7 +564,7 @@ document.getElementById("main").addEventListener("click", (ev)=>{
     mcqState.set(id, optIndex);
     const mcq = MCQS.find(m=>m.id===id);
     const card = document.getElementById("mcq-card-" + id);
-    if(card && mcq) card.outerHTML = mcqCardHtml(mcq);
+    if(card && mcq){ card.outerHTML = mcqCardHtml(mcq); window.PlacementProgress?.refresh?.(); }
     return;
   }
   const resetBtn = ev.target.closest("[data-mcq-reset]");
@@ -545,7 +573,7 @@ document.getElementById("main").addEventListener("click", (ev)=>{
     mcqState.delete(id);
     const mcq = MCQS.find(m=>m.id===id);
     const card = document.getElementById("mcq-card-" + id);
-    if(card && mcq) card.outerHTML = mcqCardHtml(mcq);
+    if(card && mcq){ card.outerHTML = mcqCardHtml(mcq); window.PlacementProgress?.refresh?.(); }
   }
 });
 

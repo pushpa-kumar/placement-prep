@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -901,126 +929,147 @@ mt19937 rng(<span class="tok-number">12345</span>); <span class="tok-comment">//
   <td class="diff-badge">1700</td>
   <td class="subtopic-cell">binary search on the answer + difference array</td>
   <td class="desc-cell">Given n flowers with initial heights, w days, and the ability to water m consecutive flowers (raising each by 1) once per day, maximize the minimum flower height after w days.</td>
+  
 </tr><tr data-search="boxes packing codeforces binary search on the answer + greedy feasibility check given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.">
   <td><a href="https://codeforces.com/problemset/problem/1066/D" target="_blank" rel="noopener noreferrer">Boxes Packing</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">binary search on the answer + greedy feasibility check</td>
   <td class="desc-cell">Given n boxes with fixed weights that must be packed in order into k bags of equal, unknown capacity, find the minimum bag capacity that lets all boxes be packed using at most k bags.</td>
+  
 </tr><tr data-search="renting bikes codeforces binary search on the answer + greedy budget allocation given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.">
   <td><a href="https://codeforces.com/problemset/problem/363/D" target="_blank" rel="noopener noreferrer">Renting Bikes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">binary search on the answer + greedy budget allocation</td>
   <td class="desc-cell">Given a group of friends each with personal money and a shared budget, and a target number of bikes to rent, find the minimum price per bike (same for everyone) at which enough friends can afford a bike using their own money plus the shared budget.</td>
+  
 </tr><tr data-search="factory machines cses binary search on the answer given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.">
   <td><a href="https://cses.fi/problemset/task/1620" target="_blank" rel="noopener noreferrer">Factory Machines</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">binary search on the answer</td>
   <td class="desc-cell">Given k machines each with a fixed time-per-product rate, find the minimum total time needed for the machines (working in parallel) to produce at least n products.</td>
+  
 </tr><tr data-search="array division cses binary search on the answer (minimize the maximum) split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.">
   <td><a href="https://cses.fi/problemset/task/1085" target="_blank" rel="noopener noreferrer">Array Division</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">binary search on the answer (minimize the maximum)</td>
   <td class="desc-cell">Split an array into k contiguous subarrays so as to minimize the maximum sum among the subarrays.</td>
+  
 </tr><tr data-search="split array largest sum leetcode binary search on the answer (minimize the maximum) split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.">
   <td><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank" rel="noopener noreferrer">Split Array Largest Sum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">binary search on the answer (minimize the maximum)</td>
   <td class="desc-cell">Split an array of non-negative integers into m contiguous non-empty subarrays to minimize the largest sum among the subarrays.</td>
+  
 </tr><tr data-search="median of two sorted arrays leetcode binary search on a partition point given two sorted arrays of sizes m and n, find the median of the combined sorted array in o(log(min(m,n))) time.">
   <td><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener noreferrer">Median of Two Sorted Arrays</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">binary search on a partition point</td>
   <td class="desc-cell">Given two sorted arrays of sizes m and n, find the median of the combined sorted array in O(log(min(m,n))) time.</td>
+  
 </tr><tr data-search="find k-th smallest pair distance leetcode binary search on the answer + two-pointer counting given an integer array, find the k-th smallest absolute difference among all pairs of elements.">
   <td><a href="https://leetcode.com/problems/find-k-th-smallest-pair-distance/" target="_blank" rel="noopener noreferrer">Find K-th Smallest Pair Distance</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">binary search on the answer + two-pointer counting</td>
   <td class="desc-cell">Given an integer array, find the k-th smallest absolute difference among all pairs of elements.</td>
+  
 </tr><tr data-search="weakness and poorness codeforces ternary search on unimodal functions find a real number x minimizing the &quot;weakness&quot; of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.">
   <td><a href="https://codeforces.com/problemset/problem/578/C" target="_blank" rel="noopener noreferrer">Weakness and Poorness</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Find a real number x minimizing the &quot;weakness&quot; of the sequence a_i − x, where weakness is the maximum absolute subarray sum (poorness) over all segments.</td>
+  
 </tr><tr data-search="restorer distance codeforces ternary search on unimodal functions given n pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.">
   <td><a href="https://codeforces.com/problemset/problem/1355/E" target="_blank" rel="noopener noreferrer">Restorer Distance</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Given N pillars of bricks with costs to add, remove, or move a brick, find the minimum cost to make all pillars the same height.</td>
+  
 </tr><tr data-search="maximize! codeforces ternary search on unimodal functions maintain a growing multiset (with a &quot;add&quot; query keeping it sorted) and, for &quot;query&quot; operations, find the subset maximizing max(s) minus the average of s.">
   <td><a href="https://codeforces.com/problemset/problem/939/E" target="_blank" rel="noopener noreferrer">Maximize!</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Maintain a growing multiset (with a &quot;add&quot; query keeping it sorted) and, for &quot;query&quot; operations, find the subset maximizing max(s) minus the average of s.</td>
+  
 </tr><tr data-search="searching local minimum codeforces ternary search on unimodal functions interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.">
   <td><a href="https://codeforces.com/problemset/problem/1479/A" target="_blank" rel="noopener noreferrer">Searching Local Minimum</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1700</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Interactively query values of a hidden permutation a_1..a_n (with a_0 = a_{n+1} = +infinity) to find any local minimum index using at most 100 queries.</td>
+  
 </tr><tr data-search="gift set codeforces ternary search on unimodal functions given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.">
   <td><a href="https://codeforces.com/problemset/problem/1538/G" target="_blank" rel="noopener noreferrer">Gift Set</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Ternary Search on Unimodal Functions</td>
   <td class="desc-cell">Given x red and y blue candies, and set sizes (a,b), find the maximum number of gift sets you can form where each set uses either (a red, b blue) or (a blue, b red) candies.</td>
+  
 </tr><tr data-search="complete the projects (easy version) codeforces custom comparators &amp; multi-key sorting given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there&#x27;s an order to complete all projects without the rating ever going negative.">
   <td><a href="https://codeforces.com/problemset/problem/1203/F1" target="_blank" rel="noopener noreferrer">Complete the Projects (easy version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given n projects, each requiring rating a_i to start and changing rating by b_i (positive or negative) on completion, determine if there&#x27;s an order to complete all projects without the rating ever going negative.</td>
+  
 </tr><tr data-search="complete the projects (hard version) codeforces custom comparators &amp; multi-key sorting same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.">
   <td><a href="https://codeforces.com/problemset/problem/1203/F2" target="_blank" rel="noopener noreferrer">Complete the Projects (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Same setup as the easy version, but now maximize the number of projects completed rather than requiring all of them.</td>
+  
 </tr><tr data-search="maximum performance of a team leetcode custom comparators &amp; multi-key sorting given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).">
   <td><a href="https://leetcode.com/problems/maximum-performance-of-a-team/" target="_blank" rel="noopener noreferrer">Maximum Performance of a Team</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given engineers with speed and efficiency ratings, choose at most k of them to maximize (sum of chosen speeds) × (minimum chosen efficiency).</td>
+  
 </tr><tr data-search="minimum cost to hire k workers leetcode custom comparators &amp; multi-key sorting given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-hire-k-workers/" target="_blank" rel="noopener noreferrer">Minimum Cost to Hire K Workers</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given workers with quality and minimum wage-to-quality-ratio requirements, hire exactly k workers minimizing total cost while paying everyone proportionally to quality at the highest required ratio among the hired.</td>
+  
 </tr><tr data-search="course schedule iii leetcode custom comparators &amp; multi-key sorting given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.">
   <td><a href="https://leetcode.com/problems/course-schedule-iii/" target="_blank" rel="noopener noreferrer">Course Schedule III</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Custom Comparators &amp; Multi-Key Sorting</td>
   <td class="desc-cell">Given courses with a duration and a deadline, find the maximum number of courses you can take without missing any deadline.</td>
+  
 </tr><tr data-search="sum of medians codeforces order statistics / quickselect maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.">
   <td><a href="https://codeforces.com/problemset/problem/85/D" target="_blank" rel="noopener noreferrer">Sum of Medians</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Order Statistics / Quickselect</td>
   <td class="desc-cell">Maintain a dynamic set under add/delete operations, and answer queries for the sum of the medians (3rd element) of every consecutive group of 5 sorted elements — motivated explicitly by the median-of-medians k-th-order-statistic algorithm.</td>
+  
 </tr><tr data-search="kth smallest product of two sorted arrays leetcode order statistics / quickselect given two sorted arrays, find the k-th smallest product formed by picking one element from each array.">
   <td><a href="https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/" target="_blank" rel="noopener noreferrer">Kth Smallest Product of Two Sorted Arrays</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Order Statistics / Quickselect</td>
   <td class="desc-cell">Given two sorted arrays, find the k-th smallest product formed by picking one element from each array.</td>
+  
 </tr><tr data-search="find the kth smallest sum of a matrix with sorted rows leetcode order statistics / quickselect given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.">
   <td><a href="https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/" target="_blank" rel="noopener noreferrer">Find the Kth Smallest Sum of a Matrix With Sorted Rows</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Order Statistics / Quickselect</td>
   <td class="desc-cell">Given a matrix where each row is sorted, choose one element per row to sum, and find the k-th smallest possible sum.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

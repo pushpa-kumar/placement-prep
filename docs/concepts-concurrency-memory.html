@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="alignment-padding">
-  <h3>Alignment &amp; padding</h3>
+  <h3>Alignment &amp; padding<button type="button" class="done-checkbox" data-item-id="alignment-padding" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Every type has an ALIGNMENT requirement: an object of that type may only be placed at a memory address that&#x27;s a multiple of its alignment (commonly, a type&#x27;s alignment equals its size for primitives, up to some platform maximum). To satisfy every member&#x27;s alignment requirement inside a struct, the compiler silently inserts PADDING bytes between members as needed — which means a struct&#x27;s total size, and even its layout, depends on the DECLARATION ORDER of its members, not just which members it has.</p></div>
   <div class="example-box">
   <div class="ex-title">Reordering members to eliminate padding</div>
@@ -292,7 +320,7 @@
   <p class="why-box"><p>A common warm-up systems question at HFT firms — packing structs tightly (message formats, order-book entries) is routine, practical work, not academic trivia.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#false-sharing-alignas" data-related-href="#false-sharing-alignas">False sharing &amp; alignas</a><a class="related-tag" href="concepts-modern-cpp.html#small-string-optimization-sso" data-related-href="concepts-modern-cpp.html#small-string-optimization-sso">Small String Optimization (SSO)</a></div>
 </article><article class="concept-card" id="false-sharing-alignas">
-  <h3>False sharing &amp; alignas</h3>
+  <h3>False sharing &amp; alignas<button type="button" class="done-checkbox" data-item-id="false-sharing-alignas" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>False sharing is a PERFORMANCE problem, not a correctness one: two threads write to two DIFFERENT, logically-unrelated variables that happen to land on the same CPU cache line (commonly 64 bytes). Because cache-coherence protocols track ownership at the granularity of a whole cache line, every write by either thread invalidates the OTHER core&#x27;s cached copy of that entire line — even though the two threads never actually touch each other&#x27;s data. The threads end up fighting over cache-line ownership as if they were racing on the same variable, when logically they aren&#x27;t. The fix is to pad/align each independently-hot variable to its own cache line, commonly via <code>alignas(64)</code>.</p></div>
   <div class="example-box">
   <div class="ex-title">The problem: two &quot;independent&quot; atomics sharing a cache line</div>
@@ -320,7 +348,7 @@
   <p class="why-box"><p>One of THE most frequently asked HFT-specific interview questions, almost always phrased exactly as: &quot;two threads write to adjacent memory locations — what happens, and how would you fix it?&quot;</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#alignment-padding" data-related-href="#alignment-padding">Alignment &amp; padding</a><a class="related-tag" href="#std-atomic-memory-order-basics" data-related-href="#std-atomic-memory-order-basics">std::atomic &amp; memory_order basics</a></div>
 </article><article class="concept-card" id="the-c-memory-model-happens-before">
-  <h3>The C++ memory model &amp; happens-before</h3>
+  <h3>The C++ memory model &amp; happens-before<button type="button" class="done-checkbox" data-item-id="the-c-memory-model-happens-before" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>The C++11 memory model formally defines, for multithreaded programs, WHEN a write by one thread is guaranteed to be visible to a read by another thread. Absent any synchronization at all, concurrently accessing the same memory location from multiple threads — with at least one of those accesses a write — is a **data race**, which the standard defines as undefined behavior, not merely &quot;you might read a stale value.&quot; Synchronization operations (atomics with appropriate ordering, mutexes) establish a **happens-before** relationship between specific operations in different threads, and it&#x27;s ONLY through such an established happens-before edge that one thread&#x27;s writes are guaranteed visible to another&#x27;s subsequent reads.</p></div>
   <div class="example-box">
   <div class="ex-title">A data race: undefined behavior, not just &quot;maybe stale&quot;</div>
@@ -358,7 +386,7 @@ use(data); <span class="tok-comment">// now WELL-DEFINED: the release/acquire pa
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#std-atomic-memory-order-basics" data-related-href="#std-atomic-memory-order-basics">std::atomic &amp; memory_order basics</a><a class="related-tag" href="#false-sharing-alignas" data-related-href="#false-sharing-alignas">False sharing &amp; alignas</a></div>
 </article><article class="concept-card" id="std-atomic-memory-order-basics">
-  <h3>std::atomic &amp; memory_order basics</h3>
+  <h3>std::atomic &amp; memory_order basics<button type="button" class="done-checkbox" data-item-id="std-atomic-memory-order-basics" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p><code>std::atomic&lt;T&gt;</code> operations are indivisible (no other thread can observe a &quot;half-finished&quot; read or write), and each operation can specify an ordering constraint controlling how it interacts with OTHER memory operations around it. <code>memory_order_relaxed</code> gives you ONLY atomicity — no ordering guarantee relative to anything else — useful when you genuinely just need a value to update atomically (an independent counter) with no cross-thread visibility requirement on anything else. <code>memory_order_acquire</code> (on a load) and <code>memory_order_release</code> (on a store) together form the classic handoff pattern described in the memory-model concept above. <code>memory_order_seq_cst</code> (the default if you don&#x27;t specify one) is the strongest and simplest to reason about: it additionally guarantees a single, globally-agreed total order across ALL seq_cst operations from every thread — at a real, measurable synchronization cost compared to relaxed/acquire-release.</p></div>
   <div class="example-box">
   <div class="ex-title">Relaxed: atomicity without ordering, for an independent counter</div>
@@ -388,7 +416,7 @@ use(data); <span class="tok-comment">// now WELL-DEFINED: the release/acquire pa
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#the-c-memory-model-happens-before" data-related-href="#the-c-memory-model-happens-before">The C++ memory model &amp; happens-before</a><a class="related-tag" href="#false-sharing-alignas" data-related-href="#false-sharing-alignas">False sharing &amp; alignas</a></div>
 </article><article class="concept-card" id="undefined-behavior-vs-unspecified-vs-implementation-defined">
-  <h3>Undefined Behavior vs Unspecified vs Implementation-defined</h3>
+  <h3>Undefined Behavior vs Unspecified vs Implementation-defined<button type="button" class="done-checkbox" data-item-id="undefined-behavior-vs-unspecified-vs-implementation-defined" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Three distinct levels of &quot;the standard doesn&#x27;t fully pin this down,&quot; and confusing them is a common mistake. **Undefined behavior (UB)** means the standard imposes NO requirements whatsoever — literally anything is a conforming outcome, including something that looks like it &quot;worked&quot; on your machine today and breaks on a different compiler, optimization level, or even a later run of the same binary. **Unspecified behavior** means the standard allows multiple valid outcomes and does not require an implementation to document which one it picked (classic pre-C++17 example: the order function-call arguments are evaluated in). **Implementation-defined behavior** is unspecified behavior with one extra requirement: each implementation MUST document, consistently, which choice it makes (e.g. the exact size of <code>int</code>, or how right-shift behaves on negative signed integers pre-C++20).</p></div>
   <div class="example-box">
   <div class="ex-title">All three, side by side</div>

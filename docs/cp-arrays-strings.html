@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Typically O(n log n) if sorting is required first, otherwise O(n); O(1) extra space beyond the pointers and, if needed, an output buffer.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-two-pointers-ex0">
-  <h4>Bounded-Range Subsequences (Close Tuples, hard version)</h4>
+  <h4>Bounded-Range Subsequences (Close Tuples, hard version)<button type="button" class="done-checkbox" data-item-id="arrays-strings-two-pointers-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n integers a_1, ..., a_n and integers m and k. Count the number of subsequences (chosen by index, order in the original array does not matter for the value of the subsequence) of size exactly m such that the difference between the maximum and minimum element of the chosen subsequence is at most k. Two subsequences are different if the sets of chosen indices differ. Print the answer modulo 998244353. Constraints: 1 &lt;= m &lt;= n &lt;= 2*10^5, 0 &lt;= k &lt;= 10^9, 0 &lt;= a_i &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -333,7 +361,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-two-pointers-ex1">
-  <h4>3Sum: Unique Zero-Sum Triplets</h4>
+  <h4>3Sum: Unique Zero-Sum Triplets<button type="button" class="done-checkbox" data-item-id="arrays-strings-two-pointers-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer array nums, find all unique triplets [nums[i], nums[j], nums[k]] (i, j, k distinct indices) such that nums[i] + nums[j] + nums[k] == 0. Print each distinct triplet&#x27;s values in non-decreasing order, one triplet per line, with the triplets themselves ordered by their first element then second element (ties broken naturally by the scanning order described below). Do not print the same value-triplet twice even if it arises from multiple index choices.</p></div>
   <div class="section-label">Approach</div>
@@ -378,7 +406,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-two-pointers-ex2">
-  <h4>Trapping Rain Water</h4>
+  <h4>Trapping Rain Water<button type="button" class="done-checkbox" data-item-id="arrays-strings-two-pointers-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining. Constraints: 1 &lt;= n &lt;= 2*10^5, 0 &lt;= height[i] &lt;= 10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -426,7 +454,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) or O(n log n) if a heap is used instead of a monotonic deque; O(k) or O(alphabet size) extra space for the window&#x27;s aggregate structure.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-sliding-window-ex0">
-  <h4>Sliding Window Maximum</h4>
+  <h4>Sliding Window Maximum<button type="button" class="done-checkbox" data-item-id="arrays-strings-sliding-window-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer array nums of size n and an integer k, there is a sliding window of size k which moves from the very left of the array to the very right, one position at a time. Return the maximum value in the window at each position it stops at (there are n-k+1 such positions). Constraints: 1 &lt;= k &lt;= n &lt;= 10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -467,7 +495,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-sliding-window-ex1">
-  <h4>Minimum Window Substring</h4>
+  <h4>Minimum Window Substring<button type="button" class="done-checkbox" data-item-id="arrays-strings-sliding-window-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given two strings s and t of lengths n and m, return the minimum-length contiguous substring of s that contains every character of t, including duplicates (i.e. for each character, the substring must contain at least as many occurrences as t does). If no such substring exists, print an empty line. Constraints: 1 &lt;= m &lt;= n &lt;= 10^5, both strings consist of uppercase and lowercase English letters.</p></div>
   <div class="section-label">Approach</div>
@@ -518,7 +546,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-sliding-window-ex2">
-  <h4>Subarrays with Exactly K Different Integers</h4>
+  <h4>Subarrays with Exactly K Different Integers<button type="button" class="done-checkbox" data-item-id="arrays-strings-sliding-window-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer array nums of length n and an integer k, return the number of contiguous subarrays that contain exactly k different (distinct) integer values. Constraints: 1 &lt;= n &lt;= 2*10^4, 1 &lt;= k &lt;= n, 1 &lt;= nums[i] &lt;= n.</p></div>
   <div class="section-label">Approach</div>
@@ -571,7 +599,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) preprocessing plus O(1) per range-sum query; O(n) or O(n) extra space for the prefix array and any hash map/deque used alongside it. 2D prefix sums cost O(R*C) preprocessing.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-prefix-sums-ex0">
-  <h4>Subarray Sums II (allows negatives)</h4>
+  <h4>Subarray Sums II (allows negatives)<button type="button" class="done-checkbox" data-item-id="arrays-strings-prefix-sums-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (which may be negative, zero, or positive) and a target integer x, count the number of contiguous subarrays whose sum equals exactly x. Constraints: 1 &lt;= n &lt;= 2*10^5, -10^9 &lt;= a_i, x &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -608,7 +636,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-prefix-sums-ex1">
-  <h4>Number of Submatrices That Sum to Target</h4>
+  <h4>Number of Submatrices That Sum to Target<button type="button" class="done-checkbox" data-item-id="arrays-strings-prefix-sums-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an R x C integer matrix and an integer target, return the number of non-empty submatrices (axis-aligned, contiguous ranges of rows and columns) whose element sum equals target. Constraints: 1 &lt;= R, C &lt;= 100, -1000 &lt;= matrix[i][j] &lt;= 1000, -10^8 &lt;= target &lt;= 10^8.</p></div>
   <div class="section-label">Approach</div>
@@ -662,7 +690,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-prefix-sums-ex2">
-  <h4>Shortest Subarray with Sum at Least K</h4>
+  <h4>Shortest Subarray with Sum at Least K<button type="button" class="done-checkbox" data-item-id="arrays-strings-prefix-sums-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer array nums (which may contain negative numbers) of length n and an integer k, return the length of the shortest, non-empty, contiguous subarray whose sum is at least k. If no such subarray exists, return -1. Constraints: 1 &lt;= n &lt;= 10^5, -10^5 &lt;= nums[i] &lt;= 10^5, 1 &lt;= k &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -711,7 +739,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) time, O(1) extra space for the base algorithm; O(n log n) or O(n) (with a monotonic deque) for length-constrained variants; O(n) time and space for the circular-array variant.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-kadane-s-algorithm-ex0">
-  <h4>Maximum Subarray Sum with Witness Indices</h4>
+  <h4>Maximum Subarray Sum with Witness Indices<button type="button" class="done-checkbox" data-item-id="arrays-strings-kadane-s-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (which may be negative), find the maximum possible sum of a non-empty contiguous subarray. In addition to the sum, output the 0-indexed start and end indices of a subarray achieving that maximum sum, specifically the one produced by scanning left to right and, whenever the running sum would need to restart, restarting exactly at the current element (this makes the output deterministic). Print the sum, then the start index, then the end index, separated by spaces. Constraints: 1 &lt;= n &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -753,7 +781,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-kadane-s-algorithm-ex1">
-  <h4>Maximum Subarray Sum with Length Bounds</h4>
+  <h4>Maximum Subarray Sum with Length Bounds<button type="button" class="done-checkbox" data-item-id="arrays-strings-kadane-s-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (which may be negative) and two integers a and b with 1 &lt;= a &lt;= b &lt;= n, find the maximum possible sum of a contiguous subarray whose length L satisfies a &lt;= L &lt;= b. Constraints: 1 &lt;= n &lt;= 2*10^5, -10^9 &lt;= values &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -796,7 +824,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-kadane-s-algorithm-ex2">
-  <h4>Maximum Circular Subarray Sum</h4>
+  <h4>Maximum Circular Subarray Sum<button type="button" class="done-checkbox" data-item-id="arrays-strings-kadane-s-algorithm-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a circular integer array nums of length n (meaning the subarray is allowed to wrap around past the last element back to the first), return the maximum possible sum of a non-empty contiguous (possibly wrapping) subarray. Constraints: 1 &lt;= n &lt;= 3*10^4, -3*10^4 &lt;= nums[i] &lt;= 3*10^4.</p></div>
   <div class="section-label">Approach</div>
@@ -845,7 +873,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n + q) time and O(n) space for q batched range updates followed by one reconstruction pass; O(1) per update, O(n) for the final prefix-sum reconstruction.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-difference-arrays-ex0">
-  <h4>Minimum Range-Increment Operations to Reach a Target Array</h4>
+  <h4>Minimum Range-Increment Operations to Reach a Target Array<button type="button" class="done-checkbox" data-item-id="arrays-strings-difference-arrays-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You start with an array of n zeros. An operation picks a contiguous range [l, r] (1 &lt;= l &lt;= r &lt;= n) and adds 1 to every element in that range. You are given the final array b[1..n] that resulted from applying some sequence of such operations. Find the minimum possible number of operations that could have produced b.</p><p>Input: n, then n integers b[1..n] (0 &lt;= b[i] &lt;= 10^9).<br>Output: the minimum number of operations.</p></div>
   <div class="section-label">Approach</div>
@@ -874,7 +902,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-difference-arrays-ex1">
-  <h4>Minimum Operations to Turn nums into target (signed range updates)</h4>
+  <h4>Minimum Operations to Turn nums into target (signed range updates)<button type="button" class="done-checkbox" data-item-id="arrays-strings-difference-arrays-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given two integer arrays nums and target, both of length n. In one operation you may choose a contiguous subarray of nums and either add 1 to every element in it, or subtract 1 from every element in it. Find the minimum number of operations needed to make nums equal to target.</p><p>Input: n, then n integers nums[1..n], then n integers target[1..n].<br>Output: the minimum number of operations.</p></div>
   <div class="section-label">Approach</div>
@@ -927,7 +955,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) time, O(1) extra space for the classic three-way in-place partition; O(n log n) time (dominated by the sort) for multiset-matching reconstruction problems.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-two-pointer-partitioning-dutch-national-flag-ex0">
-  <h4>Sort an Array of 0s, 1s, and 2s (Dutch National Flag)</h4>
+  <h4>Sort an Array of 0s, 1s, and 2s (Dutch National Flag)<button type="button" class="done-checkbox" data-item-id="arrays-strings-two-pointer-partitioning-dutch-national-flag-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, each equal to 0, 1, or 2, sort the array in-place in a single pass (O(n) time, O(1) extra space), without using a library sort or counting sort.</p><p>Input: n, then n integers (each 0, 1, or 2).<br>Output: the sorted array, space-separated.</p></div>
   <div class="section-label">Approach</div>
@@ -964,7 +992,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-two-pointer-partitioning-dutch-national-flag-ex1">
-  <h4>Recover the Original Array from a k-Shifted Interleaving</h4>
+  <h4>Recover the Original Array from a k-Shifted Interleaving<button type="button" class="done-checkbox" data-item-id="arrays-strings-two-pointer-partitioning-dutch-national-flag-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>An array arr of n positive integers and an unknown positive integer k were used to build an array b of length 2n: for every arr[i], both arr[i]-k and arr[i]+k were placed somewhere into b (in arbitrary order, fully shuffled). Given b, recover any valid array arr and the value k that could have produced it (if multiple answers exist, any valid one is acceptable).</p><p>Input: 2n (the length of b), then the 2n integers of b.<br>Output: the n integers of a valid arr, sorted ascending, space-separated (print IMPOSSIBLE if no valid reconstruction exists, which will not occur in this example).</p></div>
   <div class="section-label">Approach</div>
@@ -1027,7 +1055,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) time and O(k) or O(n) space (amortized O(1) per element, since each index is pushed and popped from the deque at most once).</p></div>
   </div>
   <article class="example-card" id="arrays-strings-monotonic-deque-ex0">
-  <h4>Sliding Window Maximum</h4>
+  <h4>Sliding Window Maximum<button type="button" class="done-checkbox" data-item-id="arrays-strings-monotonic-deque-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array nums of n integers and a window size k, return the maximum value of every contiguous window of size k as the window slides from the left end of the array to the right end (there are n - k + 1 such windows).</p><p>Input: n and k, then n integers nums[1..n].<br>Output: the n - k + 1 window maximums, space-separated.</p></div>
   <div class="section-label">Approach</div>
@@ -1060,7 +1088,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-monotonic-deque-ex1">
-  <h4>Shortest Subarray with Sum at Least K</h4>
+  <h4>Shortest Subarray with Sum at Least K<button type="button" class="done-checkbox" data-item-id="arrays-strings-monotonic-deque-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer array nums of n elements (which may include negative numbers) and an integer K, return the length of the shortest, non-empty, contiguous subarray whose sum is at least K. If no such subarray exists, return -1.</p><p>Input: n and K, then n integers nums[1..n].<br>Output: the length of the shortest qualifying subarray, or -1.</p></div>
   <div class="section-label">Approach</div>
@@ -1105,7 +1133,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time to sort and merge n intervals once; O((n + q) log n) for an offline sweep answering q queries against n intervals with a heap.</p></div>
   </div>
   <article class="example-card" id="arrays-strings-merge-intervals-ex0">
-  <h4>Merge Overlapping Intervals</h4>
+  <h4>Merge Overlapping Intervals<button type="button" class="done-checkbox" data-item-id="arrays-strings-merge-intervals-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a collection of n intervals, each represented as [start, end] (inclusive), merge all overlapping (or touching) intervals and return the resulting list of disjoint intervals, sorted by start.</p><p>Input: n, then n pairs of integers start end.<br>Output: the number of merged intervals, followed by each merged interval on its own line as &#x27;start end&#x27;.</p></div>
   <div class="section-label">Approach</div>
@@ -1145,7 +1173,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="arrays-strings-merge-intervals-ex1">
-  <h4>Minimum Interval to Include Each Query</h4>
+  <h4>Minimum Interval to Include Each Query<button type="button" class="done-checkbox" data-item-id="arrays-strings-merge-intervals-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n intervals, each [start, end] (inclusive), and q query points. For each query point x, find the size (end - start + 1) of the smallest interval that contains x. If no interval contains x, the answer for that query is -1.</p><p>Input: n, then n pairs start end, then q, then q query integers.<br>Output: q integers (one per query, in the original query order), space-separated, where an unanswerable query prints -1.</p></div>
   <div class="section-label">Approach</div>
@@ -1201,157 +1229,182 @@
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="petya and array codeforces prefix sums + counting (fenwick tree) count the number of subarrays of an array (which may contain negative numbers) whose sum is strictly less than a given t.">
   <td><a href="https://codeforces.com/problemset/problem/1042/D" target="_blank" rel="noopener noreferrer">Petya and Array</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">prefix sums + counting (Fenwick tree)</td>
   <td class="desc-cell">Count the number of subarrays of an array (which may contain negative numbers) whose sum is strictly less than a given t.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1042/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="close tuples (hard version) codeforces two pointers + combinatorial counting count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.">
   <td><a href="https://codeforces.com/problemset/problem/1462/E2" target="_blank" rel="noopener noreferrer">Close Tuples (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1700</td>
   <td class="subtopic-cell">two pointers + combinatorial counting</td>
   <td class="desc-cell">Count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1462/E2" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="openstreetmap codeforces 2d sliding window minimum (monotonic deque) given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.">
   <td><a href="https://codeforces.com/problemset/problem/1195/E" target="_blank" rel="noopener noreferrer">OpenStreetMap</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">2D sliding window minimum (monotonic deque)</td>
   <td class="desc-cell">Given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1195/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="subarray sums ii cses prefix sums + hashmap counting count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.">
   <td><a href="https://cses.fi/problemset/task/1661" target="_blank" rel="noopener noreferrer">Subarray Sums II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">prefix sums + hashmap counting</td>
   <td class="desc-cell">Count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1661" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum subarray sum ii cses kadane variant with length constraint (prefix sums + segment tree/deque) find the maximum possible sum of a subarray whose length is between two given bounds a and b.">
   <td><a href="https://cses.fi/problemset/task/1644" target="_blank" rel="noopener noreferrer">Maximum Subarray Sum II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Kadane variant with length constraint (prefix sums + segment tree/deque)</td>
   <td class="desc-cell">Find the maximum possible sum of a subarray whose length is between two given bounds a and b.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1644" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="sliding window maximum leetcode sliding window with monotonic deque given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.">
   <td><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">Sliding Window Maximum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">sliding window with monotonic deque</td>
   <td class="desc-cell">Given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/sliding-window-maximum/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="shortest subarray with sum at least k leetcode prefix sums + monotonic deque given an integer array (possibly containing negative numbers) and integer k, find the length of the shortest contiguous subarray with sum at least k, or -1 if none exists.">
   <td><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank" rel="noopener noreferrer">Shortest Subarray with Sum at Least K</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">prefix sums + monotonic deque</td>
   <td class="desc-cell">Given an integer array (possibly containing negative numbers) and integer K, find the length of the shortest contiguous subarray with sum at least K, or -1 if none exists.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="number of submatrices that sum to target leetcode 2d prefix sums + hashmap given a 2d matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.">
   <td><a href="https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/" target="_blank" rel="noopener noreferrer">Number of Submatrices That Sum to Target</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">2D prefix sums + hashmap</td>
   <td class="desc-cell">Given a 2D matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="range increments codeforces difference arrays given the final array state (all elements start at 0), reconstruct the minimum number of `rangeincrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.">
   <td><a href="https://codeforces.com/problemset/problem/174/C" target="_blank" rel="noopener noreferrer">Range Increments</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given the final array state (all elements start at 0), reconstruct the minimum number of `rangeIncrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/174/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="too many segments (hard version) codeforces difference arrays given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.">
   <td><a href="https://codeforces.com/problemset/problem/1249/D2" target="_blank" rel="noopener noreferrer">Too Many Segments (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1249/D2" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="clear the multiset codeforces difference arrays given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.">
   <td><a href="https://codeforces.com/problemset/problem/1400/E" target="_blank" rel="noopener noreferrer">Clear the Multiset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1400/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="addition on segments codeforces difference arrays starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.">
   <td><a href="https://codeforces.com/problemset/problem/981/E" target="_blank" rel="noopener noreferrer">Addition on Segments</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/981/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum operations to make array equal to target leetcode difference arrays given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.">
   <td><a href="https://leetcode.com/problems/minimum-operations-to-make-array-equal-to-target/" target="_blank" rel="noopener noreferrer">Minimum Operations to Make Array Equal to Target</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard (LeetCode #3454)</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-operations-to-make-array-equal-to-target/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="array partition codeforces two-pointer partitioning split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.">
   <td><a href="https://codeforces.com/problemset/problem/1454/F" target="_blank" rel="noopener noreferrer">Array Partition</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1454/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="range and partition codeforces two-pointer partitioning choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.">
   <td><a href="https://codeforces.com/problemset/problem/1630/B" target="_blank" rel="noopener noreferrer">Range and Partition</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1630/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="recover the original array leetcode two-pointer partitioning given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.">
   <td><a href="https://leetcode.com/problems/recover-the-original-array/" target="_blank" rel="noopener noreferrer">Recover the Original Array</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/recover-the-original-array/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="partition array into two arrays to minimize sum difference leetcode two-pointer partitioning partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.">
   <td><a href="https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/" target="_blank" rel="noopener noreferrer">Partition Array Into Two Arrays to Minimize Sum Difference</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="constrained subsequence sum leetcode monotonic deque choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.">
   <td><a href="https://leetcode.com/problems/constrained-subsequence-sum/" target="_blank" rel="noopener noreferrer">Constrained Subsequence Sum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard (LeetCode #1425)</td>
   <td class="subtopic-cell">Monotonic Deque</td>
   <td class="desc-cell">Choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/constrained-subsequence-sum/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="watching fireworks is fun codeforces monotonic deque you move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.">
   <td><a href="https://codeforces.com/problemset/problem/372/C" target="_blank" rel="noopener noreferrer">Watching Fireworks is Fun</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Monotonic Deque</td>
   <td class="desc-cell">You move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/372/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="pictures with kittens (hard version) codeforces monotonic deque choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.">
   <td><a href="https://codeforces.com/problemset/problem/1077/F2" target="_blank" rel="noopener noreferrer">Pictures with Kittens (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Monotonic Deque</td>
   <td class="desc-cell">Choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1077/F2" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="data stream as disjoint intervals leetcode merge intervals design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.">
   <td><a href="https://leetcode.com/problems/data-stream-as-disjoint-intervals/" target="_blank" rel="noopener noreferrer">Data Stream as Disjoint Intervals</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/data-stream-as-disjoint-intervals/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="range module leetcode merge intervals design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.">
   <td><a href="https://leetcode.com/problems/range-module/" target="_blank" rel="noopener noreferrer">Range Module</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/range-module/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="count integers in intervals leetcode merge intervals design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).">
   <td><a href="https://leetcode.com/problems/count-integers-in-intervals/" target="_blank" rel="noopener noreferrer">Count Integers in Intervals</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/count-integers-in-intervals/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum interval to include each query leetcode merge intervals given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.">
   <td><a href="https://leetcode.com/problems/minimum-interval-to-include-each-query/" target="_blank" rel="noopener noreferrer">Minimum Interval to Include Each Query</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-interval-to-include-each-query/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="the union of k-segments codeforces merge intervals given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.">
   <td><a href="https://codeforces.com/problemset/problem/612/D" target="_blank" rel="noopener noreferrer">The Union of k-Segments</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/612/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

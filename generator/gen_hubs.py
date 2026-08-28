@@ -1,6 +1,7 @@
 import json, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import esc, inline_code, HEAD_CSS, site_nav, FOOTER
+import gen_lib
+from gen_lib import esc, inline_code, progress_script_tag, HEAD_CSS, site_nav, FOOTER
 from gen_cpguide_page import TOPIC_PAGES
 from gen_concept_page import GROUP_FILES
 
@@ -135,8 +136,20 @@ def build_cpguide_hub(nav_urls, topic_urls):
   <div class="meta">{n_examples} solved examples &middot; {n_problems} practice problems</div>
 </a>''')
 
+    progress_section = ""
+    if gen_lib.PROGRESS_ENABLED:
+        progress_section = f'''<section class="topic-section" id="my-progress">
+  <div class="topic-head"><h2>My Progress</h2></div>
+  <p class="progress-signin-hint" data-progress-signin-hint>Sign in (top right) to mark problems, examples, and concepts as done and have it follow you across devices.</p>
+  <div class="progress-summary" data-progress-signed-in style="display:none;">
+    <div class="stat-tile"><div class="n" data-progress-summary="problem" data-progress-total="{total_problems}">0 / {total_problems}</div><div class="l">Problems Done</div></div>
+    <div class="stat-tile"><div class="n" data-progress-summary="example" data-progress-total="{total_examples}">0 / {total_examples}</div><div class="l">Examples Done</div></div>
+  </div>
+</section>'''
+
     html = f'''<title>CP / DSA Guide</title>
 {HEAD_CSS}
+{progress_script_tag()}
 <div>
 {site_nav(nav_urls, "cpguide")}
 <div class="app">
@@ -151,6 +164,7 @@ def build_cpguide_hub(nav_urls, topic_urls):
     </div>
   </header>
   <div class="app" style="padding-top:28px;">
+    {progress_section}
     {roadmap_html()}
     <div class="topic-head" style="margin-top:8px;"><h2>All Topics</h2></div>
     <div class="hub-grid">{"".join(cards)}</div>
@@ -185,6 +199,7 @@ def build_concepts_hub(nav_urls, concept_urls):
 
     html = f'''<title>C++ Concepts Reference</title>
 {HEAD_CSS}
+{progress_script_tag()}
 <div>
 {site_nav(nav_urls, "concepts")}
 <div class="app">

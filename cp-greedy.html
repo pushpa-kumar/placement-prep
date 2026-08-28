@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -831,78 +859,91 @@
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">greedy + data structure (&quot;regret&quot; greedy with a min-heap)</td>
   <td class="desc-cell">Given n days of known future stock prices, repeatedly buy/sell one share per day (never short) to maximize total profit.</td>
+  
 </tr><tr data-search="shichikuji and power grid codeforces greedy reduction to mst for n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.">
   <td><a href="https://codeforces.com/problemset/problem/1245/D" target="_blank" rel="noopener noreferrer">Shichikuji and Power Grid</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">greedy reduction to MST</td>
   <td class="desc-cell">For n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.</td>
+  
 </tr><tr data-search="stressful training codeforces binary search + greedy feasibility check n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.">
   <td><a href="https://codeforces.com/problemset/problem/1132/D" target="_blank" rel="noopener noreferrer">Stressful Training</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">binary search + greedy feasibility check</td>
   <td class="desc-cell">n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.</td>
+  
 </tr><tr data-search="tasks and deadlines cses exchange argument (sort by duration, not deadline) process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task&#x27;s reward is its deadline minus its finishing time.">
   <td><a href="https://cses.fi/problemset/task/1630" target="_blank" rel="noopener noreferrer">Tasks and Deadlines</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
   <td class="subtopic-cell">exchange argument (sort by duration, not deadline)</td>
   <td class="desc-cell">Process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task&#x27;s reward is its deadline minus its finishing time.</td>
+  
 </tr><tr data-search="reading books cses greedy pairing / scheduling with two workers two people must read all n books together (never the same book at the same time); given each book&#x27;s reading time, find the minimum total time for both to finish everything.">
   <td><a href="https://cses.fi/problemset/task/1631" target="_blank" rel="noopener noreferrer">Reading Books</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
   <td class="subtopic-cell">greedy pairing / scheduling with two workers</td>
   <td class="desc-cell">Two people must read all n books together (never the same book at the same time); given each book&#x27;s reading time, find the minimum total time for both to finish everything.</td>
+  
 </tr><tr data-search="movie festival ii cses greedy interval scheduling with k resources with k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.">
   <td><a href="https://cses.fi/problemset/task/1632" target="_blank" rel="noopener noreferrer">Movie Festival II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
   <td class="subtopic-cell">greedy interval scheduling with k resources</td>
   <td class="desc-cell">With k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.</td>
+  
 </tr><tr data-search="candy leetcode exchange argument (two-pass greedy) distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.">
   <td><a href="https://leetcode.com/problems/candy/" target="_blank" rel="noopener noreferrer">Candy</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">exchange argument (two-pass greedy)</td>
   <td class="desc-cell">Distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.</td>
+  
 </tr><tr data-search="set intersection size at least two leetcode greedy on intervals with a non-obvious proof given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.">
   <td><a href="https://leetcode.com/problems/set-intersection-size-at-least-two/" target="_blank" rel="noopener noreferrer">Set Intersection Size At Least Two</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">greedy on intervals with a non-obvious proof</td>
   <td class="desc-cell">Given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.</td>
+  
 </tr><tr data-search="huffman coding on segment codeforces huffman coding &amp; optimal merge for each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary huffman encoding of the characters in that subarray.">
   <td><a href="https://codeforces.com/problemset/problem/700/D" target="_blank" rel="noopener noreferrer">Huffman Coding on Segment</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 3100</td>
   <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
   <td class="desc-cell">For each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary Huffman encoding of the characters in that subarray.</td>
+  
 </tr><tr data-search="minimum cost to merge stones leetcode huffman coding &amp; optimal merge given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-stones/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Stones</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1000)</td>
   <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
   <td class="desc-cell">Given piles of stones in a row, merge exactly K consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.</td>
+  
 </tr><tr data-search="minimum cost to merge sorted lists leetcode huffman coding &amp; optimal merge repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-sorted-lists/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Sorted Lists</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#3801)</td>
   <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
   <td class="desc-cell">Repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.</td>
+  
 </tr><tr data-search="olympiad in programming and sports codeforces fractional vs. 0/1 greedy recognition (naive greedy fails) split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).">
   <td><a href="https://codeforces.com/problemset/problem/730/I" target="_blank" rel="noopener noreferrer">Olympiad in Programming and Sports</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Fractional vs. 0/1 Greedy Recognition (naive greedy fails)</td>
   <td class="desc-cell">Split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).</td>
+  
 </tr><tr data-search="knapsack codeforces fractional vs. 0/1 greedy recognition (0/1 requires dp, not greedy) given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.">
   <td><a href="https://codeforces.com/problemset/problem/1132/E" target="_blank" rel="noopener noreferrer">Knapsack</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Fractional vs. 0/1 Greedy Recognition (0/1 requires DP, not greedy)</td>
   <td class="desc-cell">Given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

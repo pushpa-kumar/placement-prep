@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for sorting plus O(log n) per greedy step if a heap/multiset/BIT is needed (k-resource and stabbing variants); O(n) once sorted for the plain single-resource case.</p></div>
   </div>
   <article class="example-card" id="greedy-interval-scheduling-and-its-generalizations-ex0">
-  <h4>Movie Festival with k Club Members</h4>
+  <h4>Movie Festival with k Club Members<button type="button" class="done-checkbox" data-item-id="greedy-interval-scheduling-and-its-generalizations-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A festival shows n movies; movie i runs on the half-open interval [s_i, e_i) (a member can start a new movie exactly when their previous one ends). A club has k members who can each watch at most one movie at a time, but different members may watch different movies simultaneously. No movie may be watched by more than one member (watching it twice doesn&#x27;t count twice). Maximize the total number of movie-viewings (i.e. the number of movies that get watched by at least one member). Input: first line &#x27;n k&#x27;, then n lines each &#x27;s e&#x27;. Output: the maximum number of movies watched.</p></div>
   <div class="section-label">Approach</div>
@@ -320,7 +348,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-interval-scheduling-and-its-generalizations-ex1">
-  <h4>Covering Every Interval with at Least Two Points</h4>
+  <h4>Covering Every Interval with at Least Two Points<button type="button" class="done-checkbox" data-item-id="greedy-interval-scheduling-and-its-generalizations-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n closed integer intervals [l_i, r_i] with r_i - l_i &gt;= 1. Find the minimum-size set S of integers such that every interval contains at least 2 elements of S. Input: first line n, then n lines each &#x27;l r&#x27;. Output: the minimum size of S.</p></div>
   <div class="section-label">Approach</div>
@@ -368,7 +396,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the sort, O(n) for the pass(es) that follow.</p></div>
   </div>
   <article class="example-card" id="greedy-exchange-argument-scheduling-order-ex0">
-  <h4>Tasks and Deadlines</h4>
+  <h4>Tasks and Deadlines<button type="button" class="done-checkbox" data-item-id="greedy-exchange-argument-scheduling-order-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n tasks; task i has duration d_i and deadline t_i. You process all n tasks one at a time, in an order of your choosing, on a single machine with no idle time. If a task finishes at time f (cumulative sum of durations of all tasks processed up to and including it), its reward is t_i - f (rewards may be negative). Maximize the sum of all rewards. Input: first line n, then n lines each &#x27;duration deadline&#x27;. Output: the maximum total reward.</p></div>
   <div class="section-label">Approach</div>
@@ -400,7 +428,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-exchange-argument-scheduling-order-ex1">
-  <h4>Two Readers, Every Book Read Twice</h4>
+  <h4>Two Readers, Every Book Read Twice<button type="button" class="done-checkbox" data-item-id="greedy-exchange-argument-scheduling-order-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n books; book i takes t_i time to read. Two people must EACH read every one of the n books (both need to finish all n, not split the set between them), each reading in whatever order they choose, working continuously with no idle time until they personally finish all n books. The only restriction: the same book cannot be read by both people at the same moment (though the two people may read two DIFFERENT books simultaneously). Find the minimum time until both people have finished reading all n books. Input: first line n, second line n integers t_1..t_n. Output: the minimum total time.</p></div>
   <div class="section-label">Approach</div>
@@ -426,7 +454,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-exchange-argument-scheduling-order-ex2">
-  <h4>Candy Distribution</h4>
+  <h4>Candy Distribution<button type="button" class="done-checkbox" data-item-id="greedy-exchange-argument-scheduling-order-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n children in a line, each with a rating r_i. Each child must receive at least 1 candy. Any child with a strictly higher rating than an immediate neighbor must receive strictly more candies than that neighbor. Find the minimum total number of candies needed. Input: first line n, second line n integers (ratings). Output: the minimum total candies.</p></div>
   <div class="section-label">Approach</div>
@@ -463,7 +491,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the heap approach (each price pushed/popped a bounded number of times). O((n + D) alpha(D)) for the DSU job-scheduling approach, where D is the maximum deadline and alpha is the inverse Ackermann function; O(n log n) if a heap of free slots is used instead of DSU.</p></div>
   </div>
   <article class="example-card" id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu-ex0">
-  <h4>Buy Low Sell High</h4>
+  <h4>Buy Low Sell High<button type="button" class="done-checkbox" data-item-id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You know the stock price for each of the next n days. On each day you may do at most one of: buy exactly one share, sell exactly one share you currently own, or nothing. You may never sell a share you don&#x27;t own (no short selling), but you may hold any number of shares simultaneously. Maximize total profit (sum of sell prices minus sum of buy prices) over the n days. Input: first line n, second line n integers (prices). Output: the maximum achievable profit.</p></div>
   <div class="section-label">Approach</div>
@@ -497,7 +525,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu-ex1">
-  <h4>Job Sequencing with Deadlines</h4>
+  <h4>Job Sequencing with Deadlines<button type="button" class="done-checkbox" data-item-id="greedy-greedy-combined-with-a-priority-structure-heaps-and-dsu-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n jobs; job i has a profit p_i and a deadline d_i (it must be scheduled in some integer time slot from 1 to d_i, inclusive). Every job takes exactly one unit of time, and at most one job may be scheduled in each time slot. Choose a subset of jobs and an assignment of each chosen job to a distinct slot at or before its deadline, to maximize the total profit of scheduled jobs. Input: first line n, then n lines each &#x27;profit deadline&#x27;. Output: the maximum achievable total profit.</p></div>
   <div class="section-label">Approach</div>
@@ -553,7 +581,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(E log E) (Kruskal with sorting) or O(E log V) (Prim with a binary heap), where E is the number of edges and V the number of vertices. Virtual-source constructions are often dense (all pairs of n real nodes plus n edges to the virtual node give O(n^2) edges), yielding O(n^2 log n) with Kruskal, improvable to O(n^2) with array-based Prim.</p></div>
   </div>
   <article class="example-card" id="greedy-reducing-to-a-minimum-spanning-tree-ex0">
-  <h4>Minimum Cost to Connect All Computers</h4>
+  <h4>Minimum Cost to Connect All Computers<button type="button" class="done-checkbox" data-item-id="greedy-reducing-to-a-minimum-spanning-tree-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n computers and m candidate cables; cable j connects computers u_j and v_j at cost w_j (the candidate cables are guaranteed to make the network connectable). Choose a subset of cables of minimum total cost so that every computer is connected to every other computer (directly or through other computers). Input: first line &#x27;n m&#x27;, then m lines each &#x27;u v w&#x27; (1-indexed computers). Output: the minimum total cost.</p></div>
   <div class="section-label">Approach</div>
@@ -601,7 +629,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-reducing-to-a-minimum-spanning-tree-ex1">
-  <h4>Power Grid: Build a Station or Wire to a Neighbor</h4>
+  <h4>Power Grid: Build a Station or Wire to a Neighbor<button type="button" class="done-checkbox" data-item-id="greedy-reducing-to-a-minimum-spanning-tree-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n cities on a 2D grid; city i is at (x_i, y_i) and building its own power station there costs c_i. Alternatively, a wire can be built between any two cities i and j at cost k times their Manhattan distance |x_i - x_j| + |y_i - y_j|. Every city must ultimately be powered: either it has its own station, or it is connected (directly or transitively, through wires and other powered cities) to some city that has a station. Find the minimum total cost (stations plus wires) to power every city. Input: first line &#x27;n k&#x27;, then n lines each &#x27;x y c&#x27;. Output: the minimum total cost.</p></div>
   <div class="section-label">Approach</div>
@@ -657,7 +685,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the greedy priority-queue Huffman/optimal-merge algorithm; O(n^2) to O(n^2 * K) for the adjacency-constrained interval DP variant (K-way merge of contiguous ranges), depending on how the split points are enumerated.</p></div>
   </div>
   <article class="example-card" id="greedy-huffman-coding-optimal-merge-ex0">
-  <h4>Minimum Total Huffman Code Length</h4>
+  <h4>Minimum Total Huffman Code Length<button type="button" class="done-checkbox" data-item-id="greedy-huffman-coding-optimal-merge-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given the frequencies of n distinct symbols (2 &lt;= n &lt;= 10^5, 1 &lt;= frequency &lt;= 10^9). Construct an optimal binary prefix-free (Huffman) code for these symbols and output the minimum possible total encoded length, i.e. the sum over all symbols of (frequency of the symbol) * (length of its assigned binary code).</p><p>Input: n, then n integers (the frequencies).<br>Output: the minimum total encoded length.</p></div>
   <div class="section-label">Approach</div>
@@ -690,7 +718,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-huffman-coding-optimal-merge-ex1">
-  <h4>Minimum Cost to Merge K Adjacent Piles (where the Huffman greedy fails)</h4>
+  <h4>Minimum Cost to Merge K Adjacent Piles (where the Huffman greedy fails)<button type="button" class="done-checkbox" data-item-id="greedy-huffman-coding-optimal-merge-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n piles of stones in a row (1 &lt;= n &lt;= 30), pile i having stones[i] stones (1 &lt;= stones[i] &lt;= 100), and an integer K (2 &lt;= K &lt;= n). In one move you may merge EXACTLY K CONSECUTIVE piles into a single new pile; the cost of that move equals the total number of stones in those K piles, and after the merge those K piles are replaced by the one combined pile (so future merges see the new, shorter row). Find the minimum total cost to merge the entire row down to a single pile, or report -1 if it is impossible.</p><p>Input: n and K, then n integers stones[1..n].<br>Output: the minimum total cost, or -1 if merging down to one pile is impossible.</p></div>
   <div class="section-label">Approach</div>
@@ -741,7 +769,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the fractional-knapsack greedy (dominated by the sort); O(n * W) for the 0/1 knapsack DP (W = weight capacity), which is pseudo-polynomial and only tractable when W is reasonably small.</p></div>
   </div>
   <article class="example-card" id="greedy-fractional-vs-0-1-greedy-recognition-ex0">
-  <h4>Fractional Knapsack (greedy is provably correct)</h4>
+  <h4>Fractional Knapsack (greedy is provably correct)<button type="button" class="done-checkbox" data-item-id="greedy-fractional-vs-0-1-greedy-recognition-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n items (1 &lt;= n &lt;= 10^5), item i having weight w[i] and value v[i] (positive real-valued in general; integers here for concreteness), and a knapsack capacity C. You may take any fraction (between 0 and 1) of each item&#x27;s weight, receiving that same fraction of its value, subject to the total weight taken not exceeding C. Maximize total value.</p><p>Input: n and C, then n lines each with w[i] and v[i].<br>Output: the maximum total value achievable, printed with 2 decimal places.</p></div>
   <div class="section-label">Approach</div>
@@ -785,7 +813,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="greedy-fractional-vs-0-1-greedy-recognition-ex1">
-  <h4>0/1 Knapsack (same instance, ratio-greedy is provably wrong)</h4>
+  <h4>0/1 Knapsack (same instance, ratio-greedy is provably wrong)<button type="button" class="done-checkbox" data-item-id="greedy-fractional-vs-0-1-greedy-recognition-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n items (1 &lt;= n &lt;= 500), item i having integer weight w[i] and integer value v[i] (1 &lt;= w[i], v[i] &lt;= 10^4), and an integer knapsack capacity C (1 &lt;= C &lt;= 10^4). Each item must be taken WHOLE or not at all (0/1, no fractions). Maximize total value subject to total weight &lt;= C.</p><p>Input: n and C, then n lines each with w[i] and v[i].<br>Output: the maximum total value achievable.</p></div>
   <div class="section-label">Approach</div>
@@ -824,85 +852,98 @@
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="buy low sell high codeforces greedy + data structure (&quot;regret&quot; greedy with a min-heap) given n days of known future stock prices, repeatedly buy/sell one share per day (never short) to maximize total profit.">
   <td><a href="https://codeforces.com/problemset/problem/865/D" target="_blank" rel="noopener noreferrer">Buy Low Sell High</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">greedy + data structure (&quot;regret&quot; greedy with a min-heap)</td>
   <td class="desc-cell">Given n days of known future stock prices, repeatedly buy/sell one share per day (never short) to maximize total profit.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/865/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="shichikuji and power grid codeforces greedy reduction to mst for n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.">
   <td><a href="https://codeforces.com/problemset/problem/1245/D" target="_blank" rel="noopener noreferrer">Shichikuji and Power Grid</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">greedy reduction to MST</td>
   <td class="desc-cell">For n cities, decide for each whether to build its own power station or connect it by wire to another powered city, minimizing total cost of stations plus wires.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1245/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="stressful training codeforces binary search + greedy feasibility check n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.">
   <td><a href="https://codeforces.com/problemset/problem/1132/D" target="_blank" rel="noopener noreferrer">Stressful Training</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">binary search + greedy feasibility check</td>
   <td class="desc-cell">n students with given starting charge and per-minute battery drain must survive w minutes of lecture; you may buy identical power banks of some capacity and hand at most k of them out per minute — find the minimum sufficient power bank capacity.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1132/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tasks and deadlines cses exchange argument (sort by duration, not deadline) process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task&#x27;s reward is its deadline minus its finishing time.">
   <td><a href="https://cses.fi/problemset/task/1630" target="_blank" rel="noopener noreferrer">Tasks and Deadlines</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
   <td class="subtopic-cell">exchange argument (sort by duration, not deadline)</td>
   <td class="desc-cell">Process n tasks (each with a duration and a deadline) one after another to maximize the total reward, where each task&#x27;s reward is its deadline minus its finishing time.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1630" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="reading books cses greedy pairing / scheduling with two workers two people must read all n books together (never the same book at the same time); given each book&#x27;s reading time, find the minimum total time for both to finish everything.">
   <td><a href="https://cses.fi/problemset/task/1631" target="_blank" rel="noopener noreferrer">Reading Books</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
   <td class="subtopic-cell">greedy pairing / scheduling with two workers</td>
   <td class="desc-cell">Two people must read all n books together (never the same book at the same time); given each book&#x27;s reading time, find the minimum total time for both to finish everything.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1631" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="movie festival ii cses greedy interval scheduling with k resources with k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.">
   <td><a href="https://cses.fi/problemset/task/1632" target="_blank" rel="noopener noreferrer">Movie Festival II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Sorting and Searching, high end)</td>
   <td class="subtopic-cell">greedy interval scheduling with k resources</td>
   <td class="desc-cell">With k movie-club members attending a festival of n movies (each with a start/end time), maximize the total number of movies watched, allowing members to watch different movies in parallel.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1632" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="candy leetcode exchange argument (two-pass greedy) distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.">
   <td><a href="https://leetcode.com/problems/candy/" target="_blank" rel="noopener noreferrer">Candy</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">exchange argument (two-pass greedy)</td>
   <td class="desc-cell">Distribute the minimum number of candies to children standing in a line so every child gets at least one candy and any child with a higher rating than a neighbor gets more candies than that neighbor.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/candy/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="set intersection size at least two leetcode greedy on intervals with a non-obvious proof given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.">
   <td><a href="https://leetcode.com/problems/set-intersection-size-at-least-two/" target="_blank" rel="noopener noreferrer">Set Intersection Size At Least Two</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">greedy on intervals with a non-obvious proof</td>
   <td class="desc-cell">Given a list of integer intervals, find the minimum-size set of integers such that every interval contains at least two elements from the set.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/set-intersection-size-at-least-two/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="huffman coding on segment codeforces huffman coding &amp; optimal merge for each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary huffman encoding of the characters in that subarray.">
   <td><a href="https://codeforces.com/problemset/problem/700/D" target="_blank" rel="noopener noreferrer">Huffman Coding on Segment</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 3100</td>
   <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
   <td class="desc-cell">For each of q queries giving a subarray [l, r] of a message, output the minimum possible length of a binary Huffman encoding of the characters in that subarray.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/700/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum cost to merge stones leetcode huffman coding &amp; optimal merge given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-stones/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Stones</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#1000)</td>
   <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
   <td class="desc-cell">Given piles of stones in a row, merge exactly K consecutive piles into one at a time (cost = sum of the merged piles) until one pile remains, minimizing total cost, or report impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-cost-to-merge-stones/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum cost to merge sorted lists leetcode huffman coding &amp; optimal merge repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-sorted-lists/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Sorted Lists</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard (#3801)</td>
   <td class="subtopic-cell">Huffman Coding &amp; Optimal Merge</td>
   <td class="desc-cell">Repeatedly merge two sorted lists at a time (cost = len(a) + len(b) + |median(a) - median(b)|) until one list remains, minimizing total cost.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-cost-to-merge-sorted-lists/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="olympiad in programming and sports codeforces fractional vs. 0/1 greedy recognition (naive greedy fails) split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).">
   <td><a href="https://codeforces.com/problemset/problem/730/I" target="_blank" rel="noopener noreferrer">Olympiad in Programming and Sports</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Fractional vs. 0/1 Greedy Recognition (naive greedy fails)</td>
   <td class="desc-cell">Split n students into a disjoint programming team of exactly p and a sports team of exactly s to maximize the sum of programming skills (team 1) plus sports skills (team 2).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/730/I" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="knapsack codeforces fractional vs. 0/1 greedy recognition (0/1 requires dp, not greedy) given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.">
   <td><a href="https://codeforces.com/problemset/problem/1132/E" target="_blank" rel="noopener noreferrer">Knapsack</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Fractional vs. 0/1 Greedy Recognition (0/1 requires DP, not greedy)</td>
   <td class="desc-cell">Given items each belonging to one of two categories with a value and a per-category count limit, and a total weight budget equal to the item count limit, choose items to maximize total value.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1132/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

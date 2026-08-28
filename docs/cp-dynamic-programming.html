@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Complexity is (number of distinct states) x (work per transition). Memoization and tabulation have identical asymptotic complexity for the same recurrence; tabulation usually has a smaller constant factor and enables O(states) -&gt; O(1)-per-layer space optimization via rolling arrays when the recurrence only reaches back a bounded number of previous layers.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-dp-fundamentals-ex0">
-  <h4>Coin Change — Minimum Coins (Bottom-Up Tabulation)</h4>
+  <h4>Coin Change — Minimum Coins (Bottom-Up Tabulation)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-fundamentals-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n coin denominations and a target amount. Determine the minimum number of coins (unlimited supply of each denomination) needed to make exactly that amount, or report -1 if it is impossible.<br>Constraints: 1 &lt;= n &lt;= 100, 1 &lt;= coin value &lt;= 10^4, 0 &lt;= amount &lt;= 10^4.</p></div>
   <div class="section-label">Approach</div>
@@ -310,7 +338,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-dp-fundamentals-ex1">
-  <h4>Longest Increasing Subsequence Length (Top-Down Memoization)</h4>
+  <h4>Longest Increasing Subsequence Length (Top-Down Memoization)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-fundamentals-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, find the length of the longest strictly increasing subsequence (elements need not be contiguous).<br>Constraints: 1 &lt;= n &lt;= 2500.</p></div>
   <div class="section-label">Approach</div>
@@ -357,7 +385,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Take-or-skip DP: O(n) time, O(1) space after rolling-array optimization. Naive &#x27;ending at i&#x27; DP: O(n^2) time, O(n) space; with binary search / BIT acceleration: O(n log n) time. Bitmask DP over subsets: O(2^n * n) or O(2^n * n^2) time, O(2^n) space — only tractable for n up to about 20.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-linear-1d-dp-ex0">
-  <h4>Maximum Profit in Job Scheduling (Weighted Interval Scheduling)</h4>
+  <h4>Maximum Profit in Job Scheduling (Weighted Interval Scheduling)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-linear-1d-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n jobs, each with a start time, end time, and profit. A job occupies [start, end]; two jobs may be scheduled together only if one ends at or before the other starts (touching endpoints are allowed). Choose a subset of non-overlapping jobs maximizing total profit.<br>Constraints: 1 &lt;= n &lt;= 5*10^4, 1 &lt;= start &lt; end &lt;= 10^9, 1 &lt;= profit &lt;= 10^4.</p></div>
   <div class="section-label">Approach</div>
@@ -397,7 +425,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-linear-1d-dp-ex1">
-  <h4>Super Egg Drop</h4>
+  <h4>Super Egg Drop<button type="button" class="done-checkbox" data-item-id="dynamic-programming-linear-1d-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given k identical eggs and a building with n floors. An egg breaks if dropped from at or above some unknown critical floor f (0 &lt;= f &lt;= n; f = 0 means even floor 1 breaks it), and survives if dropped below f. A broken egg cannot be reused; a surviving egg can be reused. Determine the minimum number of moves needed, in the worst case, to determine f exactly.<br>Constraints: 1 &lt;= k &lt;= 100, 1 &lt;= n &lt;= 10^4.</p></div>
   <div class="section-label">Approach</div>
@@ -428,7 +456,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-linear-1d-dp-ex2">
-  <h4>Russian Doll Envelopes (2D LIS)</h4>
+  <h4>Russian Doll Envelopes (2D LIS)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-linear-1d-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n envelopes as (width, height) pairs, find the maximum number that can be nested inside one another, where envelope A fits inside envelope B only if both A.width &lt; B.width and A.height &lt; B.height (strict on both dimensions).<br>Constraints: 1 &lt;= n &lt;= 10^5, 1 &lt;= width, height &lt;= 10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -475,7 +503,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Single-agent monotone-path DP: O(rows * cols) time and space, often O(cols) with a rolling row. Two-agent DP (state = row, col1, col2): O(rows * cols^2) time and space. Hamiltonian-path-style grid problems requiring 4-directional movement that visits every cell exactly once generally need bitmask-augmented search, O(2^(rows*cols) * rows*cols) in the worst case, only tractable when rows*cols is small (&lt;= ~20).</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-2d-grid-dp-ex0">
-  <h4>Dungeon Game (Reverse-Direction Grid DP)</h4>
+  <h4>Dungeon Game (Reverse-Direction Grid DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-2d-grid-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A knight starts at the top-left cell of an m x n dungeon and must reach the bottom-right cell, moving only right or down at each step. Each cell has an integer value: negative means the knight loses that much health entering it, positive means the knight gains that much health. The knight&#x27;s health must remain strictly above 0 at every point along the path (including the very first cell). Find the minimum initial health needed to guarantee survival to the end.<br>Constraints: 1 &lt;= m, n &lt;= 200, -1000 &lt;= cell value &lt;= 1000.</p></div>
   <div class="section-label">Approach</div>
@@ -516,7 +544,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-2d-grid-dp-ex1">
-  <h4>Cherry Pickup II (Two Robots, Multi-Agent Grid DP)</h4>
+  <h4>Cherry Pickup II (Two Robots, Multi-Agent Grid DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-2d-grid-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a grid with <code>rows</code> rows and <code>cols</code> columns of non-negative cherry counts, robot 1 starts at the top-left cell (0,0) and robot 2 starts at the top-right cell (0, cols-1). Every step, both robots move simultaneously to the next row, each independently choosing to shift one column left, stay, or shift one column right (staying in bounds). Both robots collect the cherries on the cells they land on; if both robots land on the same cell, its cherries are only collected once. Maximize the total cherries collected after both robots reach the last row.<br>Constraints: 2 &lt;= rows, cols &lt;= 70.</p></div>
   <div class="section-label">Approach</div>
@@ -565,7 +593,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-2d-grid-dp-ex2">
-  <h4>Unique Paths III (Hamiltonian Path Counting via Bitmask DP)</h4>
+  <h4>Unique Paths III (Hamiltonian Path Counting via Bitmask DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-2d-grid-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an m x n grid where each cell is 1 (the single start), 2 (the single end), 0 (walkable empty), or -1 (obstacle), count the number of distinct paths from start to end that move up/down/left/right and visit every non-obstacle cell exactly once (including start and end).<br>Constraints: 1 &lt;= m, n &lt;= 20, m*n &lt;= 20 (small enough for a bitmask state).</p></div>
   <div class="section-label">Approach</div>
@@ -632,7 +660,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>0/1 and unbounded knapsack: O(n * capacity) time, O(capacity) space with a 1D rolling array (2D-looking value/weight problems become O(n * dim1 * dim2)). Bitmask bin-packing DP: O(2^n * n) time and O(2^n) space, only tractable for n &lt;= ~20. Difference-indexed knapsack (hash-map state): O(n * distinct-difference-values) rather than O(n * sum), which is the whole point when sums are too large to index directly but differences are sparse.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-knapsack-family-ex0">
-  <h4>Two Sets II — Count Equal-Sum Partitions (Subset-Sum Counting)</h4>
+  <h4>Two Sets II — Count Equal-Sum Partitions (Subset-Sum Counting)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-knapsack-family-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n, count the number of ways to partition the set {1, 2, ..., n} into two subsets with equal sums, modulo 10^9+7. (If the total sum of 1..n is odd, the answer is 0.)<br>Constraints: 1 &lt;= n &lt;= 500.</p></div>
   <div class="section-label">Approach</div>
@@ -667,7 +695,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-knapsack-family-ex1">
-  <h4>Elevator Rides (Bitmask Bin-Packing DP)</h4>
+  <h4>Elevator Rides (Bitmask Bin-Packing DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-knapsack-family-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n people with given weights and an elevator with a maximum weight capacity x (every person&#x27;s weight individually fits, weight[i] &lt;= x). Find the minimum number of elevator rides needed to move every person up, where each ride carries any subset of the remaining people whose total weight does not exceed x.<br>Constraints: 1 &lt;= n &lt;= 20.</p></div>
   <div class="section-label">Approach</div>
@@ -712,7 +740,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-knapsack-family-ex2">
-  <h4>Profitable Schemes (2D Bounded Knapsack with Clamped Profit)</h4>
+  <h4>Profitable Schemes (2D Bounded Knapsack with Clamped Profit)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-knapsack-family-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You have G members available. There are n given &#x27;crimes&#x27;, each requiring group[i] members to execute and yielding profit[i]. A profitable scheme is a subset of crimes whose total member requirement is at most G and whose total profit is at least P. Count the number of profitable schemes, modulo 10^9+7 (the empty scheme counts if P = 0).<br>Constraints: 1 &lt;= n &lt;= 100, 0 &lt;= G &lt;= 100, 0 &lt;= P &lt;= 100.</p></div>
   <div class="section-label">Approach</div>
@@ -762,7 +790,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Standard interval DP (pivot search over 2 pieces): O(n^2) states x O(n) pivot search = O(n^3) time, O(n^2) space. Minimax array-game DP: O(n^2) time and space with no extra pivot search (only 2 choices per state). k-way merge / 2D rectangle-cut generalizations: an extra dimension (number of groups, or a second side length) multiplies the state count, typically giving O(n^3 k) or O(a^2 b^2) time.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-interval-dp-ex0">
-  <h4>Burst Balloons (Think About the Last Balloon, Not the First)</h4>
+  <h4>Burst Balloons (Think About the Last Balloon, Not the First)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-interval-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n balloons in a row with positive integer values, repeatedly burst one balloon; bursting balloon i earns value[left] * value[i] * value[right], where left and right are the balloons currently adjacent to i (or 1 if i is at either current end). Maximize the total coins collected after bursting all balloons.<br>Constraints: 1 &lt;= n &lt;= 500, 0 &lt;= value &lt;= 100.</p></div>
   <div class="section-label">Approach</div>
@@ -802,7 +830,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-interval-dp-ex1">
-  <h4>Removal Game (Minimax Interval Game DP)</h4>
+  <h4>Removal Game (Minimax Interval Game DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-interval-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Two players alternately remove either the first or the last number from a given list of n numbers; the removed number is added to that player&#x27;s score. Both players play optimally to maximize their own final score. Compute the maximum score the first player can guarantee.<br>Constraints: 1 &lt;= n &lt;= 5000, values fit in a 32-bit signed integer.</p></div>
   <div class="section-label">Approach</div>
@@ -840,7 +868,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-interval-dp-ex2">
-  <h4>Rectangle Cutting (2D Interval DP)</h4>
+  <h4>Rectangle Cutting (2D Interval DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-interval-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an a x b rectangle with integer side lengths, you may repeatedly choose any current rectangle and cut it (horizontally or vertically, at an integer position) into two rectangles with integer sides. Find the minimum number of cuts needed so that every remaining piece is a square.<br>Constraints: 1 &lt;= a, b &lt;= 500.</p></div>
   <div class="section-label">Approach</div>
@@ -883,7 +911,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n*m) time and space for the standard alignment DP, where n, m are the two string lengths; easily reducible to O(min(n,m)) space with a rolling pair of rows since each row only depends on the previous one. Pattern-matching variants with &#x27;*&#x27; keep the same O(n*m) time/space, just with a slightly larger constant per cell for the extra case analysis.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-string-dp-ex0">
-  <h4>Edit Distance (Canonical 2D Alignment DP)</h4>
+  <h4>Edit Distance (Canonical 2D Alignment DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-string-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given two strings s and t, find the minimum number of single-character insertions, deletions, and substitutions needed to transform s into t.<br>Constraints: 1 &lt;= |s|, |t| &lt;= 5000, lowercase/uppercase letters.</p></div>
   <div class="section-label">Approach</div>
@@ -917,7 +945,7 @@ MOVIE
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-string-dp-ex1">
-  <h4>Regular Expression Matching (&#x27;.&#x27; and &#x27;*&#x27;)</h4>
+  <h4>Regular Expression Matching (&#x27;.&#x27; and &#x27;*&#x27;)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-string-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a string s and a pattern p containing lowercase letters, &#x27;.&#x27; (matches any single character), and &#x27;*&#x27; (matches zero or more of the preceding element), determine whether p matches the entirety of s. Print &quot;true&quot; or &quot;false&quot;. The pattern is guaranteed valid (a &#x27;*&#x27; is always preceded by a literal character or &#x27;.&#x27;).<br>Constraints: 1 &lt;= |s| &lt;= 20, 1 &lt;= |p| &lt;= 30.</p></div>
   <div class="section-label">Approach</div>
@@ -961,7 +989,7 @@ c*a*b
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-string-dp-ex2">
-  <h4>Distinct Subsequences (Counting Alignment DP)</h4>
+  <h4>Distinct Subsequences (Counting Alignment DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-string-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given strings s and t, count the number of distinct ways t appears as a subsequence of s (subsequences occurring at different index positions in s count separately even if they produce the same characters).<br>Constraints: 1 &lt;= |s| &lt;= 1000, 1 &lt;= |t| &lt;= 1000.</p></div>
   <div class="section-label">Approach</div>
@@ -1001,7 +1029,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>Typically O(2^n * n) or O(2^n * n^2) time for assignment/TSP-style DP, and O(n*m*2^m) for broken-profile tiling DP (m = grid width); space is O(2^n) or O(2^n * n).</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-bitmask-dp-ex0">
-  <h4>Dish Order With Adjacency Bonuses (Hamiltonian-path bitmask DP)</h4>
+  <h4>Dish Order With Adjacency Bonuses (Hamiltonian-path bitmask DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-bitmask-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n dishes (n &lt;= 15). Dish i has satisfaction value a[i]. You may eat at most m distinct dishes (m &lt;= n), choosing both which dishes to eat and the order to eat them in (no dish is eaten twice). In addition, you are given q ordered bonus pairs (x, y, c): if dish y is eaten immediately after dish x in your chosen order, you gain an extra c satisfaction (bonuses only apply for that exact immediate order, and a dish can trigger at most the bonuses that match its immediate predecessor/successor in your sequence). Maximize total satisfaction (sum of eaten dishes&#x27; values plus all triggered bonuses).</p><p>Input: first line n and m. Second line: n integers a[1..n]. Third line: q. Next q lines: x y c (1-indexed dish indices).<br>Output: the maximum total satisfaction.</p></div>
   <div class="section-label">Approach</div>
@@ -1055,7 +1083,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-bitmask-dp-ex1">
-  <h4>Counting Domino Tilings (broken-profile bitmask DP)</h4>
+  <h4>Counting Domino Tilings (broken-profile bitmask DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-bitmask-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an n x m grid (1 &lt;= n, m &lt;= 10, n*m even), count the number of ways to completely tile it using 1x2 dominoes (each domino covers exactly two orthogonally adjacent cells, placed either horizontally or vertically; every cell must be covered by exactly one domino). Print the count modulo 10^9 + 7.</p><p>Input: two integers n and m.<br>Output: the number of tilings mod 10^9 + 7.</p></div>
   <div class="section-label">Approach</div>
@@ -1106,7 +1134,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-bitmask-dp-ex2">
-  <h4>Elevator Rides (minimum groups under a capacity bound)</h4>
+  <h4>Elevator Rides (minimum groups under a capacity bound)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-bitmask-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>n people (n &lt;= 16) need to be transported by an elevator with weight capacity x. Person i weighs w[i] &lt;= x. Partition all n people into the minimum possible number of elevator rides such that the total weight in each ride does not exceed x. (Order of people within a ride, and order of rides, does not matter.)</p><p>Input: n and x on the first line, then n integers w[1..n].<br>Output: the minimum number of rides.</p></div>
   <div class="section-label">Approach</div>
@@ -1155,7 +1183,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) time and O(n) space for a single-root tree DP; O(n) time total (two DFS passes) for the rerooting technique, versus a naive O(n^2).</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-tree-dp-ex0">
-  <h4>Maximum-Weight Simple Path (weighted tree diameter)</h4>
+  <h4>Maximum-Weight Simple Path (weighted tree diameter)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-tree-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a tree with n nodes (1 &lt;= n &lt;= 2*10^5 in the original problem; kept small here for the worked example), each node i having a positive integer weight c[i]. A simple path is any path between two nodes (possibly the same node, i.e. a path of length 0) that does not repeat a vertex. Find the maximum possible sum of vertex weights along a simple path.</p><p>Input: n, then n integers c[1..n], then n-1 edges (each a pair of node indices).<br>Output: the maximum path weight.</p></div>
   <div class="section-label">Approach</div>
@@ -1206,7 +1234,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-tree-dp-ex1">
-  <h4>Best Root by Weighted Distance Sum (rerooting technique)</h4>
+  <h4>Best Root by Weighted Distance Sum (rerooting technique)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-tree-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a tree with n nodes, each node i having a positive weight val[i]. For a chosen root r, define f(r) = sum over all nodes i of val[i] * dist(r, i), where dist is the number of edges on the tree path. Compute max over all r in 1..n of f(r).</p><p>Input: n, then n integers val[1..n], then n-1 edges.<br>Output: the maximum value of f(r) over all choices of root r.</p></div>
   <div class="section-label">Approach</div>
@@ -1268,7 +1296,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-tree-dp-ex2">
-  <h4>Minimum Cameras to Monitor a Tree (3-state tree DP)</h4>
+  <h4>Minimum Cameras to Monitor a Tree (3-state tree DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-tree-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a tree with n nodes (rooted at node 1 for concreteness). You must choose a subset of nodes to place a camera on. A camera placed at node u monitors u itself, u&#x27;s parent, and all of u&#x27;s children. Find the minimum number of cameras needed so that every node in the tree is monitored by at least one camera.</p><p>(This is exactly a minimum dominating set on the tree, since a camera&#x27;s monitoring range is precisely its graph neighborhood plus itself.)</p><p>Input: n, then n-1 edges.<br>Output: the minimum number of cameras.</p></div>
   <div class="section-label">Approach</div>
@@ -1330,7 +1358,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>O(digits * (size of extra-state space) * 10) per range endpoint, typically comfortably fast even for 18-19 digit numbers.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-digit-dp-ex0">
-  <h4>Count Numbers With Digit Sum Divisible by K</h4>
+  <h4>Count Numbers With Digit Sum Divisible by K<button type="button" class="done-checkbox" data-item-id="dynamic-programming-digit-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given two integers L and R (1 &lt;= L &lt;= R &lt;= 10^18) and an integer K (1 &lt;= K &lt;= 100), count how many integers x in [L, R] have a digit sum divisible by K.</p><p>Input: L, R, K on one line.<br>Output: the count.</p></div>
   <div class="section-label">Approach</div>
@@ -1375,7 +1403,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-digit-dp-ex1">
-  <h4>Numbers At Most N Using Only a Given Digit Set</h4>
+  <h4>Numbers At Most N Using Only a Given Digit Set<button type="button" class="done-checkbox" data-item-id="dynamic-programming-digit-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given m distinct digits from &#x27;1&#x27; to &#x27;9&#x27; (never &#x27;0&#x27;), sorted ascending, and a positive integer N. Count how many positive integers &lt;= N can be written using only digits from the given set, with repetition of digits allowed (any number of digits).</p><p>Input: m, then the m allowed digits, then N.<br>Output: the count.</p></div>
   <div class="section-label">Approach</div>
@@ -1427,7 +1455,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-digit-dp-ex2">
-  <h4>Beautiful Numbers (divisible by their own digit sum)</h4>
+  <h4>Beautiful Numbers (divisible by their own digit sum)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-digit-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given L and R (1 &lt;= L &lt;= R &lt;= 10^6 for this worked example; the technique scales to R up to 10^18), count how many integers x in [L, R] are divisible by the sum of their own decimal digits (a number is never divisible by a digit sum of 0, which cannot occur for x &gt;= 1).</p><p>Input: L and R on one line.<br>Output: the count.</p></div>
   <div class="section-label">Approach</div>
@@ -1485,7 +1513,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>O(V + E) with memoized DFS / topological-order DP, where V and E are the DAG&#x27;s node and edge counts (which may be implicit, e.g. O(rows*cols*4) for a grid).</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-dp-on-dags-ex0">
-  <h4>Longest Increasing Path in a Matrix (implicit DAG, memoized DFS)</h4>
+  <h4>Longest Increasing Path in a Matrix (implicit DAG, memoized DFS)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-on-dags-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an m x n integer matrix, find the length of the longest path of cells such that each step moves to an orthogonally adjacent cell with a STRICTLY greater value than the current cell.</p><p>Input: m and n, then the m x n matrix.<br>Output: the length of the longest such path.</p></div>
   <div class="section-label">Approach</div>
@@ -1529,7 +1557,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-dp-on-dags-ex1">
-  <h4>Longest Common Subsequence of k Permutations (DAG longest path)</h4>
+  <h4>Longest Common Subsequence of k Permutations (DAG longest path)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-on-dags-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given k permutations of 1..n. Find the length of the longest sequence of DISTINCT values that appears as a subsequence in ALL k permutations simultaneously.</p><p>Input: n and k, then k lines each containing a permutation of 1..n.<br>Output: the length of the longest common subsequence.</p></div>
   <div class="section-label">Approach</div>
@@ -1586,7 +1614,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>O(n^2) for interval-based games (dp[i][j] over subarrays), O(n * b) for suffix/pile games with branching factor b (often O(n) if b is a small constant).</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-game-theory-dp-ex0">
-  <h4>Optimal Pick From Either End (score-difference interval DP)</h4>
+  <h4>Optimal Pick From Either End (score-difference interval DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-game-theory-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>An array of n integers is given. Two players alternate turns; on each turn the current player removes either the FIRST or the LAST remaining element of the array and adds its value to their own score. Both players play optimally to maximize their own final score. The first player moves first. Determine the first player&#x27;s final score.</p><p>Input: n, then n integers a[1..n].<br>Output: the first player&#x27;s score under optimal play by both.</p></div>
   <div class="section-label">Approach</div>
@@ -1620,7 +1648,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-game-theory-dp-ex1">
-  <h4>Stone Game III (take 1, 2, or 3 from the front)</h4>
+  <h4>Stone Game III (take 1, 2, or 3 from the front)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-game-theory-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>An array stoneValue of integers (which may be negative) is given, of length n. Alice and Bob alternate turns, Alice first. On each turn the current player takes 1, 2, or 3 stones from the FRONT of the remaining array and adds their total value to their own score. Both play optimally to maximize their own score. Determine the winner: print &quot;Alice&quot; if Alice&#x27;s final score is strictly greater, &quot;Bob&quot; if Bob&#x27;s is strictly greater, or &quot;Tie&quot; if they are equal.</p><p>Input: n, then n integers stoneValue[1..n].<br>Output: &quot;Alice&quot;, &quot;Bob&quot;, or &quot;Tie&quot;.</p></div>
   <div class="section-label">Approach</div>
@@ -1656,7 +1684,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-game-theory-dp-ex2">
-  <h4>Subtraction Game on a Pile of Sticks (win/lose DP)</h4>
+  <h4>Subtraction Game on a Pile of Sticks (win/lose DP)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-game-theory-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a set of k allowed move sizes {m_1, ..., m_k}. Two players alternate turns; on each turn, the current player removes exactly m_i sticks (for some allowed move size m_i that is at most the number of sticks currently remaining) from a single pile. A player who cannot move (because no allowed move size is small enough) loses. For every pile size x from 1 to n, determine whether the player to move first WINS or LOSES under optimal play, assuming the pile starts with x sticks.</p><p>Input: n and k, then k allowed move sizes.<br>Output: n tokens (&quot;First&quot; or &quot;Second&quot;), space-separated, one for each starting pile size from 1 to n, indicating which player wins.</p></div>
   <div class="section-label">Approach</div>
@@ -1700,7 +1728,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>Proportional to the size of the state space times the number of transitions per state; for linearity-of-expectation problems, often O(n^2) naively or O(n log n) with a Fenwick/segment tree to aggregate the running expectation.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-probability-expected-value-dp-ex0">
-  <h4>Dice Sum Probability</h4>
+  <h4>Dice Sum Probability<button type="button" class="done-checkbox" data-item-id="dynamic-programming-probability-expected-value-dp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You roll a fair 6-sided die n times. Compute the probability that the sum of all n rolls lies in the inclusive range [a, b].</p><p>Input: n, a, b on one line.<br>Output: the probability, printed with 6 digits after the decimal point.</p></div>
   <div class="section-label">Approach</div>
@@ -1735,7 +1763,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-probability-expected-value-dp-ex1">
-  <h4>Rock-Paper-Scissors Island Survival Probability</h4>
+  <h4>Rock-Paper-Scissors Island Survival Probability<button type="button" class="done-checkbox" data-item-id="dynamic-programming-probability-expected-value-dp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>An island has r rock-creatures, s scissors-creatures, and p paper-creatures. Every so often, two random creatures on the island meet (each unordered pair of the currently-alive creatures is equally likely at each meeting). If the two creatures are of different types, the one that wins under standard rock-paper-scissors rules (rock beats scissors, scissors beats paper, paper beats rock) eliminates the other; if they are the same type, nothing happens. This repeats until only one type of creature remains. Compute the probability that rocks are the surviving type, the probability that scissors are the surviving type, and the probability that paper is the surviving type.</p><p>Input: r, s, p on one line.<br>Output: the three probabilities (rock, scissors, paper), each printed with 6 digits after the decimal point, space-separated.</p></div>
   <div class="section-label">Approach</div>
@@ -1796,7 +1824,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-probability-expected-value-dp-ex2">
-  <h4>Expected Number of Inversions (linearity of expectation)</h4>
+  <h4>Expected Number of Inversions (linearity of expectation)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-probability-expected-value-dp-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n positions. Position i&#x27;s actual value is chosen uniformly at random and independently to be either a[i] or b[i] (each with probability 1/2). Compute the expected number of inversions in the resulting sequence, where an inversion is a pair of indices i &lt; j with value[i] &gt; value[j].</p><p>Input: n, then n lines each with two integers a[i] and b[i].<br>Output: the expected number of inversions, printed with 6 digits after the decimal point.</p></div>
   <div class="section-label">Approach</div>
@@ -1842,7 +1870,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) for monotonic-deque optimization (from O(n*k)); O(n) or O(n log n) for the convex hull trick (from O(n^2)).</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-dp-optimization-techniques-ex0">
-  <h4>Constrained-Gap Maximum Subsequence Sum (monotonic deque optimization)</h4>
+  <h4>Constrained-Gap Maximum Subsequence Sum (monotonic deque optimization)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-optimization-techniques-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an integer array nums of length n and an integer k, find the maximum possible sum of a non-empty subsequence of nums such that for every two CONSECUTIVE integers chosen in the subsequence (say at original indices i &lt; j), we have j - i &lt;= k.</p><p>Input: n and k, then n integers nums[1..n].<br>Output: the maximum such subsequence sum.</p></div>
   <div class="section-label">Approach</div>
@@ -1880,7 +1908,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-dp-optimization-techniques-ex1">
-  <h4>Minimum-Cost Checkpoint Jumps (convex hull trick)</h4>
+  <h4>Minimum-Cost Checkpoint Jumps (convex hull trick)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-optimization-techniques-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You must travel through n checkpoints in order, at positions h[1] &lt; h[2] &lt; ... &lt; h[n] (strictly increasing). You must visit checkpoint 1 first and checkpoint n last, but you may skip any subset of the checkpoints in between (i.e., you choose an increasing subsequence of indices starting at 1 and ending at n). Jumping directly from checkpoint j to checkpoint i (j &lt; i) costs (h[i] - h[j])^2 + C, where C is a fixed constant. Find the minimum total cost to go from checkpoint 1 to checkpoint n.</p><p>Input: n and C, then n integers h[1..n] (strictly increasing).<br>Output: the minimum total cost.</p></div>
   <div class="section-label">Approach</div>
@@ -1942,7 +1970,7 @@ rabbit
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n): O(n) elements, each doing O(log n) work for a binary search, Fenwick query, or Fenwick update.</p></div>
   </div>
   <article class="example-card" id="dynamic-programming-dp-combined-with-data-structures-ex0">
-  <h4>Longest Increasing Subsequence in O(n log n) (patience sorting)</h4>
+  <h4>Longest Increasing Subsequence in O(n log n) (patience sorting)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-combined-with-data-structures-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, find the length of the longest strictly increasing subsequence.</p><p>Input: n, then n integers.<br>Output: the length of the longest strictly increasing subsequence.</p></div>
   <div class="section-label">Approach</div>
@@ -1972,7 +2000,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-dp-combined-with-data-structures-ex1">
-  <h4>Longest 2D Staircase Subsequence (Fenwick tree keyed on y)</h4>
+  <h4>Longest 2D Staircase Subsequence (Fenwick tree keyed on y)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-combined-with-data-structures-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n points (x, y) (with possible duplicate x or y values, or even duplicate points), find the maximum number of points that can be chosen, ordered so that x is STRICTLY increasing and y is NON-DECREASING along the chosen order.</p><p>Input: n, then n lines each with two integers x and y.<br>Output: the maximum length of such a chain.</p></div>
   <div class="section-label">Approach</div>
@@ -2042,7 +2070,7 @@ rabbit
 </code></pre>
   </div>
 </article><article class="example-card" id="dynamic-programming-dp-combined-with-data-structures-ex2">
-  <h4>Count All Strictly Increasing Subsequences (Fenwick tree of sums)</h4>
+  <h4>Count All Strictly Increasing Subsequences (Fenwick tree of sums)<button type="button" class="done-checkbox" data-item-id="dynamic-programming-dp-combined-with-data-structures-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, count the total number of strictly increasing subsequences (of any length &gt;= 1), modulo 10^9 + 7. (A single element on its own counts as an increasing subsequence of length 1.)</p><p>Input: n, then n integers.<br>Output: the count modulo 10^9 + 7.</p></div>
   <div class="section-label">Approach</div>
@@ -2098,397 +2126,462 @@ rabbit
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="a simple task codeforces linear/1d dp count the total number of simple cycles (no repeated vertices/edges) in an undirected graph with n &lt;= 19 vertices.">
   <td><a href="https://codeforces.com/problemset/problem/11/D" target="_blank" rel="noopener noreferrer">A Simple Task</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Count the total number of simple cycles (no repeated vertices/edges) in an undirected graph with n &lt;= 19 vertices.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/11/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="elongated matrix codeforces linear/1d dp reorder the n &lt;= 16 rows of an n x m matrix (traversed column-by-column) to maximize the minimum absolute difference between consecutive visited values.">
   <td><a href="https://codeforces.com/problemset/problem/1102/F" target="_blank" rel="noopener noreferrer">Elongated Matrix</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Reorder the n &lt;= 16 rows of an n x m matrix (traversed column-by-column) to maximize the minimum absolute difference between consecutive visited values.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1102/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="increasing subsequence ii cses linear/1d dp count the number of strictly increasing subsequences of an array, counting subsequences with equal values at different positions separately.">
   <td><a href="https://cses.fi/problemset/task/1748" target="_blank" rel="noopener noreferrer">Increasing Subsequence II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Count the number of strictly increasing subsequences of an array, counting subsequences with equal values at different positions separately.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1748" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="russian doll envelopes leetcode linear/1d dp given (width, height) envelope pairs, find the maximum number that can be nested inside each other (both dimensions must strictly increase).">
   <td><a href="https://leetcode.com/problems/russian-doll-envelopes/" target="_blank" rel="noopener noreferrer">Russian Doll Envelopes</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Given (width, height) envelope pairs, find the maximum number that can be nested inside each other (both dimensions must strictly increase).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/russian-doll-envelopes/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum profit in job scheduling leetcode linear/1d dp given jobs with start time, end time, and profit, schedule a non-overlapping subset that maximizes total profit.">
   <td><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" target="_blank" rel="noopener noreferrer">Maximum Profit in Job Scheduling</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">Given jobs with start time, end time, and profit, schedule a non-overlapping subset that maximizes total profit.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="super egg drop leetcode linear/1d dp with k eggs and n floors, find the minimum number of egg-drop trials in the worst case to determine the critical floor.">
   <td><a href="https://leetcode.com/problems/super-egg-drop/" target="_blank" rel="noopener noreferrer">Super Egg Drop</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear/1D DP</td>
   <td class="desc-cell">With k eggs and n floors, find the minimum number of egg-drop trials in the worst case to determine the critical floor.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/super-egg-drop/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="the least round way codeforces 2d grid dp find a top-left to bottom-right path (moving only right/down) through an n x n matrix that minimizes the number of trailing zeros in the product of visited cells, and output the path.">
   <td><a href="https://codeforces.com/problemset/problem/2/B" target="_blank" rel="noopener noreferrer">The least round way</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Find a top-left to bottom-right path (moving only right/down) through an n x n matrix that minimizes the number of trailing zeros in the product of visited cells, and output the path.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/2/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="grid paths i cses 2d grid dp count the number of paths (moving only right/down) from the top-left to bottom-right of an n x n grid (n up to 1000) that avoid trap cells, modulo 1e9+7.">
   <td><a href="https://cses.fi/problemset/task/1638" target="_blank" rel="noopener noreferrer">Grid Paths I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Count the number of paths (moving only right/down) from the top-left to bottom-right of an n x n grid (n up to 1000) that avoid trap cells, modulo 1e9+7.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1638" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="dungeon game leetcode 2d grid dp a knight must traverse a grid of damage/heal values from top-left to bottom-right; find the minimum starting health needed so health never drops to zero.">
   <td><a href="https://leetcode.com/problems/dungeon-game/" target="_blank" rel="noopener noreferrer">Dungeon Game</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">A knight must traverse a grid of damage/heal values from top-left to bottom-right; find the minimum starting health needed so health never drops to zero.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/dungeon-game/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="unique paths iii leetcode 2d grid dp count the number of paths from a start to an end square in a grid with obstacles that visit every non-obstacle square exactly once.">
   <td><a href="https://leetcode.com/problems/unique-paths-iii/" target="_blank" rel="noopener noreferrer">Unique Paths III</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Count the number of paths from a start to an end square in a grid with obstacles that visit every non-obstacle square exactly once.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/unique-paths-iii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="cherry pickup leetcode 2d grid dp starting from the top-left of a grid with cherries and obstacles, go to the bottom-right and back to the top-left, collecting the maximum cherries (each cell&#x27;s cherry collected only once).">
   <td><a href="https://leetcode.com/problems/cherry-pickup/" target="_blank" rel="noopener noreferrer">Cherry Pickup</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Starting from the top-left of a grid with cherries and obstacles, go to the bottom-right and back to the top-left, collecting the maximum cherries (each cell&#x27;s cherry collected only once).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/cherry-pickup/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="cherry pickup ii leetcode 2d grid dp two robots start at the top corners of a grid and move downward simultaneously, collecting the maximum total cherries, sharing cells but each counted once.">
   <td><a href="https://leetcode.com/problems/cherry-pickup-ii/" target="_blank" rel="noopener noreferrer">Cherry Pickup II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">2D Grid DP</td>
   <td class="desc-cell">Two robots start at the top corners of a grid and move downward simultaneously, collecting the maximum total cherries, sharing cells but each counted once.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/cherry-pickup-ii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="round subset codeforces knapsack family choose exactly k numbers from a list of n (n &lt;= 200) to maximize the number of trailing zeros in their product.">
   <td><a href="https://codeforces.com/problemset/problem/837/D" target="_blank" rel="noopener noreferrer">Round Subset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Choose exactly k numbers from a list of n (n &lt;= 200) to maximize the number of trailing zeros in their product.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/837/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="knapsack codeforces knapsack family with 8 item weight-classes (1..8), each available in a huge bounded quantity, and a knapsack capacity up to 1e18, find the maximum total weight that fits.">
   <td><a href="https://codeforces.com/problemset/problem/1132/E" target="_blank" rel="noopener noreferrer">Knapsack</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">With 8 item weight-classes (1..8), each available in a huge bounded quantity, and a knapsack capacity up to 1e18, find the maximum total weight that fits.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1132/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="two sets ii cses knapsack family count the number of ways to partition {1, ..., n} into two sets with equal sum.">
   <td><a href="https://cses.fi/problemset/task/1093" target="_blank" rel="noopener noreferrer">Two Sets II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Count the number of ways to partition {1, ..., n} into two sets with equal sum.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1093" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="elevator rides cses knapsack family given n people (n &lt;= 20) with weights and an elevator weight limit, find the minimum number of elevator rides needed to move everyone up.">
   <td><a href="https://cses.fi/problemset/task/1653" target="_blank" rel="noopener noreferrer">Elevator Rides</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Given n people (n &lt;= 20) with weights and an elevator weight limit, find the minimum number of elevator rides needed to move everyone up.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1653" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="profitable schemes leetcode knapsack family choose a subset of crimes (each with a member cost and a profit) using at most n members total that yields profit at least minprofit; count the number of such schemes.">
   <td><a href="https://leetcode.com/problems/profitable-schemes/" target="_blank" rel="noopener noreferrer">Profitable Schemes</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Choose a subset of crimes (each with a member cost and a profit) using at most n members total that yields profit at least minProfit; count the number of such schemes.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/profitable-schemes/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tallest billboard leetcode knapsack family given steel rod lengths, split them into two groups (welded end-to-end) whose totals are equal, maximizing that common total.">
   <td><a href="https://leetcode.com/problems/tallest-billboard/" target="_blank" rel="noopener noreferrer">Tallest Billboard</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Knapsack family</td>
   <td class="desc-cell">Given steel rod lengths, split them into two groups (welded end-to-end) whose totals are equal, maximizing that common total.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/tallest-billboard/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="coloring brackets codeforces interval dp given a valid bracket sequence, count the ways to color each character red/blue/uncolored so that exactly one bracket of each matched pair is colored and no two adjacent characters share a color.">
   <td><a href="https://codeforces.com/problemset/problem/149/D" target="_blank" rel="noopener noreferrer">Coloring Brackets</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given a valid bracket sequence, count the ways to color each character red/blue/uncolored so that exactly one bracket of each matched pair is colored and no two adjacent characters share a color.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/149/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="zuma codeforces interval dp given a sequence of colored gems (n &lt;= 500), remove contiguous palindromic substrings one at a time to clear the whole sequence in as few operations as possible.">
   <td><a href="https://codeforces.com/problemset/problem/607/B" target="_blank" rel="noopener noreferrer">Zuma</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given a sequence of colored gems (n &lt;= 500), remove contiguous palindromic substrings one at a time to clear the whole sequence in as few operations as possible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/607/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="removal game cses interval dp two players alternately remove the first or last number of a list, each maximizing their own score; compute the first player&#x27;s optimal score.">
   <td><a href="https://cses.fi/problemset/task/1097" target="_blank" rel="noopener noreferrer">Removal Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Two players alternately remove the first or last number of a list, each maximizing their own score; compute the first player&#x27;s optimal score.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1097" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="rectangle cutting cses interval dp given an a x b rectangle, repeatedly cut a rectangle into two integer-sided rectangles until only squares remain; find the minimum number of cuts.">
   <td><a href="https://cses.fi/problemset/task/1744" target="_blank" rel="noopener noreferrer">Rectangle Cutting</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given an a x b rectangle, repeatedly cut a rectangle into two integer-sided rectangles until only squares remain; find the minimum number of cuts.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1744" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="burst balloons leetcode interval dp given n balloons with values, burst them one at a time (gaining left*balloon*right coins) to maximize total coins collected.">
   <td><a href="https://leetcode.com/problems/burst-balloons/" target="_blank" rel="noopener noreferrer">Burst Balloons</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given n balloons with values, burst them one at a time (gaining left*balloon*right coins) to maximize total coins collected.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/burst-balloons/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum cost to merge stones leetcode interval dp given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum merged) until one pile remains; find the minimum total cost, or -1 if impossible.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-merge-stones/" target="_blank" rel="noopener noreferrer">Minimum Cost to Merge Stones</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Interval DP</td>
   <td class="desc-cell">Given piles of stones in a row, merge exactly k consecutive piles into one at a time (cost = sum merged) until one pile remains; find the minimum total cost, or -1 if impossible.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-cost-to-merge-stones/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="regular expression matching leetcode string dp implement regex matching with support for &#x27;.&#x27; (any character) and &#x27;*&#x27; (zero or more of the preceding element) to determine if a pattern matches an entire string.">
   <td><a href="https://leetcode.com/problems/regular-expression-matching/" target="_blank" rel="noopener noreferrer">Regular Expression Matching</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Implement regex matching with support for &#x27;.&#x27; (any character) and &#x27;*&#x27; (zero or more of the preceding element) to determine if a pattern matches an entire string.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/regular-expression-matching/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="wildcard matching leetcode string dp implement wildcard pattern matching with support for &#x27;?&#x27; (any single character) and &#x27;*&#x27; (any sequence, including empty) against an entire input string.">
   <td><a href="https://leetcode.com/problems/wildcard-matching/" target="_blank" rel="noopener noreferrer">Wildcard Matching</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Implement wildcard pattern matching with support for &#x27;?&#x27; (any single character) and &#x27;*&#x27; (any sequence, including empty) against an entire input string.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/wildcard-matching/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="distinct subsequences leetcode string dp count the number of distinct ways string t appears as a subsequence of string s.">
   <td><a href="https://leetcode.com/problems/distinct-subsequences/" target="_blank" rel="noopener noreferrer">Distinct Subsequences</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Count the number of distinct ways string t appears as a subsequence of string s.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/distinct-subsequences/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimum insertion steps to make a string palindrome leetcode string dp find the minimum number of character insertions needed to turn a given string into a palindrome.">
   <td><a href="https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/" target="_blank" rel="noopener noreferrer">Minimum Insertion Steps to Make a String Palindrome</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Find the minimum number of character insertions needed to turn a given string into a palindrome.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="edit distance cses string dp compute the minimum number of single-character insertions, deletions, and replacements to transform one string into another.">
   <td><a href="https://cses.fi/problemset/task/1639" target="_blank" rel="noopener noreferrer">Edit Distance</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (harder end of the Dynamic Programming section)</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Compute the minimum number of single-character insertions, deletions, and replacements to transform one string into another.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1639" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="subsequences (hard version) codeforces string dp given a string of length up to 100 and a target count k (up to 1e12), repeatedly add distinct subsequences to a set at cost (n - length); find the minimum total cost to reach k distinct subsequences.">
   <td><a href="https://codeforces.com/problemset/problem/1183/H" target="_blank" rel="noopener noreferrer">Subsequences (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">String DP</td>
   <td class="desc-cell">Given a string of length up to 100 and a target count k (up to 1e12), repeatedly add distinct subsequences to a set at cost (n - length); find the minimum total cost to reach k distinct subsequences.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1183/H" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="kefa and dishes codeforces bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) choose an ordered sequence of at most m dishes (no repeats) maximizing total satisfaction plus bonuses for specific adjacent-dish pairs.">
   <td><a href="https://codeforces.com/problemset/problem/580/D" target="_blank" rel="noopener noreferrer">Kefa and Dishes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Choose an ordered sequence of at most m dishes (no repeats) maximizing total satisfaction plus bonuses for specific adjacent-dish pairs.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/580/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="vladik and cards codeforces bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) given up to 1000 cards each with a value 1-8, choose the longest subsequence that can be split into 8 non-decreasing subsequences (one per value).">
   <td><a href="https://codeforces.com/problemset/problem/743/E" target="_blank" rel="noopener noreferrer">Vladik and cards</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Given up to 1000 cards each with a value 1-8, choose the longest subsequence that can be split into 8 non-decreasing subsequences (one per value).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/743/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="counting tilings cses bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) count the number of ways to tile an n×m grid completely using 1×2 tiles (horizontal or vertical).">
   <td><a href="https://cses.fi/problemset/task/2181" target="_blank" rel="noopener noreferrer">Counting Tilings</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Count the number of ways to tile an n×m grid completely using 1×2 tiles (horizontal or vertical).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2181" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="elevator rides cses bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) partition n people (each with a weight) into the minimum number of elevator rides, each ride capacity-limited.">
   <td><a href="https://cses.fi/problemset/task/1653" target="_blank" rel="noopener noreferrer">Elevator Rides</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Partition n people (each with a weight) into the minimum number of elevator rides, each ride capacity-limited.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1653" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum students taking exam leetcode bitmask dp (traveling salesman / hamiltonian path style, assignment problem, broken-profile/tiling dp) seat the maximum number of students in a classroom grid with broken seats so no student can see an adjacent-row/diagonal neighbor&#x27;s answers.">
   <td><a href="https://leetcode.com/problems/maximum-students-taking-exam/" target="_blank" rel="noopener noreferrer">Maximum Students Taking Exam</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Bitmask DP (traveling salesman / Hamiltonian path style, assignment problem, broken-profile/tiling DP)</td>
   <td class="desc-cell">Seat the maximum number of students in a classroom grid with broken seats so no student can see an adjacent-row/diagonal neighbor&#x27;s answers.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/maximum-students-taking-exam/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="the fair nut and the best path codeforces tree dp (max independent set on tree, tree diameter via dp, rerooting technique) given a tree with vertex weights, find the maximum weight of a simple path (sum of vertex weights along it).">
   <td><a href="https://codeforces.com/problemset/problem/1083/A" target="_blank" rel="noopener noreferrer">The Fair Nut and the Best Path</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">Given a tree with vertex weights, find the maximum weight of a simple path (sum of vertex weights along it).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1083/A" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="work group codeforces tree dp (max independent set on tree, tree diameter via dp, rerooting technique) on a tree where each employee has a rating, pick a subset of nodes with no supervisor-subordinate pair included, maximizing total rating minus a fixed penalty per chosen member.">
   <td><a href="https://codeforces.com/problemset/problem/533/B" target="_blank" rel="noopener noreferrer">Work Group</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">On a tree where each employee has a rating, pick a subset of nodes with no supervisor-subordinate pair included, maximizing total rating minus a fixed penalty per chosen member.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/533/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tree with maximum cost codeforces tree dp (max independent set on tree, tree diameter via dp, rerooting technique) for every possible choice of root, compute sum over all vertices of (vertex value × distance to root), and output the maximum over all roots.">
   <td><a href="https://codeforces.com/problemset/problem/1092/F" target="_blank" rel="noopener noreferrer">Tree with Maximum Cost</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">For every possible choice of root, compute sum over all vertices of (vertex value × distance to root), and output the maximum over all roots.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1092/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="binary tree cameras leetcode tree dp (max independent set on tree, tree diameter via dp, rerooting technique) place the minimum number of cameras on tree nodes (each covers itself, its parent, and its children) so every node is monitored.">
   <td><a href="https://leetcode.com/problems/binary-tree-cameras/" target="_blank" rel="noopener noreferrer">Binary Tree Cameras</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Tree DP (max independent set on tree, tree diameter via DP, rerooting technique)</td>
   <td class="desc-cell">Place the minimum number of cameras on tree nodes (each covers itself, its parent, and its children) so every node is monitored.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/binary-tree-cameras/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="beautiful numbers codeforces digit dp (counting numbers with a digit property up to n) count integers in [l, r] that are divisible by the sum of their own digits.">
   <td><a href="https://codeforces.com/problemset/problem/55/D" target="_blank" rel="noopener noreferrer">Beautiful numbers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Count integers in [l, r] that are divisible by the sum of their own digits.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/55/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="magic numbers codeforces digit dp (counting numbers with a digit property up to n) count numbers in [l, r] built by concatenating the substrings &quot;1&quot;, &quot;14&quot;, and &quot;144&quot; in some order.">
   <td><a href="https://codeforces.com/problemset/problem/628/D" target="_blank" rel="noopener noreferrer">Magic Numbers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Count numbers in [l, r] built by concatenating the substrings &quot;1&quot;, &quot;14&quot;, and &quot;144&quot; in some order.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/628/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="segment sum codeforces digit dp (counting numbers with a digit property up to n) compute the sum of all integers in [l, r] that contain at most k distinct decimal digits.">
   <td><a href="https://codeforces.com/problemset/problem/1073/E" target="_blank" rel="noopener noreferrer">Segment Sum</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Compute the sum of all integers in [l, r] that contain at most k distinct decimal digits.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1073/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="numbers at most n given digit set leetcode digit dp (counting numbers with a digit property up to n) given a set of allowed digits, count how many positive integers ≤ n can be formed using only those digits (repetition allowed).">
   <td><a href="https://leetcode.com/problems/numbers-at-most-n-given-digit-set/" target="_blank" rel="noopener noreferrer">Numbers At Most N Given Digit Set</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Digit DP (counting numbers with a digit property up to N)</td>
   <td class="desc-cell">Given a set of allowed digits, count how many positive integers ≤ N can be formed using only those digits (repetition allowed).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/numbers-at-most-n-given-digit-set/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="gargari and permutations codeforces dp on dags (longest/shortest path in a dag, counting paths) given k permutations of 1..n, find the longest common subsequence that appears (as a subsequence) in all k permutations simultaneously.">
   <td><a href="https://codeforces.com/problemset/problem/463/D" target="_blank" rel="noopener noreferrer">Gargari and Permutations</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">Given k permutations of 1..n, find the longest common subsequence that appears (as a subsequence) in all k permutations simultaneously.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/463/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="toss a coin to your graph... codeforces dp on dags (longest/shortest path in a dag, counting paths) binary search on a value x, keep only edges whose weight is ≥ x, and find the longest path (in number of edges) achievable in the resulting graph, restricted to a length budget k.">
   <td><a href="https://codeforces.com/problemset/problem/1679/D" target="_blank" rel="noopener noreferrer">Toss a Coin to Your Graph...</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">Binary search on a value x, keep only edges whose weight is ≥ x, and find the longest path (in number of edges) achievable in the resulting graph, restricted to a length budget k.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1679/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="longest increasing path in a matrix leetcode dp on dags (longest/shortest path in a dag, counting paths) find the length of the longest strictly increasing path of adjacent cells in a matrix.">
   <td><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix/" target="_blank" rel="noopener noreferrer">Longest Increasing Path in a Matrix</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">Find the length of the longest strictly increasing path of adjacent cells in a matrix.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/longest-increasing-path-in-a-matrix/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="largest color value in a directed graph leetcode dp on dags (longest/shortest path in a dag, counting paths) in a directed graph where each node has a color, find the largest possible count of any single color along a path, or report that a cycle makes the answer undefined.">
   <td><a href="https://leetcode.com/problems/largest-color-value-in-a-directed-graph/" target="_blank" rel="noopener noreferrer">Largest Color Value in a Directed Graph</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP on DAGs (longest/shortest path in a DAG, counting paths)</td>
   <td class="desc-cell">In a directed graph where each node has a color, find the largest possible count of any single color along a path, or report that a cycle makes the answer undefined.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/largest-color-value-in-a-directed-graph/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="removal game cses game-theory dp (minimax dp, stone/coin games) two players alternately remove a number from either end of an array trying to maximize their own total; both play optimally — find the first player&#x27;s best possible score.">
   <td><a href="https://cses.fi/problemset/task/1097" target="_blank" rel="noopener noreferrer">Removal Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately remove a number from either end of an array trying to maximize their own total; both play optimally — find the first player&#x27;s best possible score.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1097" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="stick game cses game-theory dp (minimax dp, stone/coin games) two players alternately remove sticks from a pile using only a given set of allowed move sizes; determine who wins with optimal play for every pile size up to n.">
   <td><a href="https://cses.fi/problemset/task/1729" target="_blank" rel="noopener noreferrer">Stick Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately remove sticks from a pile using only a given set of allowed move sizes; determine who wins with optimal play for every pile size up to n.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1729" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="letter picking codeforces game-theory dp (minimax dp, stone/coin games) two players alternately remove a letter from either end of a string, each trying to end up with the lexicographically better multiset of removed letters after optimal play from both sides.">
   <td><a href="https://codeforces.com/problemset/problem/1728/D" target="_blank" rel="noopener noreferrer">Letter Picking</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately remove a letter from either end of a string, each trying to end up with the lexicographically better multiset of removed letters after optimal play from both sides.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1728/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="stone game iii leetcode game-theory dp (minimax dp, stone/coin games) two players alternately take 1, 2, or 3 stones from the front of a pile, each trying to maximize their own score; determine who wins (or if it&#x27;s a tie) with optimal play.">
   <td><a href="https://leetcode.com/problems/stone-game-iii/" target="_blank" rel="noopener noreferrer">Stone Game III</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Game-theory DP (minimax DP, stone/coin games)</td>
   <td class="desc-cell">Two players alternately take 1, 2, or 3 stones from the front of a pile, each trying to maximize their own score; determine who wins (or if it&#x27;s a tie) with optimal play.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/stone-game-iii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="fish codeforces probability &amp; expected-value dp n fish (n ≤ 18) swim in a pond; on each step two random fish meet and one eats the other with a given probability — compute, for every fish, the probability it survives to be the last one.">
   <td><a href="https://codeforces.com/problemset/problem/16/E" target="_blank" rel="noopener noreferrer">Fish</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">n fish (n ≤ 18) swim in a pond; on each step two random fish meet and one eats the other with a given probability — compute, for every fish, the probability it survives to be the last one.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/16/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="bad luck island codeforces probability &amp; expected-value dp on an island with rocks, scissors, and paper creatures that randomly meet and eliminate each other rock-paper-scissors style, compute the probability each species survives.">
   <td><a href="https://codeforces.com/problemset/problem/540/D" target="_blank" rel="noopener noreferrer">Bad Luck Island</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">On an island with rocks, scissors, and paper creatures that randomly meet and eliminate each other Rock-Paper-Scissors style, compute the probability each species survives.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/540/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="new year and arbitrary arrangement codeforces probability &amp; expected-value dp given probabilities of typing characters &#x27;a&#x27; or &#x27;b&#x27; at random (and a target k), compute the expected number of occurrences of the substring &quot;ab&quot; in a string built until k copies of &quot;ab&quot; appear (with a length cap).">
   <td><a href="https://codeforces.com/problemset/problem/908/D" target="_blank" rel="noopener noreferrer">New Year and Arbitrary Arrangement</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">Given probabilities of typing characters &#x27;a&#x27; or &#x27;b&#x27; at random (and a target k), compute the expected number of occurrences of the substring &quot;ab&quot; in a string built until k copies of &quot;ab&quot; appear (with a length cap).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/908/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="dice probability cses probability &amp; expected-value dp compute the probability that the sum of n dice rolls (each showing 1..6) lands in a given range [a, b].">
   <td><a href="https://cses.fi/problemset/task/1725" target="_blank" rel="noopener noreferrer">Dice Probability</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">Compute the probability that the sum of n dice rolls (each showing 1..6) lands in a given range [a, b].</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1725" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="inversion probability cses probability &amp; expected-value dp given n elements each independently and uniformly assigned one of two possible values (with per-position choices), compute the expected number of inversions.">
   <td><a href="https://cses.fi/problemset/task/1728" target="_blank" rel="noopener noreferrer">Inversion Probability</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Probability &amp; Expected-Value DP</td>
   <td class="desc-cell">Given n elements each independently and uniformly assigned one of two possible values (with per-position choices), compute the expected number of inversions.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1728" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="ciel and gondolas codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) partition n people standing in a line into exactly k contiguous, non-empty groups to minimize total &quot;unhappiness&quot; (sum over each group of a pairwise-cost function).">
   <td><a href="https://codeforces.com/problemset/problem/321/E" target="_blank" rel="noopener noreferrer">Ciel and Gondolas</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2600</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Partition n people standing in a line into exactly k contiguous, non-empty groups to minimize total &quot;unhappiness&quot; (sum over each group of a pairwise-cost function).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/321/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="yet another minimization problem codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) split an array into exactly k contiguous segments minimizing the sum, over segments, of c(count of each value in the segment, 2).">
   <td><a href="https://codeforces.com/problemset/problem/868/F" target="_blank" rel="noopener noreferrer">Yet Another Minimization Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Split an array into exactly k contiguous segments minimizing the sum, over segments, of C(count of each value in the segment, 2).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/868/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="the bakery codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) split an array of shop types into exactly k contiguous &quot;zones&quot; to maximize the total number of distinct shop types across all zones.">
   <td><a href="https://codeforces.com/problemset/problem/833/B" target="_blank" rel="noopener noreferrer">The Bakery</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Split an array of shop types into exactly k contiguous &quot;zones&quot; to maximize the total number of distinct shop types across all zones.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/833/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="watching fireworks is fun codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) you move along a line of positions over time to maximize happiness gained from fireworks launched at given times/positions/values, with a per-second movement speed limit.">
   <td><a href="https://codeforces.com/problemset/problem/372/C" target="_blank" rel="noopener noreferrer">Watching Fireworks is Fun</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">You move along a line of positions over time to maximize happiness gained from fireworks launched at given times/positions/values, with a per-second movement speed limit.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/372/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="kalila and dimna in the logging industry codeforces dp optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, knuth&#x27;s optimization, convex hull trick) cut down n trees (each requiring a specific axe strength and giving specific value if the previous tree cut used a weaker or equal axe) to maximize total value, minimizing total axe cost.">
   <td><a href="https://codeforces.com/problemset/problem/319/C" target="_blank" rel="noopener noreferrer">Kalila and Dimna in the Logging Industry</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">DP optimization techniques (monotonic deque optimization, divide &amp; conquer optimization, Knuth&#x27;s optimization, convex hull trick)</td>
   <td class="desc-cell">Cut down n trees (each requiring a specific axe strength and giving specific value if the previous tree cut used a weaker or equal axe) to maximize total value, minimizing total axe cost.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/319/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="subsequences codeforces dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) given n points (x, y), find the maximum length of a sequence of points chosen in increasing order of x and non-decreasing order of y (a 2d &quot;staircase&quot; subsequence).">
   <td><a href="https://codeforces.com/problemset/problem/597/C" target="_blank" rel="noopener noreferrer">Subsequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1900</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Given n points (x, y), find the maximum length of a sequence of points chosen in increasing order of x and non-decreasing order of y (a 2D &quot;staircase&quot; subsequence).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/597/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="increasing subsequence ii cses dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) count the number of strictly increasing subsequences ending at each position of an array (not just the longest one).">
   <td><a href="https://cses.fi/problemset/task/1748" target="_blank" rel="noopener noreferrer">Increasing Subsequence II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Count the number of strictly increasing subsequences ending at each position of an array (not just the longest one).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1748" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="russian doll envelopes leetcode dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) given (width, height) pairs of envelopes, find the maximum number that can be nested inside each other (each dimension must strictly increase).">
   <td><a href="https://leetcode.com/problems/russian-doll-envelopes/" target="_blank" rel="noopener noreferrer">Russian Doll Envelopes</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Given (width, height) pairs of envelopes, find the maximum number that can be nested inside each other (each dimension must strictly increase).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/russian-doll-envelopes/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="maximum height by stacking cuboids leetcode dp combined with data structures (e.g. lis in o(n log n), dp + fenwick tree) given cuboid dimensions (each freely rotatable), stack cuboids on top of each other (each dimension of the one on top must be ≤ the one below) to maximize total height.">
   <td><a href="https://leetcode.com/problems/maximum-height-by-stacking-cuboids/" target="_blank" rel="noopener noreferrer">Maximum Height by Stacking Cuboids</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">DP combined with data structures (e.g. LIS in O(n log n), DP + Fenwick tree)</td>
   <td class="desc-cell">Given cuboid dimensions (each freely rotatable), stack cuboids on top of each other (each dimension of the one on top must be ≤ the one below) to maximize total height.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/maximum-height-by-stacking-cuboids/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

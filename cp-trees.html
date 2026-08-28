@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1976,114 +2004,133 @@ YES
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">LCA/Binary Lifting</td>
   <td class="desc-cell">Preprocess a rooted tree so that many &quot;what is the kth ancestor of node u&quot; queries can each be answered quickly.</td>
+  
 </tr><tr data-search="fools and roads codeforces lca/binary lifting given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.">
   <td><a href="https://codeforces.com/problemset/problem/191/C" target="_blank" rel="noopener noreferrer">Fools and Roads</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">LCA/Binary Lifting</td>
   <td class="desc-cell">Given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.</td>
+  
 </tr><tr data-search="distinct colors cses euler tour each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.">
   <td><a href="https://cses.fi/problemset/task/1139" target="_blank" rel="noopener noreferrer">Distinct Colors</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section)</td>
   <td class="subtopic-cell">Euler Tour</td>
   <td class="desc-cell">Each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.</td>
+  
 </tr><tr data-search="vasya and a tree codeforces euler tour process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.">
   <td><a href="https://codeforces.com/problemset/problem/1076/E" target="_blank" rel="noopener noreferrer">Vasya and a Tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Euler Tour</td>
   <td class="desc-cell">Process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.</td>
+  
 </tr><tr data-search="minimal diameter forest codeforces tree diameter given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.">
   <td><a href="https://codeforces.com/problemset/problem/1092/E" target="_blank" rel="noopener noreferrer">Minimal Diameter Forest</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Tree Diameter</td>
   <td class="desc-cell">Given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.</td>
+  
 </tr><tr data-search="path queries ii cses hld (heavy-light decomposition) support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.">
   <td><a href="https://cses.fi/problemset/task/2134" target="_blank" rel="noopener noreferrer">Path Queries II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section, hard version)</td>
   <td class="subtopic-cell">HLD (Heavy-Light Decomposition)</td>
   <td class="desc-cell">Support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.</td>
+  
 </tr><tr data-search="fixed-length paths ii cses centroid decomposition count the number of paths in a tree whose length lies within a given range [a, b].">
   <td><a href="https://cses.fi/problemset/task/2081" target="_blank" rel="noopener noreferrer">Fixed-Length Paths II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section, hard version)</td>
   <td class="subtopic-cell">Centroid Decomposition</td>
   <td class="desc-cell">Count the number of paths in a tree whose length lies within a given range [a, b].</td>
+  
 </tr><tr data-search="xenia and tree codeforces centroid decomposition support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.">
   <td><a href="https://codeforces.com/problemset/problem/342/E" target="_blank" rel="noopener noreferrer">Xenia and Tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">Centroid Decomposition</td>
   <td class="desc-cell">Support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.</td>
+  
 </tr><tr data-search="lomsat gelral codeforces small-to-large merging rooted tree with a color per vertex; for every vertex output the sum of all colors that are &quot;dominant&quot; (most frequent) in its subtree.">
   <td><a href="https://codeforces.com/problemset/problem/600/E" target="_blank" rel="noopener noreferrer">Lomsat gelral</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2300</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">Rooted tree with a color per vertex; for every vertex output the sum of all colors that are &quot;dominant&quot; (most frequent) in its subtree.</td>
+  
 </tr><tr data-search="dominant indices codeforces small-to-large merging for each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.">
   <td><a href="https://codeforces.com/problemset/problem/1009/F" target="_blank" rel="noopener noreferrer">Dominant Indices</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2300</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">For each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.</td>
+  
 </tr><tr data-search="gcd counting codeforces small-to-large merging given a tree with a number on each vertex, find the length of the longest path whose vertices share a gcd greater than 1, for every prime factor.">
   <td><a href="https://codeforces.com/problemset/problem/1101/D" target="_blank" rel="noopener noreferrer">GCD Counting</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2000</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">Given a tree with a number on each vertex, find the length of the longest path whose vertices share a GCD greater than 1, for every prime factor.</td>
+  
 </tr><tr data-search="graph and queries codeforces small-to-large merging process edge-deletion and &quot;find-and-zero-out-max-in-component&quot; queries offline by reversing time (edge additions) and merging component data with a dsu where the smaller structure (e.g. an ordered set) is always merged into the larger.">
   <td><a href="https://codeforces.com/problemset/problem/1416/D" target="_blank" rel="noopener noreferrer">Graph and Queries</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2600</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">Process edge-deletion and &quot;find-and-zero-out-max-in-component&quot; queries offline by reversing time (edge additions) and merging component data with a DSU where the smaller structure (e.g. an ordered set) is always merged into the larger.</td>
+  
 </tr><tr data-search="kingdom and its cities codeforces virtual trees (auxiliary tree) given a tree and repeated small subsets of &quot;capital&quot; vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.">
   <td><a href="https://codeforces.com/problemset/problem/613/D" target="_blank" rel="noopener noreferrer">Kingdom and its Cities</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2800</td>
   <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
   <td class="desc-cell">Given a tree and repeated small subsets of &quot;capital&quot; vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.</td>
+  
 </tr><tr data-search="tourism codeforces virtual trees (auxiliary tree) on a graph built from a tree with extra &quot;back&quot; edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.">
   <td><a href="https://codeforces.com/problemset/problem/1220/E" target="_blank" rel="noopener noreferrer">Tourism</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
   <td class="desc-cell">On a graph built from a tree with extra &quot;back&quot; edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.</td>
+  
 </tr><tr data-search="partial virtual trees codeforces virtual trees (auxiliary tree) count, for every k, the number of ways to repeatedly shrink a vertex set to a proper &quot;partial virtual tree&quot; (an lca-closed subset) exactly k times until only the root remains.">
   <td><a href="https://codeforces.com/problemset/problem/1707/D" target="_blank" rel="noopener noreferrer">Partial Virtual Trees</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 3000</td>
   <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
   <td class="desc-cell">Count, for every k, the number of ways to repeatedly shrink a vertex set to a proper &quot;partial virtual tree&quot; (an LCA-closed subset) exactly k times until only the root remains.</td>
+  
 </tr><tr data-search="tree isomorphism i cses tree isomorphism / canonical form given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.">
   <td><a href="https://cses.fi/problemset/task/1700" target="_blank" rel="noopener noreferrer">Tree Isomorphism I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section)</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.</td>
+  
 </tr><tr data-search="tree isomorphism ii cses tree isomorphism / canonical form same as tree isomorphism i, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.">
   <td><a href="https://cses.fi/problemset/task/1701" target="_blank" rel="noopener noreferrer">Tree Isomorphism II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section)</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Same as Tree Isomorphism I, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.</td>
+  
 </tr><tr data-search="symmetree codeforces tree isomorphism / canonical form determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.">
   <td><a href="https://codeforces.com/problemset/problem/1800/G" target="_blank" rel="noopener noreferrer">Symmetree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.</td>
+  
 </tr><tr data-search="regular forestation codeforces tree isomorphism / canonical form find a vertex whose removal splits a tree into two or more pairwise-isomorphic (&quot;identical&quot;) subtrees, and report the maximum possible number of pieces.">
   <td><a href="https://codeforces.com/problemset/problem/1252/F" target="_blank" rel="noopener noreferrer">Regular Forestation</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Find a vertex whose removal splits a tree into two or more pairwise-isomorphic (&quot;identical&quot;) subtrees, and report the maximum possible number of pieces.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

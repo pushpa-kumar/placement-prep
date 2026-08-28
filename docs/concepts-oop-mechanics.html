@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="virtual-functions-vtables">
-  <h3>Virtual functions &amp; vtables</h3>
+  <h3>Virtual functions &amp; vtables<button type="button" class="done-checkbox" data-item-id="virtual-functions-vtables" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A class with at least one virtual function gets a hidden **vtable**: a per-CLASS static array of function pointers, one slot per virtual function. Every instance of that class then carries a hidden **vptr** (usually the first bytes of the object) pointing to its class&#x27;s vtable. When you call a virtual function through a pointer or reference, the compiler doesn&#x27;t emit a direct call — it emits code that follows the vptr, indexes into the vtable at that function&#x27;s fixed slot, and calls whatever function pointer is sitting there. Which function that turns out to be depends on the object&#x27;s ACTUAL (dynamic) type, not the static type of the pointer/reference you&#x27;re calling through — that&#x27;s the whole mechanism behind runtime polymorphism.</p><p>The cost is real and measurable: an indirect call through a pointer that the CPU can&#x27;t always predict well, plus it blocks the compiler from inlining the call (it doesn&#x27;t statically know which function it is), which cascades into losing other optimizations that inlining would have enabled.</p></div>
   <div class="example-box">
   <div class="ex-title">Tracing exactly what happens at a virtual call site</div>
@@ -302,7 +330,7 @@ printArea(sq); <span class="tok-comment">// shape&#x27;s vptr points at Square&#
   <p class="why-box"><p>Understanding the vptr/vtable mechanism (not just &quot;virtual enables polymorphism&quot;) is what separates a surface-level answer from one that shows you understand the actual performance cost — which is exactly what a low-latency interviewer is listening for.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#pure-virtual-functions-abstract-classes" data-related-href="#pure-virtual-functions-abstract-classes">Pure virtual functions &amp; abstract classes</a><a class="related-tag" href="#virtual-destructors" data-related-href="#virtual-destructors">Virtual destructors</a><a class="related-tag" href="#static-vs-dynamic-binding" data-related-href="#static-vs-dynamic-binding">Static vs dynamic binding</a><a class="related-tag" href="concepts-templates.html#crtp-curiously-recurring-template-pattern" data-related-href="concepts-templates.html#crtp-curiously-recurring-template-pattern">CRTP (Curiously Recurring Template Pattern)</a></div>
 </article><article class="concept-card" id="pure-virtual-functions-abstract-classes">
-  <h3>Pure virtual functions &amp; abstract classes</h3>
+  <h3>Pure virtual functions &amp; abstract classes<button type="button" class="done-checkbox" data-item-id="pure-virtual-functions-abstract-classes" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A pure virtual function — declared with <code>= 0</code> instead of a body — has no implementation in that class, and its presence makes the whole class **abstract**: you cannot instantiate it directly, only through a derived class that provides an override for every pure virtual function it declares. This is C++&#x27;s mechanism for expressing an interface: &quot;any concrete type used this way MUST supply these operations.&quot;</p><p>A subtlety worth knowing: a pure virtual function CAN still have a body (definition) in the base class, which a derived class can explicitly call via qualified name (<code>Base::f()</code>) even though it must still override it to become concrete — useful for providing a default/shared partial implementation that derived classes build on.</p></div>
   <div class="example-box">
   <div class="ex-title">A clean interface via pure virtual functions</div>
@@ -338,7 +366,7 @@ Order o; <span class="tok-comment">// OK: Order is concrete, it overrides the on
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#virtual-destructors" data-related-href="#virtual-destructors">Virtual destructors</a></div>
 </article><article class="concept-card" id="virtual-destructors">
-  <h3>Virtual destructors</h3>
+  <h3>Virtual destructors<button type="button" class="done-checkbox" data-item-id="virtual-destructors" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>If an object might ever be deleted through a pointer to one of its BASE classes, that base&#x27;s destructor must be declared <code>virtual</code>. Without it, <code>delete basePtr;</code> resolves the destructor call statically based on the pointer&#x27;s declared type — it calls ONLY the base class&#x27;s destructor, never the derived class&#x27;s, even if the pointer actually points at a fully-constructed derived object. Any resources the derived part owns (heap memory, file handles, anything with a non-trivial destructor) never get cleaned up. This is undefined behavior per the standard, and in practice manifests as a straightforward resource leak.</p></div>
   <div class="example-box">
   <div class="ex-title">The bug: a non-virtual base destructor</div>
@@ -372,7 +400,7 @@ Base* p = <span class="tok-keyword">new</span> Derived();
   <p class="why-box"><p>One of THE most common &quot;what&#x27;s wrong with this code&quot; C++ interview snippets — if you see a class hierarchy with a <code>delete</code> through a base pointer, checking for a virtual destructor is the first thing to look at.</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#pure-virtual-functions-abstract-classes" data-related-href="#pure-virtual-functions-abstract-classes">Pure virtual functions &amp; abstract classes</a><a class="related-tag" href="concepts-raii-resources.html#smart-pointer-ownership-models" data-related-href="concepts-raii-resources.html#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
 </article><article class="concept-card" id="the-diamond-problem-multiple-inheritance">
-  <h3>The diamond problem &amp; multiple inheritance</h3>
+  <h3>The diamond problem &amp; multiple inheritance<button type="button" class="done-checkbox" data-item-id="the-diamond-problem-multiple-inheritance" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>When a class D inherits from two classes B and C that both inherit from a common base A, D ends up — by default — with TWO separate, independent A subobjects (one via B, one via C). Any attempt to access a member of A through D is ambiguous, because the compiler can&#x27;t tell which copy you mean. C++&#x27;s answer is **virtual inheritance**: if B and C each inherit from A *virtually*, then D ends up with exactly ONE shared A subobject instead of two, resolving the ambiguity — at the cost of a more complex (and slightly slower) object layout, since the location of the shared virtual base now has to be looked up indirectly rather than at a fixed offset.</p></div>
   <div class="example-box">
   <div class="ex-title">The problem: two independent A subobjects</div>
@@ -401,7 +429,7 @@ d.x = <span class="tok-number">5</span>;   <span class="tok-comment">// unambigu
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#static-vs-dynamic-binding" data-related-href="#static-vs-dynamic-binding">Static vs dynamic binding</a></div>
 </article><article class="concept-card" id="static-vs-dynamic-binding">
-  <h3>Static vs dynamic binding</h3>
+  <h3>Static vs dynamic binding<button type="button" class="done-checkbox" data-item-id="static-vs-dynamic-binding" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Static (compile-time) binding decides which function is called based purely on the STATIC type of the expression you&#x27;re calling through — this is how every non-virtual function call and every overload-resolution decision works. Dynamic (runtime) binding decides based on the ACTUAL, runtime type of the object — this is exclusively how virtual function calls, invoked through a base pointer or reference, work. The two can coexist on the very same object in confusing ways, which is exactly what interview snippets exploit.</p></div>
   <div class="example-box">
   <div class="ex-title">Both kinds of binding on the same object, in the same two lines</div>
@@ -430,7 +458,7 @@ d.f();   <span class="tok-comment">// &quot;Derived::f&quot; -- calling directly
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="#function-overloading-vs-overriding-vs-hiding" data-related-href="#function-overloading-vs-overriding-vs-hiding">Function overloading vs overriding vs hiding</a></div>
 </article><article class="concept-card" id="object-slicing">
-  <h3>Object slicing</h3>
+  <h3>Object slicing<button type="button" class="done-checkbox" data-item-id="object-slicing" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Assigning or passing a DERIVED object to a BASE object BY VALUE truncates — &quot;slices&quot; — it: only the Base subobject&#x27;s data gets copied, and anything Derived-specific (extra data members, virtual overrides) is lost, because the destination&#x27;s static type is Base, full stop. This is a copy-semantics problem, and the fix is always the same: pass/store by reference or pointer instead of by value whenever polymorphic behavior matters.</p></div>
   <div class="example-box">
   <div class="ex-title">Slicing in action</div>
@@ -460,7 +488,7 @@ printIt(d); <span class="tok-comment">// now correctly prints &quot;Derived&quot
   <p class="why-box"><p>A frequent &quot;spot the bug&quot; question: showing a function taking a base-class parameter by value and asking why polymorphism &quot;isn&#x27;t working.&quot;</p></p>
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#virtual-functions-vtables" data-related-href="#virtual-functions-vtables">Virtual functions &amp; vtables</a><a class="related-tag" href="concepts-raii-resources.html#smart-pointer-ownership-models" data-related-href="concepts-raii-resources.html#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
 </article><article class="concept-card" id="function-overloading-vs-overriding-vs-hiding">
-  <h3>Function overloading vs overriding vs hiding</h3>
+  <h3>Function overloading vs overriding vs hiding<button type="button" class="done-checkbox" data-item-id="function-overloading-vs-overriding-vs-hiding" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Three different things that all involve &quot;two functions with the same name&quot; but behave completely differently, and mixing them up is a rich source of real bugs, not just interview trivia. **Overloading**: multiple functions with the SAME name but DIFFERENT parameter lists, in the same scope — resolved entirely at compile time by argument types. **Overriding**: a derived class redefines a VIRTUAL function with an IDENTICAL signature to the base&#x27;s — resolved at runtime via the vtable. **Hiding**: a derived class declares ANY function with the same name as something in the base (regardless of signature, regardless of virtual-ness) that is NOT a valid override — and this hides ALL base overloads of that name from ordinary lookup on the derived type, whether or not the derived version&#x27;s signature looks related at all.</p></div>
   <div class="example-box">
   <div class="ex-title">Hiding silently removes access to an entire overload set</div>

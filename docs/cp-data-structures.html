@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Build: O(n) time, O(n) space (O(4n) array-based implementation). Point/range update and range query: O(log n) each (amortized with lazy propagation). Persistent segment tree: O(log n) new nodes and O(log n) time per update, O(n log n) total space across all versions, O(log n) per query. Merge-sort tree: O(n log n) build/space, O(log^2 n) per range-rank query.</p></div>
   </div>
   <article class="example-card" id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex0">
-  <h4>Range Add, Range Sum (Lazy Propagation)</h4>
+  <h4>Range Add, Range Sum (Lazy Propagation)<button type="button" class="done-checkbox" data-item-id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array of n integers (1-indexed) and must process q operations of two kinds:<br>  1 l r v  -- add v to every element in the inclusive range [l, r]<br>  2 l r    -- print the sum of every element in the inclusive range [l, r]<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5, |a_i|, |v| &lt;= 10^9, 1 &lt;= l &lt;= r &lt;= n. Values can exceed a 32-bit range after accumulation, so use 64-bit integers.</p></div>
   <div class="section-label">Approach</div>
@@ -365,7 +393,7 @@ ll query(<span class="tok-keyword">int</span> node, <span class="tok-keyword">in
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex1">
-  <h4>Hotel Assignment (Leftmost Capacity Descent)</h4>
+  <h4>Hotel Assignment (Leftmost Capacity Descent)<button type="button" class="done-checkbox" data-item-id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n hotels in a row, hotel i initially having cap[i] free rooms. You must process q groups in order; group j wants g_j rooms and must be assigned to the leftmost hotel whose current free-room count is &gt;= g_j (that hotel&#x27;s free-room count then decreases by g_j). If no hotel qualifies, output 0 for that group. Otherwise output the 1-indexed hotel number.<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5, 1 &lt;= cap[i], g_j &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -441,7 +469,7 @@ ll query(<span class="tok-keyword">int</span> node, <span class="tok-keyword">in
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex2">
-  <h4>K-th Smallest in a Subarray (Persistent Segment Tree)</h4>
+  <h4>K-th Smallest in a Subarray (Persistent Segment Tree)<button type="button" class="done-checkbox" data-item-id="data-structures-segment-tree-incl-persistent-merge-sort-tree-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a static array of n integers (1-indexed) and q queries (l, r, k), answer for each query: what is the k-th smallest value among a[l], a[l+1], ..., a[r]? Array values may repeat and are not bounded to a small range. Constraints: 1 &lt;= n, q &lt;= 2*10^5, 1 &lt;= k &lt;= r - l + 1.</p></div>
   <div class="section-label">Approach</div>
@@ -542,7 +570,7 @@ ll query(<span class="tok-keyword">int</span> node, <span class="tok-keyword">in
     <div class="callout"><span class="c-label">Complexity</span><p>O(log n) per point update and per prefix/range query; O(n) to build (or O(n log n) via naive repeated insertion); O(n) space. Two-BIT range-update/range-query variant is still O(log n) per operation with double the constant factor.</p></div>
   </div>
   <article class="example-card" id="data-structures-fenwick-tree-binary-indexed-tree-ex0">
-  <h4>Counting Inversions</h4>
+  <h4>Counting Inversions<button type="button" class="done-checkbox" data-item-id="data-structures-fenwick-tree-binary-indexed-tree-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers, count the number of pairs (i, j) with i &lt; j and a[i] &gt; a[j] (the number of inversions). Constraints: 1 &lt;= n &lt;= 2*10^5, values can be arbitrary 32-bit integers (not necessarily distinct or small).</p></div>
   <div class="section-label">Approach</div>
@@ -598,7 +626,7 @@ ll query(<span class="tok-keyword">int</span> i) {
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-fenwick-tree-binary-indexed-tree-ex1">
-  <h4>Range Add, Range Sum via Two Fenwick Trees</h4>
+  <h4>Range Add, Range Sum via Two Fenwick Trees<button type="button" class="done-checkbox" data-item-id="data-structures-fenwick-tree-binary-indexed-tree-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Same task as the segment-tree lazy-propagation example -- an array of n integers with q operations &#x27;1 l r v&#x27; (add v to [l, r]) and &#x27;2 l r&#x27; (sum of [l, r]) -- but this time implement it with Fenwick trees instead of a segment tree, to see the alternative technique. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -670,7 +698,7 @@ ll rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">in
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-fenwick-tree-binary-indexed-tree-ex2">
-  <h4>Dynamic Salary Range Counting</h4>
+  <h4>Dynamic Salary Range Counting<button type="button" class="done-checkbox" data-item-id="data-structures-fenwick-tree-binary-indexed-tree-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A company has n employees, employee k initially earning salary[k] (values up to 10^9, not necessarily distinct). Process q operations:<br>  ! k x  -- set employee k&#x27;s salary to x<br>  ? a b  -- count how many employees currently have salary in [a, b] (inclusive)<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -765,7 +793,7 @@ ll rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">in
     <div class="callout"><span class="c-label">Complexity</span><p>Preprocessing: O(n log n) time and space. Query: O(1) for idempotent operations (min/max/gcd/and/or), O(log n) if you fall back to summing O(log n) disjoint blocks for non-idempotent operations without a disjoint sparse table. No updates supported.</p></div>
   </div>
   <article class="example-card" id="data-structures-sparse-table-ex0">
-  <h4>Static Range Minimum Query</h4>
+  <h4>Static Range Minimum Query<button type="button" class="done-checkbox" data-item-id="data-structures-sparse-table-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers (0-indexed) and q queries, each a pair (l, r) meaning the inclusive 0-indexed range [l, r], output the minimum value in that range for each query. The array never changes. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -815,7 +843,7 @@ ll rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">in
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-sparse-table-ex1">
-  <h4>O(1) LCA via Euler Tour + Sparse Table</h4>
+  <h4>O(1) LCA via Euler Tour + Sparse Table<button type="button" class="done-checkbox" data-item-id="data-structures-sparse-table-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a tree with n nodes (1-indexed, rooted at node 1) and q queries, each a pair (u, v), output the lowest common ancestor of u and v for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -924,7 +952,7 @@ ll rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">in
     <div class="callout"><span class="c-label">Complexity</span><p>O(alpha(n)) amortized per find/union with both union-by-rank and path compression (effectively O(1)); O(n) space. Rollback DSU (union by rank only, no path compression): O(log n) per operation, O(k) to undo k unions.</p></div>
   </div>
   <article class="example-card" id="data-structures-dsu-union-find-ex0">
-  <h4>Minimum Spanning Tree via Kruskal&#x27;s Algorithm</h4>
+  <h4>Minimum Spanning Tree via Kruskal&#x27;s Algorithm<button type="button" class="done-checkbox" data-item-id="data-structures-dsu-union-find-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a connected, undirected, weighted graph with n vertices and m edges, find the total weight of a minimum spanning tree, or report IMPOSSIBLE if the graph is not connected. Constraints: 1 &lt;= n &lt;= 2*10^5, 1 &lt;= m &lt;= 4*10^5, 1 &lt;= weight &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -985,7 +1013,7 @@ ll rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">in
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-dsu-union-find-ex1">
-  <h4>Dynamic Connectivity: Number of Islands II</h4>
+  <h4>Dynamic Connectivity: Number of Islands II<button type="button" class="done-checkbox" data-item-id="data-structures-dsu-union-find-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an initially all-water grid of size rows x cols. You are given k positions (r, c) to convert to land, one at a time, in order (a position may repeat, in which case it&#x27;s a no-op). After each conversion, output the current number of islands (maximal 4-directionally-connected groups of land cells). Constraints: 1 &lt;= rows, cols &lt;= 1000, 1 &lt;= k &lt;= 10^4.</p></div>
   <div class="section-label">Approach</div>
@@ -1055,7 +1083,7 @@ ll rangeSum(<span class="tok-keyword">int</span> l, <span class="tok-keyword">in
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-dsu-union-find-ex2">
-  <h4>Consistency Checking with Parity DSU</h4>
+  <h4>Consistency Checking with Parity DSU<button type="button" class="done-checkbox" data-item-id="data-structures-dsu-union-find-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n people (1-indexed) that will be split into two unknown groups. You receive m statements in order, each of the form (a, b, rel) where rel = 0 means &#x27;a and b are claimed to be in the SAME group&#x27; and rel = 1 means &#x27;a and b are claimed to be in DIFFERENT groups&#x27;. Process statements online: for each one, output YES if it&#x27;s consistent with all previously accepted statements (and incorporate it into your knowledge), or NO if it contradicts them (ignore it, keeping prior knowledge unchanged). Constraints: 1 &lt;= n &lt;= 2*10^5, 1 &lt;= m &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -1130,7 +1158,7 @@ YES
     <div class="callout"><span class="c-label">Complexity</span><p>String trie: O(L) time per insert/search/prefix-query where L is the string&#x27;s length; O(total characters across all stored strings) space in the worst case. Binary/XOR trie: O(B) time per insert/erase/max-xor-query where B is the fixed bit width (e.g. 30); O(n * B) space for n stored values.</p></div>
   </div>
   <article class="example-card" id="data-structures-trie-ex0">
-  <h4>Maximum XOR Multiset with Deletion</h4>
+  <h4>Maximum XOR Multiset with Deletion<button type="button" class="done-checkbox" data-item-id="data-structures-trie-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Maintain a multiset of non-negative integers (initially containing just the value 0) supporting q operations:<br>  + x  -- insert x into the multiset<br>  - x  -- remove one occurrence of x (guaranteed to be present)<br>  ? x  -- output the maximum value of x XOR y over every y currently in the multiset<br>Constraints: 1 &lt;= q &lt;= 2*10^5, 0 &lt;= x &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -1221,7 +1249,7 @@ YES
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-trie-ex1">
-  <h4>Word Search II (Trie + Backtracking)</h4>
+  <h4>Word Search II (Trie + Backtracking)<button type="button" class="done-checkbox" data-item-id="data-structures-trie-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an m x n grid of lowercase letters and a dictionary of words, find every dictionary word that can be formed by a path of horizontally/vertically adjacent grid cells, where no cell is reused within a single word&#x27;s path. Output the matching words (each at most once), space-separated in sorted order. Constraints: 1 &lt;= m, n &lt;= 12, 1 &lt;= number of words &lt;= 3*10^4, word lengths &lt;= 10.</p></div>
   <div class="section-label">Approach</div>
@@ -1323,7 +1351,7 @@ rain
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) total (amortized) for a full left-to-right or right-to-left pass, since each element is pushed and popped at most once; O(n) space for the stack/deque.</p></div>
   </div>
   <article class="example-card" id="data-structures-monotonic-stack-queue-ex0">
-  <h4>Sliding Window Maximum</h4>
+  <h4>Sliding Window Maximum<button type="button" class="done-checkbox" data-item-id="data-structures-monotonic-stack-queue-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n integers and a window size k, output the maximum value in each contiguous window of size k as it slides from the start to the end of the array (there are n - k + 1 such windows). Constraints: 1 &lt;= k &lt;= n &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -1361,7 +1389,7 @@ rain
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-monotonic-stack-queue-ex1">
-  <h4>Largest Rectangle in Histogram</h4>
+  <h4>Largest Rectangle in Histogram<button type="button" class="done-checkbox" data-item-id="data-structures-monotonic-stack-queue-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n non-negative integers representing the heights of histogram bars, each of width 1, find the area of the largest rectangle that can be formed within the histogram&#x27;s outline. Constraints: 1 &lt;= n &lt;= 2*10^5, 0 &lt;= height &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -1411,7 +1439,7 @@ rain
     <div class="callout"><span class="c-label">Complexity</span><p>O(sqrt(n)) time per update and per query (both range updates/rebuilds of one block and range queries touching O(sqrt(n)) full blocks plus O(sqrt(n)) boundary elements); O(n) preprocessing to build the initial blocks; O(n) space for the array plus O(n/B) = O(sqrt(n)) space for block aggregates (more if each block stores a full sorted copy or frequency map of its own elements, which is still O(n) total across all blocks).</p></div>
   </div>
   <article class="example-card" id="data-structures-sqrt-decomposition-ex0">
-  <h4>Range Add, Range Sum via Block-Level Lazy Propagation</h4>
+  <h4>Range Add, Range Sum via Block-Level Lazy Propagation<button type="button" class="done-checkbox" data-item-id="data-structures-sqrt-decomposition-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array of n integers a[1..n]. You must process q operations of two kinds:<br>  &quot;1 l r v&quot; -- add v to every element a[l], a[l+1], ..., a[r] (1 &lt;= l &lt;= r &lt;= n).<br>  &quot;2 l r&quot; -- output the sum a[l] + a[l+1] + ... + a[r].<br>Constraints for this worked example: 1 &lt;= n &lt;= 16, 1 &lt;= q &lt;= 30, values and v fit in standard 64-bit range (use long long for sums).</p><p>Input: first line n, second line the n integers a[1..n], third line q, then q lines each describing one operation in the format above.<br>Output: for each type-2 operation, print the requested sum on its own line.</p></div>
   <div class="section-label">Approach</div>
@@ -1502,7 +1530,7 @@ rain
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-sqrt-decomposition-ex1">
-  <h4>Cyclic Range Rotation With Frequency Queries (blocks of deques + frequency maps)</h4>
+  <h4>Cyclic Range Rotation With Frequency Queries (blocks of deques + frequency maps)<button type="button" class="done-checkbox" data-item-id="data-structures-sqrt-decomposition-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array of n integers a[1..n]. You must process q operations of two kinds:<br>  &quot;1 l r&quot; -- cyclically rotate the subarray a[l..r] to the right by one position: the element currently at position r moves to position l, and every other element in [l, r] shifts one position to the right (elements outside [l, r] are unaffected).<br>  &quot;2 l r x&quot; -- output how many elements equal to x appear among a[l..r].<br>Constraints for this worked example: 1 &lt;= n &lt;= 10, 1 &lt;= q &lt;= 10, so the whole process can be hand-verified. (This is a scaled-down version of the block-decomposition technique used on Codeforces 455D &#x27;Serega and Fun&#x27;, which handles n and q up to 10^5 by keeping each block&#x27;s contents in a deque so that whole-block rotations cost O(1) per block via push_front/pop_back.)</p><p>Input: first line n, second line the n integers a[1..n], third line q, then q lines each describing one operation in the format above.<br>Output: for each type-2 operation, print the requested count on its own line.</p></div>
   <div class="section-label">Approach</div>
@@ -1612,7 +1640,7 @@ rain
     <div class="callout"><span class="c-label">Complexity</span><p>O((n + q) * sqrt(n)) time for standard Mo&#x27;s algorithm with block size ~ n/sqrt(q) (each add/remove call assumed O(1); multiply by the add/remove cost if it is O(log n) instead), plus O(n log n) or O(q log q) for the initial sort of queries; O(n + q + V) space for the array, queries, and a frequency table of size V (the value range). Mo&#x27;s algorithm with updates costs roughly O(n^(5/3)) time with a block size tuned to n^(2/3). Mo&#x27;s on trees costs the same O((n+q) * sqrt(n)) as the flat-array version, plus an O(n) one-time Euler tour to flatten the tree.</p></div>
   </div>
   <article class="example-card" id="data-structures-mo-s-algorithm-ex0">
-  <h4>Distinct Values Queries (CSES 1734)</h4>
+  <h4>Distinct Values Queries (CSES 1734)<button type="button" class="done-checkbox" data-item-id="data-structures-mo-s-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array of n integers (1 &lt;= n &lt;= 2*10^5) and q queries (1 &lt;= q &lt;= 2*10^5). Each query gives two indices a and b (1 &lt;= a &lt;= b &lt;= n, 1-indexed) and asks: how many DISTINCT values occur in the subarray from index a to index b, inclusive? Process all queries and print one answer per line, in the same order the queries were given.</p><p>Input: the first line has n and q. The second line has n integers, the array values (1 &lt;= value &lt;= 10^9, but for this worked example values are kept small). Then q lines follow, each with two integers a and b describing one query.<br>Output: q lines, the i-th line giving the number of distinct values in the i-th query&#x27;s range.</p></div>
   <div class="section-label">Approach</div>
@@ -1689,7 +1717,7 @@ rain
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-mo-s-algorithm-ex1">
-  <h4>XOR and Favorite Number (Codeforces 617E)</h4>
+  <h4>XOR and Favorite Number (Codeforces 617E)<button type="button" class="done-checkbox" data-item-id="data-structures-mo-s-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array a of n integers (1 &lt;= n &lt;= 10^5, 0 &lt;= a[i] &lt; 2^20) and an integer k (0 &lt;= k &lt; 2^20). You must answer q queries (1 &lt;= q &lt;= 10^5); each query gives l and r (1 &lt;= l &lt;= r &lt;= n, 1-indexed) and asks: how many pairs of indices (i, j) with l &lt;= i &lt;= j &lt;= r have a[i] xor a[i+1] xor ... xor a[j] equal to k? (Pairs are unordered by choice of i&lt;=j, and i == j, i.e. a single-element subarray, is allowed.)</p><p>Input: the first line has n, q, and k. The second line has the n array values. Then q lines follow, each with l and r.<br>Output: q lines, the i-th line giving the count of valid subarrays for the i-th query.</p></div>
   <div class="section-label">Approach</div>
@@ -1783,7 +1811,7 @@ rain
     <div class="callout"><span class="c-label">Complexity</span><p>Point update and rectangle query: O(log n * log m) per operation, O(n*m) space, for the basic 2D BIT. Range (rectangle) update with range (rectangle) query: O(log n * log m) per operation (a constant number, 4 or 16, of point BIT operations per call), O(n*m) space across the 4 BITs. Coordinate compression keeps the same time complexity but shrinks space to O(k_x * k_y) where k_x, k_y are the counts of distinct compressed coordinates.</p></div>
   </div>
   <article class="example-card" id="data-structures-2d-fenwick-tree-range-queries-ex0">
-  <h4>Forest Queries II (point update, rectangle sum -- basic 2D Fenwick tree)</h4>
+  <h4>Forest Queries II (point update, rectangle sum -- basic 2D Fenwick tree)<button type="button" class="done-checkbox" data-item-id="data-structures-2d-fenwick-tree-range-queries-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an n x n grid (1 &lt;= n &lt;= 8 for this worked example; the underlying technique scales to n up to 1000 and beyond with coordinate compression or a larger BIT). Each cell either contains a tree (&#x27;*&#x27;) or is empty (&#x27;.&#x27;). You must process q operations of two types:<br>  &quot;1 y x&quot; -- toggle cell (y, x): if it currently has a tree, remove it; if it is currently empty, plant one there.<br>  &quot;2 y1 x1 y2 x2&quot; -- count how many trees lie within the rectangle spanning rows y1..y2 and columns x1..x2 inclusive (1 &lt;= y1 &lt;= y2 &lt;= n, 1 &lt;= x1 &lt;= x2 &lt;= n), and print that count.<br>All coordinates are 1-indexed. Print the answer to every type-2 operation on its own line, in order.</p><p>Input: n and q on the first line; then n lines, each a string of n characters (&#x27;*&#x27; or &#x27;.&#x27;) describing the initial grid; then q lines, each describing one operation as above.<br>Output: one line per type-2 (query) operation, containing the tree count in that rectangle.</p></div>
   <div class="section-label">Approach</div>
@@ -1876,7 +1904,7 @@ rain
 </code></pre>
   </div>
 </article><article class="example-card" id="data-structures-2d-fenwick-tree-range-queries-ex1">
-  <h4>Iahub and Xors (rectangle XOR update, rectangle XOR query -- four-BIT parity trick)</h4>
+  <h4>Iahub and Xors (rectangle XOR update, rectangle XOR query -- four-BIT parity trick)<button type="button" class="done-checkbox" data-item-id="data-structures-2d-fenwick-tree-range-queries-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an n x n matrix (1 &lt;= n &lt;= 6 for this worked example; the technique scales to n up to 1000 as in the original Codeforces 341D) of integers, all initially 0. You must process q operations of two types, each specifying a rectangle by its opposite corners (x1,y1) and (x2,y2) with 1 &lt;= x1 &lt;= x2 &lt;= n, 1 &lt;= y1 &lt;= y2 &lt;= n:<br>  &quot;1 x1 y1 x2 y2 v&quot; -- XOR every cell (x,y) with x1&lt;=x&lt;=x2, y1&lt;=y&lt;=y2 with the value v (0 &lt;= v &lt;= 10^6).<br>  &quot;2 x1 y1 x2 y2&quot; -- report the XOR of every cell in that same rectangle (i.e. cell(x1,y1) xor cell(x1,y1+1) xor ... xor cell(x2,y2)), printed on its own line.<br>Process operations in input order; each type-2 operation&#x27;s answer must reflect all type-1 operations that came before it.</p><p>Input: n and q on the first line, then q lines each formatted as above.<br>Output: one line per type-2 operation with the requested XOR value.</p></div>
   <div class="section-label">Approach</div>
@@ -1983,163 +2011,189 @@ BIT2D bitTree[<span class="tok-number">2</span>][<span class="tok-number">2</spa
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="new year tree codeforces segment tree (lazy propagation with bitmask trick) on a rooted tree, repaint an entire subtree with a color or answer how many distinct colors appear in a subtree.">
   <td><a href="https://codeforces.com/problemset/problem/620/E" target="_blank" rel="noopener noreferrer">New Year Tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Segment Tree (lazy propagation with bitmask trick)</td>
   <td class="desc-cell">On a rooted tree, repaint an entire subtree with a color or answer how many distinct colors appear in a subtree.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/620/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="hotel queries cses segment tree (descent / binary search on tree) given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.">
   <td><a href="https://cses.fi/problemset/task/1143" target="_blank" rel="noopener noreferrer">Hotel Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Range Queries, harder set)</td>
   <td class="subtopic-cell">Segment Tree (descent / binary search on tree)</td>
   <td class="desc-cell">Given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1143" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="one occurrence codeforces persistent segment tree for each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.">
   <td><a href="https://codeforces.com/problemset/problem/1000/F" target="_blank" rel="noopener noreferrer">One Occurrence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">Persistent Segment Tree</td>
   <td class="desc-cell">For each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1000/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="count of smaller numbers after self leetcode merge-sort tree / offline order-statistics counting for every index i, count how many elements to its right are strictly smaller than nums[i].">
   <td><a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/" target="_blank" rel="noopener noreferrer">Count of Smaller Numbers After Self</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge-sort Tree / offline order-statistics counting</td>
   <td class="desc-cell">For every index i, count how many elements to its right are strictly smaller than nums[i].</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/count-of-smaller-numbers-after-self/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="salary queries cses fenwick tree / bit (point update, range count with coordinate compression) support raising/lowering an employee&#x27;s salary and counting how many employees currently have a salary within a given range.">
   <td><a href="https://cses.fi/problemset/task/1144" target="_blank" rel="noopener noreferrer">Salary Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Range Queries, harder set)</td>
   <td class="subtopic-cell">Fenwick Tree / BIT (point update, range count with coordinate compression)</td>
   <td class="desc-cell">Support raising/lowering an employee&#x27;s salary and counting how many employees currently have a salary within a given range.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1144" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="mishka and interesting sum codeforces fenwick tree / bit (offline queries) for each range [l, r], compute the xor of all values that occur an even number of times within that range.">
   <td><a href="https://codeforces.com/problemset/problem/703/D" target="_blank" rel="noopener noreferrer">Mishka and Interesting Sum</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Fenwick Tree / BIT (offline queries)</td>
   <td class="desc-cell">For each range [l, r], compute the XOR of all values that occur an even number of times within that range.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/703/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="friends and subsequences codeforces sparse table (rmq) given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.">
   <td><a href="https://codeforces.com/problemset/problem/689/D" target="_blank" rel="noopener noreferrer">Friends and Subsequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Sparse Table (RMQ)</td>
   <td class="desc-cell">Given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/689/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="envy codeforces dsu / union-find (offline, grouped by weight) given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.">
   <td><a href="https://codeforces.com/problemset/problem/891/C" target="_blank" rel="noopener noreferrer">Envy</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">DSU / Union-Find (offline, grouped by weight)</td>
   <td class="desc-cell">Given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/891/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="word search ii leetcode trie + backtracking given a 2d board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.">
   <td><a href="https://leetcode.com/problems/word-search-ii/" target="_blank" rel="noopener noreferrer">Word Search II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Trie + backtracking</td>
   <td class="desc-cell">Given a 2D board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/word-search-ii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="vasiliy&#x27;s multiset codeforces trie (binary/xor trie) maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum xor of x with any element currently in the multiset.&quot;">
   <td><a href="https://codeforces.com/problemset/problem/706/D" target="_blank" rel="noopener noreferrer">Vasiliy&#x27;s Multiset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Trie (binary/XOR trie)</td>
   <td class="desc-cell">Maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum XOR of x with any element currently in the multiset.&quot;</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/706/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="sliding window maximum leetcode monotonic queue given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.">
   <td><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">Sliding Window Maximum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Monotonic Queue</td>
   <td class="desc-cell">Given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/sliding-window-maximum/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="gukiz and gukiziana codeforces sqrt decomposition on an array, support &quot;add a value to every element in a range&quot; and &quot;find the leftmost/rightmost index whose value equals v&quot; queries.">
   <td><a href="https://codeforces.com/problemset/problem/551/E" target="_blank" rel="noopener noreferrer">GukiZ and GukiZiana</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">On an array, support &quot;add a value to every element in a range&quot; and &quot;find the leftmost/rightmost index whose value equals v&quot; queries.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/551/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="anton and permutation codeforces sqrt decomposition maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.">
   <td><a href="https://codeforces.com/problemset/problem/785/E" target="_blank" rel="noopener noreferrer">Anton and Permutation</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/785/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="serega and fun codeforces sqrt decomposition support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.">
   <td><a href="https://codeforces.com/problemset/problem/455/D" target="_blank" rel="noopener noreferrer">Serega and Fun</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2700</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/455/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="holes codeforces sqrt decomposition each position on a line has a &quot;power&quot; that launches a ball forward by that amount; support updating a position&#x27;s power and querying how many jumps and how far a ball launched from a position travels before leaving the row.">
   <td><a href="https://codeforces.com/problemset/problem/13/E" target="_blank" rel="noopener noreferrer">Holes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2700</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Each position on a line has a &quot;power&quot; that launches a ball forward by that amount; support updating a position&#x27;s power and querying how many jumps and how far a ball launched from a position travels before leaving the row.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/13/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="yet another array queries problem codeforces sqrt decomposition apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.">
   <td><a href="https://codeforces.com/problemset/problem/863/D" target="_blank" rel="noopener noreferrer">Yet Another Array Queries Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 1800</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/863/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="falling squares leetcode sqrt decomposition drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.">
   <td><a href="https://leetcode.com/problems/falling-squares/" target="_blank" rel="noopener noreferrer">Falling Squares</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/falling-squares/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="powerful array codeforces mo&#x27;s algorithm for repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.">
   <td><a href="https://codeforces.com/problemset/problem/86/D" target="_blank" rel="noopener noreferrer">Powerful array</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">For repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/86/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="xor and favorite number codeforces mo&#x27;s algorithm for repeated range queries, count the number of subarray pairs (i, j) within the range whose xor of elements equals a fixed favorite number k.">
   <td><a href="https://codeforces.com/problemset/problem/617/E" target="_blank" rel="noopener noreferrer">XOR and Favorite Number</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">For repeated range queries, count the number of subarray pairs (i, j) within the range whose XOR of elements equals a fixed favorite number k.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/617/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="machine learning codeforces mo&#x27;s algorithm support point updates to an array along with range queries asking for the mex of the multiset of frequencies of values appearing in the range.">
   <td><a href="https://codeforces.com/problemset/problem/940/F" target="_blank" rel="noopener noreferrer">Machine Learning</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2600</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">Support point updates to an array along with range queries asking for the Mex of the multiset of frequencies of values appearing in the range.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/940/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tree and queries codeforces mo&#x27;s algorithm given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.">
   <td><a href="https://codeforces.com/problemset/problem/375/D" target="_blank" rel="noopener noreferrer">Tree and Queries</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">Given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/375/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="distinct values queries cses mo&#x27;s algorithm answer offline queries asking for the number of distinct values in a given subarray range.">
   <td><a href="https://cses.fi/problemset/task/1734" target="_blank" rel="noopener noreferrer">Distinct Values Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Range Queries section)</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">Answer offline queries asking for the number of distinct values in a given subarray range.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1734" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="forest queries ii cses 2d fenwick tree / 2d range queries on an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.">
   <td><a href="https://cses.fi/problemset/task/1739" target="_blank" rel="noopener noreferrer">Forest Queries II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Advanced Techniques section)</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">On an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1739" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="the untended antiquity codeforces 2d fenwick tree / 2d range queries on a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.">
   <td><a href="https://codeforces.com/problemset/problem/869/E" target="_blank" rel="noopener noreferrer">The Untended Antiquity</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">On a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/869/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="iahub and xors codeforces 2d fenwick tree / 2d range queries support 2d rectangle-xor updates and 2d rectangle-xor queries on an n x n matrix, both online.">
   <td><a href="https://codeforces.com/problemset/problem/341/D" target="_blank" rel="noopener noreferrer">Iahub and Xors</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2500</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">Support 2D rectangle-XOR updates and 2D rectangle-XOR queries on an n x n matrix, both online.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/341/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="ball codeforces 2d fenwick tree / 2d range queries given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.">
   <td><a href="https://codeforces.com/problemset/problem/12/D" target="_blank" rel="noopener noreferrer">Ball</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">Given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/12/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

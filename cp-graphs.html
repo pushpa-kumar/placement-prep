@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1864,210 +1892,245 @@ JFK C
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Dijkstra</td>
   <td class="desc-cell">Given required shortest-path distances from a source to two special vertices, and a graph with some fixed edge weights and some edges of unknown weight, assign positive integer weights to the unknown edges so Dijkstra&#x27;s shortest distances match the targets exactly (or report impossible).</td>
+  
 </tr><tr data-search="high score cses bellman-ford find the maximum possible total score of a path from node 1 to node n in a weighted directed graph, or report that the score is unbounded because of a reachable-and-escapable positive cycle.">
   <td><a href="https://cses.fi/problemset/task/1673" target="_blank" rel="noopener noreferrer">High Score</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Graph Algorithms section)</td>
   <td class="subtopic-cell">Bellman-Ford</td>
   <td class="desc-cell">Find the maximum possible total score of a path from node 1 to node n in a weighted directed graph, or report that the score is unbounded because of a reachable-and-escapable positive cycle.</td>
+  
 </tr><tr data-search="minimum path codeforces floyd-warshall given a weighted graph, you may halve the weight of at most one edge; find the minimum possible distance between two fixed vertices s and t after the change.">
   <td><a href="https://codeforces.com/problemset/problem/1473/E" target="_blank" rel="noopener noreferrer">Minimum Path</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">Floyd-Warshall</td>
   <td class="desc-cell">Given a weighted graph, you may halve the weight of at most one edge; find the minimum possible distance between two fixed vertices s and t after the change.</td>
+  
 </tr><tr data-search="minimum spanning tree for each edge codeforces mst (kruskal, hard variant) for every edge of a weighted graph, compute the minimum total weight of a spanning tree that is forced to include that specific edge.">
   <td><a href="https://codeforces.com/problemset/problem/609/E" target="_blank" rel="noopener noreferrer">Minimum spanning tree for each edge</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">MST (Kruskal, hard variant)</td>
   <td class="desc-cell">For every edge of a weighted graph, compute the minimum total weight of a spanning tree that is forced to include that specific edge.</td>
+  
 </tr><tr data-search="coloring edges codeforces topological sort color the edges of a directed graph with as few colors as possible so that no cycle is monochromatic.">
   <td><a href="https://codeforces.com/problemset/problem/1217/D" target="_blank" rel="noopener noreferrer">Coloring Edges</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Topological Sort</td>
   <td class="desc-cell">Color the edges of a directed graph with as few colors as possible so that no cycle is monochromatic.</td>
+  
 </tr><tr data-search="reachability from the capital codeforces scc (tarjan/kosaraju) given a directed graph and a capital city, find the minimum number of new roads to add so every city is reachable from the capital.">
   <td><a href="https://codeforces.com/problemset/problem/999/E" target="_blank" rel="noopener noreferrer">Reachability from the Capital</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">SCC (Tarjan/Kosaraju)</td>
   <td class="desc-cell">Given a directed graph and a capital city, find the minimum number of new roads to add so every city is reachable from the capital.</td>
+  
 </tr><tr data-search="critical connections in a network leetcode bridges/articulation points given an undirected connected network of servers, find every connection (edge) whose removal would disconnect the network.">
   <td><a href="https://leetcode.com/problems/critical-connections-in-a-network/" target="_blank" rel="noopener noreferrer">Critical Connections in a Network</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Bridges/Articulation Points</td>
   <td class="desc-cell">Given an undirected connected network of servers, find every connection (edge) whose removal would disconnect the network.</td>
+  
 </tr><tr data-search="graph without long directed paths codeforces bipartite check orient every edge of an undirected graph so that the resulting directed graph contains no directed path of two or more edges, or determine this is impossible.">
   <td><a href="https://codeforces.com/problemset/problem/1144/F" target="_blank" rel="noopener noreferrer">Graph Without Long Directed Paths</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Bipartite Check</td>
   <td class="desc-cell">Orient every edge of an undirected graph so that the resulting directed graph contains no directed path of two or more edges, or determine this is impossible.</td>
+  
 </tr><tr data-search="two sets codeforces 2-sat split n integers into two groups such that the sum of no group contains a perfect square (each pair with a square sum must go into different groups) — reduce pairwise constraints to 2-sat clauses.">
   <td><a href="https://codeforces.com/problemset/problem/468/B" target="_blank" rel="noopener noreferrer">Two Sets</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Split n integers into two groups such that the sum of no group contains a perfect square (each pair with a square sum must go into different groups) — reduce pairwise constraints to 2-SAT clauses.</td>
+  
 </tr><tr data-search="the door problem codeforces 2-sat each door is controlled by exactly two switches (or one, toggling on its own); determine an assignment of switch states so all doors end up in the desired open/closed state.">
   <td><a href="https://codeforces.com/problemset/problem/776/D" target="_blank" rel="noopener noreferrer">The Door Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Each door is controlled by exactly two switches (or one, toggling on its own); determine an assignment of switch states so all doors end up in the desired open/closed state.</td>
+  
 </tr><tr data-search="±1 codeforces 2-sat assign +1 or -1 to each of n numbers so that a set of prefix/segment-sum constraints are all satisfied.">
   <td><a href="https://codeforces.com/problemset/problem/1971/H" target="_blank" rel="noopener noreferrer">±1</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Assign +1 or -1 to each of n numbers so that a set of prefix/segment-sum constraints are all satisfied.</td>
+  
 </tr><tr data-search="radio stations codeforces 2-sat given n radio stations with frequency and power, and m pairs that must not interfere, decide the maximum interference threshold and find a valid subset — solved with 2-sat + binary search + clever edge construction (segment tree / sorted-pointer optimization) to keep the implication graph near-linear.">
   <td><a href="https://codeforces.com/problemset/problem/1215/F" target="_blank" rel="noopener noreferrer">Radio Stations</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2700</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">Given n radio stations with frequency and power, and m pairs that must not interfere, decide the maximum interference threshold and find a valid subset — solved with 2-SAT + binary search + clever edge construction (segment tree / sorted-pointer optimization) to keep the implication graph near-linear.</td>
+  
 </tr><tr data-search="giant pizza cses 2-sat n people each give a preference (+ or -) for m pizza toppings; find an assignment of each topping (yes/no) satisfying at least one preference per person, or report impossible.">
   <td><a href="https://cses.fi/problemset/task/1684" target="_blank" rel="noopener noreferrer">Giant Pizza</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (2-SAT category)</td>
   <td class="subtopic-cell">2-SAT</td>
   <td class="desc-cell">n people each give a preference (+ or -) for m pizza toppings; find an assignment of each topping (yes/no) satisfying at least one preference per person, or report impossible.</td>
+  
 </tr><tr data-search="mail delivery cses euler path / euler circuit given a connected graph (with possible multi-edges/self-loops), find a route that starts and ends at node 1 and uses every edge exactly once, or report it&#x27;s impossible.">
   <td><a href="https://cses.fi/problemset/task/1691" target="_blank" rel="noopener noreferrer">Mail Delivery</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Euler circuit category)</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Given a connected graph (with possible multi-edges/self-loops), find a route that starts and ends at node 1 and uses every edge exactly once, or report it&#x27;s impossible.</td>
+  
 </tr><tr data-search="bertown roads codeforces euler path / euler circuit given a connected undirected road network, orient every road (make it one-way) so the resulting directed graph is still strongly connected, or report it&#x27;s impossible.">
   <td><a href="https://codeforces.com/problemset/problem/118/E" target="_blank" rel="noopener noreferrer">Bertown roads</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Given a connected undirected road network, orient every road (make it one-way) so the resulting directed graph is still strongly connected, or report it&#x27;s impossible.</td>
+  
 </tr><tr data-search="tanya and password codeforces euler path / euler circuit given n three-letter strings, arrange (a subset covering all of them, each exactly once) into one long string so consecutive substrings overlap by two characters — equivalent to finding an euler path in a de bruijn-style graph over bigrams.">
   <td><a href="https://codeforces.com/problemset/problem/508/D" target="_blank" rel="noopener noreferrer">Tanya and Password</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2500</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Given n three-letter strings, arrange (a subset covering all of them, each exactly once) into one long string so consecutive substrings overlap by two characters — equivalent to finding an Euler path in a de Bruijn-style graph over bigrams.</td>
+  
 </tr><tr data-search="trails and glades codeforces euler path / euler circuit find the minimum number of new trails (edges) to add to a multigraph so that an euler circuit starting and ending at node 1 exists.">
   <td><a href="https://codeforces.com/problemset/problem/209/C" target="_blank" rel="noopener noreferrer">Trails and Glades</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Find the minimum number of new trails (edges) to add to a multigraph so that an Euler circuit starting and ending at node 1 exists.</td>
+  
 </tr><tr data-search="wizard&#x27;s tour codeforces euler path / euler circuit maximize the number of length-2 &quot;episodes&quot; (x→y→z walks) that together use every edge of an undirected graph at most once.">
   <td><a href="https://codeforces.com/problemset/problem/858/F" target="_blank" rel="noopener noreferrer">Wizard&#x27;s Tour</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2300</td>
   <td class="subtopic-cell">Euler Path / Euler Circuit</td>
   <td class="desc-cell">Maximize the number of length-2 &quot;episodes&quot; (x→y→z walks) that together use every edge of an undirected graph at most once.</td>
+  
 </tr><tr data-search="okabe and city codeforces 0/1 bfs on a grid where only k cells are lit, find the minimum number of times you must &quot;light up&quot; a whole row or column (cost 1) to walk from the top-left to the bottom-right cell, versus free moves between already-lit adjacent cells (cost 0).">
   <td><a href="https://codeforces.com/problemset/problem/821/D" target="_blank" rel="noopener noreferrer">Okabe and City</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">On a grid where only k cells are lit, find the minimum number of times you must &quot;light up&quot; a whole row or column (cost 1) to walk from the top-left to the bottom-right cell, versus free moves between already-lit adjacent cells (cost 0).</td>
+  
 </tr><tr data-search="cactus wall codeforces 0/1 bfs on an n×m grid with some cactus cells already placed (no two adjacent), plant the minimum number of new non-adjacent cacti so no side-adjacent empty-cell path connects the top row to the bottom row.">
   <td><a href="https://codeforces.com/problemset/problem/1749/E" target="_blank" rel="noopener noreferrer">Cactus Wall</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">On an n×m grid with some cactus cells already placed (no two adjacent), plant the minimum number of new non-adjacent cacti so no side-adjacent empty-cell path connects the top row to the bottom row.</td>
+  
 </tr><tr data-search="flights codeforces 0/1 bfs in a dag from city 1 to city n, assign each edge a duration of 1 or 2 hours so every root-to-sink path has the exact same total duration.">
   <td><a href="https://codeforces.com/problemset/problem/241/E" target="_blank" rel="noopener noreferrer">Flights</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2600</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">In a DAG from city 1 to city n, assign each edge a duration of 1 or 2 hours so every root-to-sink path has the exact same total duration.</td>
+  
 </tr><tr data-search="minimum cost to make at least one valid path in a grid leetcode 0/1 bfs each grid cell has a mandatory direction arrow; moving along the arrow costs 0, changing the direction of a cell (to move any other way) costs 1 — find the minimum cost path from top-left to bottom-right.">
   <td><a href="https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/" target="_blank" rel="noopener noreferrer">Minimum Cost to Make at Least One Valid Path in a Grid</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">Each grid cell has a mandatory direction arrow; moving along the arrow costs 0, changing the direction of a cell (to move any other way) costs 1 — find the minimum cost path from top-left to bottom-right.</td>
+  
 </tr><tr data-search="minimum obstacle removal to reach corner leetcode 0/1 bfs on a grid with 0 (free) and 1 (obstacle) cells, find the minimum number of obstacles to remove to travel from top-left to bottom-right.">
   <td><a href="https://leetcode.com/problems/minimum-obstacle-removal-to-reach-corner/" target="_blank" rel="noopener noreferrer">Minimum Obstacle Removal to Reach Corner</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">0/1 BFS</td>
   <td class="desc-cell">On a grid with 0 (free) and 1 (obstacle) cells, find the minimum number of obstacles to remove to travel from top-left to bottom-right.</td>
+  
 </tr><tr data-search="monsters cses multi-source bfs in a labyrinth, monsters and the player move simultaneously one step per turn; determine if the player can reach any boundary cell without ever being caught, and output a path.">
   <td><a href="https://cses.fi/problemset/task/1194" target="_blank" rel="noopener noreferrer">Monsters</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (multi-source BFS category)</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">In a labyrinth, monsters and the player move simultaneously one step per turn; determine if the player can reach any boundary cell without ever being caught, and output a path.</td>
+  
 </tr><tr data-search="nearest opposite parity codeforces multi-source bfs from each index i in an array, you may jump to i±a[i]; for every index, find the minimum number of jumps to reach some index whose value has opposite parity.">
   <td><a href="https://codeforces.com/problemset/problem/1272/E" target="_blank" rel="noopener noreferrer">Nearest Opposite Parity</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">From each index i in an array, you may jump to i±a[i]; for every index, find the minimum number of jumps to reach some index whose value has opposite parity.</td>
+  
 </tr><tr data-search="three states codeforces multi-source bfs given a grid map with three separate &quot;state&quot; regions, find the minimum number of road cells to build so that all three regions become mutually connected.">
   <td><a href="https://codeforces.com/problemset/problem/590/C" target="_blank" rel="noopener noreferrer">Three States</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">Given a grid map with three separate &quot;state&quot; regions, find the minimum number of road cells to build so that all three regions become mutually connected.</td>
+  
 </tr><tr data-search="destroying roads codeforces multi-source bfs destroy as many roads as possible from a connected graph while keeping two given (s,t) pairs reachable within given time limits l1 and l2.">
   <td><a href="https://codeforces.com/problemset/problem/543/B" target="_blank" rel="noopener noreferrer">Destroying Roads</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">Destroy as many roads as possible from a connected graph while keeping two given (s,t) pairs reachable within given time limits l1 and l2.</td>
+  
 </tr><tr data-search="escape the spreading fire leetcode multi-source bfs fire starts at multiple grid cells and spreads to adjacent cells every minute; find the maximum time you can wait before starting your escape from the top-left and still reach the bottom-right before or exactly when fire does.">
   <td><a href="https://leetcode.com/problems/escape-the-spreading-fire/" target="_blank" rel="noopener noreferrer">Escape the Spreading Fire</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Multi-Source BFS</td>
   <td class="desc-cell">Fire starts at multiple grid cells and spreads to adjacent cells every minute; find the maximum time you can wait before starting your escape from the top-left and still reach the bottom-right before or exactly when fire does.</td>
+  
 </tr><tr data-search="planets queries i cses functional graphs &amp; cycle detection each of n planets has exactly one teleporter to another planet; answer q queries asking &quot;where do you end up after taking exactly k teleporters starting from planet x?&quot;">
   <td><a href="https://cses.fi/problemset/task/1750" target="_blank" rel="noopener noreferrer">Planets Queries I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (functional graph / binary lifting category)</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Each of n planets has exactly one teleporter to another planet; answer q queries asking &quot;where do you end up after taking exactly k teleporters starting from planet x?&quot;</td>
+  
 </tr><tr data-search="planets queries ii cses functional graphs &amp; cycle detection for each functional-graph query (a, b), find the smallest number of teleporter jumps needed to reach b from a, or determine it&#x27;s impossible — including detecting when a and b lie on/lead into the same eventual cycle.">
   <td><a href="https://cses.fi/problemset/task/1160" target="_blank" rel="noopener noreferrer">Planets Queries II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (functional graph / binary lifting category)</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">For each functional-graph query (a, b), find the smallest number of teleporter jumps needed to reach b from a, or determine it&#x27;s impossible — including detecting when a and b lie on/lead into the same eventual cycle.</td>
+  
 </tr><tr data-search="planets cycles cses functional graphs &amp; cycle detection in the same one-out-edge-per-node functional graph, compute for every node the total number of distinct planets reachable before returning to a previously visited planet (i.e., tail length + cycle length).">
   <td><a href="https://cses.fi/problemset/task/1751" target="_blank" rel="noopener noreferrer">Planets Cycles</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (functional graph / cycle detection category)</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">In the same one-out-edge-per-node functional graph, compute for every node the total number of distinct planets reachable before returning to a previously visited planet (i.e., tail length + cycle length).</td>
+  
 </tr><tr data-search="mouse hunt codeforces functional graphs &amp; cycle detection a mouse starts in an unknown room and each second deterministically moves room i → a[i] (a functional graph); choose a minimum-cost set of rooms to trap so the mouse is guaranteed to be caught regardless of its start.">
   <td><a href="https://codeforces.com/problemset/problem/1027/D" target="_blank" rel="noopener noreferrer">Mouse Hunt</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">A mouse starts in an unknown room and each second deterministically moves room i → a[i] (a functional graph); choose a minimum-cost set of rooms to trap so the mouse is guaranteed to be caught regardless of its start.</td>
+  
 </tr><tr data-search="analysis of pathes in functional graph codeforces functional graphs &amp; cycle detection given a functional graph with weighted edges and a huge k (up to 10^10), compute for every starting vertex the sum and the minimum edge weight along the length-k walk starting there.">
   <td><a href="https://codeforces.com/problemset/problem/702/E" target="_blank" rel="noopener noreferrer">Analysis of Pathes in Functional Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Given a functional graph with weighted edges and a huge k (up to 10^10), compute for every starting vertex the sum and the minimum edge weight along the length-k walk starting there.</td>
+  
 </tr><tr data-search="kth ancestor of a tree node leetcode functional graphs &amp; cycle detection preprocess a rooted tree (a special case of a functional graph where every node points to its parent) to answer many &quot;kth ancestor of node x&quot; queries efficiently.">
   <td><a href="https://leetcode.com/problems/kth-ancestor-of-a-tree-node/" target="_blank" rel="noopener noreferrer">Kth Ancestor of a Tree Node</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Preprocess a rooted tree (a special case of a functional graph where every node points to its parent) to answer many &quot;kth ancestor of node x&quot; queries efficiently.</td>
+  
 </tr><tr data-search="recover a functional graph codeforces functional graphs &amp; cycle detection given a set of n &quot;candidate&quot; functional graphs (each node&#x27;s chosen out-edge from a list of options), reconstruct one consistent global functional graph matching the maximum number of choices via bipartite-matching-flavored reasoning.">
   <td><a href="https://codeforces.com/problemset/problem/739/D" target="_blank" rel="noopener noreferrer">Recover a functional graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 3400</td>
   <td class="subtopic-cell">Functional Graphs &amp; Cycle Detection</td>
   <td class="desc-cell">Given a set of n &quot;candidate&quot; functional graphs (each node&#x27;s chosen out-edge from a list of options), reconstruct one consistent global functional graph matching the maximum number of choices via bipartite-matching-flavored reasoning.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Edmonds-Karp: O(V * E^2) time (O(VE) augmenting paths, each found by an O(E) BFS), O(V + E) space. Dinic&#x27;s algorithm improves this to O(V^2 * E) in general and O(E * sqrt(V)) on unit-capacity graphs.</p></div>
   </div>
   <article class="example-card" id="network-flow-maximum-flow-edmonds-karp-ex0">
-  <h4>Basic Max Flow Between Two Nodes</h4>
+  <h4>Basic Max Flow Between Two Nodes<button type="button" class="done-checkbox" data-item-id="network-flow-maximum-flow-edmonds-karp-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A directed network has n computers numbered 1..n connected by m directed cables, each with an integer bandwidth capacity. Computer 1 wants to send data to computer n. Find the maximum total data rate that can be sustained from computer 1 to computer n.</p><p>Input: the first line has two integers n and m (1 &lt;= n &lt;= 10, 0 &lt;= m &lt;= 20). Each of the next m lines has three integers u, v, c describing a directed cable from u to v with capacity c (1 &lt;= u, v &lt;= n, 1 &lt;= c &lt;= 100). Output the single integer maximum flow value from node 1 to node n.</p><p>Concrete instance: 4 nodes, 5 cables: 1-&gt;2 (cap 3), 1-&gt;3 (cap 2), 2-&gt;3 (cap 1), 2-&gt;4 (cap 2), 3-&gt;4 (cap 3).</p></div>
   <div class="section-label">Approach</div>
@@ -359,7 +387,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="network-flow-maximum-flow-edmonds-karp-ex1">
-  <h4>Max Flow Requiring Several Augmenting Paths</h4>
+  <h4>Max Flow Requiring Several Augmenting Paths<button type="button" class="done-checkbox" data-item-id="network-flow-maximum-flow-edmonds-karp-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Same setup and input/output format as above (max flow from node 1 to node n over a small capacitated directed graph, n &lt;= 10, m &lt;= 20), but on a network with a detour edge that lets flow reroute around a partially used bottleneck.</p><p>Concrete instance: 5 nodes, 7 cables: 1-&gt;2 (cap 4), 1-&gt;3 (cap 3), 2-&gt;3 (cap 2), 2-&gt;4 (cap 3), 4-&gt;3 (cap 1), 3-&gt;5 (cap 2), 4-&gt;5 (cap 5).</p></div>
   <div class="section-label">Approach</div>
@@ -453,7 +481,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>Identical to whatever max-flow algorithm computes it -- O(V * E^2) with Edmonds-Karp -- since the minimum cut&#x27;s capacity is read off directly as the max flow value, plus one extra O(V + E) BFS/DFS pass over the final residual graph to recover the actual source-side vertex set / cut edges.</p></div>
   </div>
   <article class="example-card" id="network-flow-minimum-cut-max-flow-min-cut-theorem-ex0">
-  <h4>Minimum Edge Cut on a Small Diamond Graph</h4>
+  <h4>Minimum Edge Cut on a Small Diamond Graph<button type="button" class="done-checkbox" data-item-id="network-flow-minimum-cut-max-flow-min-cut-theorem-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A directed graph has n nodes and m directed edges, all of capacity 1 (i.e. this asks for the minimum number of edges whose removal disconnects node 1 from node n -- the edge connectivity from 1 to n). Compute this minimum, and also output the set of vertices reachable from node 1 in the residual graph after computing a maximum flow (one valid source side of a minimum cut), in increasing order.</p><p>Input: first line n and m (1 &lt;= n &lt;= 10, 0 &lt;= m &lt;= 20); each of the next m lines has u, v, c (here c is always 1). Output: first line is the minimum cut value; second line is the space-separated sorted list of vertices on node 1&#x27;s side of that cut.</p><p>Concrete instance: 4 nodes forming a &#x27;diamond&#x27; -- two vertex-disjoint paths from node 1 to node 4: 1-&gt;2, 1-&gt;3, 2-&gt;4, 3-&gt;4, each with capacity 1.</p></div>
   <div class="section-label">Approach</div>
@@ -562,7 +590,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="network-flow-minimum-cut-max-flow-min-cut-theorem-ex1">
-  <h4>Weighted Minimum Cut with a Non-Trivial Source Side</h4>
+  <h4>Weighted Minimum Cut with a Non-Trivial Source Side<button type="button" class="done-checkbox" data-item-id="network-flow-minimum-cut-max-flow-min-cut-theorem-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Same input/output format as above, but with general (non-unit) capacities, illustrating that the minimum cut does not always sit right next to the source.</p><p>Concrete instance: 4 nodes, 5 edges: 1-&gt;2 (cap 5), 1-&gt;3 (cap 5), 2-&gt;3 (cap 10), 2-&gt;4 (cap 3), 3-&gt;4 (cap 3).</p></div>
   <div class="section-label">Approach</div>
@@ -680,7 +708,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(V * E) with a plain Kuhn&#x27;s algorithm (one DFS of cost O(E) per left vertex); O(E * sqrt(V)) with Hopcroft-Karp for larger instances.</p></div>
   </div>
   <article class="example-card" id="network-flow-bipartite-matching-kuhn-s-algorithm-ex0">
-  <h4>Maximum Matching Size</h4>
+  <h4>Maximum Matching Size<button type="button" class="done-checkbox" data-item-id="network-flow-bipartite-matching-kuhn-s-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are L people on the left and R people on the right (1 &lt;= L, R &lt;= 10), and m compatible pairs (u, v) meaning left-person u is willing to be paired with right-person v (1 &lt;= u &lt;= L, 1 &lt;= v &lt;= R, 0 &lt;= m &lt;= 50). Find the size of the maximum matching (the largest number of pairs that can be formed so that every person appears in at most one pair).</p><p>Input: first line L, R, m; each of the next m lines has u, v. Output: a single integer, the maximum matching size.</p><p>Concrete instance: L = R = 4, with compatible pairs (1,1), (1,2), (2,1), (3,2), (3,3), (4,3), (4,4).</p></div>
   <div class="section-label">Approach</div>
@@ -739,7 +767,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="network-flow-bipartite-matching-kuhn-s-algorithm-ex1">
-  <h4>Recovering the Matched Pairs</h4>
+  <h4>Recovering the Matched Pairs<button type="button" class="done-checkbox" data-item-id="network-flow-bipartite-matching-kuhn-s-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Same setup as above (L, R, m then m compatible pairs), but now also print the matched pairs themselves, sorted by left vertex.</p><p>Input: first line L, R, m; each of the next m lines has u, v. Output: first line is the maximum matching size; each following line has one matched pair &#x27;u v&#x27;, sorted by u ascending.</p><p>Concrete instance: L = R = 3, with compatible pairs (1,1), (1,2), (2,1), (3,2), (3,3).</p></div>
   <div class="section-label">Approach</div>
@@ -813,7 +841,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(F * E log V) with Dijkstra + potentials, or O(F * V * E) with plain SPFA/Bellman-Ford augmenting paths, where F is the total flow pushed (bounded by the max-flow value or the required flow amount), V and E are the network&#x27;s vertex and edge counts.</p></div>
   </div>
   <article class="example-card" id="network-flow-min-cost-max-flow-mcmf-ex0">
-  <h4>Maximum Flow at Minimum Cost on a Small Network</h4>
+  <h4>Maximum Flow at Minimum Cost on a Small Network<button type="button" class="done-checkbox" data-item-id="network-flow-min-cost-max-flow-mcmf-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a directed flow network with n nodes (0-indexed), a designated source s and sink t, and m directed edges, each with a capacity and a per-unit cost. Compute the value of the maximum flow from s to t, and, among all flows achieving that maximum value, the minimum possible total cost.</p><p>Input: n, m, s, t on the first line; then m lines each with u, v, cap, cost describing a directed edge from u to v.<br>Output: two integers, the maximum flow value and its minimum total cost, separated by a space.</p></div>
   <div class="section-label">Approach</div>
@@ -904,7 +932,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="network-flow-min-cost-max-flow-mcmf-ex1">
-  <h4>Shipping a Required Amount at Minimum Cost (or Determining Impossibility)</h4>
+  <h4>Shipping a Required Amount at Minimum Cost (or Determining Impossibility)<button type="button" class="done-checkbox" data-item-id="network-flow-min-cost-max-flow-mcmf-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You must ship exactly D units of cargo from source node s to sink node t through a directed flow network with n nodes and m edges (each with a capacity and a per-unit cost), minimizing total shipping cost. If it is impossible to ship D units through the network at all (even ignoring cost), print -1.</p><p>Input: n, m, s, t, D on the first line; then m lines each with u, v, cap, cost.<br>Output: the minimum cost to ship exactly D units, or -1 if D units cannot be shipped.</p></div>
   <div class="section-label">Approach</div>
@@ -1005,7 +1033,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n^3) time for an n x n cost matrix, O(n^2) space.</p></div>
   </div>
   <article class="example-card" id="network-flow-hungarian-algorithm-assignment-problem-ex0">
-  <h4>Minimum-Cost Task Assignment</h4>
+  <h4>Minimum-Cost Task Assignment<button type="button" class="done-checkbox" data-item-id="network-flow-hungarian-algorithm-assignment-problem-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n employees and n tasks (1 &lt;= n &lt;= 300 in the general version; kept small here for hand verification). You are given an n x n cost matrix where cost[i][j] is the cost of assigning employee i to task j. Assign every employee exactly one distinct task (a perfect matching between employees and tasks) to minimize the total cost. Output the minimum total cost, and one valid assignment (for each employee 1..n, the task assigned to it).</p><p>Input: n, then n rows of n integers each (the cost matrix, 1-indexed conceptually).<br>Output: the minimum total cost on the first line; then n integers on the second line, where the i-th integer is the task assigned to employee i.</p></div>
   <div class="section-label">Approach</div>
@@ -1083,7 +1111,7 @@
 </code></pre>
   </div>
 </article><article class="example-card" id="network-flow-hungarian-algorithm-assignment-problem-ex1">
-  <h4>Maximum-Profit Assignment</h4>
+  <h4>Maximum-Profit Assignment<button type="button" class="done-checkbox" data-item-id="network-flow-hungarian-algorithm-assignment-problem-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>There are n agents and n contracts. You are given an n x n profit matrix where profit[i][j] is the profit earned if agent i is assigned contract j. Assign every agent exactly one distinct contract to MAXIMIZE total profit. Output the maximum total profit and one optimal assignment.</p><p>Input: n, then n rows of n integers each (the profit matrix).<br>Output: the maximum total profit on the first line; then n integers on the second line, the contract assigned to each agent.</p></div>
   <div class="section-label">Approach</div>
@@ -1167,115 +1195,133 @@
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="download speed cses max flow find the maximum data transfer rate from computer 1 to computer n through a network of directed connections with given capacities.">
   <td><a href="https://cses.fi/problemset/task/1694" target="_blank" rel="noopener noreferrer">Download Speed</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Find the maximum data transfer rate from computer 1 to computer n through a network of directed connections with given capacities.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1694" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="distinct routes cses max flow find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.">
   <td><a href="https://cses.fi/problemset/task/1711" target="_blank" rel="noopener noreferrer">Distinct Routes</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1711" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="fox and dinner codeforces max flow seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.">
   <td><a href="https://codeforces.com/problemset/problem/510/E" target="_blank" rel="noopener noreferrer">Fox and Dinner</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/510/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="delivery bears codeforces max flow split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.">
   <td><a href="https://codeforces.com/problemset/problem/653/D" target="_blank" rel="noopener noreferrer">Delivery Bears</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/653/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="police chase cses min cut find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.">
   <td><a href="https://cses.fi/problemset/task/1695" target="_blank" rel="noopener noreferrer">Police Chase</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">min cut</td>
   <td class="desc-cell">Find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1695" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="petya and graph codeforces min cut choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).">
   <td><a href="https://codeforces.com/problemset/problem/1082/G" target="_blank" rel="noopener noreferrer">Petya and Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">min cut</td>
   <td class="desc-cell">Choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1082/G" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="rectangle painting 2 codeforces min cut paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.">
   <td><a href="https://codeforces.com/problemset/problem/1198/E" target="_blank" rel="noopener noreferrer">Rectangle Painting 2</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">min cut</td>
   <td class="desc-cell">Paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1198/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="school dance cses bipartite matching find the maximum matching between boys and girls given a list of pairs willing to dance together.">
   <td><a href="https://cses.fi/problemset/task/1696" target="_blank" rel="noopener noreferrer">School Dance</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">bipartite matching</td>
   <td class="desc-cell">Find the maximum matching between boys and girls given a list of pairs willing to dance together.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1696" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="exploration plan codeforces bipartite matching find the minimum time limit so that n teams starting in various cities can collectively occupy at least k distinct cities.">
   <td><a href="https://codeforces.com/problemset/problem/852/D" target="_blank" rel="noopener noreferrer">Exploration Plan</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">bipartite matching</td>
   <td class="desc-cell">Find the minimum time limit so that N teams starting in various cities can collectively occupy at least K distinct cities.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/852/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="round marriage codeforces bipartite matching match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.">
   <td><a href="https://codeforces.com/problemset/problem/981/F" target="_blank" rel="noopener noreferrer">Round Marriage</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">bipartite matching</td>
   <td class="desc-cell">Match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/981/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="anti-palindromize codeforces min-cost max-flow rearrange a string into an antipalindromic permutation maximizing the sum of &quot;beauty&quot; values at positions that keep their original character.">
   <td><a href="https://codeforces.com/problemset/problem/884/F" target="_blank" rel="noopener noreferrer">Anti-Palindromize</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Rearrange a string into an antipalindromic permutation maximizing the sum of &quot;beauty&quot; values at positions that keep their original character.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/884/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="red-blue graph codeforces min-cost max-flow color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.">
   <td><a href="https://codeforces.com/problemset/problem/1288/F" target="_blank" rel="noopener noreferrer">Red-Blue Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2900</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1288/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="build string codeforces min-cost max-flow build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.">
   <td><a href="https://codeforces.com/problemset/problem/237/E" target="_blank" rel="noopener noreferrer">Build String</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/237/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="four melodies codeforces min-cost max-flow select four disjoint, non-intersecting &quot;melody&quot; subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.">
   <td><a href="https://codeforces.com/problemset/problem/818/G" target="_blank" rel="noopener noreferrer">Four Melodies</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2600</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Select four disjoint, non-intersecting &quot;melody&quot; subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/818/G" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="mcf codeforces min-cost max-flow find the minimum-cost circulation in a dag-like flow network subject to the extra constraint that each edge&#x27;s flow must match its capacity&#x27;s parity.">
   <td><a href="https://codeforces.com/problemset/problem/1766/F" target="_blank" rel="noopener noreferrer">MCF</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2800</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Find the minimum-cost circulation in a DAG-like flow network subject to the extra constraint that each edge&#x27;s flow must match its capacity&#x27;s parity.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1766/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="task assignment cses hungarian algorithm given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).">
   <td><a href="https://cses.fi/problemset/task/2129" target="_blank" rel="noopener noreferrer">Task Assignment</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Hungarian Algorithm</td>
   <td class="desc-cell">Given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2129" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="chef monocarp codeforces hungarian algorithm assign each of n dishes to a distinct positive-integer removal time t, minimizing the sum of |t - t_i| over all dishes.">
   <td><a href="https://codeforces.com/problemset/problem/1437/C" target="_blank" rel="noopener noreferrer">Chef Monocarp</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Hungarian Algorithm</td>
   <td class="desc-cell">Assign each of n dishes to a distinct positive-integer removal time T, minimizing the sum of |T - t_i| over all dishes.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1437/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="vasya and endless credits codeforces hungarian algorithm choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.">
   <td><a href="https://codeforces.com/problemset/problem/1107/F" target="_blank" rel="noopener noreferrer">Vasya and Endless Credits</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2600</td>
   <td class="subtopic-cell">Hungarian Algorithm</td>
   <td class="desc-cell">Choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1107/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

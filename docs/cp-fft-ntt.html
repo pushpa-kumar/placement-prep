@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time where n is the smallest power of two &gt;= sizeA + sizeB - 1; O(n) space for the complex coefficient arrays. Precision is typically safe in <code>double</code> for coefficient magnitudes up to about 1e5-1e6 and n up to about 1e6-1e7; beyond that, prefer NTT or split-based techniques.</p></div>
   </div>
   <article class="example-card" id="fft-ntt-polynomial-multiplication-via-fft-ex0">
-  <h4>Multiply Two Small Polynomials with FFT</h4>
+  <h4>Multiply Two Small Polynomials with FFT<button type="button" class="done-checkbox" data-item-id="fft-ntt-polynomial-multiplication-via-fft-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given polynomial A with coefficients a0, a1, a2 (representing A(x) = a0 + a1*x + a2*x^2) and polynomial B with coefficients b0, b1 (representing B(x) = b0 + b1*x). Compute the coefficients of the product polynomial C(x) = A(x) * B(x) using an FFT-based convolution.</p><p>Input: first line has two integers sizeA and sizeB (the number of coefficients of A and B respectively, 1 &lt;= sizeA, sizeB &lt;= 5); second line has sizeA integers, the coefficients of A from a0 upward; third line has sizeB integers, the coefficients of B from b0 upward (1 &lt;= each coefficient &lt;= 20). Output: first line is the number of coefficients of C (sizeA + sizeB - 1); second line is those coefficients from the constant term upward.</p><p>Concrete instance: A(x) = 1 + 2x + 3x^2, B(x) = 4 + 5x.</p></div>
   <div class="section-label">Approach</div>
@@ -363,7 +391,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) modular multiplications where n is the smallest power of two &gt;= sizeA + sizeB - 1 (bounded above by the modulus&#x27;s supported transform length, e.g. 2^23 for p = 998244353); O(n) space. Multiply by 2-3x if Chinese Remainder Theorem reconstruction across multiple primes is needed for a true (non-modular) exact answer.</p></div>
   </div>
   <article class="example-card" id="fft-ntt-exact-integer-convolution-via-ntt-ex0">
-  <h4>Exact Convolution via NTT (mod 998244353)</h4>
+  <h4>Exact Convolution via NTT (mod 998244353)<button type="button" class="done-checkbox" data-item-id="fft-ntt-exact-integer-convolution-via-ntt-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given two small integer polynomials A and B, described the same way as in the FFT example (sizeA and sizeB coefficients respectively, all guaranteed small enough that the true product coefficients fit far below 998244353, so no modular wraparound is actually visible in this instance -- the point is to compute the convolution with ZERO floating-point rounding risk, using the Number Theoretic Transform instead of complex FFT). Output the exact product coefficients.</p><p>Input: first line sizeA sizeB (1 &lt;= sizeA, sizeB &lt;= 5); second line sizeA integers (A&#x27;s coefficients from the constant term upward); third line sizeB integers (B&#x27;s coefficients from the constant term upward), all coefficients between 1 and 20. Output: first line the number of coefficients of the product (sizeA + sizeB - 1); second line those coefficients from the constant term upward.</p><p>Concrete instance: A(x) = 1 + 2x + 3x^2, B(x) = 4 + 5x + 6x^2.</p></div>
   <div class="section-label">Approach</div>
@@ -462,7 +490,7 @@ ll power(ll a, ll b, ll mod) {
     <div class="callout"><span class="c-label">Complexity</span><p>O(k^2 log n) with schoolbook polynomial multiplication (as implemented below); O(k log k log n) if polynomial multiplications are additionally accelerated with NTT/FFT, which matters once k grows into the hundreds or thousands.</p></div>
   </div>
   <article class="example-card" id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm-ex0">
-  <h4>N-th Term of an Order-4 Linear Recurrence via Kitamasa&#x27;s Method</h4>
+  <h4>N-th Term of an Order-4 Linear Recurrence via Kitamasa&#x27;s Method<button type="button" class="done-checkbox" data-item-id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A sequence is defined by a_0=0, a_1=1, a_2=1, a_3=2, and, for i &gt;= 4, the order-4 linear recurrence a_i = a_{i-1} + a_{i-2} + a_{i-3} + a_{i-4}. Given n (0 &lt;= n &lt;= 10^18), compute a_n modulo 10^9 + 7.</p><p>Input: the order k, then n, on the first line; then k recurrence coefficients c_1..c_k (so that a_i = sum_{j=1}^{k} c_j * a_{i-j}); then the k initial terms a_0..a_{k-1}.<br>Output: a_n modulo 10^9 + 7.</p></div>
   <div class="section-label">Approach</div>
@@ -539,7 +567,7 @@ ll power(ll a, ll b, ll mod) {
 </code></pre>
   </div>
 </article><article class="example-card" id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm-ex1">
-  <h4>N-th Term of a Rational Generating Function via the Bostan-Mori Algorithm</h4>
+  <h4>N-th Term of a Rational Generating Function via the Bostan-Mori Algorithm<button type="button" class="done-checkbox" data-item-id="fft-ntt-linear-recurrences-via-polynomials-kitamasa-s-method-bostan-mori-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A sequence a_0, a_1, a_2, ... satisfies a_0=0, a_1=0, a_2=1, and the order-3 recurrence a_i = a_{i-1} + a_{i-2} + a_{i-3} for i &gt;= 3 (the Tribonacci sequence). Given n, where n can be as large as 10^18, compute a_n modulo 10^9 + 7 using the Bostan-Mori algorithm on the sequence&#x27;s rational generating function, WITHOUT ever computing any of the intermediate terms a_3, a_4, ..., a_{n-1} directly.</p><p>Input: the order k, then n, on the first line; then k recurrence coefficients c_1..c_k; then the k initial terms a_0..a_{k-1}.<br>Output: a_n modulo 10^9 + 7.</p></div>
   <div class="section-label">Approach</div>
@@ -634,67 +662,77 @@ ll bostanMori(<span class="tok-type">vector</span>&lt;ll&gt; P, <span class="tok
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="the child and binary tree codeforces polynomial multiplication (generating functions) count the number of distinct vertex-weighted rooted binary trees achieving each total weight from 1 to m, given an allowed set of vertex weights.">
   <td><a href="https://codeforces.com/problemset/problem/438/E" target="_blank" rel="noopener noreferrer">The Child and Binary Tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">3100</td>
   <td class="subtopic-cell">polynomial multiplication (generating functions)</td>
   <td class="desc-cell">Count the number of distinct vertex-weighted rooted binary trees achieving each total weight from 1 to m, given an allowed set of vertex weights.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/438/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="thief in a shop codeforces polynomial multiplication (fast exponentiation) determine every total cost achievable by picking exactly k items (with repetition) from n item types with given costs.">
   <td><a href="https://codeforces.com/problemset/problem/632/E" target="_blank" rel="noopener noreferrer">Thief in a Shop</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">polynomial multiplication (fast exponentiation)</td>
   <td class="desc-cell">Determine every total cost achievable by picking exactly k items (with repetition) from n item types with given costs.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/632/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="lucky tickets codeforces polynomial multiplication (convolution counting) count n-digit tickets using only a given set of allowed digits where the digit sum of the first half equals the digit sum of the second half.">
   <td><a href="https://codeforces.com/problemset/problem/1096/G" target="_blank" rel="noopener noreferrer">Lucky Tickets</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">polynomial multiplication (convolution counting)</td>
   <td class="desc-cell">Count n-digit tickets using only a given set of allowed digits where the digit sum of the first half equals the digit sum of the second half.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1096/G" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="fuzzy search codeforces string matching via convolution count positions where a pattern matches a text, allowing each pattern character to match within a tolerance window of k positions.">
   <td><a href="https://codeforces.com/problemset/problem/528/D" target="_blank" rel="noopener noreferrer">Fuzzy Search</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">string matching via convolution</td>
   <td class="desc-cell">Count positions where a pattern matches a text, allowing each pattern character to match within a tolerance window of k positions.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/528/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="rusty string codeforces string matching via convolution given a string with wildcard characters that can be filled with one of two letters, determine which values are valid periods of the completed string.">
   <td><a href="https://codeforces.com/problemset/problem/827/E" target="_blank" rel="noopener noreferrer">Rusty String</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2700</td>
   <td class="subtopic-cell">string matching via convolution</td>
   <td class="desc-cell">Given a string with wildcard characters that can be filled with one of two letters, determine which values are valid periods of the completed string.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/827/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="yet another string matching problem codeforces string matching via convolution find, for every alignment of two strings, the minimum number of global character-relabeling operations needed to make the overlapping substrings equal.">
   <td><a href="https://codeforces.com/problemset/problem/954/I" target="_blank" rel="noopener noreferrer">Yet Another String Matching Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">string matching via convolution</td>
   <td class="desc-cell">Find, for every alignment of two strings, the minimum number of global character-relabeling operations needed to make the overlapping substrings equal.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/954/I" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="nikita and order statistics codeforces counting via convolution for every k from 0 to n, count the number of subarrays containing exactly k elements less than a given value x.">
   <td><a href="https://codeforces.com/problemset/problem/993/E" target="_blank" rel="noopener noreferrer">Nikita and Order Statistics</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">counting via convolution</td>
   <td class="desc-cell">For every k from 0 to n, count the number of subarrays containing exactly k elements less than a given value x.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/993/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="painting a grid with three different colors leetcode linear recurrences via polynomials count the number of ways to color an m×n grid with 3 colors so no two adjacent cells share a color, for n up to 1000.">
   <td><a href="https://leetcode.com/problems/painting-a-grid-with-three-different-colors/" target="_blank" rel="noopener noreferrer">Painting a Grid With Three Different Colors</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
   <td class="desc-cell">Count the number of ways to color an m×n grid with 3 colors so no two adjacent cells share a color, for n up to 1000.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/painting-a-grid-with-three-different-colors/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="total characters in string after transformations ii leetcode linear recurrences via polynomials after t transformations (each letter replaced by a range of following letters per a per-letter rule), find the total resulting string length, for t up to 10^9.">
   <td><a href="https://leetcode.com/problems/total-characters-in-string-after-transformations-ii/" target="_blank" rel="noopener noreferrer">Total Characters in String After Transformations II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
   <td class="desc-cell">After t transformations (each letter replaced by a range of following letters per a per-letter rule), find the total resulting string length, for t up to 10^9.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/total-characters-in-string-after-transformations-ii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="number of zigzag arrays ii leetcode linear recurrences via polynomials count length-n zigzag arrays with values in [l, r] modulo 1e9+7, for n up to 10^9 and (r-l) up to ~100.">
   <td><a href="https://leetcode.com/problems/number-of-zigzag-arrays-ii/" target="_blank" rel="noopener noreferrer">Number of ZigZag Arrays II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Linear Recurrences via Polynomials</td>
   <td class="desc-cell">Count length-n zigzag arrays with values in [l, r] modulo 1e9+7, for n up to 10^9 and (r-l) up to ~100.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/number-of-zigzag-arrays-ii/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

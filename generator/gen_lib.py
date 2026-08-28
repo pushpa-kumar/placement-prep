@@ -1,7 +1,23 @@
 import re, html, json
 
+# Set True only for the GitHub Pages (docs/) build -- Claude Artifacts sandbox
+# blocks the outbound network calls progress.js needs, so it's left False
+# (the default) for the top-level Claude-mirror build.
+PROGRESS_ENABLED = False
+
 def esc(s):
     return html.escape(s or "", quote=True)
+
+def done_checkbox_html(item_id, item_type):
+    if not PROGRESS_ENABLED:
+        return ""
+    return (f'<button type="button" class="done-checkbox" data-item-id="{esc(item_id)}" '
+            f'data-item-type="{esc(item_type)}" aria-pressed="false">Mark done</button>')
+
+def progress_script_tag():
+    if not PROGRESS_ENABLED:
+        return ""
+    return '<script type="module" src="progress.js"></script>'
 
 def inline_code(s):
     """Escape then restore `code` spans, and turn \\n\\n into paragraph breaks."""
@@ -171,7 +187,10 @@ HEAD_CSS = """
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -205,7 +224,10 @@ HEAD_CSS = """
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -218,6 +240,27 @@ HEAD_CSS = """
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -296,7 +339,8 @@ def site_nav(urls, current):
     for key, label, url in items:
         cls = ' class="current"' if key == current else ""
         links.append(f'<a href="{esc(url)}"{cls}>{esc(label)}</a>')
-    return f'<nav class="site-nav"><span class="brand">placement-prep</span>{"".join(links)}</nav>'
+    auth_slot = '<span id="authSlot" class="auth-slot"></span>' if PROGRESS_ENABLED else ""
+    return f'<nav class="site-nav"><span class="brand">placement-prep</span>{"".join(links)}{auth_slot}</nav>'
 
 FOOTER = '<footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>'
 
@@ -313,16 +357,19 @@ def problems_table_html(problems, table_id="problemsTable"):
     rows = []
     for p in problems:
         jc = judge_class(p["judge"])
+        done_cell = f"<td>{done_checkbox_html(p['link'], 'problem')}</td>" if PROGRESS_ENABLED else ""
         rows.append(f'''<tr data-search="{esc((p['name']+' '+p['judge']+' '+p['subtopic']+' '+p['description']).lower())}">
   <td><a href="{esc(p['link'])}" target="_blank" rel="noopener noreferrer">{esc(p['name'])}</a></td>
   <td><span class="judge-badge {jc}">{esc(p['judge'])}</span></td>
   <td class="diff-badge">{esc(p['difficulty'])}</td>
   <td class="subtopic-cell">{esc(p['subtopic'])}</td>
   <td class="desc-cell">{esc(p['description'])}</td>
+  {done_cell}
 </tr>''')
+    done_th = "<th>Done</th>" if PROGRESS_ENABLED else ""
     return f'''<div class="problems-toolbar"><input type="search" id="{table_id}Search" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="{table_id}">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th>{done_th}</tr></thead>
 <tbody>{"".join(rows)}</tbody>
 </table></div>
 <script>

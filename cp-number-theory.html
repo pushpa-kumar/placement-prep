@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1639,138 +1667,161 @@ ll lucas(ll n, ll k, ll p) {
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Modular Exponentiation (tower of exponents)</td>
   <td class="desc-cell">Efficiently compute a^(b^c) mod 1e9+7 for many triples (a, b, c), with the convention 0^0 = 1.</td>
+  
 </tr><tr data-search="multipliers codeforces modular exponentiation (divisor-pairing trick) given n, compute the product of all of its divisors, modulo 1e9+7.">
   <td><a href="https://codeforces.com/problemset/problem/615/D" target="_blank" rel="noopener noreferrer">Multipliers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Modular Exponentiation (divisor-pairing trick)</td>
   <td class="desc-cell">Given n, compute the product of all of its divisors, modulo 1e9+7.</td>
+  
 </tr><tr data-search="sum of divisors cses sieve-based / divisor-function summation compute the sum of σ(i) (sum-of-divisors function) for i = 1..n, modulo 1e9+7, for n up to 10^12.">
   <td><a href="https://cses.fi/problemset/task/1082" target="_blank" rel="noopener noreferrer">Sum of Divisors</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Sieve-based / divisor-function summation</td>
   <td class="desc-cell">Compute the sum of σ(i) (sum-of-divisors function) for i = 1..n, modulo 1e9+7, for n up to 10^12.</td>
+  
 </tr><tr data-search="steps to one codeforces sieve-based dp over divisors starting from an array, repeatedly replace it with a uniformly random non-empty subset and take the gcd of the remaining elements until it becomes 1; find the expected number of steps.">
   <td><a href="https://codeforces.com/problemset/problem/1139/D" target="_blank" rel="noopener noreferrer">Steps to One</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Sieve-based DP over divisors</td>
   <td class="desc-cell">Starting from an array, repeatedly replace it with a uniformly random non-empty subset and take the GCD of the remaining elements until it becomes 1; find the expected number of steps.</td>
+  
 </tr><tr data-search="next prime cses primality testing at scale for up to 20 queries, each giving n up to 10^12, output the smallest prime strictly greater than n.">
   <td><a href="https://cses.fi/problemset/task/3396" target="_blank" rel="noopener noreferrer">Next Prime</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Primality Testing at Scale</td>
   <td class="desc-cell">For up to 20 queries, each giving n up to 10^12, output the smallest prime strictly greater than n.</td>
+  
 </tr><tr data-search="binomial coefficients cses ncr under modulo answer many queries of the form &quot;compute c(a, b) mod 1e9+7.&quot;">
   <td><a href="https://cses.fi/problemset/task/1079" target="_blank" rel="noopener noreferrer">Binomial Coefficients</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">nCr under modulo</td>
   <td class="desc-cell">Answer many queries of the form &quot;compute C(a, b) mod 1e9+7.&quot;</td>
+  
 </tr><tr data-search="anton and school - 2 codeforces ncr under modulo (combinatorial identities) given a bracket string, for each query range count the number of ways to pick a balanced-bracket subsequence (as a sum over k of c(opens, k)·c(closes, k)).">
   <td><a href="https://codeforces.com/problemset/problem/785/D" target="_blank" rel="noopener noreferrer">Anton and School - 2</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">nCr under modulo (combinatorial identities)</td>
   <td class="desc-cell">Given a bracket string, for each query range count the number of ways to pick a balanced-bracket subsequence (as a sum over k of C(opens, k)·C(closes, k)).</td>
+  
 </tr><tr data-search="prime multiples cses inclusion-exclusion given up to 20 distinct primes and n up to 10^18, count how many integers in [1, n] are divisible by at least one of the given primes.">
   <td><a href="https://cses.fi/problemset/task/2185" target="_blank" rel="noopener noreferrer">Prime Multiples</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Inclusion-Exclusion</td>
   <td class="desc-cell">Given up to 20 distinct primes and n up to 10^18, count how many integers in [1, n] are divisible by at least one of the given primes.</td>
+  
 </tr><tr data-search="unusual sequences codeforces inclusion-exclusion (möbius function) count the number of sequences of positive integers of any length whose gcd is exactly x and whose elements sum to y.">
   <td><a href="https://codeforces.com/problemset/problem/900/D" target="_blank" rel="noopener noreferrer">Unusual Sequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Inclusion-Exclusion (Möbius function)</td>
   <td class="desc-cell">Count the number of sequences of positive integers of any length whose GCD is exactly x and whose elements sum to y.</td>
+  
 </tr><tr data-search="remainders game codeforces chinese remainder theorem given k and a set of moduli c_1..c_n, decide whether knowing x mod c_i for all i always determines x mod k for every possible x.">
   <td><a href="https://codeforces.com/problemset/problem/687/B" target="_blank" rel="noopener noreferrer">Remainders Game</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Given k and a set of moduli c_1..c_n, decide whether knowing x mod c_i for all i always determines x mod k for every possible x.</td>
+  
 </tr><tr data-search="congruence equation codeforces chinese remainder theorem given a, b, prime p and bound x, count integers y in [1, x] such that a^y ≡ b (mod p).">
   <td><a href="https://codeforces.com/problemset/problem/919/E" target="_blank" rel="noopener noreferrer">Congruence Equation</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Given a, b, prime p and bound x, count integers y in [1, x] such that a^y ≡ b (mod p).</td>
+  
 </tr><tr data-search="two chandeliers codeforces chinese remainder theorem two chandeliers cycle through colors with different periods; find the day of the k-th day their colors differ, using crt to count matching days up to a bound.">
   <td><a href="https://codeforces.com/problemset/problem/1500/B" target="_blank" rel="noopener noreferrer">Two Chandeliers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Two chandeliers cycle through colors with different periods; find the day of the k-th day their colors differ, using CRT to count matching days up to a bound.</td>
+  
 </tr><tr data-search="power tower codeforces chinese remainder theorem compute a power tower w_l^(w_{l+1}^(...)) mod m for range queries, using the generalized euler theorem (which itself needs crt-style modulus factoring via repeated totient reduction).">
   <td><a href="https://codeforces.com/problemset/problem/906/D" target="_blank" rel="noopener noreferrer">Power Tower</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2700</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Compute a power tower w_l^(w_{l+1}^(...)) mod m for range queries, using the generalized Euler theorem (which itself needs CRT-style modulus factoring via repeated totient reduction).</td>
+  
 </tr><tr data-search="constructor codeforces chinese remainder theorem find x &lt; 2^60 such that a|x and b|x (bitwise or) are both divisible by d, by reasoning over coprime bit-parity constraints reminiscent of crt-style constraint splitting.">
   <td><a href="https://codeforces.com/problemset/problem/1748/D" target="_blank" rel="noopener noreferrer">ConstructOR</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Find x &lt; 2^60 such that a|x and b|x (bitwise OR) are both divisible by d, by reasoning over coprime bit-parity constraints reminiscent of CRT-style constraint splitting.</td>
+  
 </tr><tr data-search="magic gems codeforces matrix exponentiation count configurations summing to n units where each magic gem takes 1 unit or is split into m units, for n up to 1e18 — the count follows f(n) = f(n-1) + f(n-m).">
   <td><a href="https://codeforces.com/problemset/problem/1117/D" target="_blank" rel="noopener noreferrer">Magic Gems</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Count configurations summing to N units where each magic gem takes 1 unit or is split into M units, for N up to 1e18 — the count follows f(n) = f(n-1) + f(n-M).</td>
+  
 </tr><tr data-search="lunar new year and a recursive sequence codeforces matrix exponentiation given f_i = (f_{i-1}^{b1} · ... · f_{i-k}^{bk}) mod p for a prime p, find f_n.">
   <td><a href="https://codeforces.com/problemset/problem/1106/F" target="_blank" rel="noopener noreferrer">Lunar New Year and a Recursive Sequence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Given f_i = (f_{i-1}^{b1} · ... · f_{i-k}^{bk}) mod p for a prime p, find f_n.</td>
+  
 </tr><tr data-search="fibonotci codeforces matrix exponentiation compute f_n for a fibonacci-like recurrence f_n = s_{n-1}f_{n-1} + s_{n-2}f_{n-2} where s is an &quot;almost cyclic&quot; coefficient sequence with a handful of exceptions, over huge n and many queries.">
   <td><a href="https://codeforces.com/problemset/problem/575/A" target="_blank" rel="noopener noreferrer">Fibonotci</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2700</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Compute F_n for a Fibonacci-like recurrence F_n = s_{n-1}F_{n-1} + s_{n-2}F_{n-2} where s is an &quot;almost cyclic&quot; coefficient sequence with a handful of exceptions, over huge n and many queries.</td>
+  
 </tr><tr data-search="throwing dice cses matrix exponentiation count the number of ways to reach sum n by repeatedly throwing a die (1..6), for n up to 10^18.">
   <td><a href="https://cses.fi/problemset/task/1096" target="_blank" rel="noopener noreferrer">Throwing Dice</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (n up to 1e18)</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Count the number of ways to reach sum n by repeatedly throwing a die (1..6), for n up to 10^18.</td>
+  
 </tr><tr data-search="ceizenpok&#x27;s formula codeforces (gym — 2015 icl, finals, div. 1) lucas&#x27; theorem (combined with crt) compute c(n, k) mod m for n up to 1e18, k ≤ n, and an *arbitrary* modulus m ≤ 1e6 (not necessarily prime).">
   <td><a href="https://codeforces.com/gym/100633/problem/J" target="_blank" rel="noopener noreferrer">Ceizenpok&#x27;s formula</a></td>
   <td><span class="judge-badge cf">Codeforces (Gym — 2015 ICL, Finals, Div. 1)</span></td>
   <td class="diff-badge">No CF contest rating (ICPC Gym problem); constraints (n ≤ 1e18, m ≤ 1e6 arbitrary) put it solidly at Div.1 E/hard-2400+ equivalent difficulty</td>
   <td class="subtopic-cell">Lucas&#x27; Theorem (combined with CRT)</td>
   <td class="desc-cell">Compute C(n, k) mod m for n up to 1e18, k ≤ n, and an *arbitrary* modulus m ≤ 1e6 (not necessarily prime).</td>
+  
 </tr><tr data-search="coprime subsequences codeforces möbius inversion count the number of subsequences of an array whose gcd is 1.">
   <td><a href="https://codeforces.com/problemset/problem/803/F" target="_blank" rel="noopener noreferrer">Coprime Subsequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Count the number of subsequences of an array whose gcd is 1.</td>
+  
 </tr><tr data-search="make it one codeforces möbius inversion find the minimum-size subset of an array whose gcd is 1, using möbius-function-weighted subset-sum dp.">
   <td><a href="https://codeforces.com/problemset/problem/1043/F" target="_blank" rel="noopener noreferrer">Make It One</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Find the minimum-size subset of an array whose gcd is 1, using Möbius-function-weighted subset-sum DP.</td>
+  
 </tr><tr data-search="alex and a tv show codeforces möbius inversion support union/gcd/lcm updates on multisets and answer &quot;count of x with a given gcd&quot; queries via randomization plus a möbius-transform-style array.">
   <td><a href="https://codeforces.com/problemset/problem/1097/F" target="_blank" rel="noopener noreferrer">Alex and a TV Show</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Support union/gcd/lcm updates on multisets and answer &quot;count of x with a given gcd&quot; queries via randomization plus a Möbius-transform-style array.</td>
+  
 </tr><tr data-search="counting coprime pairs cses möbius inversion given n integers up to 10^6, count the number of pairs that are coprime.">
   <td><a href="https://cses.fi/problemset/task/2417" target="_blank" rel="noopener noreferrer">Counting Coprime Pairs</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Given n integers up to 10^6, count the number of pairs that are coprime.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

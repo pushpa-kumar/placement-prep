@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>DFS to compute tin/tout: O(n) time, O(n) space. Once flattened, each point update or subtree range query costs O(log n) with a Fenwick tree / segment tree (O(1) if you only need offline prefix sums). Ancestor testing via tin/tout is O(1) per query after the O(n) preprocessing.</p></div>
   </div>
   <article class="example-card" id="trees-tree-traversals-euler-tour-ex0">
-  <h4>Subtree Sum with Point Updates</h4>
+  <h4>Subtree Sum with Point Updates<button type="button" class="done-checkbox" data-item-id="trees-tree-traversals-euler-tour-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a rooted tree with n vertices (rooted at vertex 1), each holding an integer value. You must process q operations of two kinds:<br>  &quot;U i x&quot; — set the value of vertex i to x.<br>  &quot;Q v&quot;   — output the sum of the values of all vertices in the subtree of v (including v itself).<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -365,7 +393,7 @@ Q 1
 215</code></pre>
   </div>
 </article><article class="example-card" id="trees-tree-traversals-euler-tour-ex1">
-  <h4>Ancestor Queries via Entry/Exit Times</h4>
+  <h4>Ancestor Queries via Entry/Exit Times<button type="button" class="done-checkbox" data-item-id="trees-tree-traversals-euler-tour-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a rooted tree with n vertices (rooted at vertex 1). Answer q queries of the form &quot;u v&quot;: is u an ancestor of v (a vertex is considered its own ancestor)? Print &quot;YES&quot; or &quot;NO&quot; for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -437,7 +465,7 @@ NO</code></pre>
     <div class="callout"><span class="c-label">Complexity</span><p>Preprocessing: O(n log n) time and space for the up[][] table. Each LCA / kth-ancestor / distance query: O(log n) time. (An Euler-tour + sparse-table variant answers LCA in O(1) per query after O(n log n) preprocessing, at the cost of not supporting kth-ancestor queries directly.)</p></div>
   </div>
   <article class="example-card" id="trees-lca-via-binary-lifting-ex0">
-  <h4>Basic LCA Queries</h4>
+  <h4>Basic LCA Queries<button type="button" class="done-checkbox" data-item-id="trees-lca-via-binary-lifting-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a rooted tree with n vertices (rooted at vertex 1) and q queries, each giving two vertices u and v, output the lowest common ancestor of u and v for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -524,7 +552,7 @@ NO</code></pre>
 3</code></pre>
   </div>
 </article><article class="example-card" id="trees-lca-via-binary-lifting-ex1">
-  <h4>Tree Distance via LCA</h4>
+  <h4>Tree Distance via LCA<button type="button" class="done-checkbox" data-item-id="trees-lca-via-binary-lifting-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given the same rooted tree with n vertices and q queries of two vertices u, v, output the number of edges on the (unique) path between u and v for each query. Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -616,7 +644,7 @@ NO</code></pre>
 2</code></pre>
   </div>
 </article><article class="example-card" id="trees-lca-via-binary-lifting-ex2">
-  <h4>Kth Ancestor Queries</h4>
+  <h4>Kth Ancestor Queries<button type="button" class="done-checkbox" data-item-id="trees-lca-via-binary-lifting-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a rooted tree with n vertices (rooted at vertex 1) and q queries, each giving a vertex v and an integer k, output the k-th ancestor of v (the vertex reached by walking up k edges from v toward the root), or -1 if v has fewer than k ancestors (i.e. depth[v] &lt; k). Note k = 0 should return v itself. Constraints: 1 &lt;= n, q &lt;= 2*10^5, 0 &lt;= k &lt;= n.</p></div>
   <div class="section-label">Approach</div>
@@ -707,7 +735,7 @@ NO</code></pre>
     <div class="callout"><span class="c-label">Complexity</span><p>Both approaches run in O(n) time and O(n) space: double BFS/DFS does two O(n) traversals, and the DP does one O(n) DFS while maintaining O(1) extra state per vertex.</p></div>
   </div>
   <article class="example-card" id="trees-tree-diameter-ex0">
-  <h4>Diameter via Double BFS</h4>
+  <h4>Diameter via Double BFS<button type="button" class="done-checkbox" data-item-id="trees-tree-diameter-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an unweighted tree with n vertices, find the length (number of edges) of its diameter — the longest shortest-path distance between any two vertices. Constraints: 1 &lt;= n &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -765,7 +793,7 @@ NO</code></pre>
     <pre><code>4</code></pre>
   </div>
 </article><article class="example-card" id="trees-tree-diameter-ex1">
-  <h4>Weighted Diameter via Tree DP</h4>
+  <h4>Weighted Diameter via Tree DP<button type="button" class="done-checkbox" data-item-id="trees-tree-diameter-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a tree with n vertices and positive integer edge weights, find the maximum total weight of any simple path between two vertices. Constraints: 1 &lt;= n &lt;= 2*10^5, 1 &lt;= weight &lt;= 10^9.</p></div>
   <div class="section-label">Approach</div>
@@ -817,7 +845,7 @@ NO</code></pre>
     <pre><code>12</code></pre>
   </div>
 </article><article class="example-card" id="trees-tree-diameter-ex2">
-  <h4>Recovering an Actual Diameter Path</h4>
+  <h4>Recovering an Actual Diameter Path<button type="button" class="done-checkbox" data-item-id="trees-tree-diameter-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an unweighted tree with n vertices, output the length of its diameter, followed by the vertices on one actual diameter path, in order from one endpoint to the other. Constraints: 1 &lt;= n &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -891,7 +919,7 @@ NO</code></pre>
     <div class="callout"><span class="c-label">Complexity</span><p>Preprocessing (two DFS passes: one for subtree sizes and heavy children, one for chain heads and positions): O(n). Each path or subtree query/update: O(log^2 n) (O(log n) chain jumps, each doing an O(log n) segment tree operation); this can be reduced to O(log n) per query with a sparse table for static data, but O(log^2 n) is standard and sufficient for n up to ~2*10^5.</p></div>
   </div>
   <article class="example-card" id="trees-heavy-light-decomposition-ex0">
-  <h4>Path Maximum Queries with Point Updates</h4>
+  <h4>Path Maximum Queries with Point Updates<button type="button" class="done-checkbox" data-item-id="trees-heavy-light-decomposition-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a tree with n vertices (rooted at vertex 1), each holding an integer value. Process q operations of two kinds:<br>  &quot;U i x&quot; — set the value of vertex i to x.<br>  &quot;Q u v&quot; — output the maximum value among all vertices on the path between u and v (inclusive).<br>Constraints: 1 &lt;= n, q &lt;= 2*10^5.</p></div>
   <div class="section-label">Approach</div>
@@ -1031,7 +1059,7 @@ Q 4 6
     <div class="callout"><span class="c-label">Complexity</span><p>Building the centroid tree: O(n log n) total, since finding a centroid and its subtree sizes costs O(size of current component), and component sizes at least halve at each of the O(log n) levels. Processing all paths through all centroids (the depth-counting pass shown below) is also O(n log n) total by the same halving argument, since every vertex is visited by an O(size) traversal at O(log n) different centroid levels. Space is O(n) for the recursion plus whatever auxiliary structure each centroid keeps.</p></div>
   </div>
   <article class="example-card" id="trees-centroid-decomposition-ex0">
-  <h4>Counting Pairs at an Exact Distance</h4>
+  <h4>Counting Pairs at an Exact Distance<button type="button" class="done-checkbox" data-item-id="trees-centroid-decomposition-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a tree with n vertices and an integer K, count the number of unordered pairs of distinct vertices (u, v) whose distance (number of edges on the path between them) is exactly K. Constraints: 1 &lt;= n &lt;= 2*10^5, 0 &lt;= K &lt;= n-1.</p></div>
   <div class="section-label">Approach</div>
@@ -1126,7 +1154,7 @@ Q 4 6
     <pre><code>6</code></pre>
   </div>
 </article><article class="example-card" id="trees-centroid-decomposition-ex1">
-  <h4>Edge Case: A Tree That Is a Single Path</h4>
+  <h4>Edge Case: A Tree That Is a Single Path<button type="button" class="done-checkbox" data-item-id="trees-centroid-decomposition-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Same task as above (count unordered pairs of vertices at exact distance K), applied to the degenerate case where the input tree is a straight path (a &quot;bamboo&quot;): vertices 1-2-3-4-5-6 with n = 6 and K = 3.</p></div>
   <div class="section-label">Approach</div>
@@ -1227,7 +1255,7 @@ Q 4 6
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time overall when the per-element merge/insert operation is O(1) amortized (hash maps, dynamic arrays/vectors, or a plain running max+sum) -- each of the n elements is moved into a new container O(log n) times across the whole tree, by the small-to-large potential argument, for O(n log n) total element-moves. If the container itself needs O(log n) per operation (e.g. merging std::set/std::map by rank, or a Fenwick tree), the bound becomes O(n log^2 n). Space is O(n) for the containers plus O(n) for the recursion stack (or O(n) auxiliary if implemented iteratively to avoid deep recursion on skewed trees).</p></div>
   </div>
   <article class="example-card" id="trees-small-to-large-merging-dsu-on-tree-ex0">
-  <h4>Sum of Dominant Colors in Every Subtree</h4>
+  <h4>Sum of Dominant Colors in Every Subtree<button type="button" class="done-checkbox" data-item-id="trees-small-to-large-merging-dsu-on-tree-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a rooted tree with n vertices (1 &lt;= n &lt;= 15 for this worked example; the original problem allows n up to 10^5), rooted at vertex 1. Vertex i has an integer color c[i] (1 &lt;= c[i] &lt;= 10^5). For a vertex v, define its subtree&#x27;s &quot;dominant colors&quot; as the color or colors that occur the maximum number of times among the colors of all vertices in v&#x27;s subtree (v included). If several colors tie for that maximum frequency, ALL of them are dominant. For every vertex v (v = 1..n), output the SUM of all colors that are dominant in v&#x27;s subtree.</p><p>Input: the first line contains n. The second line contains n integers c[1..n], the color of each vertex. Each of the next n-1 lines contains two integers a b, an edge of the tree (1-indexed).<br>Output: n integers on one line, separated by spaces: the sum of dominant colors for vertices 1, 2, ..., n in order.</p></div>
   <div class="section-label">Approach</div>
@@ -1314,7 +1342,7 @@ Q 4 6
 </code></pre>
   </div>
 </article><article class="example-card" id="trees-small-to-large-merging-dsu-on-tree-ex1">
-  <h4>Dominant Depth of Every Subtree</h4>
+  <h4>Dominant Depth of Every Subtree<button type="button" class="done-checkbox" data-item-id="trees-small-to-large-merging-dsu-on-tree-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a rooted tree with n vertices (1 &lt;= n &lt;= 15 for this worked example; the original problem allows n up to 10^6), rooted at vertex 1. For a vertex v, define the RELATIVE depth of a vertex w in v&#x27;s subtree as the number of edges on the path from v down to w (so v itself has relative depth 0, v&#x27;s children have relative depth 1, and so on). For every vertex v (v = 1..n), find the relative depth d that contains the largest number of vertices within v&#x27;s subtree; if several depths tie for the largest count, report the SMALLEST such d.</p><p>Input: the first line contains n. Each of the next n-1 lines contains two integers a b, an edge of the tree (1-indexed).<br>Output: n integers on one line, separated by spaces: the answer for vertices 1, 2, ..., n in order.</p></div>
   <div class="section-label">Approach</div>
@@ -1412,7 +1440,7 @@ Q 4 6
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) one-time preprocessing (Euler tour + binary-lifting LCA table). Per query with |S| vertices: O(|S| log n) to sort S and compute the O(|S|) pairwise-consecutive LCAs, O(|S| log|S|) to sort/dedupe, and O(|S|) for the stack-based edge construction, so O(|S| log n) per query overall; running a linear DP on the resulting &lt;= 2|S|-1 node virtual tree costs O(|S|) more. Total across all queries: O((sum of |S|) log n) time and O(sum of |S|) space for the virtual trees themselves, versus O(q * n) for a naive per-query full-tree pass.</p></div>
   </div>
   <article class="example-card" id="trees-virtual-trees-auxiliary-tree-technique-ex0">
-  <h4>Minimum Connecting Network Cost (Steiner tree weight via virtual tree construction)</h4>
+  <h4>Minimum Connecting Network Cost (Steiner tree weight via virtual tree construction)<button type="button" class="done-checkbox" data-item-id="trees-virtual-trees-auxiliary-tree-technique-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a tree with n vertices (1 &lt;= n &lt;= 2*10^5 in the original setting; kept small here for the worked example) rooted implicitly at vertex 1, where edge i connects two vertices and has a positive integer weight. You are then given q independent queries; each query gives a set S of k distinct vertices (sum of k over all queries bounded, e.g. by 2*10^5) and asks for the total edge weight of the minimal connected subtree of the original tree that contains every vertex of S (i.e. the sum of edge weights over the union of the tree-paths between every pair of vertices in S, each edge counted once even if it lies on multiple such paths).</p><p>Input: n, then n-1 lines each &#x27;u v w&#x27; (an edge between u and v with weight w). Then q, then q queries, each given as &#x27;k&#x27; followed by a line of k vertex indices.<br>Output: for each query, one line with the total edge weight of the minimal connecting subtree.</p></div>
   <div class="section-label">Approach</div>
@@ -1542,7 +1570,7 @@ Q 4 6
 </code></pre>
   </div>
 </article><article class="example-card" id="trees-virtual-trees-auxiliary-tree-technique-ex1">
-  <h4>Kingdom and its Cities (minimum vertex cut of capitals via DP on the virtual tree)</h4>
+  <h4>Kingdom and its Cities (minimum vertex cut of capitals via DP on the virtual tree)<button type="button" class="done-checkbox" data-item-id="trees-virtual-trees-auxiliary-tree-technique-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a tree with n vertices (1 &lt;= n &lt;= 2*10^5 in the original CF 613D problem; kept small here, n &lt;= 12) and q independent queries. Each query designates a set of k distinct &#x27;capital&#x27; vertices (sum of k over all queries bounded). For that query, find the minimum number of NON-capital vertices that must be deleted from the tree so that, in what remains, no two capital vertices are still connected to each other (every pair of capitals must have at least one deleted vertex on the tree path between them). If it is impossible (because two capitals are directly joined by a tree edge, with no vertex between them that could be removed), output -1 for that query.</p><p>Input: n, then n-1 lines each &#x27;u v&#x27; (an unweighted tree edge). Then q, then q queries, each given as &#x27;k&#x27; followed by a line of k capital vertex indices.<br>Output: for each query, the minimum number of vertices to delete, or -1 if impossible.</p></div>
   <div class="section-label">Approach</div>
@@ -1735,7 +1763,7 @@ Q 4 6
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) time per tree (or per pair) with a balanced-map-based canonical dictionary (O(n) with a hash map, though real hash maps on vector keys carry overhead), O(n) extra space for the dictionary and label arrays; centroid-finding for the unrooted variant adds O(n) per tree. A randomized polynomial-hashing variant of AHU runs in O(n log n) (from sorting each vertex&#x27;s children hashes) or O(n) with radix/bucket sorting by depth, trading exactness for speed.</p></div>
   </div>
   <article class="example-card" id="trees-tree-isomorphism-canonical-form-ex0">
-  <h4>Tree Isomorphism I -- Rooted Trees (CSES 1700)</h4>
+  <h4>Tree Isomorphism I -- Rooted Trees (CSES 1700)<button type="button" class="done-checkbox" data-item-id="trees-tree-isomorphism-canonical-form-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given t test cases (1 &lt;= t &lt;= 20). Each test case describes a PAIR of rooted trees, and you must determine whether they are isomorphic as rooted trees (there exists a bijection between their vertex sets that maps root to root and preserves the parent-child relationship in both directions; the left-to-right order in which a vertex&#x27;s children are given does not matter).</p><p>Each test case is given as follows: a line with an integer n1 (1 &lt;= n1 &lt;= 200000 in the original problem; kept small here for the worked example) -- the number of vertices of the first tree, always rooted at vertex 1. The next line contains n1-1 integers p2, p3, ..., p(n1), where p_i (1 &lt;= p_i &lt; i) is the parent of vertex i in the first tree. This is followed by a line with n2 (the vertex count of the second tree) and a line of n2-1 parent values p2..p(n2) for the second tree, in the same format (also rooted at vertex 1).</p><p>For each test case, print &quot;YES&quot; if the two rooted trees are isomorphic, or &quot;NO&quot; otherwise.</p></div>
   <div class="section-label">Approach</div>
@@ -1816,7 +1844,7 @@ YES
 </code></pre>
   </div>
 </article><article class="example-card" id="trees-tree-isomorphism-canonical-form-ex1">
-  <h4>Tree Isomorphism II -- Unrooted Trees via Centroid Rooting (CSES 1701)</h4>
+  <h4>Tree Isomorphism II -- Unrooted Trees via Centroid Rooting (CSES 1701)<button type="button" class="done-checkbox" data-item-id="trees-tree-isomorphism-canonical-form-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given t test cases (1 &lt;= t &lt;= 20). Each test case describes a PAIR of UNROOTED trees (no designated root), and you must determine whether they are isomorphic (there exists a bijection between their vertex sets that preserves adjacency exactly -- (a,b) is an edge of the first tree if and only if (phi(a), phi(b)) is an edge of the second).</p><p>Each test case is given as follows: a line with an integer n1 (1 &lt;= n1 &lt;= 200000 in the original problem; kept small here for the worked example), followed by n1-1 lines each containing two integers a b (1 &lt;= a, b &lt;= n1) describing an edge of the first tree. This is followed by a line with n2 and n2-1 edge lines for the second tree, in the same format.</p><p>For each test case, print &quot;YES&quot; if the two unrooted trees are isomorphic, or &quot;NO&quot; otherwise.</p></div>
   <div class="section-label">Approach</div>
@@ -1969,121 +1997,140 @@ YES
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="kth ancestor of a tree node leetcode lca/binary lifting preprocess a rooted tree so that many &quot;what is the kth ancestor of node u&quot; queries can each be answered quickly.">
   <td><a href="https://leetcode.com/problems/kth-ancestor-of-a-tree-node/" target="_blank" rel="noopener noreferrer">Kth Ancestor of a Tree Node</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">LCA/Binary Lifting</td>
   <td class="desc-cell">Preprocess a rooted tree so that many &quot;what is the kth ancestor of node u&quot; queries can each be answered quickly.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://leetcode.com/problems/kth-ancestor-of-a-tree-node/" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="fools and roads codeforces lca/binary lifting given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.">
   <td><a href="https://codeforces.com/problemset/problem/191/C" target="_blank" rel="noopener noreferrer">Fools and Roads</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">LCA/Binary Lifting</td>
   <td class="desc-cell">Given many simple paths marked on a tree, compute how many times each edge of the tree is used across all the marked paths.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/191/C" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="distinct colors cses euler tour each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.">
   <td><a href="https://cses.fi/problemset/task/1139" target="_blank" rel="noopener noreferrer">Distinct Colors</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section)</td>
   <td class="subtopic-cell">Euler Tour</td>
   <td class="desc-cell">Each node of a tree has a color; for every node, count the number of distinct colors among the nodes in its subtree.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1139" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="vasya and a tree codeforces euler tour process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.">
   <td><a href="https://codeforces.com/problemset/problem/1076/E" target="_blank" rel="noopener noreferrer">Vasya and a Tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1900</td>
   <td class="subtopic-cell">Euler Tour</td>
   <td class="desc-cell">Process offline update queries that each add a value to every vertex within a bounded depth inside the subtree of a given vertex, then report the final value at every vertex.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1076/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="minimal diameter forest codeforces tree diameter given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.">
   <td><a href="https://codeforces.com/problemset/problem/1092/E" target="_blank" rel="noopener noreferrer">Minimal Diameter Forest</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Tree Diameter</td>
   <td class="desc-cell">Given a forest consisting of exactly two trees, add a single edge connecting them so that the diameter of the resulting combined tree is minimized.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1092/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="path queries ii cses hld (heavy-light decomposition) support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.">
   <td><a href="https://cses.fi/problemset/task/2134" target="_blank" rel="noopener noreferrer">Path Queries II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section, hard version)</td>
   <td class="subtopic-cell">HLD (Heavy-Light Decomposition)</td>
   <td class="desc-cell">Support point-update and maximum-value-on-path queries between two arbitrary nodes of a tree.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2134" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="fixed-length paths ii cses centroid decomposition count the number of paths in a tree whose length lies within a given range [a, b].">
   <td><a href="https://cses.fi/problemset/task/2081" target="_blank" rel="noopener noreferrer">Fixed-Length Paths II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section, hard version)</td>
   <td class="subtopic-cell">Centroid Decomposition</td>
   <td class="desc-cell">Count the number of paths in a tree whose length lies within a given range [a, b].</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2081" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="xenia and tree codeforces centroid decomposition support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.">
   <td><a href="https://codeforces.com/problemset/problem/342/E" target="_blank" rel="noopener noreferrer">Xenia and Tree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2400</td>
   <td class="subtopic-cell">Centroid Decomposition</td>
   <td class="desc-cell">Support two online operations on a tree: repaint a given vertex blue, and query the minimum distance from a given vertex to the nearest currently-blue vertex.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/342/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="lomsat gelral codeforces small-to-large merging rooted tree with a color per vertex; for every vertex output the sum of all colors that are &quot;dominant&quot; (most frequent) in its subtree.">
   <td><a href="https://codeforces.com/problemset/problem/600/E" target="_blank" rel="noopener noreferrer">Lomsat gelral</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2300</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">Rooted tree with a color per vertex; for every vertex output the sum of all colors that are &quot;dominant&quot; (most frequent) in its subtree.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/600/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="dominant indices codeforces small-to-large merging for each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.">
   <td><a href="https://codeforces.com/problemset/problem/1009/F" target="_blank" rel="noopener noreferrer">Dominant Indices</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2300</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">For each vertex of a rooted tree, find the depth (relative to that vertex) that contains the most vertices in its subtree, breaking ties by smallest depth.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1009/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="gcd counting codeforces small-to-large merging given a tree with a number on each vertex, find the length of the longest path whose vertices share a gcd greater than 1, for every prime factor.">
   <td><a href="https://codeforces.com/problemset/problem/1101/D" target="_blank" rel="noopener noreferrer">GCD Counting</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2000</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">Given a tree with a number on each vertex, find the length of the longest path whose vertices share a GCD greater than 1, for every prime factor.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1101/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="graph and queries codeforces small-to-large merging process edge-deletion and &quot;find-and-zero-out-max-in-component&quot; queries offline by reversing time (edge additions) and merging component data with a dsu where the smaller structure (e.g. an ordered set) is always merged into the larger.">
   <td><a href="https://codeforces.com/problemset/problem/1416/D" target="_blank" rel="noopener noreferrer">Graph and Queries</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2600</td>
   <td class="subtopic-cell">Small-to-Large Merging</td>
   <td class="desc-cell">Process edge-deletion and &quot;find-and-zero-out-max-in-component&quot; queries offline by reversing time (edge additions) and merging component data with a DSU where the smaller structure (e.g. an ordered set) is always merged into the larger.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1416/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="kingdom and its cities codeforces virtual trees (auxiliary tree) given a tree and repeated small subsets of &quot;capital&quot; vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.">
   <td><a href="https://codeforces.com/problemset/problem/613/D" target="_blank" rel="noopener noreferrer">Kingdom and its Cities</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2800</td>
   <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
   <td class="desc-cell">Given a tree and repeated small subsets of &quot;capital&quot; vertices, find the minimum number of vertices to block so that no capital can reach any other capital, using only vertices near the given subset.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/613/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tourism codeforces virtual trees (auxiliary tree) on a graph built from a tree with extra &quot;back&quot; edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.">
   <td><a href="https://codeforces.com/problemset/problem/1220/E" target="_blank" rel="noopener noreferrer">Tourism</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
   <td class="desc-cell">On a graph built from a tree with extra &quot;back&quot; edges forming simple cycles, compute for every vertex the maximum total vertex weight reachable via a walk that never repeats a road consecutively.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1220/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="partial virtual trees codeforces virtual trees (auxiliary tree) count, for every k, the number of ways to repeatedly shrink a vertex set to a proper &quot;partial virtual tree&quot; (an lca-closed subset) exactly k times until only the root remains.">
   <td><a href="https://codeforces.com/problemset/problem/1707/D" target="_blank" rel="noopener noreferrer">Partial Virtual Trees</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 3000</td>
   <td class="subtopic-cell">Virtual Trees (Auxiliary Tree)</td>
   <td class="desc-cell">Count, for every k, the number of ways to repeatedly shrink a vertex set to a proper &quot;partial virtual tree&quot; (an LCA-closed subset) exactly k times until only the root remains.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1707/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tree isomorphism i cses tree isomorphism / canonical form given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.">
   <td><a href="https://cses.fi/problemset/task/1700" target="_blank" rel="noopener noreferrer">Tree Isomorphism I</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section)</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Given several pairs of rooted trees, determine for each pair whether the two rooted trees are isomorphic.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1700" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="tree isomorphism ii cses tree isomorphism / canonical form same as tree isomorphism i, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.">
   <td><a href="https://cses.fi/problemset/task/1701" target="_blank" rel="noopener noreferrer">Tree Isomorphism II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Tree Algorithms section)</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Same as Tree Isomorphism I, but the input trees are unrooted, so a canonical root (e.g. centroid) must be chosen before canonical-form hashing applies.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1701" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="symmetree codeforces tree isomorphism / canonical form determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.">
   <td><a href="https://codeforces.com/problemset/problem/1800/G" target="_blank" rel="noopener noreferrer">Symmetree</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Determine whether a rooted tree can have its children reordered at every vertex so that it becomes a mirror-symmetric tree.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1800/G" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="regular forestation codeforces tree isomorphism / canonical form find a vertex whose removal splits a tree into two or more pairwise-isomorphic (&quot;identical&quot;) subtrees, and report the maximum possible number of pieces.">
   <td><a href="https://codeforces.com/problemset/problem/1252/F" target="_blank" rel="noopener noreferrer">Regular Forestation</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">Tree Isomorphism / Canonical Form</td>
   <td class="desc-cell">Find a vertex whose removal splits a tree into two or more pairwise-isomorphic (&quot;identical&quot;) subtrees, and report the maximum possible number of pieces.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1252/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

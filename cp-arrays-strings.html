@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1208,150 +1236,175 @@
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">prefix sums + counting (Fenwick tree)</td>
   <td class="desc-cell">Count the number of subarrays of an array (which may contain negative numbers) whose sum is strictly less than a given t.</td>
+  
 </tr><tr data-search="close tuples (hard version) codeforces two pointers + combinatorial counting count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.">
   <td><a href="https://codeforces.com/problemset/problem/1462/E2" target="_blank" rel="noopener noreferrer">Close Tuples (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1700</td>
   <td class="subtopic-cell">two pointers + combinatorial counting</td>
   <td class="desc-cell">Count the number of size-m subsequences of an array such that the difference between the maximum and minimum element in the subsequence is at most k.</td>
+  
 </tr><tr data-search="openstreetmap codeforces 2d sliding window minimum (monotonic deque) given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.">
   <td><a href="https://codeforces.com/problemset/problem/1195/E" target="_blank" rel="noopener noreferrer">OpenStreetMap</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">2D sliding window minimum (monotonic deque)</td>
   <td class="desc-cell">Given an n×m grid, compute the minimum element of every k×k submatrix and sum all these minima.</td>
+  
 </tr><tr data-search="subarray sums ii cses prefix sums + hashmap counting count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.">
   <td><a href="https://cses.fi/problemset/task/1661" target="_blank" rel="noopener noreferrer">Subarray Sums II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">prefix sums + hashmap counting</td>
   <td class="desc-cell">Count the number of subarrays (of an array that may contain negative or zero values) with sum exactly equal to a given x.</td>
+  
 </tr><tr data-search="maximum subarray sum ii cses kadane variant with length constraint (prefix sums + segment tree/deque) find the maximum possible sum of a subarray whose length is between two given bounds a and b.">
   <td><a href="https://cses.fi/problemset/task/1644" target="_blank" rel="noopener noreferrer">Maximum Subarray Sum II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Kadane variant with length constraint (prefix sums + segment tree/deque)</td>
   <td class="desc-cell">Find the maximum possible sum of a subarray whose length is between two given bounds a and b.</td>
+  
 </tr><tr data-search="sliding window maximum leetcode sliding window with monotonic deque given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.">
   <td><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">Sliding Window Maximum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">sliding window with monotonic deque</td>
   <td class="desc-cell">Given an array and a window size k, return the maximum value in every contiguous window of size k as it slides across the array.</td>
+  
 </tr><tr data-search="shortest subarray with sum at least k leetcode prefix sums + monotonic deque given an integer array (possibly containing negative numbers) and integer k, find the length of the shortest contiguous subarray with sum at least k, or -1 if none exists.">
   <td><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank" rel="noopener noreferrer">Shortest Subarray with Sum at Least K</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">prefix sums + monotonic deque</td>
   <td class="desc-cell">Given an integer array (possibly containing negative numbers) and integer K, find the length of the shortest contiguous subarray with sum at least K, or -1 if none exists.</td>
+  
 </tr><tr data-search="number of submatrices that sum to target leetcode 2d prefix sums + hashmap given a 2d matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.">
   <td><a href="https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/" target="_blank" rel="noopener noreferrer">Number of Submatrices That Sum to Target</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">2D prefix sums + hashmap</td>
   <td class="desc-cell">Given a 2D matrix and an integer target, count the number of non-empty submatrices whose element sum equals target.</td>
+  
 </tr><tr data-search="range increments codeforces difference arrays given the final array state (all elements start at 0), reconstruct the minimum number of `rangeincrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.">
   <td><a href="https://codeforces.com/problemset/problem/174/C" target="_blank" rel="noopener noreferrer">Range Increments</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given the final array state (all elements start at 0), reconstruct the minimum number of `rangeIncrement(l, r)` calls (each adds 1 to every element in `[l, r]`) that could have produced it.</td>
+  
 </tr><tr data-search="too many segments (hard version) codeforces difference arrays given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.">
   <td><a href="https://codeforces.com/problemset/problem/1249/D2" target="_blank" rel="noopener noreferrer">Too Many Segments (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given n segments on a line and a limit k, remove the minimum number of segments so that no integer point is covered by more than k segments.</td>
+  
 </tr><tr data-search="clear the multiset codeforces difference arrays given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.">
   <td><a href="https://codeforces.com/problemset/problem/1400/E" target="_blank" rel="noopener noreferrer">Clear the Multiset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given counts a_1..a_n of a multiset containing a_i copies of value i, find the minimum number of operations (remove one occurrence of every value in a contiguous range, or remove x copies of one value) to empty the multiset.</td>
+  
 </tr><tr data-search="addition on segments codeforces difference arrays starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.">
   <td><a href="https://codeforces.com/problemset/problem/981/E" target="_blank" rel="noopener noreferrer">Addition on Segments</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Starting from an all-zero array, given q range-add operations (add x_i to [l_i, r_i]), determine every value y that the array maximum can equal after applying some subset of the operations.</td>
+  
 </tr><tr data-search="minimum operations to make array equal to target leetcode difference arrays given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.">
   <td><a href="https://leetcode.com/problems/minimum-operations-to-make-array-equal-to-target/" target="_blank" rel="noopener noreferrer">Minimum Operations to Make Array Equal to Target</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard (LeetCode #3454)</td>
   <td class="subtopic-cell">Difference Arrays</td>
   <td class="desc-cell">Given `nums` and `target` of the same length, find the minimum number of operations to turn `nums` into `target`, where one operation increments or decrements a contiguous subarray by 1.</td>
+  
 </tr><tr data-search="array partition codeforces two-pointer partitioning split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.">
   <td><a href="https://codeforces.com/problemset/problem/1454/F" target="_blank" rel="noopener noreferrer">Array Partition</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Split an array into three non-empty contiguous parts x, y, z such that max of the first part equals min of the second part equals max of the third part, or report impossible.</td>
+  
 </tr><tr data-search="range and partition codeforces two-pointer partitioning choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.">
   <td><a href="https://codeforces.com/problemset/problem/1630/B" target="_blank" rel="noopener noreferrer">Range and Partition</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Choose a value range [x, y] and split the array into k contiguous subarrays such that every subarray has strictly more elements inside [x, y] than outside, minimizing y − x.</td>
+  
 </tr><tr data-search="recover the original array leetcode two-pointer partitioning given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.">
   <td><a href="https://leetcode.com/problems/recover-the-original-array/" target="_blank" rel="noopener noreferrer">Recover the Original Array</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Given an array formed by interleaving `arr[i]-k` and `arr[i]+k` for an unknown k, recover a valid original array `arr`.</td>
+  
 </tr><tr data-search="partition array into two arrays to minimize sum difference leetcode two-pointer partitioning partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.">
   <td><a href="https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/" target="_blank" rel="noopener noreferrer">Partition Array Into Two Arrays to Minimize Sum Difference</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Two-Pointer Partitioning</td>
   <td class="desc-cell">Partition a 2n-length array into two arrays of size n each so that the absolute difference of their sums is minimized.</td>
+  
 </tr><tr data-search="constrained subsequence sum leetcode monotonic deque choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.">
   <td><a href="https://leetcode.com/problems/constrained-subsequence-sum/" target="_blank" rel="noopener noreferrer">Constrained Subsequence Sum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard (LeetCode #1425)</td>
   <td class="subtopic-cell">Monotonic Deque</td>
   <td class="desc-cell">Choose a subsequence where consecutive chosen indices are at most k apart, maximizing the sum of the subsequence.</td>
+  
 </tr><tr data-search="watching fireworks is fun codeforces monotonic deque you move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.">
   <td><a href="https://codeforces.com/problemset/problem/372/C" target="_blank" rel="noopener noreferrer">Watching Fireworks is Fun</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Monotonic Deque</td>
   <td class="desc-cell">You move along a street of n sections at speed ≤ d; for each of m fireworks launched at position a_i giving happiness b_i − |a_i − x|, choose your position over time to maximize total happiness.</td>
+  
 </tr><tr data-search="pictures with kittens (hard version) codeforces monotonic deque choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.">
   <td><a href="https://codeforces.com/problemset/problem/1077/F2" target="_blank" rel="noopener noreferrer">Pictures with Kittens (hard version)</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Monotonic Deque</td>
   <td class="desc-cell">Choose exactly x pictures from n so that every window of k consecutive pictures contains at least one chosen picture, maximizing total beauty of chosen pictures.</td>
+  
 </tr><tr data-search="data stream as disjoint intervals leetcode merge intervals design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.">
   <td><a href="https://leetcode.com/problems/data-stream-as-disjoint-intervals/" target="_blank" rel="noopener noreferrer">Data Stream as Disjoint Intervals</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Design a data structure that, given a stream of integers, can add a value and return the current set of disjoint intervals covering all values seen so far.</td>
+  
 </tr><tr data-search="range module leetcode merge intervals design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.">
   <td><a href="https://leetcode.com/problems/range-module/" target="_blank" rel="noopener noreferrer">Range Module</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Design a data structure to track ranges of integers, supporting adding a range, removing a range, and querying whether every integer in a range is currently tracked, with ranges auto-merging.</td>
+  
 </tr><tr data-search="count integers in intervals leetcode merge intervals design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).">
   <td><a href="https://leetcode.com/problems/count-integers-in-intervals/" target="_blank" rel="noopener noreferrer">Count Integers in Intervals</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Design a data structure that supports adding an interval of integers and querying the total count of distinct integers currently covered by all added intervals (with automatic merging of overlaps).</td>
+  
 </tr><tr data-search="minimum interval to include each query leetcode merge intervals given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.">
   <td><a href="https://leetcode.com/problems/minimum-interval-to-include-each-query/" target="_blank" rel="noopener noreferrer">Minimum Interval to Include Each Query</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Given a list of intervals and a list of query points, for each query find the size of the smallest interval that contains it.</td>
+  
 </tr><tr data-search="the union of k-segments codeforces merge intervals given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.">
   <td><a href="https://codeforces.com/problemset/problem/612/D" target="_blank" rel="noopener noreferrer">The Union of k-Segments</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Merge Intervals</td>
   <td class="desc-cell">Given n segments and an integer k, find the minimal set of disjoint segments whose union is exactly the set of points covered by at least k of the input segments.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

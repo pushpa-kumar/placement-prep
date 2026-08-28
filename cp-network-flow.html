@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1174,108 +1202,126 @@
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Find the maximum data transfer rate from computer 1 to computer n through a network of directed connections with given capacities.</td>
+  
 </tr><tr data-search="distinct routes cses max flow find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.">
   <td><a href="https://cses.fi/problemset/task/1711" target="_blank" rel="noopener noreferrer">Distinct Routes</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Find the maximum number of edge-disjoint paths from room 1 to room n in a directed graph and output the paths themselves.</td>
+  
 </tr><tr data-search="fox and dinner codeforces max flow seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.">
   <td><a href="https://codeforces.com/problemset/problem/510/E" target="_blank" rel="noopener noreferrer">Fox and Dinner</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Seat foxes at round tables (each with at least 3 foxes) so that the ages of any two adjacent foxes sum to a prime.</td>
+  
 </tr><tr data-search="delivery bears codeforces max flow split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.">
   <td><a href="https://codeforces.com/problemset/problem/653/D" target="_blank" rel="noopener noreferrer">Delivery Bears</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">max flow</td>
   <td class="desc-cell">Split a required flow between two bear species along edge capacities in a fixed ratio while maximizing total flow.</td>
+  
 </tr><tr data-search="police chase cses min cut find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.">
   <td><a href="https://cses.fi/problemset/task/1695" target="_blank" rel="noopener noreferrer">Police Chase</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">min cut</td>
   <td class="desc-cell">Find the minimum number of edges to remove to disconnect node 1 from node n, and report which edges to cut.</td>
+  
 </tr><tr data-search="petya and graph codeforces min cut choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).">
   <td><a href="https://codeforces.com/problemset/problem/1082/G" target="_blank" rel="noopener noreferrer">Petya and Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">min cut</td>
   <td class="desc-cell">Choose a subgraph maximizing (sum of edge weights) minus (sum of weights of vertices touched by chosen edges).</td>
+  
 </tr><tr data-search="rectangle painting 2 codeforces min cut paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.">
   <td><a href="https://codeforces.com/problemset/problem/1198/E" target="_blank" rel="noopener noreferrer">Rectangle Painting 2</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">min cut</td>
   <td class="desc-cell">Paint possibly-overlapping rectangles in two colors to minimize the total mismatched-color area in their pairwise overlaps.</td>
+  
 </tr><tr data-search="school dance cses bipartite matching find the maximum matching between boys and girls given a list of pairs willing to dance together.">
   <td><a href="https://cses.fi/problemset/task/1696" target="_blank" rel="noopener noreferrer">School Dance</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">bipartite matching</td>
   <td class="desc-cell">Find the maximum matching between boys and girls given a list of pairs willing to dance together.</td>
+  
 </tr><tr data-search="exploration plan codeforces bipartite matching find the minimum time limit so that n teams starting in various cities can collectively occupy at least k distinct cities.">
   <td><a href="https://codeforces.com/problemset/problem/852/D" target="_blank" rel="noopener noreferrer">Exploration Plan</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">bipartite matching</td>
   <td class="desc-cell">Find the minimum time limit so that N teams starting in various cities can collectively occupy at least K distinct cities.</td>
+  
 </tr><tr data-search="round marriage codeforces bipartite matching match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.">
   <td><a href="https://codeforces.com/problemset/problem/981/F" target="_blank" rel="noopener noreferrer">Round Marriage</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">bipartite matching</td>
   <td class="desc-cell">Match bridegrooms to brides placed around a circle to minimize the maximum walking distance any bride must travel.</td>
+  
 </tr><tr data-search="anti-palindromize codeforces min-cost max-flow rearrange a string into an antipalindromic permutation maximizing the sum of &quot;beauty&quot; values at positions that keep their original character.">
   <td><a href="https://codeforces.com/problemset/problem/884/F" target="_blank" rel="noopener noreferrer">Anti-Palindromize</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Rearrange a string into an antipalindromic permutation maximizing the sum of &quot;beauty&quot; values at positions that keep their original character.</td>
+  
 </tr><tr data-search="red-blue graph codeforces min-cost max-flow color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.">
   <td><a href="https://codeforces.com/problemset/problem/1288/F" target="_blank" rel="noopener noreferrer">Red-Blue Graph</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2900</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Color bipartite-graph edges red/blue (or leave uncolored) at a cost to satisfy per-vertex majority-color constraints, minimizing total cost.</td>
+  
 </tr><tr data-search="build string codeforces min-cost max-flow build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.">
   <td><a href="https://codeforces.com/problemset/problem/237/E" target="_blank" rel="noopener noreferrer">Build String</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Build a target string t by deleting characters from n source strings, each character removed from string s_i costing i rubles and capped at a_i total removals, minimizing total cost.</td>
+  
 </tr><tr data-search="four melodies codeforces min-cost max-flow select four disjoint, non-intersecting &quot;melody&quot; subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.">
   <td><a href="https://codeforces.com/problemset/problem/818/G" target="_blank" rel="noopener noreferrer">Four Melodies</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2600</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Select four disjoint, non-intersecting &quot;melody&quot; subsequences (each with the arithmetic/mod-7 melody property) from a note sequence to maximize total length.</td>
+  
 </tr><tr data-search="mcf codeforces min-cost max-flow find the minimum-cost circulation in a dag-like flow network subject to the extra constraint that each edge&#x27;s flow must match its capacity&#x27;s parity.">
   <td><a href="https://codeforces.com/problemset/problem/1766/F" target="_blank" rel="noopener noreferrer">MCF</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2800</td>
   <td class="subtopic-cell">Min-Cost Max-Flow</td>
   <td class="desc-cell">Find the minimum-cost circulation in a DAG-like flow network subject to the extra constraint that each edge&#x27;s flow must match its capacity&#x27;s parity.</td>
+  
 </tr><tr data-search="task assignment cses hungarian algorithm given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).">
   <td><a href="https://cses.fi/problemset/task/2129" target="_blank" rel="noopener noreferrer">Task Assignment</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Hungarian Algorithm</td>
   <td class="desc-cell">Given n employees, n tasks, and a full cost matrix, assign every employee exactly one task minimizing total cost (and output the assignment).</td>
+  
 </tr><tr data-search="chef monocarp codeforces hungarian algorithm assign each of n dishes to a distinct positive-integer removal time t, minimizing the sum of |t - t_i| over all dishes.">
   <td><a href="https://codeforces.com/problemset/problem/1437/C" target="_blank" rel="noopener noreferrer">Chef Monocarp</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Hungarian Algorithm</td>
   <td class="desc-cell">Assign each of n dishes to a distinct positive-integer removal time T, minimizing the sum of |T - t_i| over all dishes.</td>
+  
 </tr><tr data-search="vasya and endless credits codeforces hungarian algorithm choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.">
   <td><a href="https://codeforces.com/problemset/problem/1107/F" target="_blank" rel="noopener noreferrer">Vasya and Endless Credits</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2600</td>
   <td class="subtopic-cell">Hungarian Algorithm</td>
   <td class="desc-cell">Choose an order to activate n credit offers (one per month) to maximize the money available at some point before repayments catch up.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

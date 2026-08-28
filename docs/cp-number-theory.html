@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">CP / DSA Guide</p>
@@ -275,7 +303,7 @@
     <div class="callout"><span class="c-label">Complexity</span><p>O(log(min(a,b))) time per gcd/extgcd call, O(1) extra space (or O(log(min(a,b))) stack space if implemented recursively).</p></div>
   </div>
   <article class="example-card" id="number-theory-gcd-extended-euclidean-algorithm-ex0">
-  <h4>Modular Inverse via Extended Euclid</h4>
+  <h4>Modular Inverse via Extended Euclid<button type="button" class="done-checkbox" data-item-id="number-theory-gcd-extended-euclidean-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given q queries (1 &lt;= q &lt;= 1000). Each query gives two integers a and m (1 &lt;= a &lt;= 10^9, 2 &lt;= m &lt;= 10^9). Output the modular inverse of a modulo m, i.e. the unique integer x with 0 &lt;= x &lt; m and a*x ≡ 1 (mod m), if it exists. If gcd(a, m) != 1, no inverse exists — output &quot;no inverse&quot; instead. Note m is not guaranteed to be prime.</p></div>
   <div class="section-label">Approach</div>
@@ -325,7 +353,7 @@ no inverse
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-gcd-extended-euclidean-algorithm-ex1">
-  <h4>Generalized CRT with Non-Coprime Moduli</h4>
+  <h4>Generalized CRT with Non-Coprime Moduli<button type="button" class="done-checkbox" data-item-id="number-theory-gcd-extended-euclidean-algorithm-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given a system of n congruences (2 &lt;= n &lt;= 100): x ≡ r_i (mod m_i) for i = 1..n, with 1 &lt;= r_i &lt; m_i &lt;= 10^9. The moduli m_i are NOT guaranteed to be pairwise coprime. Determine whether a solution x exists, and if so output the unique solution r and modulus m with 0 &lt;= r &lt; m = lcm(m_1, ..., m_n) such that x ≡ r (mod m) is equivalent to the whole system. If no solution exists, output &quot;no solution&quot;.</p></div>
   <div class="section-label">Approach</div>
@@ -399,7 +427,7 @@ ll extgcd(ll a, ll b, ll &amp;x, ll &amp;y) {
     <div class="callout"><span class="c-label">Complexity</span><p>O(log(exponent)) per fast-exponentiation call; O(sqrt(n)) to enumerate divisors of a single n for the divisor-product trick.</p></div>
   </div>
   <article class="example-card" id="number-theory-modular-arithmetic-fast-exponentiation-ex0">
-  <h4>Fast Power mod p</h4>
+  <h4>Fast Power mod p<button type="button" class="done-checkbox" data-item-id="number-theory-modular-arithmetic-fast-exponentiation-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 2*10^5). Each gives integers b and e with 0 &lt;= b &lt; 10^9+7 and 0 &lt;= e &lt;= 10^18. Output b^e mod (10^9+7).</p></div>
   <div class="section-label">Approach</div>
@@ -445,7 +473,7 @@ ll power(ll base, ll exp, ll mod) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-modular-arithmetic-fast-exponentiation-ex1">
-  <h4>Exponentiation Tower (a^(b^c) mod p)</h4>
+  <h4>Exponentiation Tower (a^(b^c) mod p)<button type="button" class="done-checkbox" data-item-id="number-theory-modular-arithmetic-fast-exponentiation-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 2*10^5). Each gives three integers a, b, c with 0 &lt;= a, b, c &lt;= 10^9. Output a^(b^c) mod (10^9+7), using the standard convention that 0^0 = 1 wherever it arises (both for b^c itself and for the outer power).</p></div>
   <div class="section-label">Approach</div>
@@ -517,7 +545,7 @@ ll power(ll base, ll exp, ll mod) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-modular-arithmetic-fast-exponentiation-ex2">
-  <h4>Product of All Divisors</h4>
+  <h4>Product of All Divisors<button type="button" class="done-checkbox" data-item-id="number-theory-modular-arithmetic-fast-exponentiation-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given a single integer n (1 &lt;= n &lt;= 10^12), output the product of all positive divisors of n, modulo 10^9+7.</p></div>
   <div class="section-label">Approach</div>
@@ -586,7 +614,7 @@ ll power(ll base, ll exp, ll mod) {
     <div class="callout"><span class="c-label">Complexity</span><p>O(V log log V) for a standard or SPF sieve up to V; O(V log V) for sieve-over-multiples techniques; O(sqrt(n)) for the floor-division block technique on a single large n.</p></div>
   </div>
   <article class="example-card" id="number-theory-sieve-of-eratosthenes-and-sieve-based-techniques-ex0">
-  <h4>Smallest-Prime-Factor Sieve for Fast Factorization</h4>
+  <h4>Smallest-Prime-Factor Sieve for Fast Factorization<button type="button" class="done-checkbox" data-item-id="number-theory-sieve-of-eratosthenes-and-sieve-based-techniques-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 10^6), each an integer x (1 &lt;= x &lt;= 10^6). For each query, output the prime factorization of x as space-separated terms &quot;p^e&quot; in increasing order of p (print nothing on the line if x == 1).</p></div>
   <div class="section-label">Approach</div>
@@ -644,7 +672,7 @@ ll power(ll base, ll exp, ll mod) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-sieve-of-eratosthenes-and-sieve-based-techniques-ex1">
-  <h4>Sum of Sigma(i) via Floor-Division Blocks</h4>
+  <h4>Sum of Sigma(i) via Floor-Division Blocks<button type="button" class="done-checkbox" data-item-id="number-theory-sieve-of-eratosthenes-and-sieve-based-techniques-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given n (1 &lt;= n &lt;= 10^12), compute S = sum_{i=1}^{n} sigma(i) mod (10^9+7), where sigma(i) is the sum of all positive divisors of i. n is far too large to sieve directly.</p></div>
   <div class="section-label">Approach</div>
@@ -700,7 +728,7 @@ ll power(ll base, ll exp, ll mod) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-sieve-of-eratosthenes-and-sieve-based-techniques-ex2">
-  <h4>Subsequences with GCD Exactly d</h4>
+  <h4>Subsequences with GCD Exactly d<button type="button" class="done-checkbox" data-item-id="number-theory-sieve-of-eratosthenes-and-sieve-based-techniques-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given an array of n positive integers (1 &lt;= n &lt;= 2*10^5), each at most V (1 &lt;= V &lt;= 2*10^5). Then answer q queries (1 &lt;= q &lt;= 2*10^5), each an integer d; for each, output the number of non-empty subsequences of the array whose GCD is exactly d, modulo 10^9+7.</p></div>
   <div class="section-label">Approach</div>
@@ -792,7 +820,7 @@ ll power(ll base, ll exp, ll mod) {
     <div class="callout"><span class="c-label">Complexity</span><p>O(log^3 n) per Miller-Rabin test; O(n^(1/4)) expected per Pollard&#x27;s rho factor extraction; O((R-L)log log R + sqrt(R) log log sqrt(R)) for a segmented sieve over [L,R].</p></div>
   </div>
   <article class="example-card" id="number-theory-primality-testing-at-scale-ex0">
-  <h4>Next Prime (Deterministic Miller-Rabin)</h4>
+  <h4>Next Prime (Deterministic Miller-Rabin)<button type="button" class="done-checkbox" data-item-id="number-theory-primality-testing-at-scale-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 20). Each gives an integer n (1 &lt;= n &lt;= 10^12). For each, output the smallest prime strictly greater than n.</p></div>
   <div class="section-label">Approach</div>
@@ -867,7 +895,7 @@ ll power(ll base, ll exp, ll mod) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-primality-testing-at-scale-ex1">
-  <h4>Full Factorization with Pollard&#x27;s Rho</h4>
+  <h4>Full Factorization with Pollard&#x27;s Rho<button type="button" class="done-checkbox" data-item-id="number-theory-primality-testing-at-scale-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 10). Each gives an integer n (1 &lt;= n &lt;= 10^18). Output the prime factorization of n as space-separated &quot;p^e&quot; terms in increasing order of p (output just &quot;1&quot; if n == 1).</p></div>
   <div class="section-label">Approach</div>
@@ -972,7 +1000,7 @@ ll pollardRho(ll n) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-primality-testing-at-scale-ex2">
-  <h4>Counting Primes in a Large Range (Segmented Sieve)</h4>
+  <h4>Counting Primes in a Large Range (Segmented Sieve)<button type="button" class="done-checkbox" data-item-id="number-theory-primality-testing-at-scale-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given two integers L and R (1 &lt;= L &lt;= R &lt;= 10^12, R - L &lt;= 10^6), count how many primes lie in the inclusive range [L, R].</p></div>
   <div class="section-label">Approach</div>
@@ -1034,7 +1062,7 @@ ll pollardRho(ll n) {
     <div class="callout"><span class="c-label">Complexity</span><p>O(MAXN) precomputation + O(1) per nCr query; O(2^k * k) for inclusion-exclusion over k conditions.</p></div>
   </div>
   <article class="example-card" id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex0">
-  <h4>Binomial Coefficients with O(1) Queries</h4>
+  <h4>Binomial Coefficients with O(1) Queries<button type="button" class="done-checkbox" data-item-id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 10^5). Each gives integers a and b with 0 &lt;= b &lt;= a &lt;= 10^6. Output C(a, b) mod (10^9+7).</p></div>
   <div class="section-label">Approach</div>
@@ -1099,7 +1127,7 @@ ll nCr(<span class="tok-keyword">int</span> n, <span class="tok-keyword">int</sp
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex1">
-  <h4>Counting Multiples of Given Primes (Inclusion-Exclusion)</h4>
+  <h4>Counting Multiples of Given Primes (Inclusion-Exclusion)<button type="button" class="done-checkbox" data-item-id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n (1 &lt;= n &lt;= 10^18) and a list of k distinct primes (1 &lt;= k &lt;= 20, each prime up to 10^9, and the product of any subset that matters fits comfortably in a 128-bit integer). Count how many integers in [1, n] are divisible by at least one of the given primes.</p></div>
   <div class="section-label">Approach</div>
@@ -1150,7 +1178,7 @@ ll nCr(<span class="tok-keyword">int</span> n, <span class="tok-keyword">int</sp
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex2">
-  <h4>Collapsing a Sum via Vandermonde&#x27;s Identity</h4>
+  <h4>Collapsing a Sum via Vandermonde&#x27;s Identity<button type="button" class="done-checkbox" data-item-id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex2" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Answer q queries (1 &lt;= q &lt;= 10^5). Each gives integers m and n (0 &lt;= m, n &lt;= 10^6). Let S = sum_{k=0}^{min(m,n)} C(m,k) * C(n,k). Output S mod (10^9+7). Evaluating the sum term-by-term for every query would take O(min(m,n)) per query, up to 2*10^11 operations total across all queries — too slow.</p></div>
   <div class="section-label">Approach</div>
@@ -1223,7 +1251,7 @@ ll nCr(<span class="tok-keyword">int</span> n, <span class="tok-keyword">int</sp
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log(max modulus)) to merge n congruences one at a time via the extended Euclidean algorithm (each merge is O(log(max modulus))); O(1) additional per-merge arithmetic with __int128 or manual overflow-safe multiplication.</p></div>
   </div>
   <article class="example-card" id="number-theory-chinese-remainder-theorem-ex0">
-  <h4>Reconstructing a Hidden Integer from Coprime Sensor Residues</h4>
+  <h4>Reconstructing a Hidden Integer from Coprime Sensor Residues<button type="button" class="done-checkbox" data-item-id="number-theory-chinese-remainder-theorem-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>A hidden non-negative integer x is monitored by n independent sensors (2 &lt;= n &lt;= 15). Sensor i reports only the residue r_i = x mod m_i. The moduli m_1, ..., m_n are pairwise coprime (gcd(m_i, m_j) = 1 whenever i != j), and it is guaranteed that the product M = m_1 * m_2 * ... * m_n fits in a signed 64-bit integer. Given all n pairs (r_i, m_i), determine the unique integer x with 0 &lt;= x &lt; M consistent with every sensor&#x27;s reading, together with M itself.</p><p>Input: n, then n lines each containing r_i and m_i.<br>Output: x and M, separated by a space.</p></div>
   <div class="section-label">Approach</div>
@@ -1285,7 +1313,7 @@ ll modinv(ll a, ll m) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-chinese-remainder-theorem-ex1">
-  <h4>Merging Possibly-Overlapping Modular Constraints (General CRT)</h4>
+  <h4>Merging Possibly-Overlapping Modular Constraints (General CRT)<button type="button" class="done-checkbox" data-item-id="number-theory-chinese-remainder-theorem-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are given n congruences of the form x ≡ r_i (mod m_i) for 1 &lt;= n &lt;= 12, 1 &lt;= m_i &lt;= 10^9, where the moduli are NOT necessarily pairwise coprime (e.g. they could share common factors, as when two different constraints both happen to be multiples of a common divisor). Determine the smallest non-negative integer x that satisfies all n congruences simultaneously, or determine that no such x exists. It is guaranteed that if a solution exists, the least common multiple of all the m_i fits in a signed 64-bit integer.</p><p>Input: n, then n lines each containing r_i and m_i.<br>Output: the smallest non-negative x satisfying every congruence, or -1 if no such x exists.</p></div>
   <div class="section-label">Approach</div>
@@ -1353,7 +1381,7 @@ ll extgcd(ll a, ll b, ll &amp;x, ll &amp;y) {
     <div class="callout"><span class="c-label">Complexity</span><p>O(k^3 log n) time for a single query with recurrence order k and target index n; O(k^2) space for the transition matrix.</p></div>
   </div>
   <article class="example-card" id="number-theory-matrix-exponentiation-linear-recurrences-ex0">
-  <h4>Throwing Dice (order-6 linear recurrence)</h4>
+  <h4>Throwing Dice (order-6 linear recurrence)<button type="button" class="done-checkbox" data-item-id="number-theory-matrix-exponentiation-linear-recurrences-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Count the number of distinct sequences of die throws (each throw shows a value from 1 to 6) whose values sum to exactly n, for n up to 10^18. Two sequences are different if they have a different length or differ in some position. Print the count modulo 10^9 + 7.</p><p>Input: a single integer n.<br>Output: the count of such sequences modulo 10^9 + 7.</p></div>
   <div class="section-label">Approach</div>
@@ -1426,7 +1454,7 @@ Mat matpow(Mat A, ll p) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-matrix-exponentiation-linear-recurrences-ex1">
-  <h4>Magic Gems (order-M composition-counting recurrence)</h4>
+  <h4>Magic Gems (order-M composition-counting recurrence)<button type="button" class="done-checkbox" data-item-id="number-theory-matrix-exponentiation-linear-recurrences-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>You are constructing a sequence of &quot;gems&quot; to reach a total size of exactly N units, where N can be as large as 10^18. Each gem you place is EITHER an ordinary gem, contributing exactly 1 unit, OR a magic gem, which is split into exactly M unit pieces, contributing exactly M units (M is a fixed integer given in the input, 2 &lt;= M &lt;= 100). Count the number of distinct ORDERED sequences of gem choices that sum to exactly N units (two sequences differing in the order of gem types are counted separately). Print the answer modulo 10^9 + 7.</p><p>Input: two integers N and M.<br>Output: the count of valid sequences modulo 10^9 + 7.</p></div>
   <div class="section-label">Approach</div>
@@ -1504,7 +1532,7 @@ Mat matpow(Mat A, ll p) {
     <div class="callout"><span class="c-label">Complexity</span><p>Lucas&#x27; theorem: O(p) preprocessing (factorial table up to p) plus O(log_p n) per query. Möbius inversion: O(V log log V) to sieve μ up to the value bound V, O(V log V) to compute all the divisor counts cnt[d], and O(V) to combine them into the final answer.</p></div>
   </div>
   <article class="example-card" id="number-theory-lucas-theorem-m-bius-inversion-ex0">
-  <h4>Binomial Coefficient Modulo a Small Prime, Huge n and k (Lucas&#x27; Theorem)</h4>
+  <h4>Binomial Coefficient Modulo a Small Prime, Huge n and k (Lucas&#x27; Theorem)<button type="button" class="done-checkbox" data-item-id="number-theory-lucas-theorem-m-bius-inversion-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given three integers n, k, p where 0 &lt;= k &lt;= n &lt;= 10^18 and p is a PRIME with 2 &lt;= p &lt;= 10^6, compute C(n, k) mod p (the binomial coefficient &quot;n choose k&quot;, reduced modulo p).</p><p>Input: n, k, and p on one line.<br>Output: C(n, k) mod p.</p></div>
   <div class="section-label">Approach</div>
@@ -1565,7 +1593,7 @@ ll lucas(ll n, ll k, ll p) {
 </code></pre>
   </div>
 </article><article class="example-card" id="number-theory-lucas-theorem-m-bius-inversion-ex1">
-  <h4>Counting Coprime Pairs (Möbius Inversion Sieve)</h4>
+  <h4>Counting Coprime Pairs (Möbius Inversion Sieve)<button type="button" class="done-checkbox" data-item-id="number-theory-lucas-theorem-m-bius-inversion-ex1" data-item-type="example" aria-pressed="false">Mark done</button></h4>
   <div class="section-label">Problem</div>
   <div class="prose"><p>Given an array of n positive integers (1 &lt;= n &lt;= 2*10^5, each value up to 10^6), count the number of PAIRS of indices (i, j) with i &lt; j such that gcd(a_i, a_j) = 1 (the two chosen elements are coprime).</p><p>Input: n, then n integers a_1..a_n.<br>Output: the number of coprime pairs.</p></div>
   <div class="section-label">Approach</div>
@@ -1632,145 +1660,168 @@ ll lucas(ll n, ll k, ll p) {
         <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
         <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
 <div class="table-wrap"><table class="problems" id="probs">
-<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th><th>Done</th></tr></thead>
 <tbody><tr data-search="exponentiation ii cses modular exponentiation (tower of exponents) efficiently compute a^(b^c) mod 1e9+7 for many triples (a, b, c), with the convention 0^0 = 1.">
   <td><a href="https://cses.fi/problemset/task/1712" target="_blank" rel="noopener noreferrer">Exponentiation II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Modular Exponentiation (tower of exponents)</td>
   <td class="desc-cell">Efficiently compute a^(b^c) mod 1e9+7 for many triples (a, b, c), with the convention 0^0 = 1.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1712" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="multipliers codeforces modular exponentiation (divisor-pairing trick) given n, compute the product of all of its divisors, modulo 1e9+7.">
   <td><a href="https://codeforces.com/problemset/problem/615/D" target="_blank" rel="noopener noreferrer">Multipliers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Modular Exponentiation (divisor-pairing trick)</td>
   <td class="desc-cell">Given n, compute the product of all of its divisors, modulo 1e9+7.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/615/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="sum of divisors cses sieve-based / divisor-function summation compute the sum of σ(i) (sum-of-divisors function) for i = 1..n, modulo 1e9+7, for n up to 10^12.">
   <td><a href="https://cses.fi/problemset/task/1082" target="_blank" rel="noopener noreferrer">Sum of Divisors</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Sieve-based / divisor-function summation</td>
   <td class="desc-cell">Compute the sum of σ(i) (sum-of-divisors function) for i = 1..n, modulo 1e9+7, for n up to 10^12.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1082" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="steps to one codeforces sieve-based dp over divisors starting from an array, repeatedly replace it with a uniformly random non-empty subset and take the gcd of the remaining elements until it becomes 1; find the expected number of steps.">
   <td><a href="https://codeforces.com/problemset/problem/1139/D" target="_blank" rel="noopener noreferrer">Steps to One</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">Sieve-based DP over divisors</td>
   <td class="desc-cell">Starting from an array, repeatedly replace it with a uniformly random non-empty subset and take the GCD of the remaining elements until it becomes 1; find the expected number of steps.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1139/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="next prime cses primality testing at scale for up to 20 queries, each giving n up to 10^12, output the smallest prime strictly greater than n.">
   <td><a href="https://cses.fi/problemset/task/3396" target="_blank" rel="noopener noreferrer">Next Prime</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Primality Testing at Scale</td>
   <td class="desc-cell">For up to 20 queries, each giving n up to 10^12, output the smallest prime strictly greater than n.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/3396" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="binomial coefficients cses ncr under modulo answer many queries of the form &quot;compute c(a, b) mod 1e9+7.&quot;">
   <td><a href="https://cses.fi/problemset/task/1079" target="_blank" rel="noopener noreferrer">Binomial Coefficients</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">nCr under modulo</td>
   <td class="desc-cell">Answer many queries of the form &quot;compute C(a, b) mod 1e9+7.&quot;</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1079" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="anton and school - 2 codeforces ncr under modulo (combinatorial identities) given a bracket string, for each query range count the number of ways to pick a balanced-bracket subsequence (as a sum over k of c(opens, k)·c(closes, k)).">
   <td><a href="https://codeforces.com/problemset/problem/785/D" target="_blank" rel="noopener noreferrer">Anton and School - 2</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">nCr under modulo (combinatorial identities)</td>
   <td class="desc-cell">Given a bracket string, for each query range count the number of ways to pick a balanced-bracket subsequence (as a sum over k of C(opens, k)·C(closes, k)).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/785/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="prime multiples cses inclusion-exclusion given up to 20 distinct primes and n up to 10^18, count how many integers in [1, n] are divisible by at least one of the given primes.">
   <td><a href="https://cses.fi/problemset/task/2185" target="_blank" rel="noopener noreferrer">Prime Multiples</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Mathematics, harder set)</td>
   <td class="subtopic-cell">Inclusion-Exclusion</td>
   <td class="desc-cell">Given up to 20 distinct primes and n up to 10^18, count how many integers in [1, n] are divisible by at least one of the given primes.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2185" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="unusual sequences codeforces inclusion-exclusion (möbius function) count the number of sequences of positive integers of any length whose gcd is exactly x and whose elements sum to y.">
   <td><a href="https://codeforces.com/problemset/problem/900/D" target="_blank" rel="noopener noreferrer">Unusual Sequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Inclusion-Exclusion (Möbius function)</td>
   <td class="desc-cell">Count the number of sequences of positive integers of any length whose GCD is exactly x and whose elements sum to y.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/900/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="remainders game codeforces chinese remainder theorem given k and a set of moduli c_1..c_n, decide whether knowing x mod c_i for all i always determines x mod k for every possible x.">
   <td><a href="https://codeforces.com/problemset/problem/687/B" target="_blank" rel="noopener noreferrer">Remainders Game</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Given k and a set of moduli c_1..c_n, decide whether knowing x mod c_i for all i always determines x mod k for every possible x.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/687/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="congruence equation codeforces chinese remainder theorem given a, b, prime p and bound x, count integers y in [1, x] such that a^y ≡ b (mod p).">
   <td><a href="https://codeforces.com/problemset/problem/919/E" target="_blank" rel="noopener noreferrer">Congruence Equation</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Given a, b, prime p and bound x, count integers y in [1, x] such that a^y ≡ b (mod p).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/919/E" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="two chandeliers codeforces chinese remainder theorem two chandeliers cycle through colors with different periods; find the day of the k-th day their colors differ, using crt to count matching days up to a bound.">
   <td><a href="https://codeforces.com/problemset/problem/1500/B" target="_blank" rel="noopener noreferrer">Two Chandeliers</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2200</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Two chandeliers cycle through colors with different periods; find the day of the k-th day their colors differ, using CRT to count matching days up to a bound.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1500/B" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="power tower codeforces chinese remainder theorem compute a power tower w_l^(w_{l+1}^(...)) mod m for range queries, using the generalized euler theorem (which itself needs crt-style modulus factoring via repeated totient reduction).">
   <td><a href="https://codeforces.com/problemset/problem/906/D" target="_blank" rel="noopener noreferrer">Power Tower</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2700</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Compute a power tower w_l^(w_{l+1}^(...)) mod m for range queries, using the generalized Euler theorem (which itself needs CRT-style modulus factoring via repeated totient reduction).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/906/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="constructor codeforces chinese remainder theorem find x &lt; 2^60 such that a|x and b|x (bitwise or) are both divisible by d, by reasoning over coprime bit-parity constraints reminiscent of crt-style constraint splitting.">
   <td><a href="https://codeforces.com/problemset/problem/1748/D" target="_blank" rel="noopener noreferrer">ConstructOR</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Chinese Remainder Theorem</td>
   <td class="desc-cell">Find x &lt; 2^60 such that a|x and b|x (bitwise OR) are both divisible by d, by reasoning over coprime bit-parity constraints reminiscent of CRT-style constraint splitting.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1748/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="magic gems codeforces matrix exponentiation count configurations summing to n units where each magic gem takes 1 unit or is split into m units, for n up to 1e18 — the count follows f(n) = f(n-1) + f(n-m).">
   <td><a href="https://codeforces.com/problemset/problem/1117/D" target="_blank" rel="noopener noreferrer">Magic Gems</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Count configurations summing to N units where each magic gem takes 1 unit or is split into M units, for N up to 1e18 — the count follows f(n) = f(n-1) + f(n-M).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1117/D" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="lunar new year and a recursive sequence codeforces matrix exponentiation given f_i = (f_{i-1}^{b1} · ... · f_{i-k}^{bk}) mod p for a prime p, find f_n.">
   <td><a href="https://codeforces.com/problemset/problem/1106/F" target="_blank" rel="noopener noreferrer">Lunar New Year and a Recursive Sequence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Given f_i = (f_{i-1}^{b1} · ... · f_{i-k}^{bk}) mod p for a prime p, find f_n.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1106/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="fibonotci codeforces matrix exponentiation compute f_n for a fibonacci-like recurrence f_n = s_{n-1}f_{n-1} + s_{n-2}f_{n-2} where s is an &quot;almost cyclic&quot; coefficient sequence with a handful of exceptions, over huge n and many queries.">
   <td><a href="https://codeforces.com/problemset/problem/575/A" target="_blank" rel="noopener noreferrer">Fibonotci</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2700</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Compute F_n for a Fibonacci-like recurrence F_n = s_{n-1}F_{n-1} + s_{n-2}F_{n-2} where s is an &quot;almost cyclic&quot; coefficient sequence with a handful of exceptions, over huge n and many queries.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/575/A" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="throwing dice cses matrix exponentiation count the number of ways to reach sum n by repeatedly throwing a die (1..6), for n up to 10^18.">
   <td><a href="https://cses.fi/problemset/task/1096" target="_blank" rel="noopener noreferrer">Throwing Dice</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (n up to 1e18)</td>
   <td class="subtopic-cell">Matrix Exponentiation</td>
   <td class="desc-cell">Count the number of ways to reach sum n by repeatedly throwing a die (1..6), for n up to 10^18.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/1096" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="ceizenpok&#x27;s formula codeforces (gym — 2015 icl, finals, div. 1) lucas&#x27; theorem (combined with crt) compute c(n, k) mod m for n up to 1e18, k ≤ n, and an *arbitrary* modulus m ≤ 1e6 (not necessarily prime).">
   <td><a href="https://codeforces.com/gym/100633/problem/J" target="_blank" rel="noopener noreferrer">Ceizenpok&#x27;s formula</a></td>
   <td><span class="judge-badge cf">Codeforces (Gym — 2015 ICL, Finals, Div. 1)</span></td>
   <td class="diff-badge">No CF contest rating (ICPC Gym problem); constraints (n ≤ 1e18, m ≤ 1e6 arbitrary) put it solidly at Div.1 E/hard-2400+ equivalent difficulty</td>
   <td class="subtopic-cell">Lucas&#x27; Theorem (combined with CRT)</td>
   <td class="desc-cell">Compute C(n, k) mod m for n up to 1e18, k ≤ n, and an *arbitrary* modulus m ≤ 1e6 (not necessarily prime).</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/gym/100633/problem/J" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="coprime subsequences codeforces möbius inversion count the number of subsequences of an array whose gcd is 1.">
   <td><a href="https://codeforces.com/problemset/problem/803/F" target="_blank" rel="noopener noreferrer">Coprime Subsequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2000</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Count the number of subsequences of an array whose gcd is 1.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/803/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="make it one codeforces möbius inversion find the minimum-size subset of an array whose gcd is 1, using möbius-function-weighted subset-sum dp.">
   <td><a href="https://codeforces.com/problemset/problem/1043/F" target="_blank" rel="noopener noreferrer">Make It One</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Find the minimum-size subset of an array whose gcd is 1, using Möbius-function-weighted subset-sum DP.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1043/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="alex and a tv show codeforces möbius inversion support union/gcd/lcm updates on multisets and answer &quot;count of x with a given gcd&quot; queries via randomization plus a möbius-transform-style array.">
   <td><a href="https://codeforces.com/problemset/problem/1097/F" target="_blank" rel="noopener noreferrer">Alex and a TV Show</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Support union/gcd/lcm updates on multisets and answer &quot;count of x with a given gcd&quot; queries via randomization plus a Möbius-transform-style array.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://codeforces.com/problemset/problem/1097/F" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr><tr data-search="counting coprime pairs cses möbius inversion given n integers up to 10^6, count the number of pairs that are coprime.">
   <td><a href="https://cses.fi/problemset/task/2417" target="_blank" rel="noopener noreferrer">Counting Coprime Pairs</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Möbius Inversion</td>
   <td class="desc-cell">Given n integers up to 10^6, count the number of pairs that are coprime.</td>
+  <td><button type="button" class="done-checkbox" data-item-id="https://cses.fi/problemset/task/2417" data-item-type="problem" aria-pressed="false">Mark done</button></td>
 </tr></tbody>
 </table></div>
 <script>

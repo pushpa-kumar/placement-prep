@@ -1,6 +1,6 @@
 import json, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import esc, inline_code, highlight_cpp, HEAD_CSS, site_nav, FOOTER
+from gen_lib import esc, inline_code, highlight_cpp, done_checkbox_html, progress_script_tag, HEAD_CSS, site_nav, FOOTER
 
 GROUP_FILES = [
     ("concepts_group1_value_categories.json", "Value Categories & Move Semantics"),
@@ -61,7 +61,7 @@ def concept_card_html(c, group_slug):
         )
         related_html = f'<div class="related-row"><span class="r-label">Related</span>{tag_html}</div>'
     return f'''<article class="concept-card" id="{anchor}">
-  <h3>{esc(c["term"])}</h3>
+  <h3>{esc(c["term"])}{done_checkbox_html(anchor, "concept")}</h3>
   <div class="intro">{inline_code(c["intro"])}</div>
   {examples_html}
   {pitfalls_html}
@@ -86,6 +86,7 @@ def build_page(fname, group_title, nav_urls):
 
     html = f'''<title>{esc(group_title)} — C++ Concepts</title>
 {HEAD_CSS}
+{progress_script_tag()}
 <div>
 {site_nav(nav_urls, "concepts")}
 <div class="app">

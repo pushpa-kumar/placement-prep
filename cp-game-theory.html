@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -562,54 +590,63 @@ C 3
   <td class="diff-badge">CF 2000</td>
   <td class="subtopic-cell">Nim</td>
   <td class="desc-cell">n quarries each produce an arithmetic run of pile sizes (x_i, x_i+1, ..., x_i+m_i-1); playing standard Nim over the union of all these piles, determine the winner under optimal play.</td>
+  
 </tr><tr data-search="thanos nim codeforces nim with n (even) piles, each move a player must choose exactly n/2 nonempty piles and remove any positive number of stones from each independently; the player who cannot move (fewer than n/2 nonempty piles remain) loses — determine the winner.">
   <td><a href="https://codeforces.com/problemset/problem/1147/C" target="_blank" rel="noopener noreferrer">Thanos Nim</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 1700</td>
   <td class="subtopic-cell">Nim</td>
   <td class="desc-cell">With n (even) piles, each move a player must choose exactly n/2 nonempty piles and remove any positive number of stones from each independently; the player who cannot move (fewer than n/2 nonempty piles remain) loses — determine the winner.</td>
+  
 </tr><tr data-search="stair game cses nim (staircase nim) balls sit on n numbered stairs; a move takes any positive number of balls from a stair k != 1 down to stair k-1, and the player who moves last wins — determine the winner for a given starting configuration.">
   <td><a href="https://cses.fi/problemset/task/1099" target="_blank" rel="noopener noreferrer">Stair Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Nim (Staircase Nim)</td>
   <td class="desc-cell">Balls sit on n numbered stairs; a move takes any positive number of balls from a stair k != 1 down to stair k-1, and the player who moves last wins — determine the winner for a given starting configuration.</td>
+  
 </tr><tr data-search="not a nim problem codeforces sprague-grundy n piles of stones; a move removes y stones from a pile of size x only if gcd(x, y) = 1, and the player unable to move loses — determine the winner.">
   <td><a href="https://codeforces.com/problemset/problem/2004/E" target="_blank" rel="noopener noreferrer">Not a Nim Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Sprague-Grundy</td>
   <td class="desc-cell">n piles of stones; a move removes y stones from a pile of size x only if gcd(x, y) = 1, and the player unable to move loses — determine the winner.</td>
+  
 </tr><tr data-search="game of stones codeforces sprague-grundy n independent piles (sizes up to 60); a move removes any positive number of stones from a pile, but the exact same removal amount can never be reused on that same pile again — determine the winner.">
   <td><a href="https://codeforces.com/problemset/problem/768/E" target="_blank" rel="noopener noreferrer">Game of Stones</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2100</td>
   <td class="subtopic-cell">Sprague-Grundy</td>
   <td class="desc-cell">n independent piles (sizes up to 60); a move removes any positive number of stones from a pile, but the exact same removal amount can never be reused on that same pile again — determine the winner.</td>
+  
 </tr><tr data-search="mojtaba and arpa&#x27;s game codeforces sprague-grundy given a list of numbers, a move picks a prime power p^k dividing at least one number, and divides every number in the list divisible by p^k by p^k; the player unable to move loses — determine the winner.">
   <td><a href="https://codeforces.com/problemset/problem/850/C" target="_blank" rel="noopener noreferrer">Mojtaba and Arpa&#x27;s game</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF 2200</td>
   <td class="subtopic-cell">Sprague-Grundy</td>
   <td class="desc-cell">Given a list of numbers, a move picks a prime power p^k dividing at least one number, and divides every number in the list divisible by p^k by p^k; the player unable to move loses — determine the winner.</td>
+  
 </tr><tr data-search="grundy&#x27;s game cses sprague-grundy a heap of n coins; a move splits one heap into two nonempty heaps of different sizes, and the player who makes the last possible move wins — determine the winner.">
   <td><a href="https://cses.fi/problemset/task/2207" target="_blank" rel="noopener noreferrer">Grundy&#x27;s Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Sprague-Grundy</td>
   <td class="desc-cell">A heap of n coins; a move splits one heap into two nonempty heaps of different sizes, and the player who makes the last possible move wins — determine the winner.</td>
+  
 </tr><tr data-search="nim game ii cses combinatorial game sums &amp; misère play (sprague-grundy sum of games) with n heaps of sticks where a move removes 1, 2, or 3 sticks from one heap, and the player who removes the last stick wins, determine the winner under optimal play.">
   <td><a href="https://cses.fi/problemset/task/1098" target="_blank" rel="noopener noreferrer">Nim Game II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Combinatorial Game Sums &amp; Misère Play (Sprague-Grundy sum of games)</td>
   <td class="desc-cell">With n heaps of sticks where a move removes 1, 2, or 3 sticks from one heap, and the player who removes the last stick wins, determine the winner under optimal play.</td>
+  
 </tr><tr data-search="another game cses combinatorial game sums &amp; misère play (non-xor game sum) with n heaps of coins where a move selects any subset of nonempty heaps and removes one coin from each, and the player who removes the last coin wins, determine the winner under optimal play.">
   <td><a href="https://cses.fi/problemset/task/2208" target="_blank" rel="noopener noreferrer">Another Game</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES</td>
   <td class="subtopic-cell">Combinatorial Game Sums &amp; Misère Play (non-XOR game sum)</td>
   <td class="desc-cell">With n heaps of coins where a move selects any subset of nonempty heaps and removes one coin from each, and the player who removes the last coin wins, determine the winner under optimal play.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

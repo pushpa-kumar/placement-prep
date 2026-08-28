@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -233,6 +260,7 @@
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
+
 
 <div>
 <nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
@@ -1990,156 +2018,182 @@ BIT2D bitTree[<span class="tok-number">2</span>][<span class="tok-number">2</spa
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Segment Tree (lazy propagation with bitmask trick)</td>
   <td class="desc-cell">On a rooted tree, repaint an entire subtree with a color or answer how many distinct colors appear in a subtree.</td>
+  
 </tr><tr data-search="hotel queries cses segment tree (descent / binary search on tree) given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.">
   <td><a href="https://cses.fi/problemset/task/1143" target="_blank" rel="noopener noreferrer">Hotel Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Range Queries, harder set)</td>
   <td class="subtopic-cell">Segment Tree (descent / binary search on tree)</td>
   <td class="desc-cell">Given hotel room capacities, greedily assign each incoming group to the leftmost hotel that still has enough free rooms, and update capacity.</td>
+  
 </tr><tr data-search="one occurrence codeforces persistent segment tree for each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.">
   <td><a href="https://codeforces.com/problemset/problem/1000/F" target="_blank" rel="noopener noreferrer">One Occurrence</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2400</td>
   <td class="subtopic-cell">Persistent Segment Tree</td>
   <td class="desc-cell">For each query range [l, r], report any element that appears in the range an odd number of times, guaranteed to be exactly once.</td>
+  
 </tr><tr data-search="count of smaller numbers after self leetcode merge-sort tree / offline order-statistics counting for every index i, count how many elements to its right are strictly smaller than nums[i].">
   <td><a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/" target="_blank" rel="noopener noreferrer">Count of Smaller Numbers After Self</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Merge-sort Tree / offline order-statistics counting</td>
   <td class="desc-cell">For every index i, count how many elements to its right are strictly smaller than nums[i].</td>
+  
 </tr><tr data-search="salary queries cses fenwick tree / bit (point update, range count with coordinate compression) support raising/lowering an employee&#x27;s salary and counting how many employees currently have a salary within a given range.">
   <td><a href="https://cses.fi/problemset/task/1144" target="_blank" rel="noopener noreferrer">Salary Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Range Queries, harder set)</td>
   <td class="subtopic-cell">Fenwick Tree / BIT (point update, range count with coordinate compression)</td>
   <td class="desc-cell">Support raising/lowering an employee&#x27;s salary and counting how many employees currently have a salary within a given range.</td>
+  
 </tr><tr data-search="mishka and interesting sum codeforces fenwick tree / bit (offline queries) for each range [l, r], compute the xor of all values that occur an even number of times within that range.">
   <td><a href="https://codeforces.com/problemset/problem/703/D" target="_blank" rel="noopener noreferrer">Mishka and Interesting Sum</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Fenwick Tree / BIT (offline queries)</td>
   <td class="desc-cell">For each range [l, r], compute the XOR of all values that occur an even number of times within that range.</td>
+  
 </tr><tr data-search="friends and subsequences codeforces sparse table (rmq) given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.">
   <td><a href="https://codeforces.com/problemset/problem/689/D" target="_blank" rel="noopener noreferrer">Friends and Subsequences</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2100</td>
   <td class="subtopic-cell">Sparse Table (RMQ)</td>
   <td class="desc-cell">Given two arrays a and b, for each query [l, r] count the number of subsegments of [l, r] where the maximum of a equals the minimum of b.</td>
+  
 </tr><tr data-search="envy codeforces dsu / union-find (offline, grouped by weight) given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.">
   <td><a href="https://codeforces.com/problemset/problem/891/C" target="_blank" rel="noopener noreferrer">Envy</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2300</td>
   <td class="subtopic-cell">DSU / Union-Find (offline, grouped by weight)</td>
   <td class="desc-cell">Given a weighted graph, answer multiple queries each asking whether a specified subset of edges can simultaneously belong to some minimum spanning tree.</td>
+  
 </tr><tr data-search="word search ii leetcode trie + backtracking given a 2d board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.">
   <td><a href="https://leetcode.com/problems/word-search-ii/" target="_blank" rel="noopener noreferrer">Word Search II</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Trie + backtracking</td>
   <td class="desc-cell">Given a 2D board of letters and a dictionary of words, find all dictionary words that can be formed by a path of adjacent cells.</td>
+  
 </tr><tr data-search="vasiliy&#x27;s multiset codeforces trie (binary/xor trie) maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum xor of x with any element currently in the multiset.&quot;">
   <td><a href="https://codeforces.com/problemset/problem/706/D" target="_blank" rel="noopener noreferrer">Vasiliy&#x27;s Multiset</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">1800</td>
   <td class="subtopic-cell">Trie (binary/XOR trie)</td>
   <td class="desc-cell">Maintain a multiset of integers supporting insertion, deletion, and &quot;find the maximum XOR of x with any element currently in the multiset.&quot;</td>
+  
 </tr><tr data-search="sliding window maximum leetcode monotonic queue given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.">
   <td><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">Sliding Window Maximum</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">Hard</td>
   <td class="subtopic-cell">Monotonic Queue</td>
   <td class="desc-cell">Given an array and a sliding window of size k, output the maximum value in the window at every position as it slides.</td>
+  
 </tr><tr data-search="gukiz and gukiziana codeforces sqrt decomposition on an array, support &quot;add a value to every element in a range&quot; and &quot;find the leftmost/rightmost index whose value equals v&quot; queries.">
   <td><a href="https://codeforces.com/problemset/problem/551/E" target="_blank" rel="noopener noreferrer">GukiZ and GukiZiana</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">2500</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">On an array, support &quot;add a value to every element in a range&quot; and &quot;find the leftmost/rightmost index whose value equals v&quot; queries.</td>
+  
 </tr><tr data-search="anton and permutation codeforces sqrt decomposition maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.">
   <td><a href="https://codeforces.com/problemset/problem/785/E" target="_blank" rel="noopener noreferrer">Anton and Permutation</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Maintain a permutation under repeated element swaps, reporting the number of inversions after each swap.</td>
+  
 </tr><tr data-search="serega and fun codeforces sqrt decomposition support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.">
   <td><a href="https://codeforces.com/problemset/problem/455/D" target="_blank" rel="noopener noreferrer">Serega and Fun</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2700</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Support cyclic-shift updates on a subarray and count occurrences of a value in a subarray, on an array of up to 10^5 elements with up to 10^5 queries.</td>
+  
 </tr><tr data-search="holes codeforces sqrt decomposition each position on a line has a &quot;power&quot; that launches a ball forward by that amount; support updating a position&#x27;s power and querying how many jumps and how far a ball launched from a position travels before leaving the row.">
   <td><a href="https://codeforces.com/problemset/problem/13/E" target="_blank" rel="noopener noreferrer">Holes</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2700</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Each position on a line has a &quot;power&quot; that launches a ball forward by that amount; support updating a position&#x27;s power and querying how many jumps and how far a ball launched from a position travels before leaving the row.</td>
+  
 </tr><tr data-search="yet another array queries problem codeforces sqrt decomposition apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.">
   <td><a href="https://codeforces.com/problemset/problem/863/D" target="_blank" rel="noopener noreferrer">Yet Another Array Queries Problem</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 1800</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Apply a mix of cyclic-shift and reversal operations to subarray segments, then report the final value at several queried indices.</td>
+  
 </tr><tr data-search="falling squares leetcode sqrt decomposition drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.">
   <td><a href="https://leetcode.com/problems/falling-squares/" target="_blank" rel="noopener noreferrer">Falling Squares</a></td>
   <td><span class="judge-badge lc">LeetCode</span></td>
   <td class="diff-badge">LeetCode Hard</td>
   <td class="subtopic-cell">Sqrt Decomposition</td>
   <td class="desc-cell">Drop axis-aligned squares one at a time onto the x-axis (they stack on whatever is beneath them) and report the tallest stack height after each drop.</td>
+  
 </tr><tr data-search="powerful array codeforces mo&#x27;s algorithm for repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.">
   <td><a href="https://codeforces.com/problemset/problem/86/D" target="_blank" rel="noopener noreferrer">Powerful array</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">For repeated subarray range queries, compute the sum over all distinct values v of (count of v in the range)^2 * v.</td>
+  
 </tr><tr data-search="xor and favorite number codeforces mo&#x27;s algorithm for repeated range queries, count the number of subarray pairs (i, j) within the range whose xor of elements equals a fixed favorite number k.">
   <td><a href="https://codeforces.com/problemset/problem/617/E" target="_blank" rel="noopener noreferrer">XOR and Favorite Number</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2200</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">For repeated range queries, count the number of subarray pairs (i, j) within the range whose XOR of elements equals a fixed favorite number k.</td>
+  
 </tr><tr data-search="machine learning codeforces mo&#x27;s algorithm support point updates to an array along with range queries asking for the mex of the multiset of frequencies of values appearing in the range.">
   <td><a href="https://codeforces.com/problemset/problem/940/F" target="_blank" rel="noopener noreferrer">Machine Learning</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2600</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">Support point updates to an array along with range queries asking for the Mex of the multiset of frequencies of values appearing in the range.</td>
+  
 </tr><tr data-search="tree and queries codeforces mo&#x27;s algorithm given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.">
   <td><a href="https://codeforces.com/problemset/problem/375/D" target="_blank" rel="noopener noreferrer">Tree and Queries</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">Given a rooted, vertex-colored tree, answer queries asking how many colors occur at least k times in the subtree of a given vertex.</td>
+  
 </tr><tr data-search="distinct values queries cses mo&#x27;s algorithm answer offline queries asking for the number of distinct values in a given subarray range.">
   <td><a href="https://cses.fi/problemset/task/1734" target="_blank" rel="noopener noreferrer">Distinct Values Queries</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Range Queries section)</td>
   <td class="subtopic-cell">Mo&#x27;s Algorithm</td>
   <td class="desc-cell">Answer offline queries asking for the number of distinct values in a given subarray range.</td>
+  
 </tr><tr data-search="forest queries ii cses 2d fenwick tree / 2d range queries on an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.">
   <td><a href="https://cses.fi/problemset/task/1739" target="_blank" rel="noopener noreferrer">Forest Queries II</a></td>
   <td><span class="judge-badge cses">CSES</span></td>
   <td class="diff-badge">CSES (Advanced Techniques section)</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">On an n x n grid of trees, support toggling whether a cell has a tree and querying the number of trees inside an axis-aligned rectangle.</td>
+  
 </tr><tr data-search="the untended antiquity codeforces 2d fenwick tree / 2d range queries on a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.">
   <td><a href="https://codeforces.com/problemset/problem/869/E" target="_blank" rel="noopener noreferrer">The Untended Antiquity</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">On a grid, support adding/removing rectangular barriers and querying whether one point can be enclosed and thus separated from another by the currently placed barriers.</td>
+  
 </tr><tr data-search="iahub and xors codeforces 2d fenwick tree / 2d range queries support 2d rectangle-xor updates and 2d rectangle-xor queries on an n x n matrix, both online.">
   <td><a href="https://codeforces.com/problemset/problem/341/D" target="_blank" rel="noopener noreferrer">Iahub and Xors</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2500</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">Support 2D rectangle-XOR updates and 2D rectangle-XOR queries on an n x n matrix, both online.</td>
+  
 </tr><tr data-search="ball codeforces 2d fenwick tree / 2d range queries given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.">
   <td><a href="https://codeforces.com/problemset/problem/12/D" target="_blank" rel="noopener noreferrer">Ball</a></td>
   <td><span class="judge-badge cf">Codeforces</span></td>
   <td class="diff-badge">CF rating 2400</td>
   <td class="subtopic-cell">2D Fenwick Tree / 2D Range Queries</td>
   <td class="desc-cell">Given n people each with three attributes, count how many people are dominated (strictly worse) in all three attributes by at least one other person.</td>
+  
 </tr></tbody>
 </table></div>
 <script>

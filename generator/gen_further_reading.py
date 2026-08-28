@@ -1,6 +1,6 @@
 import json, sys, os, re
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import esc, inline_code, HEAD_CSS, site_nav, FOOTER
+from gen_lib import esc, inline_code, progress_script_tag, HEAD_CSS, site_nav, FOOTER
 from gen_cpguide_page import TOPIC_PAGES
 
 SCRATCH = os.path.dirname(__file__)
@@ -163,6 +163,7 @@ def build_page(nav_urls):
     total = len(entries)
     html = f'''<title>Further Reading: Codeforces Blogs</title>
 {HEAD_CSS}
+{progress_script_tag()}
 <div>
 {site_nav(nav_urls, "cpguide")}
 <div class="app">

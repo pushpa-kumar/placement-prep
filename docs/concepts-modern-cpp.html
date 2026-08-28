@@ -120,7 +120,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
   }
-  .concept-card h3{ font-size:1.15rem; margin-bottom:12px; }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
   .concept-card .intro p{ margin:0 0 .9em; }
   .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
@@ -154,7 +157,10 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
   }
-  .example-card h4{ font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text); }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
   .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
   .example-card .section-label:first-of-type{ margin-top:0; }
   .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
@@ -167,6 +173,27 @@
   .tok-preproc{ color:var(--code-pre); }
   .tok-comment{ color:var(--code-com); font-style:italic; }
   .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
   @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
   .io-row pre{ background:var(--bg); border:1px solid var(--border); }
 
@@ -234,8 +261,9 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
+<script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html" class="current">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span id="authSlot" class="auth-slot"></span></nav>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">C++ Concepts Reference</p>
@@ -260,7 +288,7 @@
       </ul>
     </aside>
     <main><article class="concept-card" id="lambda-captures">
-  <h3>Lambda captures</h3>
+  <h3>Lambda captures<button type="button" class="done-checkbox" data-item-id="lambda-captures" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A lambda&#x27;s capture clause controls exactly how it accesses variables from its enclosing scope. <code>[x]</code> captures <code>x</code> BY VALUE — a copy taken at the moment the lambda is created, independent of <code>x</code>&#x27;s later lifetime. <code>[&amp;x]</code> captures <code>x</code> BY REFERENCE — no copy, but <code>x</code> must genuinely outlive every use of the lambda, or you have a dangling reference. <code>[=]</code> and <code>[&amp;]</code> capture everything the lambda body actually uses, by value or reference respectively (implicit, less explicit about intent). Since C++14, generalized (&quot;init&quot;) captures like <code>[y = std::move(someValue)]</code> let you capture a MOVED or freshly-COMPUTED value under a new name, rather than being limited to copying/referencing an existing variable verbatim.</p></div>
   <div class="example-box">
   <div class="ex-title">By-value capture making a returned lambda safe</div>
@@ -289,7 +317,7 @@ add5(<span class="tok-number">10</span>); <span class="tok-comment">// 15 -- bas
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a><a class="related-tag" href="concepts-value-categories.html#move-semantics" data-related-href="concepts-value-categories.html#move-semantics">Move semantics</a></div>
 </article><article class="concept-card" id="iterator-invalidation">
-  <h3>Iterator invalidation</h3>
+  <h3>Iterator invalidation<button type="button" class="done-checkbox" data-item-id="iterator-invalidation" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Modifying a container can invalidate existing iterators, references, and pointers into it — and the exact rule is DIFFERENT per container, which is exactly why this shows up so often as a debugging/gotcha question. <code>std::vector</code> invalidates ALL iterators on any reallocation (and invalidates <code>end()</code> on essentially any insert/erase, even without reallocation). <code>std::deque</code> invalidates iterators on insert/erase almost everywhere except sometimes at the very ends. Node-based containers — <code>std::list</code>, <code>std::map</code>, <code>std::set</code>, <code>std::unordered_map</code> — only invalidate iterators/references to the SPECIFIC element that was erased; everything else remains valid (unordered_map additionally invalidates ALL iterators, but not references/pointers, on a rehash). Using an invalidated iterator is undefined behavior.</p></div>
   <div class="example-box">
   <div class="ex-title">The classic erase-while-iterating bug on a vector</div>
@@ -316,7 +344,7 @@ add5(<span class="tok-number">10</span>); <span class="tok-comment">// 15 -- bas
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-raii-resources.html#smart-pointer-ownership-models" data-related-href="concepts-raii-resources.html#smart-pointer-ownership-models">Smart pointer ownership models</a></div>
 </article><article class="concept-card" id="small-string-optimization-sso">
-  <h3>Small String Optimization (SSO)</h3>
+  <h3>Small String Optimization (SSO)<button type="button" class="done-checkbox" data-item-id="small-string-optimization-sso" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Most <code>std::string</code> implementations avoid a heap allocation entirely for SHORT strings — typically up to somewhere around 15-22 bytes, depending on the standard library implementation — by storing the character data directly INLINE inside the string object&#x27;s own storage (using space that would otherwise hold a pointer/capacity/size for the heap-allocated case). Only strings longer than that threshold actually allocate a separate heap buffer.</p></div>
   <div class="example-box">
   <div class="ex-title">Short strings never touch the heap</div>
@@ -343,7 +371,7 @@ std::<span class="tok-type">string</span> big(<span class="tok-number">100</span
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-raii-resources.html#allocators-custom-allocation" data-related-href="concepts-raii-resources.html#allocators-custom-allocation">Allocators &amp; custom allocation</a><a class="related-tag" href="#std-string-view-c-17" data-related-href="#std-string-view-c-17">std::string_view (C++17)</a></div>
 </article><article class="concept-card" id="std-string-view-c-17">
-  <h3>std::string_view (C++17)</h3>
+  <h3>std::string_view (C++17)<button type="button" class="done-checkbox" data-item-id="std-string-view-c-17" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>A <code>std::string_view</code> is a lightweight, NON-OWNING view over a contiguous sequence of characters — just a pointer and a length, no allocation, no copy, no ownership. It&#x27;s ideal for read-only string parameters that don&#x27;t need to outlive the call (avoiding a copy of the caller&#x27;s data), but that convenience comes with a real lifetime obligation: the underlying character data must outlive the string_view, and a string_view is NOT guaranteed to be null-terminated (unlike a <code>const char*</code> or <code>std::string::c_str()</code>).</p></div>
   <div class="example-box">
   <div class="ex-title">Avoiding copies on a read-only parameter</div>
@@ -373,7 +401,7 @@ std::cout &lt;&lt; bad;   <span class="tok-comment">// undefined behavior: readi
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="#small-string-optimization-sso" data-related-href="#small-string-optimization-sso">Small String Optimization (SSO)</a><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
 </article><article class="concept-card" id="structured-bindings-c-17">
-  <h3>Structured bindings (C++17)</h3>
+  <h3>Structured bindings (C++17)<button type="button" class="done-checkbox" data-item-id="structured-bindings-c-17" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Structured bindings let you unpack a tuple, pair, array, or any struct with all-public members into individually-named variables in a single declaration — <code>auto [a, b] = someExpr;</code> — which is a substantial readability improvement over repeatedly writing <code>.first</code>/<code>.second</code> or <code>std::get&lt;N&gt;(...)</code>.</p></div>
   <div class="example-box">
   <div class="ex-title">Unpacking a map&#x27;s key/value pairs in a range-based for loop</div>
@@ -396,7 +424,7 @@ Point p{<span class="tok-number">3.0</span>, <span class="tok-number">4.0</span>
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
 </article><article class="concept-card" id="std-optional-std-variant-std-any-c-17">
-  <h3>std::optional, std::variant, std::any (C++17)</h3>
+  <h3>std::optional, std::variant, std::any (C++17)<button type="button" class="done-checkbox" data-item-id="std-optional-std-variant-std-any-c-17" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Three tools for expressing &quot;this value might not be a simple, always-present T,&quot; each solving a different flavor of that problem. <code>std::optional&lt;T&gt;</code> represents a value that may or may not be present — a much safer, more expressive alternative to a sentinel value (like returning -1 for &quot;not found&quot;) or an owning pointer used purely to signal absence. <code>std::variant&lt;A, B, ...&gt;</code> is a TYPE-SAFE tagged union: it holds exactly one value from a fixed, closed set of alternative types, and the compiler (via <code>std::visit</code> or <code>std::get</code>) enforces that you handle it correctly — no risk of reading the wrong union member. <code>std::any</code> holds a value of essentially ANY copyable type, fully type-erased, retrieved only via a checked <code>any_cast</code> — the most flexible of the three, but also the least type-safe and generally the least performant (it commonly involves a heap allocation and always involves a runtime type check on extraction).</p></div>
   <div class="example-box">
   <div class="ex-title">std::optional replacing a sentinel-value anti-pattern</div>
@@ -425,7 +453,7 @@ std::visit([](<span class="tok-keyword">auto</span>&amp;&amp; v) {
   
   <div class="related-row"><span class="r-label">Related</span><a class="related-tag" href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue" data-related-href="concepts-value-categories.html#value-categories-lvalue-prvalue-xvalue">Value categories: lvalue, prvalue, xvalue</a></div>
 </article><article class="concept-card" id="noexcept-specifier">
-  <h3>noexcept specifier</h3>
+  <h3>noexcept specifier<button type="button" class="done-checkbox" data-item-id="noexcept-specifier" data-item-type="concept" aria-pressed="false">Mark done</button></h3>
   <div class="intro"><p>Declaring a function <code>noexcept</code> is a promise that it will NEVER let an exception propagate out of it. If one somehow does anyway, the runtime doesn&#x27;t convert it into a normal catchable exception at the call site — it calls <code>std::terminate()</code> immediately, ending the program. Beyond being documentation, <code>noexcept</code> has a genuine functional consequence for the standard library: containers like <code>std::vector</code> only use a type&#x27;s MOVE constructor during reallocation if that move constructor is marked <code>noexcept</code>; if it isn&#x27;t, the container conservatively falls back to COPYING during reallocation instead, specifically to preserve its own strong exception-safety guarantee (see Exception safety guarantees).</p></div>
   <div class="example-box">
   <div class="ex-title">The functional impact of noexcept on vector reallocation</div>

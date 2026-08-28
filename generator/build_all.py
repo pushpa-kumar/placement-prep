@@ -1,5 +1,6 @@
-import sys, os, re, json, argparse
+import sys, os, re, json, argparse, shutil
 sys.path.insert(0, os.path.dirname(__file__))
+import gen_lib
 from gen_concept_page import build_page as build_concept_page, GROUP_FILES
 from gen_cpguide_page import build_page as build_cpguide_page, TOPIC_PAGES
 from gen_hubs import build_cpguide_hub, build_concepts_hub
@@ -27,10 +28,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url-map", default=None, help="path to JSON file mapping slug->url")
     ap.add_argument("--out-dir", default=DEFAULT_OUT_DIR, help="directory to write generated pages into")
+    ap.add_argument("--enable-progress", action="store_true", help="include login/progress-tracking (GitHub Pages build only)")
     args = ap.parse_args()
 
     OUT_DIR = args.out_dir
     os.makedirs(OUT_DIR, exist_ok=True)
+
+    gen_lib.PROGRESS_ENABLED = args.enable_progress
+    if args.enable_progress:
+        shutil.copyfile(f"{SCRATCH}/progress.js", f"{OUT_DIR}/progress.js")
+        print(f"copied progress.js -> {OUT_DIR}/progress.js")
 
     page_url_map = {"index": INDEX_URL}
     if args.url_map and os.path.exists(args.url_map):
