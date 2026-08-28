@@ -1,4 +1,8 @@
-import json, argparse
+import json, argparse, hashlib
+
+def stable_id(prefix, *parts):
+    h = hashlib.sha1("||".join(str(p) for p in parts).encode("utf-8")).hexdigest()[:12]
+    return f"{prefix}-{h}"
 
 SCRATCH = "/Users/pushpakumar/quant-hft-interview-prep/generator"
 FINAL = f"{SCRATCH}/final_entries.json"
@@ -60,6 +64,8 @@ data.sort(key=lambda e: (
     ",".join(sorted(e["companies"])),
     e["q"][:80],
 ))
+for e in data:
+    e["id"] = stable_id("qa", e["q"], e.get("topic"), e.get("source"), tuple(sorted(e.get("companies", []))))
 
 with open(FINAL_MCQS, encoding="utf-8") as f:
     mcqs = json.load(f)
@@ -69,8 +75,8 @@ mcqs.sort(key=lambda m: (
     {"REAL": 0, "PRACTICE": 1, "GENERATED": 2}.get(m["status"], 3),
     m["question"][:80],
 ))
-for i, m in enumerate(mcqs):
-    m["id"] = i
+for m in mcqs:
+    m["id"] = stable_id("mcq", m["question"], m.get("topic"), tuple(m.get("options", [])))
     m["companies"] = [m.pop("company")]
 
 with open(TEMPLATE, encoding="utf-8") as f:

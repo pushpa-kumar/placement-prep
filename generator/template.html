@@ -531,7 +531,7 @@ function render(){
 document.getElementById("main").addEventListener("click", (ev)=>{
   const optBtn = ev.target.closest(".mcq-option");
   if(optBtn && !optBtn.disabled){
-    const id = parseInt(optBtn.dataset.mcqId, 10);
+    const id = optBtn.dataset.mcqId;
     const optIndex = parseInt(optBtn.dataset.optIndex, 10);
     mcqState.set(id, optIndex);
     const mcq = MCQS.find(m=>m.id===id);
@@ -541,7 +541,7 @@ document.getElementById("main").addEventListener("click", (ev)=>{
   }
   const resetBtn = ev.target.closest("[data-mcq-reset]");
   if(resetBtn){
-    const id = parseInt(resetBtn.dataset.mcqReset, 10);
+    const id = resetBtn.dataset.mcqReset;
     mcqState.delete(id);
     const mcq = MCQS.find(m=>m.id===id);
     const card = document.getElementById("mcq-card-" + id);
