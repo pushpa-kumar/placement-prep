@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Raw personal WhatsApp export (personal chat + other candidates' unredacted
+# OA screenshots) used as source material for generator/whatsapp_entries.json
+# — never commit the raw export itself.
+WhatsApp Chat with Nischal/

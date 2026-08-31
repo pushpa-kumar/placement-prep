@@ -21,6 +21,7 @@ TOPIC_PAGES = [
     (["page_game_theory.json", "page_game_theory_extra.json"], "game-theory", "Game Theory"),
     (["page_network_flow.json", "page_network_flow_extra.json"], "network-flow", "Network Flow & Matching"),
     (["page_fft.json", "page_fft_extra.json"], "fft-ntt", "FFT / NTT"),
+    (["page_computational_geometry.json"], "computational-geometry", "Computational Geometry"),
 ]
 
 def slugify(t):

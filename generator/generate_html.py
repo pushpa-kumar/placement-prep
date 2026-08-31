@@ -13,12 +13,14 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--out", default="/Users/pushpakumar/quant-hft-interview-prep/index.html")
 ap.add_argument("--cpguide-url", default="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2")
 ap.add_argument("--concepts-url", default="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54")
+ap.add_argument("--companyoa-url", default="#", help="URL/relative path to the gated Company OA Bank page (docs build only)")
 ap.add_argument("--enable-progress", action="store_true", help="include login/progress-tracking (GitHub Pages build only)")
 args = ap.parse_args()
 
 OUT = args.out
 CPGUIDE_URL = args.cpguide_url
 CONCEPTS_URL = args.concepts_url
+COMPANYOA_URL = args.companyoa_url
 PROGRESS_ENABLED = args.enable_progress
 PROGRESS_SCRIPT = '<script type="module" src="progress.js"></script>' if PROGRESS_ENABLED else ""
 AUTH_SLOT = '<span id="authSlot" class="auth-slot"></span>' if PROGRESS_ENABLED else ""
@@ -94,6 +96,7 @@ html = (tpl
     .replace("__MCQ_TOPIC_ORDER_JSON__", json.dumps(MCQ_TOPIC_ORDER, ensure_ascii=False))
     .replace("__CPGUIDE_URL__", CPGUIDE_URL)
     .replace("__CONCEPTS_URL__", CONCEPTS_URL)
+    .replace("__COMPANYOA_URL__", COMPANYOA_URL)
     .replace("__GENERATED_DATE__", "August 28, 2026")
     .replace("__PROGRESS_SCRIPT__", PROGRESS_SCRIPT)
     .replace("__AUTH_SLOT__", AUTH_SLOT)

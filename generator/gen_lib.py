@@ -342,6 +342,7 @@ def site_nav(urls, current):
         ("cpguide", "CP / DSA Guide", urls.get("cpguide", "#")),
         ("concepts", "C++ Concepts", urls.get("concepts", "#")),
         ("index", "Interview Q&A + MCQ Bank", urls.get("index", "#")),
+        ("companyoa", "Company OA Bank", urls.get("companyoa", "#")),
     ]
     links = []
     for key, label, url in items:

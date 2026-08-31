@@ -1,0 +1,833 @@
+<title>Computational Geometry — CP / DSA Guide</title>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDBHJ7316D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YDBHJ7316D');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a><a href="#">Company OA Bank</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide</p>
+    <h1>Computational Geometry</h1>
+    <p class="tagline"><p>Geometry problems in competitive programming rarely test deep mathematical insight so much as they test whether you can turn a picture into a small set of robust, integer-exact primitives: the orientation (cross-product) test, a sweep over sorted events, and the shoelace formula. Once those three are solid, most &quot;find the convex hull&quot;, &quot;union area of rectangles&quot;, &quot;closest pair of points&quot;, and &quot;is this point inside the polygon&quot; problems reduce to composing them correctly. The single biggest source of bugs in this area is boundary handling — whether collinear points belong on the hull, whether a point exactly on an edge counts as inside, whether touching (not overlapping) rectangles double-count — so every subtopic below calls out its boundary convention explicitly. This topic was added after a recurring pattern surfaced across several real company OAs in this site&#x27;s Company OA Bank: LeetCode&#x27;s &quot;Erect the Fence&quot; (convex hull) was asked independently at two different companies, and &quot;Rectangle Area II&quot; (sweep-line union area) at a third, with zero prior coverage of the area anywhere in this guide.</p></p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">4</div><div class="l">Subtopics</div></div>
+      <div class="stat-tile"><div class="n">8</div><div class="l">Solved Examples</div></div>
+      <div class="stat-tile"><div class="n">10</div><div class="l">Practice Problems</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#computational-geometry-convex-hull-andrew-s-monotone-chain"><span>Convex Hull (Andrew&#x27;s Monotone Chain)</span><span class="cnt">2</span></a></li><li><a href="#computational-geometry-sweep-line-for-rectangle-union-area"><span>Sweep Line for Rectangle Union Area</span><span class="cnt">2</span></a></li><li><a href="#computational-geometry-closest-pair-of-points-manhattan-distance-tricks"><span>Closest Pair of Points &amp; Manhattan-Distance Tricks</span><span class="cnt">2</span></a></li><li><a href="#computational-geometry-polygon-area-point-in-polygon"><span>Polygon Area &amp; Point-in-Polygon</span><span class="cnt">2</span></a></li><li><a href="#practice-problems"><span>Practice Problems</span><span class="cnt">10</span></a></li></ul>
+      <h2>Other topics</h2>
+      <ul class="nav-list"><li><a href="https://claude.ai/code/artifact/c156ae68-4c74-47c9-912a-ad2d47b93c49">Arrays &amp; Strings</a></li><li><a href="https://claude.ai/code/artifact/12a16e00-c911-4e45-a3c2-27b16db6b805">Sorting &amp; Binary Search</a></li><li><a href="https://claude.ai/code/artifact/0316847a-185e-46fa-b2ce-adf55d0710cd">Recursion &amp; Backtracking</a></li><li><a href="https://claude.ai/code/artifact/1c4e103e-c945-47f3-a855-7fc0f5281fc2">Dynamic Programming</a></li><li><a href="https://claude.ai/code/artifact/00f83d03-9d23-4a2c-a704-cd676a3b4ce0">Greedy Algorithms</a></li><li><a href="https://claude.ai/code/artifact/815d3fc1-3172-4d4b-9ceb-680f85b2b8b1">Graph Algorithms</a></li><li><a href="https://claude.ai/code/artifact/aedd06db-fdcf-479b-97bc-247e9734e77e">Trees</a></li><li><a href="https://claude.ai/code/artifact/a4b10d9b-cdd8-4f6d-93fe-9aae23b56638">Data Structures for CP</a></li><li><a href="https://claude.ai/code/artifact/ad30c2df-1f61-4bc2-8169-8dfa3507993c">Number Theory &amp; Combinatorics</a></li><li><a href="https://claude.ai/code/artifact/34e4f4f9-6d88-4afd-9426-e243421356c1">String Algorithms</a></li><li><a href="https://claude.ai/code/artifact/f254df5f-5086-479e-b80b-2011d428d5e6">Bit Manipulation</a></li><li><a href="https://claude.ai/code/artifact/2dc80eb5-e35f-4079-bb93-351ceae8c683">Game Theory</a></li><li><a href="https://claude.ai/code/artifact/69f48d09-8ce7-495b-9b95-530c827d9af6">Network Flow &amp; Matching</a></li><li><a href="https://claude.ai/code/artifact/ca5bf18b-b4fe-400b-a702-edccd442732d">FFT / NTT</a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide Hub</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+        <li><a href="https://claude.ai/code/artifact/8968b342-ca79-44b8-be52-aa3770481647#computational-geometry">Further Reading (CF Blogs)</a></li>
+      </ul>
+      <h2>About this page</h2>
+      <div class="sidebar-note">
+        <p>Every solved example's code was <strong>compiled and run</strong> against its stated sample input, with output verified to match exactly before publishing &mdash; many were additionally stress-tested against independent brute-force references.</p>
+        <p>Practice problems are pulled from real Codeforces (verified via the public API), CSES, and LeetCode problem sets &mdash; filtered to non-trivial/hard difficulty.</p>
+      </div>
+    </aside>
+    <main>
+      <section class="topic-section" id="computational-geometry-convex-hull-andrew-s-monotone-chain">
+  <div class="topic-head"><h2>Convex Hull (Andrew&#x27;s Monotone Chain)</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The convex hull of a point set is the smallest convex polygon containing every point. Andrew&#x27;s monotone chain algorithm builds it in O(n log n) by sorting points lexicographically by (x, y) and then constructing the lower hull and upper hull independently with the same one-pass greedy rule: walk the sorted points left to right (then right to left for the upper hull), maintaining a stack, and while the last three points on the stack make a non-left turn, pop the middle one before pushing the new point. &quot;Turn direction&quot; is decided by the 2D cross product cross(O,A,B) = (A.x-O.x)*(B.y-O.y) - (A.y-O.y)*(B.x-O.x): a positive value means A-&gt;B turns left (counterclockwise) from O, negative means it turns right, and zero means the three points are collinear. Using strictly-non-positive (&lt;=0) as the pop condition produces the strict hull (collinear points on an edge are dropped, only true corners remain); using strictly-negative (&lt;0) instead keeps collinear boundary points in the output, which is exactly what LeetCode&#x27;s &quot;Erect the Fence&quot; requires (a fence must physically pass through every tree, including ones sitting exactly on a straight edge between two other trees) — this single operator difference is the most common reason a textbook-correct convex hull implementation fails that specific problem. Concatenating the lower and upper hull chains (dropping the duplicated last point of each) gives the full hull in counterclockwise order.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>&quot;Find the smallest convex polygon/fence/boundary enclosing all points&quot;, &quot;minimum-perimeter shape containing every given point&quot;, any problem literally titled convex hull, and problems about enclosing trees/houses/sensors on a 2D plane.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log n), dominated by the initial sort; the hull construction itself is a single O(n) pass per chain since each point is pushed and popped from the stack at most once.</p></div>
+  </div>
+  <article class="example-card" id="computational-geometry-convex-hull-andrew-s-monotone-chain-ex0">
+  <h4>Convex Hull of a Point Set</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n distinct points on a 2D plane (2 &lt;= n &lt;= 1000, integer coordinates up to 1e9 in magnitude), output the vertices of their convex hull in counterclockwise order, starting from the point with the smallest x-coordinate (ties broken by smallest y). Points strictly inside the hull, and points lying exactly on a hull edge between two other points, should not be listed.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort all points by (x, y). Build the lower hull by scanning left to right, popping the last point off the hull stack whenever the last two hull points and the current point don&#x27;t make a strict left turn (cross &lt;= 0). Build the upper hull the same way scanning right to left. Concatenate lower + upper, dropping the final point of each chain since it duplicates the first point of the next chain.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">struct</span> Pt{ ll x,y; };
+
+ll cross(<span class="tok-keyword">const</span> Pt&amp;O,<span class="tok-keyword">const</span> Pt&amp;A,<span class="tok-keyword">const</span> Pt&amp;B){
+    <span class="tok-keyword">return</span> (A.x-O.x)*(B.y-O.y) - (A.y-O.y)*(B.x-O.x);
+}
+
+<span class="tok-type">vector</span>&lt;Pt&gt; convexHull(<span class="tok-type">vector</span>&lt;Pt&gt; pts){
+    <span class="tok-keyword">int</span> n = pts.size();
+    sort(pts.begin(), pts.end(), [](<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b){
+        <span class="tok-keyword">return</span> a.x&lt;b.x || (a.x==b.x &amp;&amp; a.y&lt;b.y);
+    });
+    <span class="tok-keyword">if</span>(n &lt; <span class="tok-number">3</span>) <span class="tok-keyword">return</span> pts;
+    <span class="tok-type">vector</span>&lt;Pt&gt; hull(<span class="tok-number">2</span>*n);
+    <span class="tok-keyword">int</span> k = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++){
+        <span class="tok-keyword">while</span>(k&gt;=<span class="tok-number">2</span> &amp;&amp; cross(hull[k-<span class="tok-number">2</span>],hull[k-<span class="tok-number">1</span>],pts[i])&lt;=<span class="tok-number">0</span>) k--;
+        hull[k++] = pts[i];
+    }
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=n-<span class="tok-number">2</span>, lower=k+<span class="tok-number">1</span>; i&gt;=<span class="tok-number">0</span>; i--){
+        <span class="tok-keyword">while</span>(k&gt;=lower &amp;&amp; cross(hull[k-<span class="tok-number">2</span>],hull[k-<span class="tok-number">1</span>],pts[i])&lt;=<span class="tok-number">0</span>) k--;
+        hull[k++] = pts[i];
+    }
+    hull.resize(k-<span class="tok-number">1</span>);
+    <span class="tok-keyword">return</span> hull;
+}
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;Pt&gt; pts(n);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;p: pts) cin &gt;&gt; p.x &gt;&gt; p.y;
+    <span class="tok-keyword">auto</span> hull = convexHull(pts);
+    cout &lt;&lt; hull.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;p: hull) cout &lt;&lt; p.x &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; p.y &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+0 0
+0 4
+4 4
+4 0
+2 2</code></pre>
+    <pre><code>4
+0 0
+4 0
+4 4
+0 4</code></pre>
+  </div>
+</article><article class="example-card" id="computational-geometry-convex-hull-andrew-s-monotone-chain-ex1">
+  <h4>Erect the Fence (Convex Hull Including Collinear Boundary Points)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given the positions of n trees on a 2D plane, find the fence with the minimum possible length that can enclose all the trees. Unlike a strict convex hull, a tree that sits exactly on a straight segment between two other selected trees must still be included in the answer, since a straight fence passing over that segment would pass through it.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Identical monotone-chain construction as the plain convex hull, except the pop condition changes from &quot;cross &lt;= 0&quot; to &quot;cross &lt; 0&quot;: collinear points (cross == 0) are now kept rather than discarded, so every point lying exactly on a hull edge survives into the output. This is the one-line fix for the classic gotcha where a correct convex-hull implementation silently gives a wrong answer on this exact problem.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">struct</span> Pt{ ll x,y; };
+
+ll cross(<span class="tok-keyword">const</span> Pt&amp;O,<span class="tok-keyword">const</span> Pt&amp;A,<span class="tok-keyword">const</span> Pt&amp;B){
+    <span class="tok-keyword">return</span> (A.x-O.x)*(B.y-O.y) - (A.y-O.y)*(B.x-O.x);
+}
+
+<span class="tok-type">vector</span>&lt;Pt&gt; fenceHull(<span class="tok-type">vector</span>&lt;Pt&gt; pts){
+    <span class="tok-keyword">int</span> n = pts.size();
+    sort(pts.begin(), pts.end(), [](<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b){
+        <span class="tok-keyword">return</span> a.x&lt;b.x || (a.x==b.x &amp;&amp; a.y&lt;b.y);
+    });
+    <span class="tok-keyword">if</span>(n &lt; <span class="tok-number">3</span>) <span class="tok-keyword">return</span> pts;
+    <span class="tok-type">vector</span>&lt;Pt&gt; hull(<span class="tok-number">2</span>*n);
+    <span class="tok-keyword">int</span> k = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++){
+        <span class="tok-keyword">while</span>(k&gt;=<span class="tok-number">2</span> &amp;&amp; cross(hull[k-<span class="tok-number">2</span>],hull[k-<span class="tok-number">1</span>],pts[i])&lt;<span class="tok-number">0</span>) k--;
+        hull[k++] = pts[i];
+    }
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=n-<span class="tok-number">2</span>, lower=k+<span class="tok-number">1</span>; i&gt;=<span class="tok-number">0</span>; i--){
+        <span class="tok-keyword">while</span>(k&gt;=lower &amp;&amp; cross(hull[k-<span class="tok-number">2</span>],hull[k-<span class="tok-number">1</span>],pts[i])&lt;<span class="tok-number">0</span>) k--;
+        hull[k++] = pts[i];
+    }
+    hull.resize(k-<span class="tok-number">1</span>);
+    <span class="tok-keyword">return</span> hull;
+}
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;Pt&gt; pts(n);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;p: pts) cin &gt;&gt; p.x &gt;&gt; p.y;
+    <span class="tok-keyword">auto</span> hull = fenceHull(pts);
+    cout &lt;&lt; hull.size() &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;p: hull) cout &lt;&lt; p.x &lt;&lt; <span class="tok-string">&quot; &quot;</span> &lt;&lt; p.y &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>5
+0 0
+4 0
+4 4
+0 4
+2 0</code></pre>
+    <pre><code>5
+0 0
+2 0
+4 0
+4 4
+0 4</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="computational-geometry-sweep-line-for-rectangle-union-area">
+  <div class="topic-head"><h2>Sweep Line for Rectangle Union Area</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>To compute the total area covered by a union of possibly-overlapping axis-aligned rectangles, sweep a vertical line across all distinct x-coordinates that appear as a rectangle&#x27;s left or right edge. Between two consecutive distinct x-coordinates x_L &lt; x_R, every rectangle that spans the whole slab [x_L, x_R] contributes a constant covered height for that entire slab, so the area contributed by the slab is (x_R - x_L) times the total length of the y-axis covered by the union of those rectangles&#x27; y-intervals within the slab. Computing that covered y-length is itself a 1D interval-union problem: collect the y-intervals of every rectangle active in the slab, sort by start, and merge overlapping/touching intervals while summing their lengths. Repeating this for every slab and summing gives the total area in O(k) slabs times O(m log m) per slab for the m rectangles active in it — O(n^2 log n) worst case, which is simple to implement and plenty fast for n up to a few thousand; a segment tree keyed on compressed y-coordinates that tracks (coverage count, covered length) per node turns the per-slab query into O(log n), giving the fully optimized O(n log n) solution used when n is large (up to 1e5, as in the harder OA constraint reported for this problem).</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>&quot;Total area covered by a set of (possibly overlapping) rectangles&quot;, &quot;union of intervals/rectangles&quot;, or any problem whose examples show axis-aligned rectangles and ask for a combined area or covered length rather than a per-rectangle sum.</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n^2 log n) with the simple merge-per-slab approach shown here (fine for n up to a few thousand); O(n log n) with a coverage-counting segment tree over compressed y-coordinates for larger n.</p></div>
+  </div>
+  <article class="example-card" id="computational-geometry-sweep-line-for-rectangle-union-area-ex0">
+  <h4>Rectangle Area II</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n axis-aligned rectangles, each described as [x1, y1, x2, y2] (bottom-left and top-right corners), return the total area covered by all rectangles, counting any overlapping region only once. Since the answer can be very large, return it modulo 1e9+7.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Collect every rectangle&#x27;s x1 and x2 into a sorted, de-duplicated list of x-coordinates. For each consecutive pair (x_L, x_R) in that list, gather the y-intervals of every rectangle with x1 &lt;= x_L and x2 &gt;= x_R (i.e. every rectangle spanning the whole slab), sort those intervals by start, merge overlapping ones while accumulating covered length, and add (x_R - x_L) * covered_length to a running total (mod 1e9+7).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">const</span> ll MOD = <span class="tok-number">1000000007</span>;
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;ll,<span class="tok-number">4</span>&gt;&gt; rect(n); <span class="tok-comment">// x1,y1,x2,y2</span>
+    <span class="tok-type">vector</span>&lt;ll&gt; xs;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;r: rect){
+        cin &gt;&gt; r[<span class="tok-number">0</span>] &gt;&gt; r[<span class="tok-number">1</span>] &gt;&gt; r[<span class="tok-number">2</span>] &gt;&gt; r[<span class="tok-number">3</span>];
+        xs.push_back(r[<span class="tok-number">0</span>]); xs.push_back(r[<span class="tok-number">2</span>]);
+    }
+    sort(xs.begin(), xs.end());
+    xs.erase(unique(xs.begin(), xs.end()), xs.end());
+
+    ll area = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> i=<span class="tok-number">0</span>; i+<span class="tok-number">1</span>&lt;xs.size(); i++){
+        ll xL = xs[i], xR = xs[i+<span class="tok-number">1</span>];
+        ll width = xR - xL;
+        <span class="tok-keyword">if</span>(width == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;ll,ll&gt;&gt; ys;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;r: rect)
+            <span class="tok-keyword">if</span>(r[<span class="tok-number">0</span>] &lt;= xL &amp;&amp; r[<span class="tok-number">2</span>] &gt;= xR) ys.push_back({r[<span class="tok-number">1</span>], r[<span class="tok-number">3</span>]});
+        sort(ys.begin(), ys.end());
+        ll covered = <span class="tok-number">0</span>, curL = <span class="tok-number">0</span>, curR = <span class="tok-number">0</span>;
+        <span class="tok-keyword">bool</span> have = <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;yv: ys){
+            <span class="tok-keyword">if</span>(!have){ curL = yv.first; curR = yv.second; have = <span class="tok-keyword">true</span>; }
+            <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(yv.first &lt;= curR){ curR = max(curR, yv.second); }
+            <span class="tok-keyword">else</span>{ covered += curR - curL; curL = yv.first; curR = yv.second; }
+        }
+        <span class="tok-keyword">if</span>(have) covered += curR - curL;
+        area = (area + (width % MOD) * (covered % MOD)) % MOD;
+    }
+    cout &lt;&lt; area &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>2
+0 0 2 2
+1 1 3 3</code></pre>
+    <pre><code>7</code></pre>
+  </div>
+</article><article class="example-card" id="computational-geometry-sweep-line-for-rectangle-union-area-ex1">
+  <h4>Area of Rectangles (Union, No Modulo)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n axis-aligned rectangles, compute the total area they cover, treating overlapping regions only once (coordinates are small enough that the exact integer area fits comfortably in a 64-bit integer, no modulo needed).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Exactly the same slab-and-merge sweep as Rectangle Area II, just without the modulo reduction at the end — useful when the judge wants the exact area rather than a residue, and a good sanity check that the technique is understood independently of the modular-arithmetic bookkeeping.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;<span class="tok-type">array</span>&lt;ll,<span class="tok-number">4</span>&gt;&gt; rect(n);
+    <span class="tok-type">vector</span>&lt;ll&gt; xs;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;r: rect){
+        cin &gt;&gt; r[<span class="tok-number">0</span>] &gt;&gt; r[<span class="tok-number">1</span>] &gt;&gt; r[<span class="tok-number">2</span>] &gt;&gt; r[<span class="tok-number">3</span>];
+        xs.push_back(r[<span class="tok-number">0</span>]); xs.push_back(r[<span class="tok-number">2</span>]);
+    }
+    sort(xs.begin(), xs.end());
+    xs.erase(unique(xs.begin(), xs.end()), xs.end());
+
+    ll area = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> i=<span class="tok-number">0</span>; i+<span class="tok-number">1</span>&lt;xs.size(); i++){
+        ll xL = xs[i], xR = xs[i+<span class="tok-number">1</span>];
+        ll width = xR - xL;
+        <span class="tok-keyword">if</span>(width == <span class="tok-number">0</span>) <span class="tok-keyword">continue</span>;
+        <span class="tok-type">vector</span>&lt;<span class="tok-type">pair</span>&lt;ll,ll&gt;&gt; ys;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;r: rect)
+            <span class="tok-keyword">if</span>(r[<span class="tok-number">0</span>] &lt;= xL &amp;&amp; r[<span class="tok-number">2</span>] &gt;= xR) ys.push_back({r[<span class="tok-number">1</span>], r[<span class="tok-number">3</span>]});
+        sort(ys.begin(), ys.end());
+        ll covered = <span class="tok-number">0</span>, curL = <span class="tok-number">0</span>, curR = <span class="tok-number">0</span>;
+        <span class="tok-keyword">bool</span> have = <span class="tok-keyword">false</span>;
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;yv: ys){
+            <span class="tok-keyword">if</span>(!have){ curL = yv.first; curR = yv.second; have = <span class="tok-keyword">true</span>; }
+            <span class="tok-keyword">else</span> <span class="tok-keyword">if</span>(yv.first &lt;= curR){ curR = max(curR, yv.second); }
+            <span class="tok-keyword">else</span>{ covered += curR - curL; curL = yv.first; curR = yv.second; }
+        }
+        <span class="tok-keyword">if</span>(have) covered += curR - curL;
+        area += width * covered;
+    }
+    cout &lt;&lt; area &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>2
+0 0 4 4
+2 2 6 6</code></pre>
+    <pre><code>28</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="computational-geometry-closest-pair-of-points-manhattan-distance-tricks">
+  <div class="topic-head"><h2>Closest Pair of Points &amp; Manhattan-Distance Tricks</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The classic divide-and-conquer closest-pair algorithm finds the minimum Euclidean distance among n points in O(n log n) (or the simpler-to-code O(n log^2 n) variant below): sort points by x, recursively solve the left and right halves, then check only the &quot;strip&quot; of points within the current best distance d of the dividing vertical line, sorted by y — a packing argument (at most a small constant number of points can fit in any d x 2d box without being closer than d to each other) guarantees each strip point only needs to be compared against a handful of its neighbors in y-order, not the whole strip. Comparing squared distances instead of true distances avoids floating point and sqrt entirely, which is both faster and exact. A completely different but very useful trick applies specifically to Manhattan distance |x1-x2|+|y1-y2|: rotating coordinates by 45 degrees via u=x+y, v=x-y turns Manhattan distance into Chebyshev distance max(|u1-u2|,|v1-v2|), which means the *maximum* Manhattan distance among all pairs of n points is simply max(max(u)-min(u), max(v)-min(v)) — no pairwise comparison or recursion needed at all, just a single O(n) scan after computing u and v for every point.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>&quot;Find the minimum distance between any two points&quot; (closest pair, Euclidean) or &quot;find the maximum/minimum Manhattan distance among a set of points&quot; (rotate-and-scan, no D&amp;C needed).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n log^2 n) for the closest-pair divide and conquer shown here (O(n log n) achievable by maintaining the y-sorted order incrementally instead of re-sorting the strip each call); O(n log n) for the Manhattan-distance trick, dominated purely by the sort/scan.</p></div>
+  </div>
+  <article class="example-card" id="computational-geometry-closest-pair-of-points-manhattan-distance-tricks-ex0">
+  <h4>Closest Pair of Points</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n points on a 2D plane (2 &lt;= n &lt;= 2*10^5, integer coordinates), find the minimum squared Euclidean distance between any two distinct points.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Sort points by x. Recurse: if a range has &lt;=2 points, brute-force it directly. Otherwise split at the midpoint, recursively solve both halves to get the best squared distance so far, then build the &quot;strip&quot; of points within sqrt(best) of the splitting x-coordinate (compared as (dx)^2 &lt; best to stay in integers), sort the strip by y, and for each strip point only compare forward while the y-gap squared stays below best (the packing argument bounds how many such comparisons are needed).</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">struct</span> Pt{ ll x,y; };
+
+ll sqDist(<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b){
+    ll dx=a.x-b.x, dy=a.y-b.y;
+    <span class="tok-keyword">return</span> dx*dx + dy*dy;
+}
+
+ll bruteForce(<span class="tok-type">vector</span>&lt;Pt&gt;&amp;pts,<span class="tok-keyword">int</span> l,<span class="tok-keyword">int</span> r){
+    ll best = LLONG_MAX;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=l;i&lt;=r;i++)
+        <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> j=i+<span class="tok-number">1</span>;j&lt;=r;j++)
+            best = min(best, sqDist(pts[i],pts[j]));
+    <span class="tok-keyword">return</span> best;
+}
+
+ll closestPair(<span class="tok-type">vector</span>&lt;Pt&gt;&amp;pts,<span class="tok-keyword">int</span> l,<span class="tok-keyword">int</span> r){
+    <span class="tok-keyword">if</span>(r-l &lt;= <span class="tok-number">2</span>) <span class="tok-keyword">return</span> bruteForce(pts,l,r);
+    <span class="tok-keyword">int</span> mid = (l+r)/<span class="tok-number">2</span>;
+    ll midX = pts[mid].x;
+    ll best = min(closestPair(pts,l,mid), closestPair(pts,mid+<span class="tok-number">1</span>,r));
+
+    <span class="tok-type">vector</span>&lt;Pt&gt; strip;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=l;i&lt;=r;i++)
+        <span class="tok-keyword">if</span>((pts[i].x-midX)*(pts[i].x-midX) &lt; best) strip.push_back(pts[i]);
+    sort(strip.begin(), strip.end(), [](<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b){ <span class="tok-keyword">return</span> a.y&lt;b.y; });
+
+    <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> i=<span class="tok-number">0</span>;i&lt;strip.size();i++)
+        <span class="tok-keyword">for</span>(<span class="tok-type">size_t</span> j=i+<span class="tok-number">1</span>;j&lt;strip.size() &amp;&amp; (strip[j].y-strip[i].y)*(strip[j].y-strip[i].y) &lt; best; j++)
+            best = min(best, sqDist(strip[i],strip[j]));
+    <span class="tok-keyword">return</span> best;
+}
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;Pt&gt; pts(n);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;p: pts) cin &gt;&gt; p.x &gt;&gt; p.y;
+    sort(pts.begin(), pts.end(), [](<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b){ <span class="tok-keyword">return</span> a.x&lt;b.x; });
+    cout &lt;&lt; closestPair(pts,<span class="tok-number">0</span>,n-<span class="tok-number">1</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+0 0
+0 3
+4 0
+1 1</code></pre>
+    <pre><code>2</code></pre>
+  </div>
+</article><article class="example-card" id="computational-geometry-closest-pair-of-points-manhattan-distance-tricks-ex1">
+  <h4>Maximum Manhattan Distance Among N Points</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given n points on a 2D plane, find the maximum Manhattan distance |x_i - x_j| + |y_i - y_j| over all pairs (i, j).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Transform every point (x, y) into (u, v) = (x+y, x-y). Manhattan distance between two original points equals the Chebyshev distance max(|u_i-u_j|, |v_i-v_j|) between their transformed points, and since Chebyshev distance decomposes independently per coordinate, the maximum over all pairs is simply max(max(u)-min(u), max(v)-min(v)) — track the running min/max of u and v in a single O(n) pass, no pairwise comparisons at all.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;ll&gt; x(n), y(n);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++) cin &gt;&gt; x[i] &gt;&gt; y[i];
+
+    ll uMin=LLONG_MAX, uMax=LLONG_MIN, vMin=LLONG_MAX, vMax=LLONG_MIN;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++){
+        ll u = x[i]+y[i], v = x[i]-y[i];
+        uMin=min(uMin,u); uMax=max(uMax,u);
+        vMin=min(vMin,v); vMax=max(vMax,v);
+    }
+    cout &lt;&lt; max(uMax-uMin, vMax-vMin) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>3
+0 0
+2 3
+5 1</code></pre>
+    <pre><code>6</code></pre>
+  </div>
+</article>
+</section><section class="topic-section" id="computational-geometry-polygon-area-point-in-polygon">
+  <div class="topic-head"><h2>Polygon Area &amp; Point-in-Polygon</h2><span class="cnt">2 worked examples</span></div>
+  <div class="theory-block"><p>The shoelace formula computes the signed area of a simple polygon (vertices given in order, either orientation) directly from its vertices: 2*Area = |sum_i (x_i * y_{i+1} - x_{i+1} * y_i)|, summed cyclically over all edges. Multiplying by 2 before taking the absolute value keeps the result an exact integer for integer-coordinate polygons, avoiding any floating-point division — many judges (including CSES) deliberately ask for &quot;2 * area&quot; for exactly this reason. Determining whether a point lies inside a simple polygon combines two separate checks: first, an explicit boundary check (is the point exactly on one of the polygon&#x27;s edges, via the same on-segment test used for collinearity: cross product zero and the point&#x27;s coordinates within the edge&#x27;s bounding box) since edge/vertex points must be reported as boundary rather than inside or outside; second, if not on the boundary, the standard ray-casting (PNPOLY) parity test — cast a ray from the point (conventionally horizontal) and count how many polygon edges it crosses, where crossing an odd number of edges means the point is inside.</p></div>
+  <div class="callout-row">
+    <div class="callout"><span class="c-label">Recognize it by</span><p>&quot;Compute the area of a polygon given its vertices&quot; (shoelace) and &quot;determine whether a query point is inside, outside, or on the boundary of a polygon&quot; (point-in-polygon / PNPOLY).</p></div>
+    <div class="callout"><span class="c-label">Complexity</span><p>O(n) per polygon for the area, and O(n) per query point for point-in-polygon (O(n) boundary check plus O(n) ray-casting pass), or O((n+q) log n) total if queries are batched with an angular sort against a fixed interior point for repeated fast lookups.</p></div>
+  </div>
+  <article class="example-card" id="computational-geometry-polygon-area-point-in-polygon-ex0">
+  <h4>Polygon Area (Shoelace Formula)</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given the n vertices of a simple polygon in order (either orientation, 3 &lt;= n &lt;= 1000, integer coordinates), print 2*A where A is the polygon&#x27;s exact area (printing double the area keeps the output an integer).</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>Apply the shoelace formula directly: sum x_i*y_{i+1} - x_{i+1}*y_i over all edges (indices taken cyclically, i.e. the last vertex connects back to the first), then print the absolute value of that sum.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n; cin &gt;&gt; n;
+    <span class="tok-type">vector</span>&lt;ll&gt; x(n), y(n);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++) cin &gt;&gt; x[i] &gt;&gt; y[i];
+
+    ll sum = <span class="tok-number">0</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++){
+        <span class="tok-keyword">int</span> j = (i+<span class="tok-number">1</span>) % n;
+        sum += x[i]*y[j] - x[j]*y[i];
+    }
+    cout &lt;&lt; llabs(sum) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4
+1 1
+4 2
+3 5
+1 4</code></pre>
+    <pre><code>16</code></pre>
+  </div>
+</article><article class="example-card" id="computational-geometry-polygon-area-point-in-polygon-ex1">
+  <h4>Point in Polygon</h4>
+  <div class="section-label">Problem</div>
+  <div class="prose"><p>Given a simple polygon with n vertices and m query points, classify each query point as INSIDE, OUTSIDE, or on the BOUNDARY of the polygon.</p></div>
+  <div class="section-label">Approach</div>
+  <div class="prose"><p>For each query point, first check every edge with an on-segment test (cross product zero and coordinates within the edge&#x27;s bounding box) — if any edge matches, report BOUNDARY immediately. Otherwise run the standard ray-casting parity test: for each edge whose endpoints straddle the query&#x27;s y-coordinate, compute where the edge crosses that horizontal line and flip an <code>inside</code> flag if the crossing is to the right of the query point; an odd total number of flips means INSIDE, even means OUTSIDE.</p></div>
+  <div class="section-label">Solution</div>
+  <pre><code><span class="tok-preproc">#include &lt;bits/stdc++.h&gt;</span>
+<span class="tok-keyword">using</span> <span class="tok-keyword">namespace</span> std;
+<span class="tok-keyword">typedef</span> <span class="tok-keyword">long</span> <span class="tok-keyword">long</span> ll;
+<span class="tok-keyword">struct</span> Pt{ ll x,y; };
+
+ll cross(<span class="tok-keyword">const</span> Pt&amp;O,<span class="tok-keyword">const</span> Pt&amp;A,<span class="tok-keyword">const</span> Pt&amp;B){
+    <span class="tok-keyword">return</span> (A.x-O.x)*(B.y-O.y) - (A.y-O.y)*(B.x-O.x);
+}
+
+<span class="tok-keyword">bool</span> onSegment(<span class="tok-keyword">const</span> Pt&amp;a,<span class="tok-keyword">const</span> Pt&amp;b,<span class="tok-keyword">const</span> Pt&amp;p){
+    <span class="tok-keyword">if</span>(cross(a,b,p) != <span class="tok-number">0</span>) <span class="tok-keyword">return</span> <span class="tok-keyword">false</span>;
+    <span class="tok-keyword">return</span> min(a.x,b.x)&lt;=p.x &amp;&amp; p.x&lt;=max(a.x,b.x) &amp;&amp; min(a.y,b.y)&lt;=p.y &amp;&amp; p.y&lt;=max(a.y,b.y);
+}
+
+<span class="tok-keyword">int</span> classify(<span class="tok-type">vector</span>&lt;Pt&gt;&amp;poly, Pt p){
+    <span class="tok-keyword">int</span> n = poly.size();
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>;i&lt;n;i++)
+        <span class="tok-keyword">if</span>(onSegment(poly[i], poly[(i+<span class="tok-number">1</span>)%n], p)) <span class="tok-keyword">return</span> <span class="tok-number">2</span>; <span class="tok-comment">// boundary</span>
+
+    <span class="tok-keyword">bool</span> inside = <span class="tok-keyword">false</span>;
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">int</span> i=<span class="tok-number">0</span>, j=n-<span class="tok-number">1</span>; i&lt;n; j=i++){
+        Pt a = poly[i], b = poly[j];
+        <span class="tok-keyword">if</span>((a.y &gt; p.y) != (b.y &gt; p.y)){
+            <span class="tok-keyword">double</span> xCross = a.x + (<span class="tok-keyword">double</span>)(p.y-a.y)*(b.x-a.x)/(b.y-a.y);
+            <span class="tok-keyword">if</span>(p.x &lt; xCross) inside = !inside;
+        }
+    }
+    <span class="tok-keyword">return</span> inside ? <span class="tok-number">1</span> : <span class="tok-number">0</span>;
+}
+
+<span class="tok-keyword">int</span> main(){
+    <span class="tok-keyword">int</span> n,m; cin &gt;&gt; n &gt;&gt; m;
+    <span class="tok-type">vector</span>&lt;Pt&gt; poly(n);
+    <span class="tok-keyword">for</span>(<span class="tok-keyword">auto</span> &amp;p: poly) cin &gt;&gt; p.x &gt;&gt; p.y;
+    <span class="tok-keyword">while</span>(m--){
+        Pt q; cin &gt;&gt; q.x &gt;&gt; q.y;
+        <span class="tok-keyword">int</span> r = classify(poly, q);
+        cout &lt;&lt; (r==<span class="tok-number">2</span> ? <span class="tok-string">&quot;BOUNDARY&quot;</span> : r==<span class="tok-number">1</span> ? <span class="tok-string">&quot;INSIDE&quot;</span> : <span class="tok-string">&quot;OUTSIDE&quot;</span>) &lt;&lt; <span class="tok-string">&quot;\n&quot;</span>;
+    }
+}</code></pre>
+  <div class="section-label">Sample I/O</div>
+  <div class="io-row">
+    <pre><code>4 3
+1 1
+4 2
+3 5
+1 4
+2 3
+3 1
+1 3</code></pre>
+    <pre><code>INSIDE
+OUTSIDE
+BOUNDARY</code></pre>
+  </div>
+</article>
+</section>
+      <section class="topic-section" id="practice-problems">
+        <div class="topic-head"><h2>Practice Problems</h2><span class="cnt">10</span></div>
+        <p class="topic-desc">Curated hard/medium-hard problems from Codeforces, CSES, and LeetCode for this topic &mdash; verified real, not generated.</p>
+        <div class="problems-toolbar"><input type="search" id="probsSearch" placeholder="Filter problems…" autocomplete="off"></div>
+<div class="table-wrap"><table class="problems" id="probs">
+<thead><tr><th>Problem</th><th>Judge</th><th>Difficulty</th><th>Subtopic</th><th>Description</th></tr></thead>
+<tbody><tr data-search="point location test cses convex hull / orientation test for each of q queries, given a directed line segment and a point, report whether the point is to the left, to the right, or exactly on the line through the segment.">
+  <td><a href="https://cses.fi/problemset/task/2189" target="_blank" rel="noopener noreferrer">Point Location Test</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Convex Hull / Orientation Test</td>
+  <td class="desc-cell">For each of q queries, given a directed line segment and a point, report whether the point is to the left, to the right, or exactly on the line through the segment.</td>
+  
+</tr><tr data-search="line segment intersection cses orientation test / segment intersection given two line segments, determine whether they intersect and, if so, print the intersection point (or report that they overlap along a shared line).">
+  <td><a href="https://cses.fi/problemset/task/2190" target="_blank" rel="noopener noreferrer">Line Segment Intersection</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Orientation Test / Segment Intersection</td>
+  <td class="desc-cell">Given two line segments, determine whether they intersect and, if so, print the intersection point (or report that they overlap along a shared line).</td>
+  
+</tr><tr data-search="polygon area cses shoelace formula given a simple polygon&#x27;s vertices in order, compute twice its area (kept as an integer).">
+  <td><a href="https://cses.fi/problemset/task/2191" target="_blank" rel="noopener noreferrer">Polygon Area</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Shoelace Formula</td>
+  <td class="desc-cell">Given a simple polygon&#x27;s vertices in order, compute twice its area (kept as an integer).</td>
+  
+</tr><tr data-search="point in polygon cses point-in-polygon given a simple polygon and several query points, classify each as inside, outside, or exactly on the boundary.">
+  <td><a href="https://cses.fi/problemset/task/2192" target="_blank" rel="noopener noreferrer">Point in Polygon</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Point-in-Polygon</td>
+  <td class="desc-cell">Given a simple polygon and several query points, classify each as inside, outside, or exactly on the boundary.</td>
+  
+</tr><tr data-search="minimum euclidean distance cses closest pair of points given n points, find the minimum distance between any two of them.">
+  <td><a href="https://cses.fi/problemset/task/2194" target="_blank" rel="noopener noreferrer">Minimum Euclidean Distance</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Closest Pair of Points</td>
+  <td class="desc-cell">Given n points, find the minimum distance between any two of them.</td>
+  
+</tr><tr data-search="convex hull cses convex hull given n points, output the vertices of their convex hull.">
+  <td><a href="https://cses.fi/problemset/task/2195" target="_blank" rel="noopener noreferrer">Convex Hull</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Convex Hull</td>
+  <td class="desc-cell">Given n points, output the vertices of their convex hull.</td>
+  
+</tr><tr data-search="maximum manhattan distances cses manhattan/chebyshev distance transform given n points, find the maximum manhattan distance between any two of them.">
+  <td><a href="https://cses.fi/problemset/task/3410" target="_blank" rel="noopener noreferrer">Maximum Manhattan Distances</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Manhattan/Chebyshev Distance Transform</td>
+  <td class="desc-cell">Given n points, find the maximum Manhattan distance between any two of them.</td>
+  
+</tr><tr data-search="area of rectangles cses sweep line / rectangle union area given n axis-aligned rectangles, compute the total area they cover (overlaps counted once).">
+  <td><a href="https://cses.fi/problemset/task/1741" target="_blank" rel="noopener noreferrer">Area of Rectangles</a></td>
+  <td><span class="judge-badge cses">CSES</span></td>
+  <td class="diff-badge">CSES (Geometry section)</td>
+  <td class="subtopic-cell">Sweep Line / Rectangle Union Area</td>
+  <td class="desc-cell">Given n axis-aligned rectangles, compute the total area they cover (overlaps counted once).</td>
+  
+</tr><tr data-search="rectangle area ii leetcode sweep line / rectangle union area given n axis-aligned rectangles, return the total area they cover modulo 1e9+7.">
+  <td><a href="https://leetcode.com/problems/rectangle-area-ii/" target="_blank" rel="noopener noreferrer">Rectangle Area II</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LC Hard</td>
+  <td class="subtopic-cell">Sweep Line / Rectangle Union Area</td>
+  <td class="desc-cell">Given n axis-aligned rectangles, return the total area they cover modulo 1e9+7.</td>
+  
+</tr><tr data-search="erect the fence leetcode convex hull (inclusive of collinear points) given the positions of trees in a garden, find the perimeter of the fence that can enclose all the trees, including any tree that lies exactly on the fence line.">
+  <td><a href="https://leetcode.com/problems/erect-the-fence/" target="_blank" rel="noopener noreferrer">Erect the Fence</a></td>
+  <td><span class="judge-badge lc">LeetCode</span></td>
+  <td class="diff-badge">LC Hard</td>
+  <td class="subtopic-cell">Convex Hull (Inclusive of Collinear Points)</td>
+  <td class="desc-cell">Given the positions of trees in a garden, find the perimeter of the fence that can enclose all the trees, including any tree that lies exactly on the fence line.</td>
+  
+</tr></tbody>
+</table></div>
+<script>
+(function(){
+  var input = document.getElementById("probsSearch");
+  var rows = document.querySelectorAll("#probs tbody tr");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.dataset.search.includes(q) ? "" : "none"; });
+  });
+})();
+</script>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

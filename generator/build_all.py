@@ -47,6 +47,7 @@ def main():
         "index": page_url_map.get("index", "#"),
         "cpguide": page_url_map.get("cpguide-hub", "#"),
         "concepts": page_url_map.get("concepts-hub", "#"),
+        "companyoa": page_url_map.get("companyoa", "#"),
     }
 
     # 14 CP guide topic pages

@@ -22,6 +22,7 @@ CPGUIDE_DESCRIPTIONS = {
     "game-theory": "Nim, the XOR winning condition, and the Sprague-Grundy theorem.",
     "network-flow": "Max flow (Edmonds-Karp), min cut, bipartite matching (Kuhn's algorithm).",
     "fft-ntt": "Polynomial multiplication via FFT, exact convolution via NTT.",
+    "computational-geometry": "Convex hull, sweep-line rectangle union area, closest pair of points, polygon area & point-in-polygon.",
 }
 
 ROADMAP = [
@@ -84,7 +85,14 @@ ROADMAP = [
         ],
     },
     {
-        "stage": 7, "title": "Optional / Advanced",
+        "stage": 7, "title": "Computational Geometry",
+        "goal": "A self-contained topic you can slot in anytime after Stage 1 (it only needs sorting and basic arithmetic) — added because convex hull and sweep-line rectangle-area problems showed up independently across several real company OAs in the Company OA Bank.",
+        "items": [
+            ("topic", "computational-geometry", "Computational Geometry"),
+        ],
+    },
+    {
+        "stage": 8, "title": "Optional / Advanced",
         "goal": "Rarely needed for placement-level OAs — treat these as a CF-rating-climbing / ICPC-style extension once the rest is solid, not a prerequisite for interviews.",
         "items": [
             ("topic", "network-flow", "Network Flow & Matching"),
@@ -110,7 +118,7 @@ def roadmap_html():
 </div>''')
     return f'''<section class="topic-section" id="roadmap">
   <div class="topic-head"><h2>Suggested Study Order</h2></div>
-  <p class="topic-desc">A prerequisite-aware path through all 14 topics (and the most relevant C++ Concepts pages) if you're not sure where to start. At every stage, once you've worked through a topic's solved examples and a few practice problems, dip into the <a href="__PAGE__:index">Interview Q&amp;A + MCQ Bank</a> for that area to consolidate it for actual interview settings.</p>
+  <p class="topic-desc">A prerequisite-aware path through all 15 topics (and the most relevant C++ Concepts pages) if you're not sure where to start. At every stage, once you've worked through a topic's solved examples and a few practice problems, dip into the <a href="__PAGE__:index">Interview Q&amp;A + MCQ Bank</a> for that area to consolidate it for actual interview settings.</p>
   <div class="roadmap-grid">{"".join(stages_html)}</div>
 </section>'''
 
@@ -156,7 +164,7 @@ def build_cpguide_hub(nav_urls, topic_urls):
   <header class="topbar">
     <p class="eyebrow">Competitive Programming &amp; DSA</p>
     <h1>CP / DSA Guide</h1>
-    <p class="tagline">A comprehensive, placement-exam-oriented guide across 14 major CP/DSA topics &mdash; theory, hand-verified solved examples (every one compiled and run), and curated hard practice problems from Codeforces, CSES, and LeetCode.</p>
+    <p class="tagline">A comprehensive, placement-exam-oriented guide across 15 major CP/DSA topics &mdash; theory, hand-verified solved examples (every one compiled and run), and curated hard practice problems from Codeforces, CSES, and LeetCode.</p>
     <div class="stats-strip">
       <div class="stat-tile"><div class="n">{len(TOPIC_PAGES)}</div><div class="l">Topics</div></div>
       <div class="stat-tile"><div class="n">{total_examples}</div><div class="l">Solved Examples</div></div>

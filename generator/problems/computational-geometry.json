@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Point Location Test",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/2189",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Convex Hull / Orientation Test",
+    "description": "For each of q queries, given a directed line segment and a point, report whether the point is to the left, to the right, or exactly on the line through the segment.",
+    "why_hard": "It's the pure orientation (cross-product) primitive everything else in this topic is built on — the recurring bug is off-by-sign errors between \"left\" and \"right\" depending on how the cross product is defined."
+  },
+  {
+    "name": "Line Segment Intersection",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/2190",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Orientation Test / Segment Intersection",
+    "description": "Given two line segments, determine whether they intersect and, if so, print the intersection point (or report that they overlap along a shared line).",
+    "why_hard": "Requires correctly handling every degenerate case — collinear overlapping segments, touching endpoints, and segments that intersect at a single non-endpoint point — with exact integer/rational arithmetic rather than floating point."
+  },
+  {
+    "name": "Polygon Area",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/2191",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Shoelace Formula",
+    "description": "Given a simple polygon's vertices in order, compute twice its area (kept as an integer).",
+    "why_hard": "Conceptually simple once you know the shoelace formula, but a common early mistake is forgetting to wrap the last vertex back to the first, or forgetting the factor of 2 the judge expects."
+  },
+  {
+    "name": "Point in Polygon",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/2192",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Point-in-Polygon",
+    "description": "Given a simple polygon and several query points, classify each as inside, outside, or exactly on the boundary.",
+    "why_hard": "The boundary case must be checked as a separate exact test before running the ray-casting parity test — ray-casting alone misclassifies points that lie exactly on an edge or vertex."
+  },
+  {
+    "name": "Minimum Euclidean Distance",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/2194",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Closest Pair of Points",
+    "description": "Given n points, find the minimum distance between any two of them.",
+    "why_hard": "The naive O(n^2) approach doesn't scale to CSES's constraints; the divide-and-conquer closest-pair algorithm (with the strip-check bounded by a packing argument) is the intended O(n log n)-ish solution."
+  },
+  {
+    "name": "Convex Hull",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/2195",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Convex Hull",
+    "description": "Given n points, output the vertices of their convex hull.",
+    "why_hard": "Direct application of Andrew's monotone chain — the main risk is getting the collinear-point pop condition (<= vs <) wrong for whatever the judge's exact boundary convention is."
+  },
+  {
+    "name": "Maximum Manhattan Distances",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/3410",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Manhattan/Chebyshev Distance Transform",
+    "description": "Given n points, find the maximum Manhattan distance between any two of them.",
+    "why_hard": "The O(n^2) pairwise approach is too slow; the intended trick is the 45-degree coordinate rotation (u=x+y, v=x-y) that turns Manhattan distance into Chebyshev distance, solvable with a single O(n) min/max scan."
+  },
+  {
+    "name": "Area of Rectangles",
+    "judge": "CSES",
+    "link": "https://cses.fi/problemset/task/1741",
+    "difficulty": "CSES (Geometry section)",
+    "subtopic": "Sweep Line / Rectangle Union Area",
+    "description": "Given n axis-aligned rectangles, compute the total area they cover (overlaps counted once).",
+    "why_hard": "Requires the coordinate-compression + sweep-line technique to merge covered y-intervals per x-slab; a segment-tree-based sweep is needed to pass the full constraint range in O(n log n)."
+  },
+  {
+    "name": "Rectangle Area II",
+    "judge": "LeetCode",
+    "link": "https://leetcode.com/problems/rectangle-area-ii/",
+    "difficulty": "LC Hard",
+    "subtopic": "Sweep Line / Rectangle Union Area",
+    "description": "Given n axis-aligned rectangles, return the total area they cover modulo 1e9+7.",
+    "why_hard": "Same sweep-line technique as Area of Rectangles, with the added bookkeeping of returning the answer modulo 1e9+7 — reported as a real question in this site's Company OA Bank (Squarepoint Capital)."
+  },
+  {
+    "name": "Erect the Fence",
+    "judge": "LeetCode",
+    "link": "https://leetcode.com/problems/erect-the-fence/",
+    "difficulty": "LC Hard",
+    "subtopic": "Convex Hull (Inclusive of Collinear Points)",
+    "description": "Given the positions of trees in a garden, find the perimeter of the fence that can enclose all the trees, including any tree that lies exactly on the fence line.",
+    "why_hard": "The one gotcha that trips up otherwise-correct convex hull code: collinear boundary points must be included in the output, unlike a standard strict convex hull — reported as a real question in this site's Company OA Bank at two different companies."
+  }
+]
