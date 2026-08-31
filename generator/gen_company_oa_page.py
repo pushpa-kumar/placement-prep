@@ -1,6 +1,7 @@
 import json, sys, os, hashlib, collections
 sys.path.insert(0, os.path.dirname(__file__))
 from gen_lib import site_nav, esc
+from dsa_classify import classify_dsa, dsa_company_top_subtopics, DSA_SLUG_ORDER, DSA_SLUG_LABEL
 
 SCRATCH = os.path.dirname(__file__)
 DATA_PATH = f"{SCRATCH}/whatsapp_entries.json"
@@ -40,7 +41,7 @@ def stable_id(prefix, *parts):
     return f"{prefix}-{h}"
 
 
-def build_insights_html(data):
+def build_insights_html(data, insights_url):
     topic_counts = collections.Counter(e["topic"] for e in data)
     total = len(data)
     bars = []
@@ -59,12 +60,41 @@ def build_insights_html(data):
     company_counts = collections.Counter(c for e in data for c in e["companies"])
     top_companies = ", ".join(f"{c} ({n})" for c, n in company_counts.most_common(8) if c != "Unknown")
 
+    dsa_entries = [e for e in data if e["topic"] == "Algorithms & Data Structures (Coding/OA)"]
+    dsa_total = len(dsa_entries)
+    dsa_counts = collections.Counter(classify_dsa(e["q"]) for e in dsa_entries)
+    dsa_bars = []
+    for slug in DSA_SLUG_ORDER:
+        n = dsa_counts.get(slug, 0)
+        if not n:
+            continue
+        pct = round(100 * n / dsa_total)
+        dsa_bars.append(
+            f'<div class="bar-row"><span class="bar-label">{esc(DSA_SLUG_LABEL[slug])}</span>'
+            f'<span class="bar-track"><span class="bar-fill" style="width:{pct}%"></span></span>'
+            f'<span class="bar-n">{n}</span></div>'
+        )
+    dsa_bars_html = "".join(dsa_bars)
+
+    company_dsa_rows = dsa_company_top_subtopics(dsa_entries, min_count=3, top_n=3)
+    company_dsa_html = "".join(
+        f"<li><strong>{esc(c)}</strong> ({n} DSA qs): "
+        + (", ".join(f"{DSA_SLUG_LABEL[s]} ({k})" for s, k in top) if top else "mostly unclassified/contest references")
+        + "</li>"
+        for c, n, top in company_dsa_rows
+    )
+
     return f'''<section class="insights">
     <h2>Topic priority &amp; company patterns (auto-computed from this dataset)</h2>
+    <p style="font-size:.85rem; color:var(--text-muted); margin:0 0 14px;">Full write-up with a per-company data table: <a href="{esc(insights_url)}">Topic Priority &amp; Company Pattern Analysis</a> (public, no sign-in needed).</p>
     <div class="insights-grid">
       <div>
         <h3>Where the questions cluster</h3>
         {bars_html}
+      </div>
+      <div>
+        <h3>Individual DSA topics ({dsa_total} DSA questions)</h3>
+        {dsa_bars_html}
       </div>
       <div>
         <h3>Study priority</h3>
@@ -84,6 +114,10 @@ def build_insights_html(data):
           <li><strong>Gap this surfaced</strong>: Convex Hull / computational geometry (LeetCode "Erect the Fence" asked independently at two companies, plus "Rectangle Area II") had zero coverage in the CP/DSA Guide's 14 topics — a new Computational Geometry page was added to close that gap.</li>
         </ul>
         <p style="margin-top:8px;">Top companies by question count: {esc(top_companies)}.</p>
+      </div>
+      <div>
+        <h3>DSA subtopics by company</h3>
+        <ul>{company_dsa_html}</ul>
       </div>
     </div>
   </section>'''
@@ -118,7 +152,7 @@ def main():
         "is verbatim a known LeetCode / Codeforces / AtCoder / GfG / HackerRank problem links straight to it so "
         "you can submit and check your solution."
     )
-    insights_html = build_insights_html(data)
+    insights_html = build_insights_html(data, url_map_local.get("oa-insights", "#"))
 
     with open(TEMPLATE, encoding="utf-8") as f:
         tpl = f.read()
