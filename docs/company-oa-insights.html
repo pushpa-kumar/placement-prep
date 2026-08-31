@@ -1,0 +1,162 @@
+<title>Company OA Pattern Analysis</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDBHJ7316D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YDBHJ7316D');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.55; }
+  a{ color:var(--accent-strong); }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  .app{ max-width:1080px; margin:0 auto; padding:0 20px 80px; }
+
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+  .auth-slot{ margin-left:auto; }
+
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{ font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-strong); margin:0 0 10px; }
+  .topbar h1{ font-size:clamp(1.5rem,3vw,2.1rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:75ch; margin:10px 0 0; font-size:.98rem; }
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:10px 16px; min-width:118px; box-shadow:var(--shadow); }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  section.block{ margin:34px 0; }
+  section.block h2{ font-size:1.1rem; margin-bottom:12px; }
+  section.block p{ color:var(--text-muted); font-size:.94rem; margin:0 0 12px; }
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); }
+
+  .bar-row{ display:flex; align-items:center; gap:10px; margin:6px 0; font-size:.85rem; }
+  .bar-row .bar-label{ width:230px; flex-shrink:0; color:var(--text-muted); }
+  .bar-row .bar-track{ flex:1; background:var(--surface-2); border-radius:4px; height:10px; overflow:hidden; }
+  .bar-row .bar-fill{ background:var(--accent); height:100%; }
+  .bar-row .bar-n{ width:70px; text-align:right; font-family:var(--mono); color:var(--text-faint); font-size:.78rem; }
+
+  table.pattern-table{ width:100%; border-collapse:collapse; font-size:.85rem; }
+  table.pattern-table th, table.pattern-table td{ padding:8px 10px; border-bottom:1px solid var(--border); text-align:right; }
+  table.pattern-table th:first-child, table.pattern-table td:first-child{ text-align:left; }
+  table.pattern-table thead th{ color:var(--text-faint); font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; font-weight:600; }
+  table.pattern-table tbody tr:hover{ background:var(--surface-2); }
+  table.pattern-table td.company{ font-weight:600; }
+  .pct-dsa{ color:var(--accent-strong); }
+  .table-wrap{ overflow-x:auto; }
+
+  .callout{ border-left:3px solid var(--accent); padding:10px 14px; background:var(--surface-2); border-radius:0 8px 8px 0; font-size:.88rem; color:var(--text-muted); margin:14px 0; }
+  .cta{
+    display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-family:var(--mono); font-weight:600;
+    font-size:.88rem; padding:9px 18px; border-radius:100px; background:var(--accent-soft); color:var(--accent-strong);
+    border:1px solid var(--accent); margin-top:6px;
+  }
+  .cta:hover{ background:var(--accent); color:var(--surface); }
+
+  ul.clean{ margin:0; padding-left:20px; }
+  ul.clean li{ font-size:.9rem; color:var(--text-muted); margin-bottom:8px; line-height:1.6; }
+  ul.clean li strong{ color:var(--text); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+</style>
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><a href="company-oa-questions.html" class="current">Company OA Bank</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">Company OA Bank &mdash; dataset analysis</p>
+    <h1>Topic Priority &amp; Company Pattern Analysis</h1>
+    <p class="tagline">A public breakdown of the 325 real OA/interview questions in the <a href="company-oa-questions.html">Company OA Bank</a> (sign-in required to see the questions themselves) &mdash; what topics dominate, and how each company's OA actually looks in practice. Computed directly from the dataset, not hand-picked.</p>
+    <div class="stats-strip" id="statsStripPlaceholder"><div class="stat-tile"><div class="n">325</div><div class="l">Questions analyzed</div></div><div class="stat-tile"><div class="n">30</div><div class="l">Named companies</div></div><div class="stat-tile"><div class="n">44</div><div class="l">With a practice link</div></div></div>
+  </header>
+
+  <section class="block">
+    <h2>Where the questions cluster</h2>
+    <p>Coarse topic distribution across all 325 questions.</p>
+    <div class="card"><div class="bar-row"><span class="bar-label">Algorithms &amp; Data Structures (Coding/OA)</span><span class="bar-track"><span class="bar-fill" style="width:52%"></span></span><span class="bar-n">170 (52%)</span></div><div class="bar-row"><span class="bar-label">Quantitative &amp; Probability Puzzles</span><span class="bar-track"><span class="bar-fill" style="width:22%"></span></span><span class="bar-n">71 (22%)</span></div><div class="bar-row"><span class="bar-label">General Technical / Company-Specific</span><span class="bar-track"><span class="bar-fill" style="width:25%"></span></span><span class="bar-n">80 (25%)</span></div><div class="bar-row"><span class="bar-label">System Design (Trading/Low-Latency)</span><span class="bar-track"><span class="bar-fill" style="width:0%"></span></span><span class="bar-n">1 (0%)</span></div><div class="bar-row"><span class="bar-label">Concurrency, Atomics &amp; Lock-Free</span><span class="bar-track"><span class="bar-fill" style="width:0%"></span></span><span class="bar-n">1 (0%)</span></div><div class="bar-row"><span class="bar-label">STL, Memory Management &amp; Pointers</span><span class="bar-track"><span class="bar-fill" style="width:1%"></span></span><span class="bar-n">2 (1%)</span></div></div>
+  </section>
+
+  <section class="block">
+    <h2>Study priority</h2>
+    <div class="card">
+      <ul class="clean">
+        <li><strong>Core DSA first.</strong> Just over half of everything in this dataset is a straight algorithms/data-structures problem &mdash; this is the highest-leverage prep and overlaps directly with this site's <a href="index.html">CP/DSA Guide</a>.</li>
+        <li><strong>Quant/probability puzzles second</strong> if targeting prop-trading firms specifically &mdash; see the important caveat below, because this bucket actually contains two very different things.</li>
+        <li><strong>MCQ/aptitude/SQL sections</strong> are a real gatekeeping stage at some companies even though they carry little algorithmic depth &mdash; don't skip practicing them just because they look "easy."</li>
+      </ul>
+      <div class="callout"><strong>Important caveat on the "Quant/Probability" bucket:</strong> at corporate/banking OAs (American Express, NatWest) this label mostly covers numerical-reasoning <em>aptitude</em> questions ("which number is missing: 3, 5, 9, 15, __, 33?") &mdash; test-taking speed and pattern-spotting, not real math. At the prop-trading firms (Ebullient Securities, Graviton Research Capital, IMC Trading, Squarepoint Capital, Plutus Research) the same label covers genuine probability/statistics/combinatorics brainteasers (hypothesis testing, expected-value puzzles, coin-toss probability, combinatorial proofs) &mdash; the kind of quant interview prep this site is actually built around. Don't assume a company is "quant-heavy" from the topic tag alone; check which cluster it's in using the table below.</div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Per-company breakdown</h2>
+    <p>Every company with 2+ questions in the dataset, sorted by question count. "% with practice link" is the share of that company's questions that are verbatim a known LeetCode/Codeforces/AtCoder/GfG/HackerRank problem (so you can actually submit and check your solution) &mdash; a low number means the company mostly asks custom, judge-free questions.</p>
+    <div class="card table-wrap">
+      <table class="pattern-table">
+        <thead><tr><th>Company</th><th>Questions</th><th>% DSA</th><th>% Quant/Aptitude*</th><th>% General/MCQ/SQL</th><th>% With practice link</th></tr></thead>
+        <tbody><tr><td class='company'>NatWest</td><td>53</td><td class='pct-dsa'>21%</td><td>34%</td><td>45%</td><td>4%</td></tr><tr><td class='company'>American Express</td><td>50</td><td class='pct-dsa'>22%</td><td>44%</td><td>34%</td><td>4%</td></tr><tr><td class='company'>Ebullient Securities</td><td>32</td><td class='pct-dsa'>3%</td><td>16%</td><td>81%</td><td>0%</td></tr><tr><td class='company'>Squarepoint Capital</td><td>18</td><td class='pct-dsa'>94%</td><td>0%</td><td>6%</td><td>94%</td></tr><tr><td class='company'>Graviton Research Capital</td><td>14</td><td class='pct-dsa'>14%</td><td>50%</td><td>29%</td><td>0%</td></tr><tr><td class='company'>Microsoft</td><td>11</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>9%</td></tr><tr><td class='company'>Wells Fargo</td><td>10</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Rakuten</td><td>6</td><td class='pct-dsa'>83%</td><td>0%</td><td>17%</td><td>50%</td></tr><tr><td class='company'>Media.net</td><td>6</td><td class='pct-dsa'>83%</td><td>0%</td><td>0%</td><td>33%</td></tr><tr><td class='company'>Meesho</td><td>5</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>20%</td></tr><tr><td class='company'>Hi Labs</td><td>5</td><td class='pct-dsa'>80%</td><td>0%</td><td>20%</td><td>0%</td></tr><tr><td class='company'>Plutus Research</td><td>4</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>75%</td></tr><tr><td class='company'>IMC Trading</td><td>4</td><td class='pct-dsa'>0%</td><td>100%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Visa</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Stripe</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>InMobi</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>33%</td></tr><tr><td class='company'>Deutsche Bank</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>AlgoQuant</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Flipkart</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Oracle</td><td>3</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Corridor Platforms</td><td>2</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>IIK</td><td>2</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>100%</td></tr><tr><td class='company'>D.E. Shaw</td><td>2</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>Capital One</td><td>2</td><td class='pct-dsa'>50%</td><td>0%</td><td>50%</td><td>0%</td></tr><tr><td class='company'>Google</td><td>2</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr><tr><td class='company'>DP World</td><td>2</td><td class='pct-dsa'>100%</td><td>0%</td><td>0%</td><td>0%</td></tr></tbody>
+      </table>
+    </div>
+    <p style="font-size:.78rem; margin-top:8px;">*See the caveat above &mdash; this column means very different things at a bank OA vs. a prop-trading OA.</p>
+  </section>
+
+  <section class="block">
+    <h2>Reading the clusters</h2>
+    <div class="card">
+      <ul class="clean">
+        <li><strong>Prop-trading / quant cluster</strong> (Ebullient Securities, Squarepoint Capital, Graviton Research Capital, IMC Trading, Plutus Research, AlgoQuant): hard Codeforces/AtCoder-difficulty DSA plus genuine probability/expectation/combinatorics puzzles. This cluster looks the most like the rest of this site's HFT-focused content, and is where a Codeforces/CSES practice habit pays off most directly.</li>
+        <li><strong>American Express:</strong> dominated by numerical-reasoning aptitude MCQs and Python/SQL sections rather than hard DSA &mdash; closer to a screening filter than a coding test. Low practice-link coverage means most of it can't be drilled on a public judge; timed mental-math and SQL-query practice matters more here.</li>
+        <li><strong>NatWest:</strong> mostly hands-on custom array/string/graph coding problems and logic/constraint puzzles, with far fewer MCQs than Amex.</li>
+        <li><strong>Mid-tier product/bank OAs</strong> (Wells Fargo, Oracle, Deutsche Bank, Meesho, Microsoft, Rakuten, Media.net): standard LeetCode-medium-equivalent DSA sets, the closest thing to "generic" interview prep in this dataset.</li>
+        <li><strong>Gap this surfaced:</strong> Convex Hull / computational geometry (LeetCode "Erect the Fence" asked independently at two companies, plus "Rectangle Area II") had zero coverage in the CP/DSA Guide's original 14 topics &mdash; a new <a href="cp-computational-geometry.html">Computational Geometry</a> page was added to close that gap.</li>
+      </ul>
+    </div>
+  </section>
+
+  <a class="cta" href="company-oa-questions.html">View the full question bank (sign-in required) &rarr;</a>
+
+  <footer>
+    Compiled for personal interview preparation from a friend's forwarded OA/interview reports. Company names belong to their respective owners; this is an unofficial, independently compiled study aid. All percentages on this page are computed directly from the underlying dataset.
+  </footer>
+</div>
+</div>

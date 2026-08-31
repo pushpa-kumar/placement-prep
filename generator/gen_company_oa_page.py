@@ -134,6 +134,7 @@ def main():
         .replace("__TOPIC_ORDER_JSON__", json.dumps(TOPIC_ORDER, ensure_ascii=False))
         .replace("__TOPIC_DESC_JSON__", json.dumps(TOPIC_DESC, ensure_ascii=False))
         .replace("__GENERATED_DATE__", "September 1, 2026")
+        .replace("__INSIGHTS_URL__", url_map_local.get("oa-insights", "#"))
     )
 
     with open(OUT, "w", encoding="utf-8") as f:
