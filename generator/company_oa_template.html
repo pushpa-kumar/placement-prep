@@ -180,6 +180,7 @@
     background:var(--surface-2); color:var(--text-muted); letter-spacing:.02em;
   }
   .badge.company{ background:var(--accent-soft); color:var(--accent-strong); }
+  .badge.technique{ background:var(--practice-soft); color:var(--practice); font-weight:600; }
   .card .meta-row{ display:flex; flex-wrap:wrap; gap:4px 14px; font-size:.78rem; color:var(--text-faint); margin-bottom:6px; }
   .practice-btn{
     display:inline-flex; align-items:center; gap:5px; text-decoration:none; font-family:var(--mono);
@@ -250,6 +251,9 @@ __SITE_NAV__
       <option value="OA">OA</option>
       <option value="Interview">Interview</option>
     </select>
+    <select id="topicFilter">
+      <option value="all">All topics / techniques</option>
+    </select>
     <label class="link-toggle"><input type="checkbox" id="linkOnly"> Only show questions with a practice link</label>
     <span id="resultCount"></span>
   </div>
@@ -285,7 +289,7 @@ const TOPIC_ORDER = __TOPIC_ORDER_JSON__;
 const TOPIC_DESC = __TOPIC_DESC_JSON__;
 const GENERATED = "__GENERATED_DATE__";
 
-let state = { q:"", type:"all", company:"", linkOnly:false };
+let state = { q:"", type:"all", company:"", linkOnly:false, topic:"all" };
 
 function norm(s){ return (s||"").toLowerCase(); }
 function escapeHtml(s){
@@ -296,6 +300,11 @@ function inlineCode(s){
   return esc.replace(/`([^`]+)`/g, '<code>$1</code>');
 }
 
+// Specific technique when known (DSA questions), else falls back to the
+// coarse topic (quant/general/system-design/etc.) — this is what drives
+// both the per-card badge and the topic/technique filter dropdown.
+function filterTag(e){ return e.technique || e.topic; }
+
 function doneCheckboxHtml(id, type){
   return `<button type="button" class="done-checkbox" data-item-id="${escapeHtml(id)}" data-item-type="${escapeHtml(type)}" aria-pressed="false">Mark done</button>`;
 }
@@ -304,6 +313,7 @@ function matches(e){
   if(state.type !== "all" && !e.type.toUpperCase().includes(state.type.toUpperCase())) return false;
   if(state.company && !e.companies.includes(state.company)) return false;
   if(state.linkOnly && !e.url) return false;
+  if(state.topic !== "all" && filterTag(e) !== state.topic) return false;
   if(state.q){
     const hay = norm(e.q + " " + e.companies.join(" ") + " " + e.role + " " + e.source + " " + e.answer);
     if(!hay.includes(state.q)) return false;
@@ -329,6 +339,15 @@ function buildStats(){
     ["With a practice link", withLink],
   ].map(([l,n])=>`<div class="stat-tile"><div class="n">${n.toLocaleString()}</div><div class="l">${l}</div></div>`).join("");
   document.getElementById("lastUpdated").innerHTML = `<strong>Compiled:</strong> ${GENERATED}.`;
+}
+
+function buildTopicFilterOptions(){
+  const counts = new Map();
+  for(const e of DATA){ const t = filterTag(e); counts.set(t, (counts.get(t)||0)+1); }
+  const sorted = [...counts.entries()].sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
+  const sel = document.getElementById("topicFilter");
+  sel.innerHTML = `<option value="all">All topics / techniques</option>` +
+    sorted.map(([t,n])=>`<option value="${escapeHtml(t)}">${escapeHtml(t)} (${n})</option>`).join("");
 }
 
 function buildTopicNav(){
@@ -360,6 +379,7 @@ function cardHtml(e){
   const typeBadge = e.type && e.type!=="Unknown" ? `<span class="badge">${escapeHtml(e.type)}</span>` : "";
   const roundBadge = e.round && e.round.toLowerCase()!=="unknown" ? `<span class="badge">${escapeHtml(e.round)}</span>` : "";
   const roleBadge = e.role && e.role.toLowerCase()!=="unknown" ? `<span class="badge">${escapeHtml(e.role)}</span>` : "";
+  const techniqueBadge = `<span class="badge technique">${escapeHtml(filterTag(e))}</span>`;
   const practice = e.url
     ? `<a class="practice-btn" href="${escapeHtml(e.url)}" target="_blank" rel="noopener noreferrer">Practice on ${escapeHtml(e.source && e.source.match(/leetcode/i) ? "LeetCode" : e.source && e.source.match(/codeforces/i) ? "Codeforces" : e.source && e.source.match(/atcoder/i) ? "AtCoder" : e.source && e.source.match(/geeksforgeeks/i) ? "GfG" : e.source && e.source.match(/hackerrank/i) ? "HackerRank" : e.source && e.source.match(/hackerearth/i) ? "HackerEarth" : e.source && e.source.match(/cses/i) ? "CSES" : "judge")} →</a>`
     : `<span class="no-practice">No public judge match — custom OA question</span>`;
@@ -369,7 +389,7 @@ function cardHtml(e){
     : "";
   return `<article class="card">
     <p class="q">${inlineCode(e.q)}</p>
-    <div class="badges">${typeBadge}${roundBadge}${roleBadge}${companies}</div>
+    <div class="badges">${techniqueBadge}${typeBadge}${roundBadge}${roleBadge}${companies}</div>
     <div class="meta-row">${practice}</div>
     ${ans}
     <div class="q-done-row">${doneCheckboxHtml(e.id, "wa")}</div>
@@ -412,6 +432,9 @@ document.getElementById("searchInput").addEventListener("input", (ev)=>{
 document.getElementById("typeFilter").addEventListener("change", (ev)=>{
   state.type = ev.target.value; render();
 });
+document.getElementById("topicFilter").addEventListener("change", (ev)=>{
+  state.topic = ev.target.value; render();
+});
 document.getElementById("linkOnly").addEventListener("change", (ev)=>{
   state.linkOnly = ev.target.checked; render();
 });
@@ -420,5 +443,6 @@ document.getElementById("gateSignIn").addEventListener("click", ()=>{ window.Pla
 
 buildStats();
 buildTopicNav();
+buildTopicFilterOptions();
 render();
 </script>

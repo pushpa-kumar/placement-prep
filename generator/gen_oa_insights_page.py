@@ -1,7 +1,7 @@
 import json, sys, os, collections
 sys.path.insert(0, os.path.dirname(__file__))
 from gen_lib import site_nav, esc
-from dsa_classify import classify_dsa, DSA_SLUG_ORDER, DSA_SLUG_LABEL
+from dsa_classify import classify_technique, dsa_technique_counts, dsa_company_top_techniques, UNCLASSIFIED_TECHNIQUE_LABEL
 
 SCRATCH = os.path.dirname(__file__)
 DATA_PATH = f"{SCRATCH}/whatsapp_entries.json"
@@ -77,15 +77,16 @@ def build_company_rows(data):
 
 def build_dsa_bars(dsa_entries):
     total = len(dsa_entries)
-    counts = collections.Counter(classify_dsa(e["q"]) for e in dsa_entries)
+    counts = dsa_technique_counts(dsa_entries)
+    # Unclassified (bare contest references) last, everything else by frequency.
+    ordered = [(t, n) for t, n in counts.most_common() if t != UNCLASSIFIED_TECHNIQUE_LABEL]
+    if counts.get(UNCLASSIFIED_TECHNIQUE_LABEL):
+        ordered.append((UNCLASSIFIED_TECHNIQUE_LABEL, counts[UNCLASSIFIED_TECHNIQUE_LABEL]))
     rows = []
-    for slug in DSA_SLUG_ORDER:
-        n = counts.get(slug, 0)
-        if not n:
-            continue
+    for label, n in ordered:
         pct = round(100 * n / total)
         rows.append(
-            f'<div class="bar-row"><span class="bar-label">{esc(DSA_SLUG_LABEL[slug])}</span>'
+            f'<div class="bar-row"><span class="bar-label">{esc(label)}</span>'
             f'<span class="bar-track"><span class="bar-fill" style="width:{pct}%"></span></span>'
             f'<span class="bar-n">{n} ({pct}%)</span></div>'
         )
@@ -93,28 +94,12 @@ def build_dsa_bars(dsa_entries):
 
 
 def build_dsa_company_rows(dsa_entries):
-    by_company = collections.defaultdict(list)
-    for e in dsa_entries:
-        for c in e["companies"]:
-            if c == "Unknown":
-                continue
-            by_company[c].append(e)
-
-    rows = []
-    for c, items in by_company.items():
-        n = len(items)
-        if n < 3:
-            continue
-        counts = collections.Counter(classify_dsa(e["q"]) for e in items)
-        top = [(s, k) for s, k in counts.most_common() if s != "unclassified"][:3]
-        top_str = ", ".join(f"{DSA_SLUG_LABEL[s]} ({k})" for s, k in top) if top else "mostly unclassified/contest references"
-        rows.append((c, n, top_str))
-
-    rows.sort(key=lambda r: -r[1])
-    return "".join(
-        f"<tr><td class='company'>{esc(c)}</td><td>{n}</td><td style='text-align:left;'>{esc(top_str)}</td></tr>"
-        for c, n, top_str in rows
-    )
+    rows = dsa_company_top_techniques(dsa_entries, min_count=3, top_n=3)
+    html_rows = []
+    for c, n, top in rows:
+        top_str = ", ".join(f"{esc(s)} ({k})" for s, k in top) if top else "mostly unclassified/contest references"
+        html_rows.append(f"<tr><td class='company'>{esc(c)}</td><td>{n}</td><td style='text-align:left;'>{top_str}</td></tr>")
+    return "".join(html_rows)
 
 
 def main():

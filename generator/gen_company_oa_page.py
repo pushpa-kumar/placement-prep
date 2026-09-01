@@ -1,7 +1,10 @@
 import json, sys, os, hashlib, collections
 sys.path.insert(0, os.path.dirname(__file__))
 from gen_lib import site_nav, esc
-from dsa_classify import classify_dsa, dsa_company_top_subtopics, DSA_SLUG_ORDER, DSA_SLUG_LABEL
+from dsa_classify import (
+    classify_dsa, classify_technique, dsa_technique_counts, dsa_company_top_techniques,
+    UNCLASSIFIED_TECHNIQUE_LABEL, DSA_SLUG_ORDER, DSA_SLUG_LABEL,
+)
 
 SCRATCH = os.path.dirname(__file__)
 DATA_PATH = f"{SCRATCH}/whatsapp_entries.json"
@@ -62,24 +65,30 @@ def build_insights_html(data, insights_url):
 
     dsa_entries = [e for e in data if e["topic"] == "Algorithms & Data Structures (Coding/OA)"]
     dsa_total = len(dsa_entries)
-    dsa_counts = collections.Counter(classify_dsa(e["q"]) for e in dsa_entries)
+    technique_counts = dsa_technique_counts(dsa_entries)
+    TOP_N_TECHNIQUES = 12
+    top_techniques = [(t, n) for t, n in technique_counts.most_common() if t != UNCLASSIFIED_TECHNIQUE_LABEL][:TOP_N_TECHNIQUES]
+    shown_total = sum(n for _, n in top_techniques)
+    remaining = dsa_total - shown_total
     dsa_bars = []
-    for slug in DSA_SLUG_ORDER:
-        n = dsa_counts.get(slug, 0)
-        if not n:
-            continue
+    for label, n in top_techniques:
         pct = round(100 * n / dsa_total)
         dsa_bars.append(
-            f'<div class="bar-row"><span class="bar-label">{esc(DSA_SLUG_LABEL[slug])}</span>'
+            f'<div class="bar-row"><span class="bar-label">{esc(label)}</span>'
             f'<span class="bar-track"><span class="bar-fill" style="width:{pct}%"></span></span>'
             f'<span class="bar-n">{n}</span></div>'
         )
     dsa_bars_html = "".join(dsa_bars)
+    dsa_bars_note = (
+        f'<p style="font-size:.78rem; color:var(--text-faint); margin-top:6px;">'
+        f'+{remaining} more across other specific techniques (including {UNCLASSIFIED_TECHNIQUE_LABEL.split(" (")[0].lower()} contest problems) '
+        f'&mdash; use the technique filter above to see all of them.</p>'
+    )
 
-    company_dsa_rows = dsa_company_top_subtopics(dsa_entries, min_count=3, top_n=3)
+    company_dsa_rows = dsa_company_top_techniques(dsa_entries, min_count=3, top_n=3)
     company_dsa_html = "".join(
         f"<li><strong>{esc(c)}</strong> ({n} DSA qs): "
-        + (", ".join(f"{DSA_SLUG_LABEL[s]} ({k})" for s, k in top) if top else "mostly unclassified/contest references")
+        + (", ".join(f"{esc(s)} ({k})" for s, k in top) if top else "mostly unclassified/contest references")
         + "</li>"
         for c, n, top in company_dsa_rows
     )
@@ -93,8 +102,9 @@ def build_insights_html(data, insights_url):
         {bars_html}
       </div>
       <div>
-        <h3>Individual DSA topics ({dsa_total} DSA questions)</h3>
+        <h3>Specific techniques (top {len(top_techniques)} of {dsa_total} DSA questions)</h3>
         {dsa_bars_html}
+        {dsa_bars_note}
       </div>
       <div>
         <h3>Study priority</h3>

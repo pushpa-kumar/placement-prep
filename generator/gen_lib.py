@@ -342,12 +342,17 @@ def site_nav(urls, current):
         ("cpguide", "CP / DSA Guide", urls.get("cpguide", "#")),
         ("concepts", "C++ Concepts", urls.get("concepts", "#")),
         ("index", "Interview Q&A + MCQ Bank", urls.get("index", "#")),
-        ("companyoa", "Company OA Bank", urls.get("companyoa", "#")),
     ]
     links = []
     for key, label, url in items:
         cls = ' class="current"' if key == current else ""
         links.append(f'<a href="{esc(url)}"{cls}>{esc(label)}</a>')
+    # Hidden from logged-out visitors entirely (not just the page content) — only
+    # revealed once progress.js confirms a signed-in Supabase session.
+    if PROGRESS_ENABLED:
+        cls = ' class="current"' if current == "companyoa" else ""
+        companyoa_link = f'<a href="{esc(urls.get("companyoa", "#"))}"{cls}>Company OA Bank</a>'
+        links.append(f'<span data-progress-signed-in style="display:none;">{companyoa_link}</span>')
     auth_slot = '<span id="authSlot" class="auth-slot"></span>' if PROGRESS_ENABLED else ""
     return f'<nav class="site-nav"><span class="brand">placement-prep</span>{"".join(links)}{auth_slot}</nav>'
 
