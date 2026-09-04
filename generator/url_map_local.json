@@ -26,5 +26,6 @@
   "compile-time": "concepts-compile-time.html",
   "concurrency-memory": "concepts-concurrency-memory.html",
   "modern-cpp": "concepts-modern-cpp.html",
-  "further-reading": "cp-further-reading.html"
+  "further-reading": "cp-further-reading.html",
+  "atcoder-ladders": "cp-atcoder-ladders.html"
 }

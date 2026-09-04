@@ -1,4 +1,6 @@
-import json, argparse, hashlib
+import json, argparse, hashlib, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from gen_lib import PAGE_STATUS_CSS, PAGE_STATUS_BAR
 
 def stable_id(prefix, *parts):
     h = hashlib.sha1("||".join(str(p) for p in parts).encode("utf-8")).hexdigest()[:12]
@@ -24,6 +26,7 @@ COMPANYOA_URL = args.companyoa_url
 PROGRESS_ENABLED = args.enable_progress
 PROGRESS_SCRIPT = '<script type="module" src="progress.js"></script>' if PROGRESS_ENABLED else ""
 AUTH_SLOT = '<span id="authSlot" class="auth-slot"></span>' if PROGRESS_ENABLED else ""
+PAGE_STATUS = (PAGE_STATUS_CSS + "\n" + PAGE_STATUS_BAR) if PROGRESS_ENABLED else ""
 
 MCQ_TOPIC_ORDER = [
     "C++ Core & Modern C++",
@@ -100,6 +103,7 @@ html = (tpl
     .replace("__GENERATED_DATE__", "August 28, 2026")
     .replace("__PROGRESS_SCRIPT__", PROGRESS_SCRIPT)
     .replace("__AUTH_SLOT__", AUTH_SLOT)
+    .replace("__PAGE_STATUS__", PAGE_STATUS)
     .replace("__PROGRESS_ENABLED_JS__", "true" if PROGRESS_ENABLED else "false")
 )
 

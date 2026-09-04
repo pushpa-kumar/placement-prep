@@ -4,6 +4,7 @@ import gen_lib
 from gen_lib import esc, inline_code, progress_script_tag, HEAD_CSS, site_nav, FOOTER
 from gen_cpguide_page import TOPIC_PAGES
 from gen_concept_page import GROUP_FILES
+from gen_atcoder_ladders import ladder_counts
 
 SCRATCH = os.path.dirname(__file__)
 
@@ -144,6 +145,10 @@ def build_cpguide_hub(nav_urls, topic_urls):
   <div class="meta">{n_examples} solved examples &middot; {n_problems} practice problems</div>
 </a>''')
 
+    # Ladder rungs are individually markable too, so they count toward the total.
+    n_ladders, n_ladder_problems = ladder_counts()
+    total_problems += n_ladder_problems
+
     progress_section = ""
     if gen_lib.PROGRESS_ENABLED:
         progress_section = f'''<section class="topic-section" id="my-progress">
@@ -176,6 +181,11 @@ def build_cpguide_hub(nav_urls, topic_urls):
     {roadmap_html()}
     <div class="topic-head" style="margin-top:8px;"><h2>All Topics</h2></div>
     <div class="hub-grid">{"".join(cards)}</div>
+    <div class="topic-head" style="margin-top:40px;"><h2>Practice Ladders</h2></div>
+    <p class="topic-desc">Ordered problem ladders built from the AtCoder Categories tags &mdash; one technique per ladder, climbing from its easiest AtCoder appearance to its hardest, with each rung chosen to add a model the earlier rungs did not cover.</p>
+    <div class="hub-grid">
+      <a class="hub-card" href="__PAGE__:atcoder-ladders"><h3>AtCoder Ladders</h3><p>Technique ladders in increasing difficulty, each rung tagged with the model it teaches and a one-line nudge for when you get stuck.</p><div class="meta">{n_ladders} ladder{"s" if n_ladders != 1 else ""} &middot; {n_ladder_problems} problems</div></a>
+    </div>
     <div class="topic-head" style="margin-top:40px;"><h2>Further Reading</h2></div>
     <p class="topic-desc">Curated, verified Codeforces blog posts per topic &mdash; tutorials, uncommon tricks, and paths to more problems, straight from the CP community.</p>
     <div class="hub-grid">

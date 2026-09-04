@@ -44,6 +44,14 @@ def example_card_html(ex, idx, sub_anchor):
   </div>
 </article>'''
 
+def practice_callout_html(prac):
+    """Optional per-subtopic pointer to an ordered practice ladder elsewhere on the site."""
+    if not prac:
+        return ""
+    href = f'__PAGE__:{prac["page"]}{prac.get("anchor", "")}'
+    return ('\n    <div class="callout"><span class="c-label">Practice</span>'
+            f'<p>{esc(prac["text"])} <a href="{href}">{esc(prac["label"])}</a></p></div>')
+
 def subtopic_html(sub, topic_slug, idx):
     anchor = f"{topic_slug}-{slugify(sub['name'])}"
     examples = "".join(example_card_html(ex, i, anchor) for i, ex in enumerate(sub["examples"]))
@@ -52,7 +60,7 @@ def subtopic_html(sub, topic_slug, idx):
   <div class="theory-block">{inline_code(sub["theory"])}</div>
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span>{inline_code(sub["recognition"])}</div>
-    <div class="callout"><span class="c-label">Complexity</span>{inline_code(sub["complexity"])}</div>
+    <div class="callout"><span class="c-label">Complexity</span>{inline_code(sub["complexity"])}</div>{practice_callout_html(sub.get("practice"))}
   </div>
   {examples}
 </section>'''

@@ -5,6 +5,7 @@ from gen_concept_page import build_page as build_concept_page, GROUP_FILES
 from gen_cpguide_page import build_page as build_cpguide_page, TOPIC_PAGES
 from gen_hubs import build_cpguide_hub, build_concepts_hub
 from gen_further_reading import build_page as build_further_reading_page
+from gen_atcoder_ladders import build_page as build_atcoder_ladders_page
 
 SCRATCH = os.path.dirname(__file__)
 DEFAULT_OUT_DIR = os.path.expanduser("~/quant-hft-interview-prep")
@@ -15,8 +16,10 @@ def resolve_placeholders(html, page_url_map):
     def repl(m):
         slug = m.group(1)
         anchor = m.group(2) or ""
-        url = page_url_map.get(slug, "#")
-        return url + anchor
+        url = page_url_map.get(slug)
+        # An unmapped slug degrades to a bare "#" -- appending the anchor to it
+        # would emit a malformed "##anchor" href.
+        return url + anchor if url else "#"
     return re.sub(r'__PAGE__:([a-z0-9-]+)(#[a-z0-9-]*)?', repl, html)
 
 def write(path, content):
@@ -78,6 +81,9 @@ def main():
 
     further_reading_html = resolve_placeholders(build_further_reading_page(nav_urls), page_url_map)
     write(f"{OUT_DIR}/cp-further-reading.html", further_reading_html)
+
+    atcoder_ladders_html = resolve_placeholders(build_atcoder_ladders_page(nav_urls), page_url_map)
+    write(f"{OUT_DIR}/cp-atcoder-ladders.html", atcoder_ladders_html)
 
 if __name__ == "__main__":
     main()

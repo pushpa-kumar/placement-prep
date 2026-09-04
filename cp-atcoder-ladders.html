@@ -1,0 +1,682 @@
+<title>AtCoder Ladders</title>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDBHJ7316D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YDBHJ7316D');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f7f5ef; --surface:#ffffff; --surface-2:#efece2; --border:#dbd6c8;
+    --text:#1d1f23; --text-muted:#5c6070; --text-faint:#83879a;
+    --accent:#a3711f; --accent-strong:#8a5e18; --accent-soft:#f1e3c8;
+    --real:#217a52; --real-soft:#dcf0e3; --practice:#4a5b7d; --practice-soft:#e4e9f3;
+    --gen:#7a4fae; --gen-soft:#efe6f7; --wrong:#b3432b; --wrong-soft:#fbe4dd;
+    --code-kw:#1f5fae; --code-type:#0e7c86; --code-str:#1f7a4f; --code-num:#a3711f;
+    --code-pre:#7a4fae; --code-com:#83879a;
+    --shadow: 0 1px 2px rgba(30,25,10,.06), 0 4px 16px rgba(30,25,10,.05);
+    --radius: 10px;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+      --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+      --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+      --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+      --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+      --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+      --code-pre:#c79bea; --code-com:#6b7387;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131a; --surface:#171b24; --surface-2:#1e2330; --border:#2b3142;
+    --text:#e9e7df; --text-muted:#9098ac; --text-faint:#6b7387;
+    --accent:#d3a256; --accent-strong:#e8bb72; --accent-soft:#3a2f1c;
+    --real:#6fbf8b; --real-soft:#183226; --practice:#8b9bc4; --practice-soft:#1c2333;
+    --gen:#c79bea; --gen-soft:#2c2338; --wrong:#e08a72; --wrong-soft:#3a2018;
+    --code-kw:#7aa8e0; --code-type:#4fd1d9; --code-str:#6fbf8b; --code-num:#d3a256;
+    --code-pre:#c79bea; --code-com:#6b7387;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  h1,h2,h3{ font-family:var(--mono); font-weight:600; text-wrap:balance; margin:0; }
+  code{ font-family:var(--mono); background:var(--surface-2); border-radius:4px; padding:.1em .35em; font-size:.92em; }
+  p{ margin:0 0 .8em; }
+  p:last-child{ margin-bottom:0; }
+
+  .app{ max-width:1400px; margin:0 auto; padding:0 20px 64px; }
+
+  /* ---------- Shared site nav ---------- */
+  .site-nav{
+    display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center;
+    padding:12px 20px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:.78rem; background:var(--surface);
+  }
+  .site-nav .brand{ color:var(--text-faint); margin-right:auto; letter-spacing:.04em; }
+  .site-nav a{ text-decoration:none; color:var(--text-muted); padding:4px 2px; }
+  .site-nav a:hover{ color:var(--accent-strong); }
+  .site-nav a.current{ color:var(--accent-strong); border-bottom:2px solid var(--accent); }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:36px 0 20px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-strong); margin:0 0 10px;
+  }
+  .topbar h1{ font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.01em; }
+  .tagline{ color:var(--text-muted); max-width:66ch; margin:10px 0 0; font-size:.98rem; }
+
+  .stats-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:10px 16px; min-width:110px; box-shadow:var(--shadow);
+  }
+  .stat-tile .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:1.35rem; font-weight:700; }
+  .stat-tile .l{ font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; margin-top:24px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ order:2; position:static !important; } }
+
+  .sidebar{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; padding-right:4px; }
+  .sidebar h2{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin:22px 0 10px; }
+  .sidebar h2:first-child{ margin-top:0; }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .nav-list a{
+    display:flex; justify-content:space-between; gap:8px; text-decoration:none; color:var(--text-muted);
+    font-size:.85rem; padding:6px 8px; border-radius:6px;
+  }
+  .nav-list a:hover{ background:var(--surface); color:var(--text); }
+  .nav-list .cnt{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--text-faint); font-size:.78rem; }
+
+  .sidebar-note{ font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+  .sidebar-note p{ margin:0 0 10px; }
+  .sidebar-note strong{ color:var(--text); }
+
+  /* ---------- Section / topic blocks ---------- */
+  .topic-section{ margin-bottom:44px; scroll-margin-top:16px; }
+  .topic-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap; }
+  .topic-head h2{ font-size:1.2rem; }
+  .topic-head .cnt{ font-family:var(--mono); color:var(--text-faint); font-size:.85rem; }
+  .topic-desc{ color:var(--text-muted); font-size:.9rem; margin:2px 0 18px; max-width:75ch; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .empty-state{ color:var(--text-faint); font-size:.9rem; padding:40px 0; text-align:center; }
+
+  /* ---------- Concept cards ---------- */
+  .concept-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin-bottom:20px; scroll-margin-top:16px;
+  }
+  .concept-card h3{
+    font-size:1.15rem; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .concept-card .intro{ font-size:.93rem; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .concept-card .intro p{ margin:0 0 .9em; }
+  .example-box{ background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:0 0 14px; }
+  .example-box .ex-title{ font-family:var(--mono); font-size:.82rem; font-weight:600; color:var(--accent-strong); margin-bottom:8px; }
+  .example-box pre{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0 0 10px; }
+  .example-box pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .example-box .ex-explain{ font-size:.87rem; color:var(--text-muted); line-height:1.6; }
+  .pitfalls{ margin:14px 0; padding:12px 14px; background:var(--wrong-soft); border-radius:10px; border-left:3px solid var(--wrong); }
+  .pitfalls .p-label{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wrong); font-weight:600; margin-bottom:8px; }
+  .pitfalls ul{ margin:0; padding-left:18px; font-size:.87rem; color:var(--text); line-height:1.6; }
+  .pitfalls li{ margin-bottom:6px; }
+  .why-box{ font-size:.85rem; color:var(--accent-strong); border-left:2px solid var(--accent); padding:2px 0 2px 12px; margin:14px 0 0; }
+  .related-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; align-items:center; }
+  .related-row .r-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; margin-right:4px; }
+  .related-tag{
+    font-family:var(--mono); font-size:.74rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-muted); padding:3px 9px; border-radius:100px; text-decoration:none;
+  }
+  .related-tag:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- CP guide theory + example ---------- */
+  .theory-block{ font-size:.93rem; color:var(--text-muted); line-height:1.75; margin:0 0 16px; max-width:80ch; }
+  .callout-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .callout{
+    flex:1 1 260px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; color:var(--text-muted); line-height:1.55;
+  }
+  .callout .c-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); font-weight:600; display:block; margin-bottom:6px; }
+
+  .example-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px; scroll-margin-top:16px;
+  }
+  .example-card h4{
+    font-family:var(--mono); font-size:1rem; margin-bottom:12px; color:var(--text);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .example-card .section-label{ font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:14px 0 6px; }
+  .example-card .section-label:first-of-type{ margin-top:0; }
+  .example-card .prose{ font-size:.88rem; color:var(--text-muted); line-height:1.65; }
+  .example-card pre{ background:var(--surface-2); border-radius:8px; padding:12px 14px; overflow-x:auto; margin:0; }
+  .example-card pre code{ background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre; }
+  .tok-keyword{ color:var(--code-kw); font-weight:600; }
+  .tok-type{ color:var(--code-type); }
+  .tok-string, .tok-char{ color:var(--code-str); }
+  .tok-number{ color:var(--code-num); }
+  .tok-preproc{ color:var(--code-pre); }
+  .tok-comment{ color:var(--code-com); font-style:italic; }
+  .io-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ---------- Progress tracking ---------- */
+  .done-checkbox{
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.02em;
+    padding:4px 10px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; white-space:nowrap;
+  }
+  .done-checkbox:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .done-checkbox.done{ background:var(--real-soft); border-color:var(--real); color:var(--real); }
+  .auth-slot{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .auth-btn{
+    font-family:var(--mono); font-size:.76rem; font-weight:600; padding:6px 12px; border-radius:100px;
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent-strong); cursor:pointer;
+  }
+  .auth-btn:hover{ background:var(--accent); color:var(--surface); }
+  .auth-user{ font-family:var(--mono); font-size:.76rem; color:var(--text-muted); }
+  .progress-summary{
+    display:flex; flex-wrap:wrap; gap:10px; margin:0 0 24px;
+  }
+  .progress-summary .stat-tile{ cursor:default; }
+  .progress-signin-hint{ font-size:.87rem; color:var(--text-muted); margin:0 0 24px; }
+  @media (max-width:640px){ .io-row{ grid-template-columns:1fr; } }
+  .io-row pre{ background:var(--bg); border:1px solid var(--border); }
+
+  /* ---------- Problem tables ---------- */
+  .problems-toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  .problems-toolbar input{
+    flex:1 1 240px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 12px; font-family:var(--sans); font-size:.88rem;
+  }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+  table.problems{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.problems th{
+    text-align:left; font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-faint); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  table.problems td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.problems tr:last-child td{ border-bottom:none; }
+  table.problems a{ text-decoration:none; font-weight:500; }
+  table.problems a:hover{ text-decoration:underline; }
+  .judge-badge{ font-family:var(--mono); font-size:.72rem; padding:2px 8px; border-radius:5px; background:var(--surface-2); color:var(--text-muted); white-space:nowrap; }
+  .judge-badge.cf{ background:#e7edf7; color:#2a4a8a; }
+  .judge-badge.cses{ background:var(--accent-soft); color:var(--accent-strong); }
+  .judge-badge.lc{ background:var(--real-soft); color:var(--real); }
+  :root:not([data-theme="light"]) .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  :root[data-theme="dark"] .judge-badge.cf{ background:#1c2740; color:#9db6e8; }
+  .diff-badge{ font-family:var(--mono); font-size:.78rem; color:var(--text-muted); }
+  .subtopic-cell{ font-size:.82rem; color:var(--text-faint); }
+  .desc-cell{ font-size:.85rem; color:var(--text-muted); max-width:340px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+  .roadmap-stage{
+    display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .roadmap-num{
+    width:36px; height:36px; border-radius:50%; background:var(--accent-soft); color:var(--accent-strong);
+    font-family:var(--mono); font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center;
+  }
+  .roadmap-body h3{ font-size:1rem; margin-bottom:6px; }
+  .roadmap-goal{ font-size:.87rem; color:var(--text-muted); line-height:1.6; margin:0 0 10px; max-width:75ch; }
+  .roadmap-items{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .roadmap-items li{ list-style:none; }
+  .roadmap-items a{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
+    padding:5px 12px; font-size:.8rem; color:var(--text); text-decoration:none;
+  }
+  .roadmap-items a:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- Hub grids ---------- */
+  .hub-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:8px; }
+  .hub-card{
+    display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); text-decoration:none; color:var(--text);
+    transition:transform .12s, border-color .12s;
+  }
+  .hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .hub-card h3{ font-size:1rem; margin-bottom:8px; color:var(--text); }
+  .hub-card p{ font-size:.86rem; color:var(--text-muted); line-height:1.55; margin:0 0 10px; }
+  .hub-card .meta{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); }
+
+  footer{ margin-top:60px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-faint); font-size:.78rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+
+<style>
+  :root{
+    --ac-gray:#7a7f8c; --ac-brown:#8a5a2b; --ac-green:#2f7d32; --ac-cyan:#0f7f86;
+    --ac-blue:#2f52c8; --ac-yellow:#8a7500; --ac-orange:#b85c00; --ac-red:#b3302b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ac-gray:#9098ac; --ac-brown:#c08a4e; --ac-green:#6fbf8b; --ac-cyan:#4fd1d9;
+      --ac-blue:#7aa8e0; --ac-yellow:#d3a256; --ac-orange:#e8a15c; --ac-red:#e08a72;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ac-gray:#9098ac; --ac-brown:#c08a4e; --ac-green:#6fbf8b; --ac-cyan:#4fd1d9;
+    --ac-blue:#7aa8e0; --ac-yellow:#d3a256; --ac-orange:#e8a15c; --ac-red:#e08a72;
+  }
+
+  .ladder-tier{ margin:0 0 22px; }
+  .ladder-tier .tier-head{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:0 0 4px;
+  }
+  .ladder-tier .tier-head h3{ font-size:.95rem; }
+  .ladder-tier .tier-band{
+    font-family:var(--mono); font-variant-numeric:tabular-nums;
+    font-size:.75rem; color:var(--text-faint);
+  }
+  .ladder-tier .tier-meta{
+    padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:12px;
+  }
+  .ladder-tier .tier-note{
+    margin:0; font-size:.85rem; color:var(--text-muted); max-width:80ch;
+  }
+
+  .rung{
+    display:grid; grid-template-columns:34px 1fr; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--border);
+  }
+  .rung:last-child{ border-bottom:none; }
+  .rung-n{
+    font-family:var(--mono); font-variant-numeric:tabular-nums;
+    font-size:.9rem; font-weight:600; color:var(--text-faint); padding-top:1px;
+  }
+  .rung-title{ display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+  .rung-title a{ font-family:var(--mono); font-size:.88rem; font-weight:600; }
+  .rung-id{ font-family:var(--mono); font-size:.74rem; color:var(--text-muted); }
+  .ac-diff{
+    font-family:var(--mono); font-variant-numeric:tabular-nums;
+    font-size:.72rem; font-weight:600; padding:1px 7px;
+    border:1px solid currentColor; border-radius:5px;
+  }
+  .ac-gray{ color:var(--ac-gray); }      .ac-brown{ color:var(--ac-brown); }
+  .ac-green{ color:var(--ac-green); }    .ac-cyan{ color:var(--ac-cyan); }
+  .ac-blue{ color:var(--ac-blue); }      .ac-yellow{ color:var(--ac-yellow); }
+  .ac-orange{ color:var(--ac-orange); }  .ac-red{ color:var(--ac-red); }
+  .rung-model{
+    font-family:var(--mono); font-size:.7rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--accent-strong); margin-top:5px;
+  }
+  .rung-teaches{ font-size:.87rem; color:var(--text-muted); margin:4px 0 0; max-width:80ch; }
+  .rung details{ margin-top:6px; }
+  .rung summary{
+    font-family:var(--mono); font-size:.7rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--text-faint); cursor:pointer;
+    list-style:none; width:fit-content;
+  }
+  .rung summary::-webkit-details-marker{ display:none; }
+  .rung summary::before{ content:"\25b8  "; }
+  .rung details[open] summary::before{ content:"\25be  "; }
+  .rung summary:hover{ color:var(--text); }
+  .rung details .nudge{
+    margin:6px 0 0; padding-left:11px; border-left:2px solid var(--accent);
+    font-size:.87rem; color:var(--text-muted); max-width:78ch;
+  }
+  .rung .done-checkbox{ margin-left:2px; }
+  .nav-list a.sub{ padding-left:20px; font-size:.8rem; }
+</style>
+
+
+<div>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2" class="current">CP / DSA Guide</a><a href="https://claude.ai/code/artifact/eed48dca-cc19-4727-bbed-c7112580de54">C++ Concepts</a><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A + MCQ Bank</a></nav>
+<div class="app">
+  <header class="topbar">
+    <p class="eyebrow">CP / DSA Guide &mdash; AtCoder Ladders</p>
+    <h1>AtCoder Ladders</h1>
+    <p class="tagline">Ordered practice ladders built from the AtCoder Categories problem tags. Each ladder walks one technique from its easiest AtCoder appearance to its hardest, picked so that every rung introduces a model the previous rungs did not cover — rather than ten variations of the same idea. Difficulty numbers are AtCoder&#x27;s own estimated difficulty, coloured by the standard rating bands.</p>
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="n">1</div><div class="l">Ladders</div></div>
+      <div class="stat-tile"><div class="n">20</div><div class="l">Problems</div></div>
+      <div class="stat-tile"><div class="n">704&ndash;2920</div><div class="l">Difficulty Range</div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <ul class="nav-list"><li><a href="#tree-dp"><span>Tree DP</span><span class="cnt">20</span></a></li><li><a class="sub" href="#tree-dp-foundations"><span>Foundations</span><span class="cnt">5</span></a></li><li><a class="sub" href="#tree-dp-core-patterns"><span>Core patterns</span><span class="cnt">5</span></a></li><li><a class="sub" href="#tree-dp-an-outer-loop-around-the-dp"><span>An outer loop around the DP</span><span class="cnt">6</span></a></li><li><a class="sub" href="#tree-dp-advanced-machinery"><span>Advanced machinery</span><span class="cnt">4</span></a></li></ul>
+      <h2>Back to</h2>
+      <ul class="nav-list">
+        <li><a href="https://claude.ai/code/artifact/e932bf7a-2fde-4f1b-86f5-0637b417d9b2">CP / DSA Guide Hub</a></li>
+        <li><a href="https://claude.ai/code/artifact/8968b342-ca79-44b8-be52-aa3770481647">Further Reading (CF Blogs)</a></li>
+        <li><a href="https://claude.ai/code/artifact/df9ba560-181f-4187-adaa-194dd194165f">Interview Q&amp;A Bank</a></li>
+      </ul>
+      <h2>How to use this</h2>
+      <div class="sidebar-note"><p>Sit with a rung for 30–45 minutes before opening anything. The &quot;nudge&quot; under each problem is the one idea the problem turns on, not a solution — read it only when you are genuinely stuck, and read the editorial after you have solved it either way. If a rung takes more than two sittings, drop back and do a second problem in the same model before continuing.</p></div>
+    </aside>
+    <main><section class="topic-section" id="tree-dp">
+  <div class="topic-head"><h2>Tree DP</h2><span class="cnt">20 problems</span></div>
+  <p class="topic-desc">Twenty problems out of the 102 tagged Tree DP, from 704 to 2920. The progression is deliberate: one DFS returning one number, then a returned state, then rerooting, then the knapsack merge, then a DP with something wrapped around it, and finally the named machinery (Steiner trees, virtual trees, dynamic tree DP) that shows up in ARC/AGC. Picked from the 102 problems tagged on
+    <a href="https://atcoder-categories.github.io/dp_tree.html" target="_blank" rel="noopener noreferrer">AtCoder Categories — Tree DP</a>. Theory and worked examples for this technique live on the <a href="https://claude.ai/code/artifact/1c4e103e-c945-47f3-a855-7fc0f5281fc2#dynamic-programming-tree-dp">Dynamic Programming — Tree DP section</a>.</p>
+  <div class="ladder-tier" id="tree-dp-foundations">
+  <div class="tier-meta">
+    <div class="tier-head">
+      <h3>Foundations</h3>
+      <span class="tier-band">704 – 1549</span>
+    </div>
+    <p class="tier-note">One DFS, one value per subtree. The goal here is to stop thinking about the tree and start thinking about what a child hands back to its parent.</p>
+  </div>
+  <div class="rung">
+  <div class="rung-n">01</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc333/tasks/abc333_d" target="_blank" rel="noopener noreferrer">Erase Leaves</a>
+      <span class="rung-id">ABC 333 D</span>
+      <span class="ac-diff ac-brown">704</span>
+      
+    </div>
+    <div class="rung-model">Subtree sizes</div>
+    <p class="rung-teaches">The single most reused primitive: root the tree, compute size[v] in one post-order pass.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Root at vertex 1. Each neighbour of the root heads an independent subtree, and you must delete every one of them except the largest.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">02</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc348/tasks/abc348_e" target="_blank" rel="noopener noreferrer">Minimize Sum of Distances</a>
+      <span class="rung-id">ABC 348 E</span>
+      <span class="ac-diff ac-cyan">1347</span>
+      
+    </div>
+    <div class="rung-model">Rerooting · sum</div>
+    <p class="rung-teaches">The canonical introduction to rerooting: compute the answer at the root, then slide it to every other vertex in O(1) per edge.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Get f(1) = sum of C_i * dist(1,i) with one DFS. Moving the root across edge (u,v) changes it by <code>total weight - 2 * (subtree weight of v)</code>.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">03</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc397/tasks/abc397_e" target="_blank" rel="noopener noreferrer">Path Decomposition of a Tree</a>
+      <span class="rung-id">ABC 397 E</span>
+      <span class="ac-diff ac-cyan">1484</span>
+      
+    </div>
+    <div class="rung-model">Returned state</div>
+    <p class="rung-teaches">A child hands back more than a number — here it hands back how many loose path-ends it still has. Feasibility DP rather than optimisation.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Any vertex with three or more children still needing to extend a path is immediately impossible. Track the count of dangling ends and close them greedily as you unwind.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">04</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc222/tasks/abc222_e" target="_blank" rel="noopener noreferrer">Red and Blue Tree</a>
+      <span class="rung-id">ABC 222 E</span>
+      <span class="ac-diff ac-cyan">1491</span>
+      
+    </div>
+    <div class="rung-model">Edge weights to knapsack</div>
+    <p class="rung-teaches">Reducing a tree problem to a sequence problem. Half the difficulty of tree DP is spotting when the tree stops mattering.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Walk the given route once and count how many times each edge is traversed. What remains is a subset-sum over those counts hitting a fixed target.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">05</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc394/tasks/abc394_f" target="_blank" rel="noopener noreferrer">Alkane</a>
+      <span class="rung-id">ABC 394 F</span>
+      <span class="ac-diff ac-cyan">1549</span>
+      
+    </div>
+    <div class="rung-model">Best-k children</div>
+    <p class="rung-teaches">Merging children is not always a knapsack — often you just sort their values and take the top few. Learn to recognise that shape.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Every internal vertex needs exactly four incident edges, so dp[v] keeps the best chain downward and you sum the three largest positive child contributions.</p></div></details>
+  </div>
+</div>
+</div><div class="ladder-tier" id="tree-dp-core-patterns">
+  <div class="tier-meta">
+    <div class="tier-head">
+      <h3>Core patterns</h3>
+      <span class="tier-band">1819 – 2055</span>
+    </div>
+    <p class="tier-note">The workhorses: counting with subtree sizes, rerooting a non-trivial state, and the tree knapsack. Almost every harder problem is one of these wearing a costume.</p>
+  </div>
+  <div class="rung">
+  <div class="rung-n">06</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc312/tasks/abc312_g" target="_blank" rel="noopener noreferrer">Avoid Straight Line</a>
+      <span class="rung-id">ABC 312 G</span>
+      <span class="ac-diff ac-blue">1819</span>
+      
+    </div>
+    <div class="rung-model">Counting by complement</div>
+    <p class="rung-teaches">Counting triples on a tree by fixing the meeting vertex — and by counting the bad cases instead of the good ones.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Total triples minus the collinear ones. For each vertex, the paths through it split the rest of the tree into its child subtrees plus everything above it.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">07</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc222/tasks/abc222_f" target="_blank" rel="noopener noreferrer">Expensive Expense</a>
+      <span class="rung-id">ABC 222 F</span>
+      <span class="ac-diff ac-blue">1934</span>
+      
+    </div>
+    <div class="rung-model">Rerooting · max</div>
+    <p class="rung-teaches">The same rerooting machinery, but max instead of sum — so you need the best and second-best child in order to exclude the one you came from.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Keep the top two downward values at each vertex; when descending into child c, pass down the best value that is not c&#x27;s own.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">08</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc259/tasks/abc259_f" target="_blank" rel="noopener noreferrer">Select Edges</a>
+      <span class="rung-id">ABC 259 F</span>
+      <span class="ac-diff ac-blue">1961</span>
+      
+    </div>
+    <div class="rung-model">dp[v][0/1] + greedy merge</div>
+    <p class="rung-teaches">Two states per vertex — edge to parent used or not — with a degree cap that turns the merge into a sort-and-take.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v][0/1] = best weight in v&#x27;s subtree. For each child, taking its edge gains <code>w + dp[c][0] - dp[c][1]</code>; keep the positive gains, sort, take as many as the degree limit allows.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">09</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc287/tasks/abc287_f" target="_blank" rel="noopener noreferrer">Components</a>
+      <span class="rung-id">ABC 287 F</span>
+      <span class="ac-diff ac-yellow">2034</span>
+      
+    </div>
+    <div class="rung-model">Tree knapsack</div>
+    <p class="rung-teaches">The O(n^2) subtree knapsack, and the amortisation argument that proves it is quadratic and not cubic. Non-negotiable to know.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v][k][0/1] = ways to get k components in v&#x27;s subtree, with v chosen or not. Merge children one at a time, looping only up to the sizes already accumulated.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">10</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc369/tasks/abc369_g" target="_blank" rel="noopener noreferrer">As far as possible</a>
+      <span class="rung-id">ABC 369 G</span>
+      <span class="ac-diff ac-yellow">2055</span>
+      
+    </div>
+    <div class="rung-model">Long-path decomposition</div>
+    <p class="rung-teaches">Decompose the tree into vertex-disjoint downward chains; answering for every K at once falls out of sorting the chain lengths.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Each vertex keeps its deepest downward path and the leftover branches become separate chains. Sort all chain lengths descending — the answer for K is a prefix sum.</p></div></details>
+  </div>
+</div>
+</div><div class="ladder-tier" id="tree-dp-an-outer-loop-around-the-dp">
+  <div class="tier-meta">
+    <div class="tier-head">
+      <h3>An outer loop around the DP</h3>
+      <span class="tier-band">2217 – 2437</span>
+    </div>
+    <p class="tier-note">The DP is no longer the whole solution. Here it sits inside a binary search, a game-theoretic argument, a rerooting of a two-state DP, or a compressed tree.</p>
+  </div>
+  <div class="rung">
+  <div class="rung-n">11</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc218/tasks/abc218_g" target="_blank" rel="noopener noreferrer">Game on Tree 2</a>
+      <span class="rung-id">ABC 218 G</span>
+      <span class="ac-diff ac-yellow">2217</span>
+      
+    </div>
+    <div class="rung-model">Minimax on tree</div>
+    <p class="rung-teaches">Game DP where the optimising player alternates by depth, plus maintaining a running median down the DFS path.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Leaves are terminal; internal vertices take max or min of their children by parity. Keep the median of the root-to-current path with two heaps, pushing on entry and popping on exit.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">12</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc246/tasks/abc246_g" target="_blank" rel="noopener noreferrer">Game on Tree 3</a>
+      <span class="rung-id">ABC 246 G</span>
+      <span class="ac-diff ac-yellow">2313</span>
+      
+    </div>
+    <div class="rung-model">Binary search + tree DP</div>
+    <p class="rung-teaches">Parametric search: guess the answer X, rewrite the problem as a boolean, and let a much simpler DP decide it.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Fix X and mark vertices with value &gt;= X as dangerous. dp[v] = how many dangerous vertices in v&#x27;s subtree cannot be erased in time; monotone in X, so binary search.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">13</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc223/tasks/abc223_g" target="_blank" rel="noopener noreferrer">Vertex Deletion</a>
+      <span class="rung-id">ABC 223 G</span>
+      <span class="ac-diff ac-yellow">2351</span>
+      
+    </div>
+    <div class="rung-model">Rerooting a matching DP</div>
+    <p class="rung-teaches">Rerooting where the state is itself a DP (maximum matching), not just a number. The real test of whether you understand rerooting.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v][0/1] = matching size in v&#x27;s subtree with v unmatched / matched. A vertex is removable iff the whole tree keeps the same maximum matching without it — reroot to test all n at once.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">14</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc207/tasks/abc207_f" target="_blank" rel="noopener noreferrer">Tree Patrolling</a>
+      <span class="rung-id">ABC 207 F</span>
+      <span class="ac-diff ac-yellow">2398</span>
+      
+    </div>
+    <div class="rung-model">Three-state counting</div>
+    <p class="rung-teaches">The classic dominating-set state set — chosen / covered by a child / not yet covered — used for counting rather than minimising.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v][0] = v not covered, [1] = v covered by a child&#x27;s guard, [2] = guard on v. Merge children as a convolution over the number of covered vertices.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">15</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc340/tasks/abc340_g" target="_blank" rel="noopener noreferrer">Leaf Color</a>
+      <span class="rung-id">ABC 340 G</span>
+      <span class="ac-diff ac-orange">2401</span>
+      
+    </div>
+    <div class="rung-model">Auxiliary (virtual) tree</div>
+    <p class="rung-teaches">When a DP has to run once per colour, build the compressed tree over just that colour&#x27;s vertices. Total size stays O(n log n).</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>Sort a colour&#x27;s vertices by DFS order, add pairwise LCAs, rebuild the edges with a stack. Then count connected subtrees whose leaf set is exactly that colour.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">16</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/arc130/tasks/arc130_d" target="_blank" rel="noopener noreferrer">Zigzag Tree</a>
+      <span class="rung-id">ARC 130 D</span>
+      <span class="ac-diff ac-orange">2437</span>
+      
+    </div>
+    <div class="rung-model">Prefix-sum optimised merge</div>
+    <p class="rung-teaches">A naive child merge is quadratic per vertex here. Rewriting it as cumulative sums is the standard rescue for rank-indexed tree DP.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v][i] = ways in which v is the i-th smallest among v and its used children. Merging with binomials plus prefix sums keeps the whole thing quadratic overall.</p></div></details>
+  </div>
+</div>
+</div><div class="ladder-tier" id="tree-dp-advanced-machinery">
+  <div class="tier-meta">
+    <div class="tier-head">
+      <h3>Advanced machinery</h3>
+      <span class="tier-band">2455 – 2920</span>
+    </div>
+    <p class="tier-note">Named techniques worth reusing for years: Steiner trees, inclusion–exclusion over a knapsack, multi-dimensional traversal states, and a DP that has to survive updates.</p>
+  </div>
+  <div class="rung">
+  <div class="rung-n">17</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc364/tasks/abc364_g" target="_blank" rel="noopener noreferrer">Last Major City</a>
+      <span class="rung-id">ABC 364 G</span>
+      <span class="ac-diff ac-orange">2455</span>
+      
+    </div>
+    <div class="rung-model">Steiner tree DP</div>
+    <p class="rung-teaches">Bitmask over terminals times vertices, with the two transitions — subset split and edge relax — that define the Steiner tree DP.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[S][v] = cheapest tree connecting terminal set S and containing v. Split S into two halves at v, then relax over edges with Dijkstra for each fixed S.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">18</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/arc121/tasks/arc121_e" target="_blank" rel="noopener noreferrer">Directed Tree</a>
+      <span class="rung-id">ARC 121 E</span>
+      <span class="ac-diff ac-orange">2645</span>
+      
+    </div>
+    <div class="rung-model">Knapsack + inclusion–exclusion</div>
+    <p class="rung-teaches">Counting permutations with forbidden positions: count arrangements with at least k bad pairs via a tree knapsack, then alternate signs.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>f[k] = ways to choose k disjoint ancestor–descendant pairs, which is a subtree knapsack. The answer is the alternating sum of f[k] * (n-k)!.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">19</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/arc179/tasks/arc179_d" target="_blank" rel="noopener noreferrer">Portable Gate</a>
+      <span class="rung-id">ARC 179 D</span>
+      <span class="ac-diff ac-orange">2717</span>
+      
+    </div>
+    <div class="rung-model">Return-or-not states</div>
+    <p class="rung-teaches">Traversal DP where the state carries both a budget and whether you come back to the vertex. The dimension people forget to add.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v][k][0/1] over v&#x27;s subtree, k = gate uses, last flag = whether the walk returns to v. Merge children like a knapsack, allowing exactly one non-returning branch.</p></div></details>
+  </div>
+</div><div class="rung">
+  <div class="rung-n">20</div>
+  <div>
+    <div class="rung-title">
+      <a href="https://atcoder.jp/contests/abc351/tasks/abc351_g" target="_blank" rel="noopener noreferrer">Hash on Tree</a>
+      <span class="rung-id">ABC 351 G</span>
+      <span class="ac-diff ac-red">2920</span>
+      
+    </div>
+    <div class="rung-model">Dynamic tree DP</div>
+    <p class="rung-teaches">The DP has to survive point updates. Express each vertex&#x27;s transition as an affine map and hang it off a heavy-light decomposition.</p>
+    <details><summary>Nudge</summary><div class="nudge"><p>dp[v] = A[v] + X[v] * (product of dp over children). Linearise along heavy paths, keep the light-child products aside, and put a segment tree of composed affine maps on each path.</p></div></details>
+  </div>
+</div>
+</div>
+</section></main>
+  </div>
+  <footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>
+</div>
+</div>

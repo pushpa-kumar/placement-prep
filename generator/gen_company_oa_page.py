@@ -1,6 +1,6 @@
 import json, sys, os, hashlib, collections
 sys.path.insert(0, os.path.dirname(__file__))
-from gen_lib import site_nav, esc
+from gen_lib import site_nav, esc, PAGE_STATUS_CSS, PAGE_STATUS_BAR
 from dsa_classify import (
     classify_dsa, classify_technique, dsa_technique_counts, dsa_company_top_techniques,
     UNCLASSIFIED_TECHNIQUE_LABEL, DSA_SLUG_ORDER, DSA_SLUG_LABEL,
@@ -150,7 +150,9 @@ def main():
         "index": url_map_local.get("index", "#"),
         "companyoa": "company-oa-questions.html",
     }
-    nav_html = site_nav(nav_urls, "companyoa")
+    # This page always ships progress.js (its gate depends on it), so the status
+    # bar goes in unconditionally rather than through site_nav's build-time flag.
+    nav_html = site_nav(nav_urls, "companyoa") + PAGE_STATUS_CSS + "\n" + PAGE_STATUS_BAR
 
     total = len(data)
     company_count = len(set(c for e in data for c in e["companies"]))

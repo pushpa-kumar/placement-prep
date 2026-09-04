@@ -271,7 +271,25 @@
 
 <script type="module" src="progress.js"></script>
 <div>
-<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span data-progress-signed-in style="display:none;"><a href="company-oa-questions.html">Company OA Bank</a></span><span id="authSlot" class="auth-slot"></span></nav>
+<nav class="site-nav"><span class="brand">placement-prep</span><a href="index.html" class="current">CP / DSA Guide</a><a href="concepts.html">C++ Concepts</a><a href="question-bank.html">Interview Q&amp;A + MCQ Bank</a><span data-progress-signed-in style="display:none;"><a href="company-oa-questions.html">Company OA Bank</a></span><span id="authSlot" class="auth-slot"></span></nav><style>
+  .page-status{ position:sticky; top:0; z-index:20; background:var(--surface); border-bottom:1px solid var(--border); }
+  .page-status .ps-inner{
+    max-width:1400px; margin:0 auto; padding:7px 20px;
+    display:flex; align-items:center; gap:12px;
+    font-family:var(--mono); font-size:.72rem;
+  }
+  .page-status .ps-label{ color:var(--text-faint); text-transform:uppercase; letter-spacing:.08em; white-space:nowrap; }
+  .page-status .ps-count{ color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .page-status .ps-track{ flex:1; min-width:60px; height:5px; background:var(--surface-2); border-radius:100px; overflow:hidden; }
+  .page-status .ps-fill{ display:block; height:100%; width:0%; background:var(--accent); border-radius:100px; transition:width .25s ease; }
+  .page-status .ps-pct{ color:var(--text-muted); font-variant-numeric:tabular-nums; min-width:34px; text-align:right; }
+  .page-status .ps-note{ color:var(--text-faint); white-space:nowrap; }
+  @media (max-width:640px){ .page-status .ps-note{ display:none !important; } }
+  @media (prefers-reduced-motion: reduce){ .page-status .ps-fill{ transition:none; } }
+  /* Keep the sticky sidebar clear of the sticky bar above it. */
+  .page-status ~ .app .sidebar{ top:48px; max-height:calc(100vh - 64px); }
+</style>
+<div class="page-status" role="progressbar" aria-label="Progress on this page" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="display:none;"><div class="ps-inner"><span class="ps-label">This page</span><span class="ps-count" data-page-progress="count">0 / 0</span><span class="ps-track"><span class="ps-fill" data-page-progress="fill"></span></span><span class="ps-pct" data-page-progress="pct">0%</span><span class="ps-note" data-progress-signin-hint>Sign in to save your progress</span></div></div>
 <div class="app">
   <header class="topbar">
     <p class="eyebrow">Competitive Programming &amp; DSA</p>
@@ -280,7 +298,7 @@
     <div class="stats-strip">
       <div class="stat-tile"><div class="n">15</div><div class="l">Topics</div></div>
       <div class="stat-tile"><div class="n">238</div><div class="l">Solved Examples</div></div>
-      <div class="stat-tile"><div class="n">394</div><div class="l">Practice Problems</div></div>
+      <div class="stat-tile"><div class="n">414</div><div class="l">Practice Problems</div></div>
     </div>
   </header>
   <div class="app" style="padding-top:28px;">
@@ -288,7 +306,7 @@
   <div class="topic-head"><h2>My Progress</h2></div>
   <p class="progress-signin-hint" data-progress-signin-hint>Sign in (top right) to mark problems, examples, and concepts as done and have it follow you across devices.</p>
   <div class="progress-summary" data-progress-signed-in style="display:none;">
-    <div class="stat-tile"><div class="n" data-progress-summary="problem" data-progress-total="394">0 / 394</div><div class="l">Problems Done</div></div>
+    <div class="stat-tile"><div class="n" data-progress-summary="problem" data-progress-total="414">0 / 414</div><div class="l">Problems Done</div></div>
     <div class="stat-tile"><div class="n" data-progress-summary="example" data-progress-total="238">0 / 238</div><div class="l">Examples Done</div></div>
   </div>
 </section>
@@ -422,6 +440,11 @@
   <p>Convex hull, sweep-line rectangle union area, closest pair of points, polygon area &amp; point-in-polygon.</p>
   <div class="meta">8 solved examples &middot; 10 practice problems</div>
 </a></div>
+    <div class="topic-head" style="margin-top:40px;"><h2>Practice Ladders</h2></div>
+    <p class="topic-desc">Ordered problem ladders built from the AtCoder Categories tags &mdash; one technique per ladder, climbing from its easiest AtCoder appearance to its hardest, with each rung chosen to add a model the earlier rungs did not cover.</p>
+    <div class="hub-grid">
+      <a class="hub-card" href="cp-atcoder-ladders.html"><h3>AtCoder Ladders</h3><p>Technique ladders in increasing difficulty, each rung tagged with the model it teaches and a one-line nudge for when you get stuck.</p><div class="meta">1 ladder &middot; 20 problems</div></a>
+    </div>
     <div class="topic-head" style="margin-top:40px;"><h2>Further Reading</h2></div>
     <p class="topic-desc">Curated, verified Codeforces blog posts per topic &mdash; tutorials, uncommon tricks, and paths to more problems, straight from the CP community.</p>
     <div class="hub-grid">

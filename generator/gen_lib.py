@@ -337,6 +337,48 @@ HEAD_CSS = """
 </style>
 """
 
+# Sticky per-page completion bar. It ships its own CSS so it also works on the
+# pages built from the standalone templates, which carry their own stylesheet
+# rather than HEAD_CSS. Counting happens in progress.js against whatever
+# .done-checkbox elements the page actually has, so nothing here needs to know
+# how many items a given page holds.
+PAGE_STATUS_CSS = """<style>
+  .page-status{ position:sticky; top:0; z-index:20; background:var(--surface); border-bottom:1px solid var(--border); }
+  .page-status .ps-inner{
+    max-width:1400px; margin:0 auto; padding:7px 20px;
+    display:flex; align-items:center; gap:12px;
+    font-family:var(--mono); font-size:.72rem;
+  }
+  .page-status .ps-label{ color:var(--text-faint); text-transform:uppercase; letter-spacing:.08em; white-space:nowrap; }
+  .page-status .ps-count{ color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .page-status .ps-track{ flex:1; min-width:60px; height:5px; background:var(--surface-2); border-radius:100px; overflow:hidden; }
+  .page-status .ps-fill{ display:block; height:100%; width:0%; background:var(--accent); border-radius:100px; transition:width .25s ease; }
+  .page-status .ps-pct{ color:var(--text-muted); font-variant-numeric:tabular-nums; min-width:34px; text-align:right; }
+  .page-status .ps-note{ color:var(--text-faint); white-space:nowrap; }
+  @media (max-width:640px){ .page-status .ps-note{ display:none !important; } }
+  @media (prefers-reduced-motion: reduce){ .page-status .ps-fill{ transition:none; } }
+  /* Keep the sticky sidebar clear of the sticky bar above it. */
+  .page-status ~ .app .sidebar{ top:48px; max-height:calc(100vh - 64px); }
+</style>"""
+
+PAGE_STATUS_BAR = (
+    '<div class="page-status" role="progressbar" aria-label="Progress on this page"'
+    ' aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="display:none;">'
+    '<div class="ps-inner">'
+    '<span class="ps-label">This page</span>'
+    '<span class="ps-count" data-page-progress="count">0 / 0</span>'
+    '<span class="ps-track"><span class="ps-fill" data-page-progress="fill"></span></span>'
+    '<span class="ps-pct" data-page-progress="pct">0%</span>'
+    '<span class="ps-note" data-progress-signin-hint>Sign in to save your progress</span>'
+    '</div></div>'
+)
+
+def page_status_bar_html():
+    """Starts hidden; progress.js reveals it once it finds trackable items."""
+    if not PROGRESS_ENABLED:
+        return ""
+    return PAGE_STATUS_CSS + "\n" + PAGE_STATUS_BAR
+
 def site_nav(urls, current):
     items = [
         ("cpguide", "CP / DSA Guide", urls.get("cpguide", "#")),
@@ -354,7 +396,10 @@ def site_nav(urls, current):
         companyoa_link = f'<a href="{esc(urls.get("companyoa", "#"))}"{cls}>Company OA Bank</a>'
         links.append(f'<span data-progress-signed-in style="display:none;">{companyoa_link}</span>')
     auth_slot = '<span id="authSlot" class="auth-slot"></span>' if PROGRESS_ENABLED else ""
-    return f'<nav class="site-nav"><span class="brand">placement-prep</span>{"".join(links)}{auth_slot}</nav>'
+    nav = f'<nav class="site-nav"><span class="brand">placement-prep</span>{"".join(links)}{auth_slot}</nav>'
+    # The per-page status bar rides along with the nav so every page that has a
+    # nav gets one, without touching each page generator.
+    return nav + page_status_bar_html()
 
 FOOTER = '<footer>Compiled for personal interview/placement preparation from publicly accessible sources and independently authored reference material. Company and platform names belong to their respective owners; this is an unofficial, independently compiled study aid.</footer>'
 

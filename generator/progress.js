@@ -89,10 +89,31 @@ function renderSummaries() {
   });
 }
 
+// Per-page completion bar. Scope comes from the DOM rather than a build-time
+// count, so pages that render their cards client-side stay correct as long as
+// they call refresh() afterwards.
+function renderPageStatus() {
+  const bars = document.querySelectorAll(".page-status");
+  if (!bars.length) return;
+  const boxes = document.querySelectorAll(".done-checkbox[data-item-id]");
+  const total = boxes.length;
+  let n = 0;
+  boxes.forEach((el) => { if (isDone(el.dataset.itemId)) n++; });
+  const pct = total ? Math.round((n / total) * 100) : 0;
+  bars.forEach((bar) => {
+    bar.style.display = total ? "" : "none";
+    bar.setAttribute("aria-valuenow", String(pct));
+    bar.querySelectorAll('[data-page-progress="count"]').forEach((e) => { e.textContent = `${n} / ${total}`; });
+    bar.querySelectorAll('[data-page-progress="pct"]').forEach((e) => { e.textContent = `${pct}%`; });
+    bar.querySelectorAll('[data-page-progress="fill"]').forEach((e) => { e.style.width = `${pct}%`; });
+  });
+}
+
 function renderAll() {
   renderAuthSlot();
   renderCheckboxes();
   renderSummaries();
+  renderPageStatus();
 }
 
 document.addEventListener("click", (ev) => {

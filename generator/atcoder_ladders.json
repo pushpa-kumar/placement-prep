@@ -1,0 +1,267 @@
+{
+  "intro": "Ordered practice ladders built from the AtCoder Categories problem tags. Each ladder walks one technique from its easiest AtCoder appearance to its hardest, picked so that every rung introduces a model the previous rungs did not cover — rather than ten variations of the same idea. Difficulty numbers are AtCoder's own estimated difficulty, coloured by the standard rating bands.",
+  "how_to_use": "Sit with a rung for 30–45 minutes before opening anything. The \"nudge\" under each problem is the one idea the problem turns on, not a solution — read it only when you are genuinely stuck, and read the editorial after you have solved it either way. If a rung takes more than two sittings, drop back and do a second problem in the same model before continuing.",
+  "ladders": [
+    {
+      "name": "Tree DP",
+      "slug": "tree-dp",
+      "guide_slug": "dynamic-programming",
+      "guide_anchor": "#dynamic-programming-tree-dp",
+      "guide_label": "Dynamic Programming — Tree DP",
+      "source_url": "https://atcoder-categories.github.io/dp_tree.html",
+      "source_label": "AtCoder Categories — Tree DP",
+      "pool": 102,
+      "blurb": "Twenty problems out of the 102 tagged Tree DP, from 704 to 2920. The progression is deliberate: one DFS returning one number, then a returned state, then rerooting, then the knapsack merge, then a DP with something wrapped around it, and finally the named machinery (Steiner trees, virtual trees, dynamic tree DP) that shows up in ARC/AGC.",
+      "tiers": [
+        {
+          "name": "Foundations",
+          "band": "704 – 1549",
+          "note": "One DFS, one value per subtree. The goal here is to stop thinking about the tree and start thinking about what a child hands back to its parent.",
+          "problems": [
+            {
+              "n": 1,
+              "contest": "abc333",
+              "task": "abc333_d",
+              "label": "ABC 333 D",
+              "title": "Erase Leaves",
+              "difficulty": 704,
+              "model": "Subtree sizes",
+              "teaches": "The single most reused primitive: root the tree, compute size[v] in one post-order pass.",
+              "nudge": "Root at vertex 1. Each neighbour of the root heads an independent subtree, and you must delete every one of them except the largest."
+            },
+            {
+              "n": 2,
+              "contest": "abc348",
+              "task": "abc348_e",
+              "label": "ABC 348 E",
+              "title": "Minimize Sum of Distances",
+              "difficulty": 1347,
+              "model": "Rerooting · sum",
+              "teaches": "The canonical introduction to rerooting: compute the answer at the root, then slide it to every other vertex in O(1) per edge.",
+              "nudge": "Get f(1) = sum of C_i * dist(1,i) with one DFS. Moving the root across edge (u,v) changes it by `total weight - 2 * (subtree weight of v)`."
+            },
+            {
+              "n": 3,
+              "contest": "abc397",
+              "task": "abc397_e",
+              "label": "ABC 397 E",
+              "title": "Path Decomposition of a Tree",
+              "difficulty": 1484,
+              "model": "Returned state",
+              "teaches": "A child hands back more than a number — here it hands back how many loose path-ends it still has. Feasibility DP rather than optimisation.",
+              "nudge": "Any vertex with three or more children still needing to extend a path is immediately impossible. Track the count of dangling ends and close them greedily as you unwind."
+            },
+            {
+              "n": 4,
+              "contest": "abc222",
+              "task": "abc222_e",
+              "label": "ABC 222 E",
+              "title": "Red and Blue Tree",
+              "difficulty": 1491,
+              "model": "Edge weights to knapsack",
+              "teaches": "Reducing a tree problem to a sequence problem. Half the difficulty of tree DP is spotting when the tree stops mattering.",
+              "nudge": "Walk the given route once and count how many times each edge is traversed. What remains is a subset-sum over those counts hitting a fixed target."
+            },
+            {
+              "n": 5,
+              "contest": "abc394",
+              "task": "abc394_f",
+              "label": "ABC 394 F",
+              "title": "Alkane",
+              "difficulty": 1549,
+              "model": "Best-k children",
+              "teaches": "Merging children is not always a knapsack — often you just sort their values and take the top few. Learn to recognise that shape.",
+              "nudge": "Every internal vertex needs exactly four incident edges, so dp[v] keeps the best chain downward and you sum the three largest positive child contributions."
+            }
+          ]
+        },
+        {
+          "name": "Core patterns",
+          "band": "1819 – 2055",
+          "note": "The workhorses: counting with subtree sizes, rerooting a non-trivial state, and the tree knapsack. Almost every harder problem is one of these wearing a costume.",
+          "problems": [
+            {
+              "n": 6,
+              "contest": "abc312",
+              "task": "abc312_g",
+              "label": "ABC 312 G",
+              "title": "Avoid Straight Line",
+              "difficulty": 1819,
+              "model": "Counting by complement",
+              "teaches": "Counting triples on a tree by fixing the meeting vertex — and by counting the bad cases instead of the good ones.",
+              "nudge": "Total triples minus the collinear ones. For each vertex, the paths through it split the rest of the tree into its child subtrees plus everything above it."
+            },
+            {
+              "n": 7,
+              "contest": "abc222",
+              "task": "abc222_f",
+              "label": "ABC 222 F",
+              "title": "Expensive Expense",
+              "difficulty": 1934,
+              "model": "Rerooting · max",
+              "teaches": "The same rerooting machinery, but max instead of sum — so you need the best and second-best child in order to exclude the one you came from.",
+              "nudge": "Keep the top two downward values at each vertex; when descending into child c, pass down the best value that is not c's own."
+            },
+            {
+              "n": 8,
+              "contest": "abc259",
+              "task": "abc259_f",
+              "label": "ABC 259 F",
+              "title": "Select Edges",
+              "difficulty": 1961,
+              "model": "dp[v][0/1] + greedy merge",
+              "teaches": "Two states per vertex — edge to parent used or not — with a degree cap that turns the merge into a sort-and-take.",
+              "nudge": "dp[v][0/1] = best weight in v's subtree. For each child, taking its edge gains `w + dp[c][0] - dp[c][1]`; keep the positive gains, sort, take as many as the degree limit allows."
+            },
+            {
+              "n": 9,
+              "contest": "abc287",
+              "task": "abc287_f",
+              "label": "ABC 287 F",
+              "title": "Components",
+              "difficulty": 2034,
+              "model": "Tree knapsack",
+              "teaches": "The O(n^2) subtree knapsack, and the amortisation argument that proves it is quadratic and not cubic. Non-negotiable to know.",
+              "nudge": "dp[v][k][0/1] = ways to get k components in v's subtree, with v chosen or not. Merge children one at a time, looping only up to the sizes already accumulated."
+            },
+            {
+              "n": 10,
+              "contest": "abc369",
+              "task": "abc369_g",
+              "label": "ABC 369 G",
+              "title": "As far as possible",
+              "difficulty": 2055,
+              "model": "Long-path decomposition",
+              "teaches": "Decompose the tree into vertex-disjoint downward chains; answering for every K at once falls out of sorting the chain lengths.",
+              "nudge": "Each vertex keeps its deepest downward path and the leftover branches become separate chains. Sort all chain lengths descending — the answer for K is a prefix sum."
+            }
+          ]
+        },
+        {
+          "name": "An outer loop around the DP",
+          "band": "2217 – 2437",
+          "note": "The DP is no longer the whole solution. Here it sits inside a binary search, a game-theoretic argument, a rerooting of a two-state DP, or a compressed tree.",
+          "problems": [
+            {
+              "n": 11,
+              "contest": "abc218",
+              "task": "abc218_g",
+              "label": "ABC 218 G",
+              "title": "Game on Tree 2",
+              "difficulty": 2217,
+              "model": "Minimax on tree",
+              "teaches": "Game DP where the optimising player alternates by depth, plus maintaining a running median down the DFS path.",
+              "nudge": "Leaves are terminal; internal vertices take max or min of their children by parity. Keep the median of the root-to-current path with two heaps, pushing on entry and popping on exit."
+            },
+            {
+              "n": 12,
+              "contest": "abc246",
+              "task": "abc246_g",
+              "label": "ABC 246 G",
+              "title": "Game on Tree 3",
+              "difficulty": 2313,
+              "model": "Binary search + tree DP",
+              "teaches": "Parametric search: guess the answer X, rewrite the problem as a boolean, and let a much simpler DP decide it.",
+              "nudge": "Fix X and mark vertices with value >= X as dangerous. dp[v] = how many dangerous vertices in v's subtree cannot be erased in time; monotone in X, so binary search."
+            },
+            {
+              "n": 13,
+              "contest": "abc223",
+              "task": "abc223_g",
+              "label": "ABC 223 G",
+              "title": "Vertex Deletion",
+              "difficulty": 2351,
+              "model": "Rerooting a matching DP",
+              "teaches": "Rerooting where the state is itself a DP (maximum matching), not just a number. The real test of whether you understand rerooting.",
+              "nudge": "dp[v][0/1] = matching size in v's subtree with v unmatched / matched. A vertex is removable iff the whole tree keeps the same maximum matching without it — reroot to test all n at once."
+            },
+            {
+              "n": 14,
+              "contest": "abc207",
+              "task": "abc207_f",
+              "label": "ABC 207 F",
+              "title": "Tree Patrolling",
+              "difficulty": 2398,
+              "model": "Three-state counting",
+              "teaches": "The classic dominating-set state set — chosen / covered by a child / not yet covered — used for counting rather than minimising.",
+              "nudge": "dp[v][0] = v not covered, [1] = v covered by a child's guard, [2] = guard on v. Merge children as a convolution over the number of covered vertices."
+            },
+            {
+              "n": 15,
+              "contest": "abc340",
+              "task": "abc340_g",
+              "label": "ABC 340 G",
+              "title": "Leaf Color",
+              "difficulty": 2401,
+              "model": "Auxiliary (virtual) tree",
+              "teaches": "When a DP has to run once per colour, build the compressed tree over just that colour's vertices. Total size stays O(n log n).",
+              "nudge": "Sort a colour's vertices by DFS order, add pairwise LCAs, rebuild the edges with a stack. Then count connected subtrees whose leaf set is exactly that colour."
+            },
+            {
+              "n": 16,
+              "contest": "arc130",
+              "task": "arc130_d",
+              "label": "ARC 130 D",
+              "title": "Zigzag Tree",
+              "difficulty": 2437,
+              "model": "Prefix-sum optimised merge",
+              "teaches": "A naive child merge is quadratic per vertex here. Rewriting it as cumulative sums is the standard rescue for rank-indexed tree DP.",
+              "nudge": "dp[v][i] = ways in which v is the i-th smallest among v and its used children. Merging with binomials plus prefix sums keeps the whole thing quadratic overall."
+            }
+          ]
+        },
+        {
+          "name": "Advanced machinery",
+          "band": "2455 – 2920",
+          "note": "Named techniques worth reusing for years: Steiner trees, inclusion–exclusion over a knapsack, multi-dimensional traversal states, and a DP that has to survive updates.",
+          "problems": [
+            {
+              "n": 17,
+              "contest": "abc364",
+              "task": "abc364_g",
+              "label": "ABC 364 G",
+              "title": "Last Major City",
+              "difficulty": 2455,
+              "model": "Steiner tree DP",
+              "teaches": "Bitmask over terminals times vertices, with the two transitions — subset split and edge relax — that define the Steiner tree DP.",
+              "nudge": "dp[S][v] = cheapest tree connecting terminal set S and containing v. Split S into two halves at v, then relax over edges with Dijkstra for each fixed S."
+            },
+            {
+              "n": 18,
+              "contest": "arc121",
+              "task": "arc121_e",
+              "label": "ARC 121 E",
+              "title": "Directed Tree",
+              "difficulty": 2645,
+              "model": "Knapsack + inclusion–exclusion",
+              "teaches": "Counting permutations with forbidden positions: count arrangements with at least k bad pairs via a tree knapsack, then alternate signs.",
+              "nudge": "f[k] = ways to choose k disjoint ancestor–descendant pairs, which is a subtree knapsack. The answer is the alternating sum of f[k] * (n-k)!."
+            },
+            {
+              "n": 19,
+              "contest": "arc179",
+              "task": "arc179_d",
+              "label": "ARC 179 D",
+              "title": "Portable Gate",
+              "difficulty": 2717,
+              "model": "Return-or-not states",
+              "teaches": "Traversal DP where the state carries both a budget and whether you come back to the vertex. The dimension people forget to add.",
+              "nudge": "dp[v][k][0/1] over v's subtree, k = gate uses, last flag = whether the walk returns to v. Merge children like a knapsack, allowing exactly one non-returning branch."
+            },
+            {
+              "n": 20,
+              "contest": "abc351",
+              "task": "abc351_g",
+              "label": "ABC 351 G",
+              "title": "Hash on Tree",
+              "difficulty": 2920,
+              "model": "Dynamic tree DP",
+              "teaches": "The DP has to survive point updates. Express each vertex's transition as an affine map and hang it off a heavy-light decomposition.",
+              "nudge": "dp[v] = A[v] + X[v] * (product of dp over children). Linearise along heavy paths, keep the light-child products aside, and put a segment tree of composed affine maps on each path."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
