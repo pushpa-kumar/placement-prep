@@ -55,7 +55,7 @@ def main():
 
     # 14 CP guide topic pages
     for jfs, slug, title in TOPIC_PAGES:
-        html = build_cpguide_page(jfs, slug, title, nav_urls)
+        html = build_cpguide_page(jfs, slug, title, nav_urls, known_pages=set(page_url_map))
         html = resolve_placeholders(html, page_url_map)
         write(f"{OUT_DIR}/cp-{slug}.html", html)
 

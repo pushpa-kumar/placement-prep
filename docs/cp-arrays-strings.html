@@ -327,6 +327,7 @@
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Look for problems on a sorted (or sortable) array/string asking about pairs, triplets, or windows defined by a monotonic condition (sum, difference, or count that only increases/decreases as a pointer moves) -- especially phrasings like &#x27;find a pair/triplet with sum X&#x27;, &#x27;is the array a palindrome&#x27;, or &#x27;maximum area between two indices&#x27;.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>Typically O(n log n) if sorting is required first, otherwise O(n); O(1) extra space beyond the pointers and, if needed, an output buffer.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (274 to 2957), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#two-pointers">Open the Two Pointers &amp; Sliding Window ladder</a></p></div>
   </div>
   <article class="example-card" id="arrays-strings-two-pointers-ex0">
   <h4>Bounded-Range Subsequences (Close Tuples, hard version)<button type="button" class="done-checkbox" data-item-id="arrays-strings-two-pointers-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
@@ -623,6 +624,7 @@
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Look for &#x27;count/find a subarray with sum exactly/at least X&#x27; where the array can contain negative or zero elements (ruling out plain sliding window), or any problem asking for repeated range-sum queries over a fixed array/matrix.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) preprocessing plus O(1) per range-sum query; O(n) or O(n) extra space for the prefix array and any hash map/deque used alongside it. 2D prefix sums cost O(R*C) preprocessing.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>21 AtCoder problems in increasing difficulty (214 to 2435), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#prefix-sums">Open the Prefix Sums &amp; Range Queries ladder</a></p></div>
   </div>
   <article class="example-card" id="arrays-strings-prefix-sums-ex0">
   <h4>Subarray Sums II (allows negatives)<button type="button" class="done-checkbox" data-item-id="arrays-strings-prefix-sums-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
@@ -763,6 +765,7 @@
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Look for &#x27;maximum (or minimum) sum contiguous subarray&#x27; phrasing, especially when a plain &#x27;sum of all elements&#x27; or &#x27;largest element&#x27; answer is clearly too simple to be the intended solution -- length bounds, circularity, or a two-dimensional (submatrix) version are the standard ways these problems get escalated to hard difficulty.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) time, O(1) extra space for the base algorithm; O(n log n) or O(n) (with a monotonic deque) for length-constrained variants; O(n) time and space for the circular-array variant.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (213 to 2548), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#subarrays-subsequences">Open the Subarrays &amp; Subsequences ladder</a></p></div>
   </div>
   <article class="example-card" id="arrays-strings-kadane-s-algorithm-ex0">
   <h4>Maximum Subarray Sum with Witness Indices<button type="button" class="done-checkbox" data-item-id="arrays-strings-kadane-s-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

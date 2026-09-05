@@ -528,6 +528,7 @@ Dave 85
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Strong signals: the problem says &#x27;minimize the maximum ...&#x27; or &#x27;maximize the minimum ...&#x27;; it asks for the smallest/largest value of some quantity such that a condition holds, and directly computing that value seems to require trying all possibilities; and you can write (even if slowly) a function feasible(x) that tells you in O(n) or O(n log n) whether a candidate value x works, and you can convince yourself that feasibility only turns on (never off) as x increases (or vice versa).</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(log(range) * feasibility-check-cost). Feasibility checks are typically O(n) (greedy scan) or O(n log n) (two-pointer over a sorted array, or a scan needing a sort up front), giving overall O(n log(range)) or O(n log n log(range)).</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (202 to 2947), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#sorting-binary-search">Open the Sorting, Inversions &amp; Binary Search ladder</a></p></div>
   </div>
   <article class="example-card" id="sorting-searching-binary-search-on-the-answer-ex0">
   <h4>Factory Machines<button type="button" class="done-checkbox" data-item-id="sorting-searching-binary-search-on-the-answer-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

@@ -29,6 +29,12 @@
     },
     {
       "name": "Sweep Line for Rectangle Union Area",
+      "practice": {
+        "page": "atcoder-ladders",
+        "anchor": "#geometry",
+        "text": "20 AtCoder problems in increasing difficulty (246 to 2914), each rung adding one model the earlier rungs did not cover:",
+        "label": "Open the Geometry & Sweep Line ladder"
+      },
       "theory": "To compute the total area covered by a union of possibly-overlapping axis-aligned rectangles, sweep a vertical line across all distinct x-coordinates that appear as a rectangle's left or right edge. Between two consecutive distinct x-coordinates x_L < x_R, every rectangle that spans the whole slab [x_L, x_R] contributes a constant covered height for that entire slab, so the area contributed by the slab is (x_R - x_L) times the total length of the y-axis covered by the union of those rectangles' y-intervals within the slab. Computing that covered y-length is itself a 1D interval-union problem: collect the y-intervals of every rectangle active in the slab, sort by start, and merge overlapping/touching intervals while summing their lengths. Repeating this for every slab and summing gives the total area in O(k) slabs times O(m log m) per slab for the m rectangles active in it \u2014 O(n^2 log n) worst case, which is simple to implement and plenty fast for n up to a few thousand; a segment tree keyed on compressed y-coordinates that tracks (coverage count, covered length) per node turns the per-slab query into O(log n), giving the fully optimized O(n log n) solution used when n is large (up to 1e5, as in the harder OA constraint reported for this problem).",
       "recognition": "\"Total area covered by a set of (possibly overlapping) rectangles\", \"union of intervals/rectangles\", or any problem whose examples show axis-aligned rectangles and ask for a combined area or covered length rather than a per-rectangle sum.",
       "complexity": "O(n^2 log n) with the simple merge-per-slab approach shown here (fine for n up to a few thousand); O(n log n) with a coverage-counting segment tree over compressed y-coordinates for larger n.",

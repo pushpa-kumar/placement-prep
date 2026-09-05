@@ -759,6 +759,7 @@ NO</code></pre>
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Any problem asking for the longest path in a tree, the tree&#x27;s &quot;radius&quot;/&quot;center&quot; (which sits at the midpoint of a diameter), the eccentricity of vertices, or an optimal single point to attach something to minimize the worst-case distance, starts from computing the diameter. The double-BFS trick is the fastest to implement for a single diameter query; the DP form is what you reach for once weights, path reconstruction, or per-subtree answers are needed.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>Both approaches run in O(n) time and O(n) space: double BFS/DFS does two O(n) traversals, and the DP does one O(n) DFS while maintaining O(1) extra state per vertex.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>16 AtCoder problems in increasing difficulty (839 to 2910), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#trees">Open the Trees: Diameter, LCA &amp; Path Queries ladder</a></p></div>
   </div>
   <article class="example-card" id="trees-tree-diameter-ex0">
   <h4>Diameter via Double BFS<button type="button" class="done-checkbox" data-item-id="trees-tree-diameter-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

@@ -572,6 +572,7 @@ abc
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Use hashing whenever you need fast substring equality checks, longest common substring/prefix queries combined with binary search, palindrome checks on arbitrary ranges (especially under updates, where suffix structures are hard to maintain), or any place you&#x27;d like to avoid building a suffix automaton/array but still need &#x27;is this substring equal to that substring&#x27; in better than O(length).</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(n) preprocessing, O(1) per substring-hash query (O(log n) with a Fenwick/segment tree for point updates); O(n log n) total for a binary-search-based application.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (213 to 2560), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#strings">Open the String Algorithms &amp; Palindromes ladder</a></p></div>
   </div>
   <article class="example-card" id="string-algorithms-string-hashing-polynomial-rolling-hash-ex0">
   <h4>Longest Common Substring (Double Hash + Binary Search)<button type="button" class="done-checkbox" data-item-id="string-algorithms-string-hashing-polynomial-rolling-hash-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

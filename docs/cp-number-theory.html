@@ -327,6 +327,7 @@
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for GCD whenever a problem talks about common divisors, reducing fractions, or the structure of ax+by=c. Reach for the *extended* version specifically when you need to actually produce x, y from Bezout&#x27;s identity — most commonly to compute a modular inverse when the modulus is not (or not known to be) prime, or to solve/merge modular congruences (CRT) with moduli that may share common factors.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(log(min(a,b))) time per gcd/extgcd call, O(1) extra space (or O(log(min(a,b))) stack space if implemented recursively).</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (247 to 2536), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#number-theory">Open the Number Theory ladder</a></p></div>
   </div>
   <article class="example-card" id="number-theory-gcd-extended-euclidean-algorithm-ex0">
   <h4>Modular Inverse via Extended Euclid<button type="button" class="done-checkbox" data-item-id="number-theory-gcd-extended-euclidean-algorithm-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>
@@ -1086,6 +1087,7 @@ ll pollardRho(ll n) {
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Reach for factorial/inverse-factorial precomputation whenever you need C(n, r) mod p for many queries (or many terms in a formula) with n bounded by something precomputable up front (up to ~10^6-10^7). Be alert for sums of products of binomial coefficients over an index k — these are frequently Vandermonde-convolution in disguise and can often be collapsed to a single term. Reach for inclusion-exclusion whenever a problem wants &#x27;count elements satisfying at least one of several divisibility/membership conditions&#x27; and the number of conditions is small enough (commonly &lt;= 20) that enumerating subsets by bitmask is feasible, even when the universe being counted over is far too large to enumerate directly (up to 10^18).</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(MAXN) precomputation + O(1) per nCr query; O(2^k * k) for inclusion-exclusion over k conditions.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (202 to 2898), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#combinatorics">Open the Combinatorics &amp; Inclusion–Exclusion ladder</a></p></div>
   </div>
   <article class="example-card" id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex0">
   <h4>Binomial Coefficients with O(1) Queries<button type="button" class="done-checkbox" data-item-id="number-theory-combinatorics-ncr-under-modulo-and-inclusion-exclusion-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

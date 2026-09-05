@@ -161,16 +161,23 @@ def build_page(nav_urls):
     ratings = [p["difficulty"] for l in ladders for t in l["tiers"] for p in t["problems"]]
 
     nav_items = []
+    index_cards = []
     for l in ladders:
-        n = sum(len(t["problems"]) for t in l["tiers"])
+        probs = [p for t in l["tiers"] for p in t["problems"]]
+        n = len(probs)
         nav_items.append(f'<li><a href="#{esc(l["slug"])}"><span>{esc(l["name"])}</span>'
                          f'<span class="cnt">{n}</span></a></li>')
-        for t in l["tiers"]:
-            anchor = f'{l["slug"]}-{t["name"].lower().replace(" ", "-")}'
-            nav_items.append(f'<li><a class="sub" href="#{esc(anchor)}"><span>{esc(t["name"])}</span>'
-                             f'<span class="cnt">{len(t["problems"])}</span></a></li>')
+        index_cards.append(
+            f'<a class="hub-card" href="#{esc(l["slug"])}"><h3>{esc(l["name"])}</h3>'
+            f'<div class="meta">{n} problems &middot; {probs[0]["difficulty"]}&ndash;{probs[-1]["difficulty"]}</div></a>')
 
-    sections = "".join(ladder_html(l) for l in ladders)
+    index = (f'<section class="topic-section" id="all-ladders">'
+             f'<div class="topic-head"><h2>All Ladders</h2><span class="cnt">{len(ladders)}</span></div>'
+             f'<p class="topic-desc">Each ladder is independent &mdash; start with whichever technique you are working on. '
+             f'Every guide page also links straight into the ladder for its own topic.</p>'
+             f'<div class="hub-grid">{"".join(index_cards)}</div></section>')
+
+    sections = index + "".join(ladder_html(l) for l in ladders)
 
     html = f'''<title>AtCoder Ladders</title>
 {HEAD_CSS}

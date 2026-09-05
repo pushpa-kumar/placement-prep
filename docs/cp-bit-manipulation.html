@@ -460,6 +460,7 @@
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Look for: (a) any question about &#x27;maximum/minimum XOR of a subset&#x27;, &#x27;is XOR value V achievable&#x27;, or &#x27;how many distinct subset-XOR values exist&#x27; — these are linear-basis questions; (b) any question about &#x27;maximum/minimum XOR of a PAIR (or of x with an element from a dynamic set)&#x27; — these are binary-trie questions; (c) the array size can be large (n up to 10^5-10^6) but values are bounded (fit in ~20-60 bits), which rules out O(2^n) brute force and points to the O(n * bits) linear-algebra or trie approach.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>Building an XOR linear basis: O(n * B) time where B is the bit-width (e.g. 60 for 64-bit values), O(B) space for the basis. Binary trie: O(B) per insertion/query, O(n * B) total space in the worst case.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>17 AtCoder problems in increasing difficulty (247 to 2914), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#bitwise">Open the Bitwise Operations &amp; XOR ladder</a></p></div>
   </div>
   <article class="example-card" id="bit-manipulation-xor-properties-linear-basis-ex0">
   <h4>Maximum XOR Subset via Linear Basis<button type="button" class="done-checkbox" data-item-id="bit-manipulation-xor-properties-linear-basis-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

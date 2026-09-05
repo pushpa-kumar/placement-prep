@@ -420,6 +420,7 @@
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span><p>Recognize this pattern when the objective is a SUM over positions/finish-times (minimize/maximize sum of completion times, weighted completion times, lateness sums) or when there are purely LOCAL pairwise constraints between adjacent elements. The giveaway that greedy-by-obvious-key might be wrong is when the objective is a MAX or BOTTLENECK rather than a SUM -- minimizing maximum lateness needs sorting by deadline (earliest-deadline-first), a completely different rule from minimizing summed lateness, and confusing sum-objectives with max-objectives is the most common way this family of greedy breaks. Always redo the adjacent-swap argument for your exact objective rather than pattern-matching to a memorized sort key.</p></div>
     <div class="callout"><span class="c-label">Complexity</span><p>O(n log n) for the sort, O(n) for the pass(es) that follow.</p></div>
+    <div class="callout"><span class="c-label">Practice</span><p>20 AtCoder problems in increasing difficulty (235 to 2756), each rung adding one model the earlier rungs did not cover: <a href="cp-atcoder-ladders.html#greedy">Open the Greedy Algorithms ladder</a></p></div>
   </div>
   <article class="example-card" id="greedy-exchange-argument-scheduling-order-ex0">
   <h4>Tasks and Deadlines<button type="button" class="done-checkbox" data-item-id="greedy-exchange-argument-scheduling-order-ex0" data-item-type="example" aria-pressed="false">Mark done</button></h4>

@@ -44,15 +44,21 @@ def example_card_html(ex, idx, sub_anchor):
   </div>
 </article>'''
 
-def practice_callout_html(prac):
-    """Optional per-subtopic pointer to an ordered practice ladder elsewhere on the site."""
+def practice_callout_html(prac, known_pages=None):
+    """Optional per-subtopic pointer to an ordered practice ladder elsewhere on the site.
+
+    Skipped when the target page has no URL in this build's map -- better no callout
+    than one pointing at a dead "#".
+    """
     if not prac:
+        return ""
+    if known_pages is not None and prac["page"] not in known_pages:
         return ""
     href = f'__PAGE__:{prac["page"]}{prac.get("anchor", "")}'
     return ('\n    <div class="callout"><span class="c-label">Practice</span>'
             f'<p>{esc(prac["text"])} <a href="{href}">{esc(prac["label"])}</a></p></div>')
 
-def subtopic_html(sub, topic_slug, idx):
+def subtopic_html(sub, topic_slug, idx, known_pages=None):
     anchor = f"{topic_slug}-{slugify(sub['name'])}"
     examples = "".join(example_card_html(ex, i, anchor) for i, ex in enumerate(sub["examples"]))
     return f'''<section class="topic-section" id="{anchor}">
@@ -60,12 +66,12 @@ def subtopic_html(sub, topic_slug, idx):
   <div class="theory-block">{inline_code(sub["theory"])}</div>
   <div class="callout-row">
     <div class="callout"><span class="c-label">Recognize it by</span>{inline_code(sub["recognition"])}</div>
-    <div class="callout"><span class="c-label">Complexity</span>{inline_code(sub["complexity"])}</div>{practice_callout_html(sub.get("practice"))}
+    <div class="callout"><span class="c-label">Complexity</span>{inline_code(sub["complexity"])}</div>{practice_callout_html(sub.get("practice"), known_pages)}
   </div>
   {examples}
 </section>'''
 
-def build_page(json_files, slug, title, nav_urls):
+def build_page(json_files, slug, title, nav_urls, known_pages=None):
     subtopics = []
     intro_parts = []
     for jf in json_files:
@@ -91,7 +97,7 @@ def build_page(json_files, slug, title, nav_urls):
         for _, tslug, ttitle in TOPIC_PAGES if tslug != slug
     )
 
-    sections = "".join(subtopic_html(s, slug, i) for i, s in enumerate(subtopics))
+    sections = "".join(subtopic_html(s, slug, i, known_pages) for i, s in enumerate(subtopics))
     problems_html = problems_table_html(problems, table_id="probs")
 
     html = f'''<title>{esc(title)} — CP / DSA Guide</title>
